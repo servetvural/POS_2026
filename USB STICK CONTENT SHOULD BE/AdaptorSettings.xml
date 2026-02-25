@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DirectorySetter xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AppDirectory>C:\Program Files (x86)\DTRM</AppDirectory>
+  <SessionDirectory>C:\Program Files (x86)\DTRM\Sessions</SessionDirectory>
+  <ReportDirectory>C:\Program Files (x86)\DTRM\Reports</ReportDirectory>
+</DirectorySetter>

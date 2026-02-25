@@ -1,0 +1,538 @@
+﻿body {
+}
+.DronaxLogo
+{
+	font-weight: bold;
+	font-size: xx-small;
+	color: Black;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+.HourTitle
+{
+	font-weight: bold;
+	font-size: xx-small;
+	text-transform: capitalize;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+.Hour
+{
+	font-weight: normal;
+	font-size: xx-small;
+	text-transform: capitalize;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+.CurrentTime
+{
+	font-weight: normal;
+	font-size: x-small;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+
+.HeaderButtons
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+/*Order pad buttons */
+.SelectedButton
+{
+	border-style:outset;
+}
+.HoldOrder
+{
+	font-weight: bold;
+	font-size:small;
+    background-color:#ffd800;
+	color: black;
+	font-family: Tahoma;
+	/*background-color: #333593;
+	font-variant: small-caps;*/
+	text-decoration: none;    
+    height:40px;
+    text-align: center;
+    border-color:white;
+	border-style:solid;
+	border-width:thick;
+    text-anchor:start;
+    min-width:90px;
+    
+}
+
+.Entity
+{
+	font-weight: bold;
+	font-size:small;
+    background-color: #333593;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	/*background-color: #333593;
+	font-variant: small-caps;*/
+	text-decoration: none;
+    height:50px;
+    text-align: center;
+    border-color:white;
+	border-style:solid;
+	border-width:thick;
+    text-anchor:start;
+    min-width:90px;
+    
+}
+
+.SizeBarButtonOut
+{	
+	background-color: #990000;	
+	border-color:White;
+	border-style:solid;
+	border-width:thin;
+}
+.SizeBarButton
+{
+	font-weight: bold;
+	font-size: x-small;
+	color: white;
+	font-family: Tahoma;
+	background-color: #990000;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.EntityButtonOut
+{	
+	
+	
+    font-size:small;
+}
+.EntityButton
+{
+	font-weight: bold;
+	font-size: small;
+	color: white;
+	font-family: Tahoma;
+	background-color: darkred;
+	font-variant: small-caps;
+	text-decoration: none;
+    border-color:white;
+	border-style:solid;
+	border-width: thick;
+    min-width:90px;
+}
+.DisplayButton
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: Tahoma;
+	background-color: white;
+	font-variant: small-caps;
+	text-decoration: none;
+    border-color:white;
+	border-style:solid;
+	border-width: thin;
+
+}
+.SubEntityButtonOut
+{	
+	background-color: Olive;
+	border-color:#ffffff;
+	border-style:solid;
+	border-width:thin;
+}
+.SubEntityButton
+{
+	font-weight: bold;
+	font-size:small;
+	color: #ffffff;
+	font-family: Tahoma;
+	background-color: Olive;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.DivisionBarOut
+{
+	background-color: #ff6600;
+	border-color:#333593;
+	border-style:solid;
+	border-width:thin;
+}
+.DivisionBar
+{
+	background-color: #ff6600;
+	font-weight: bold;
+	font-size: 8pt;
+	font-family: Tahoma;
+	color:#ffffff;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.DivisionBarButtonOut
+{
+	background-color: #ff6600;
+	border-color:#333593;
+	border-style:solid;
+	border-width:thin;
+}
+.DivisionBarButton
+{
+	font-weight: bold;
+	font-size: 8pt;
+	font-family: Tahoma;
+	color:#333593;
+	/*background-color: #cc6600;*/
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.NoAndExtraButton
+{
+	font-weight: bold;
+	font-size: 8pt;
+	font-family: Tahoma;
+	background-color:  Lime;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+/*End of Order pad buttons*/
+
+.OrderPadBody
+{
+	/*background-color:white;*/
+	background-color:#FFFFFF;
+}
+.OrderPadStoreHeader
+{
+	/*background-color:White;*/
+	font-weight: bold;
+	font-size:large;
+	color: #333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+
+/*Order Display*/
+.ODGrid
+{
+	background-color: #FFFFFF;
+	border-style: none;
+	border-width: 0;
+	border-color:#222222;
+	border-bottom-color:#222222;
+	border-right-color:#222222;
+	font-family: Arial;
+	font-size: x-small;
+}
+.ODHeader
+{
+	background-color:#333593;
+	font-weight:bold;
+	color:#FFFFFF;
+}
+.ODSelected
+{
+	background-color:#ffd800;
+	font-weight:bold;
+	color:Black;
+	font-size:x-small;
+}
+.ODFooter
+{
+	background-color:White;
+	color:#000066;
+}
+.ODQuantity
+{
+	text-align:left;
+	color: #333593;
+	text-decoration: none;
+}
+.ODItemText
+{
+	color: #333593;
+	text-decoration: none;
+}
+.ODTotal
+{
+	font-weight: bold;
+	font-size: x-small;
+	color:#333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+/* End of Order Display */
+.InstructionBody
+{
+	/*background-color:White;*/
+}
+.InstructionTitle
+{
+	font-weight: bold;
+	font-size: small;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+}
+.InstructionText
+{
+	font-weight: normal;
+	font-size: x-small;
+	color: #333593;
+	font-family: Arial;
+}
+.OrderTypeTitle
+{
+	font-weight: bold;
+	font-size: x-small;
+	color: #333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+.OrderTypeText
+{
+	font-weight: bold;
+	font-size: x-small;
+	color: Black;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+
+/*Default Page Styles */
+.Default 
+{
+	background-color:#FFFFFF; 
+	font-weight: bold;
+	font-size: medium;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+.DefaultBody
+{
+	/*background-color:pink;*/
+	background-color:#FFFFFF; 
+}
+.DefaultPageButtons
+{
+	font-weight: bold;
+	font-size: medium;
+	color: #333593;
+	font-family: Tahoma;
+	/*background-color: #ffffff;*/
+	text-align: center;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.DefaultPageText
+{
+	font-weight: bold;
+	font-size: medium;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+
+/*End Default Page Styles */
+
+.Message
+{
+	color:White;
+	font-family:Arial;
+	font-size:small;
+}
+
+/*Login Page*/
+.LoginDot 
+{
+	font-weight: bold;
+	font-size:x-large;
+	color: #333593;
+}
+.LoginTitle
+{
+	font-weight: bold;
+	font-size: x-large;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+}
+.LoginPad
+{
+	font-weight: bold;
+	font-size: xx-large;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+}
+.LoginPadRed
+{
+	font-weight: bold;
+	font-size: xx-large;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: Red;
+}
+.LoginLabel
+{
+	font-weight: bold;
+	font-size: small;
+	color:#333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+.LoginButton
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+.LoginText
+{
+	font-size: small;
+	color: Black;
+	font-family: Tahoma;
+	text-decoration: none;
+}
+/*End Login Page */
+
+/*Confirmation Page */
+.ConfirmationTitle 
+{
+	font-weight: bold;
+	font-size: small;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+	font-variant: small-caps;
+	text-decoration: none;
+}
+.ConfirmationLabel 
+{
+	font-weight: bold;
+	font-size: x-small;
+	text-transform: capitalize;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+.ConfirmationText
+{
+	font-weight: normal;
+	font-size: x-small;
+	text-transform: capitalize;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+.ConfirmationTextBox
+{
+	font-weight: normal;
+	font-size: x-small;
+	text-transform: capitalize;
+	color: Black;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+.ConfirmationSendButton
+{
+	font-weight: bold;
+	font-size: x-small;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+	font-variant: small-caps;
+	text-decoration: none;
+	border-style:outset;
+	text-align:center;	
+}
+.FinalText
+{
+	font-weight: normal;
+	font-size: small;
+	text-transform: capitalize;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: normal;
+	text-decoration: none;
+}
+
+/*Contact Page */
+.ContactLabel
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+.ContactLabel2
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+.ContactText
+{
+	font-weight: normal;
+	font-size: medium;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+.ContactSendButton
+{
+	font-weight: bold;
+	font-size: small;
+	color: #333593;
+	font-family: Tahoma;
+	font-variant: small-caps;
+	text-decoration: none;
+	vertical-align: middle;
+	text-align:right;
+}
+/*End Contact Page */
+
+.NoConnectionText
+{
+	font-weight: bold;
+	font-size: medium;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+
+.ReservationText
+{
+	font-weight: bold;
+	font-size: medium;
+	color: #3366ff;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+
+.ShopClosedText
+{
+	font-weight: normal;
+	font-size: medium;
+	color: #333593;
+	font-family: 'Comic Sans MS' , Tahoma;
+}
+.ShopClosedButton
+{
+	font-weight: bold;
+	font-size: x-small;
+	color: #FFFFFF;
+	font-family: Tahoma;
+	background-color: #333593;
+	font-variant: small-caps;
+	text-decoration: none;
+	border-style:outset;
+	vertical-align: middle;
+	text-align:center;
+}

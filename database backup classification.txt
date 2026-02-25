@@ -1,0 +1,65 @@
+Customer List
+==================================
+Customer
+	IID.
+----------------------------------
+
+User List
+==================================
+Users
+	IID.
+----------------------------------
+
+Printer List
+==================================
+ApplicationPrinter
+	IID=>PrinterLookup.PrinterIID,
+PrinterLookup	
+----------------------------------
+
+GlobalSettings
+==================================
+Luv
+Sessions
+----------------------------------
+
+Table Layout
+==================================
+TableGroup
+	IID=>Tables.GroupIID,
+Tables
+	IID.
+----------------------------------
+
+
+FMenu
+==================================
+FMenu
+	IID=>(Entity.ParentMenuIID),(EntityButton.ParentMenuIID),(Distribution.ParentMenuIID)
+Entity
+	IID=>(EntityButton.ParentEntityIID),(Images.ReferenceIID)
+EntityButton 
+	IID=>(EntityButtonStockItemLookUp.EntityButtonIID),(Images.ReferenceIID)
+Distribution
+	IID=>(Entity.DistributionIID),(EntityButton.DistributionIID),
+----------------------------------
+
+Stock Manager
+==================================
+EntityButtonStockItemLookUp
+StockItem
+	IID=>(EntityButtonStockItemLookUp.StockItemIID),(Images.ReferenceIID)
+Supplier
+	IID=>(StockItem.SupplierIID)
+GenericImage (Images)	
+----------------------------------
+
+Not Required
+=====================
+OrderItem
+Orders
+XOrderItem
+XOrders
+KitchenOrderItem
+KitchenOrders
+Debug ?

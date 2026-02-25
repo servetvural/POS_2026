@@ -1,0 +1,58 @@
+When you complete the alterations in the software you are ready to update:
+
+1- If you made changes to the database, you have to compare the schemas using Visual Studio 2015
+SQL Server Object Explorer tab on the left. Most likely the top localdb is the main one.
+I renamed it as "Main Local DB Server for DTRMSimple" underneath "Main Local DB for DTRMSimple".
+Generally I work with "SQL Server(MSSQLSERVER)" from the SQL Server Configuration Manager, make the changed db as the source and the localdb as the target. Get rid of unneccessary lines from the generated (compared) sql script such as; 
+	Alter table zart zurt
+	GO
+	Alter procedure zart
+		zurt 
+			fart
+	  END
+	GO
+	Create procedure etc....
+Save this sql file as  latestversion_newversion.sql    such as  1009_1010.sql
+
+2- Update bslayer file top section
+	
+	public string ApplicationVersion = "5.0.0.40";   to the latest version, it is upto you on html file through dreamweaver.
+        public string RequiredLocalDbVersion = "11.0.0.0";  keep it like this unless you installed a new version of localDB into this computer (development machine) and it is freely available on microsoft
+        public string RequiredSqlExpressVersion = "11.0.0.0";    same shit
+        public int RequiredMdfFileVersion = 1010;   this has to be the latest db version which has to be written on LUV table in MdfFileVersion. When we complete db schema alteration we name this schema version in this field as 1010, 1011 etc. When the updated programme starts it checks in bslayer what version it is and checks the connected database what version that is, using the script files in the installation folder as in 1009_1010.sql to update the database from 1009 version to 1010 version. This is the most important shit by the way.
+        public float RequiredDotNetVersion = 3.5f;
+        public string DatabaseFilesRootName = "DTRMSimpleLocalDB";
+
+3- Update setup script using "Inno Script Studio" , setup script file is setupscript.iss which is in  D:\Projects\DTRM Simple 2017  folder. Probably there is nothing to update unless you made a big change in folders or added new icon or file etc.
+
+4- Now compile setupscript.iss file using inno setup, this will create and put compiled setup file into D:\Projects\DTRM Simple 2017\Setup directory as an exe file. There is an update.xml file in the same directory which needs to be updated.
+
+5- Before updating the update.xml you need to create a hash code for the compiled setup.exe. Use Hash Generator.exe that you wrote. Load the exe and click generate and copy the md5 code in to the buffer.
+
+6- Modify update.xml  which is in  D:\Projects\DTRM Simple 2017\Setup folder. Use dreamweaver to do that : 
+
+<?xml version="1.0"?>
+<sharpUpdate>
+	<update appId="DTRMSimple">
+		<version>5.0.0.41</version>	*** Update this to whatever version you want, usally +1 to the existing one
+		<url>http://www.dronax.com/DTRMSimple/DTRM_Simple_Suite_Setup.exe</url>
+		<filename>DTRM_Simple_Suite_Setup_Update.exe</filename>
+		<md5>6f29d308f83a1fbe16d66691606e08e3</md5>		**** Update this with new code
+		<description>DTRM Simple Suite Update 20 Ekim 2017 20:28</description>
+		<launchArgs>/Silent</launchArgs>
+		<localDbUrl>https://www.microsoft.com/en-US/download/details.aspx?id=42299</localDbUrl>
+		<sqlExpressUrl>https://www.microsoft.com/en-US/download/details.aspx?id=42299</sqlExpressUrl>
+		<blankMdfUrl>http://www.dronax.com/DTRMSimple/DTRMSimpleLocalDB.mdf</blankMdfUrl>
+		<blankLdfUrl>http://www.dronax.com/DTRMSimple/DTRMSimpleLocalDB_log.ldf</blankLdfUrl>
+		<dotNetUrl>https://www.microsoft.com/en-us/download/details.aspx?id=53344</dotNetUrl>
+		<latestLocalDb>11.0.0.0</latestLocalDb>		*** Change this if required
+		<latestSqlExpress>11.0.0.0</latestSqlExpress>
+		<latestDatabaseFile>1010</latestDatabaseFile>		*** This must have the latest database version number which is in the luv mdfFileVersion 
+		<latestDotNetVersion>3.5</latestDotNetVersion>
+	</update>
+</sharpUpdate>
+
+7- Start filezilla to upload the DTRM_Simple_Suite_Setup_Update.exe  and update.xml into Dronax website in DTRMSimple FTP folder. Overwrite the existing ones.
+
+8- Close the software in the client machine and click on Update software to update, say yes yes yes. When Update finish login, this will automatically run the required scripts to update the client machine and VOLA.
+

@@ -1,0 +1,71 @@
+- Download and install latest .net version if required (Microsoft website)
+- Download and install Microsoft SQL Express Database Server (Microsoft website)
+	- Installation Options are : 
+		** There are 3 modes for this software to run;
+			**Standalone mode : You must ensure LOCALDB option selected and installed. In this mode application uses LOCALDB to as database server
+			**Thin client mode : No Server Installation required. In this mode software will connect to a database server running on another computer which is installed in Multi Client Server mode and has a mixed mode login information.
+			**Multi Client Server mode : You must ensure mixed mode login option selected and mixed mode password supplied during server installation so that thin client mode computers can connect to this server using mixed mode username (sa) and password. Administrator can also create another database user in the server for any computer to connect and use the server and the database for software. LOCALDB not required in this mode. 
+
+		- New SQL Server stand-alone installation or add features to an existing installation
+		- When options displayed choose LOCALDB as well (if application will be run as standalone machine, this is required)
+		- Choose Default instance which will give MSSQLSERVER as the name to the server
+		- mixed mode sa password : anything you like but take a note for this.
+	- Configuration requirements are : 
+		- Open sql server configuration manager
+			- Go to "SQL Server Network Configuration"
+			- Enable protocols for sql server (Tcp-IP, Shared Memory and Named Pipes)
+
+- Download and install SQL Server Management Tools (Microsoft website)
+	-SSMS 17.9.1 is the current General Availability (GA) version of SSMS
+	-Download SQL Server Management Studio 17.9.1 and install
+
+- Download and install "DTRM Simple (Dronax POS Suite)" (http://www.dronax.com)
+- Start SQL Server Management Studio and attach the database file to the server which is in application folder's sub folder [Db]. Or if you have another location for the database files you can put them there or just make sure database files exist and attached to the database and accessible by thin clients and Multi Client Server computers to connect.
+- Alternative way to create the database is to run the sql.script [DTRMSimpleCreateDatabase.sql] which will create DTRMSimple and its tables, views and stored procedures.
+- Default database files do have all the required content in the database to start a simple shop.
+- Multi Client Server and Thin Clients must have following information.
+	** IP address of the computer which is running the database server
+	** Database file name which is by default [DTRMSimple]
+	** Database username, if mixed mode used than the user name can be [sa] or any other name created by the database administrator
+	** Database password, it is either supplied during mixed mode installation by the database administrator for the user [sa] or a new user password created by the database administrator.
+
+- Software setup will create all the necessary shortcuts and files and folders. 
+- To prevent unneccessary intrusion there is no obvious button to open settings window on main login window. So click the logo repetatively 5-6 time to open the settings window or preferably use the back office software [Help->Settings] menu to access the settings window to setup the software.
+
+- UP TILL NOW 
+- Database server installed, Database file attached, Software installed and ready to run. You just need the configuration.
+
+- For Multi Client Server machine :
+	** Terminal Function Type : Multi Client Server.  This will fill up the parameters 
+	** Database IP and/or instance name : [.] just a dot to refer that local computer or user this computer's IP address
+	** Database Username : [sa] or use another valid name that database manager created in the server
+	** Database Password : [*******] whatever that is you know not me.
+	Don't forget the give a unique name to this terminal. Rest of it self explanatory.
+- Login the software and start using it.
+- Don't forget to setup X and Z report functions at the end of the config window.
+
+- Punch a whole in firewall (Add Port : TCP for 1433) This will allow thin clients to connect this multi client server computers database server.
+
+CREATE DATABASE IN NEW SQL SERVER
+================================================
+*** All you have to do is to run the create DTRMSimple.sql against to new database server which will create the Database and Tables, Views and Stored Procedures using SQL Server Management Studio.
+
+
+TRANSFER DATA FROM OLD DATABASE TO NEW DATABASE
+-------------------------------------------------
+*** Open Back Office software [make sure configuration is set to connect to old database], than Database Visualiser in House Keeping Menu than Export XML from old database selecting ALL from options windows and save the xml file.
+
+*** Than connect to the new database using Back Office software  than Database Visualiser in House Keeping Menu than import XML which will load the entire file into visualiser than click on "Save into Database" button to load all this data to new database [dont forget to choose option all].
+
+
+- Database  Version in Luv Table is not saved with database backup, it is handled by seperate procedure to make sure database is the right version.
+
+
+
+
+
+
+
+
+
+

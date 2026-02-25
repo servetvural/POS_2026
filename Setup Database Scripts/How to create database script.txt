@@ -1,0 +1,9 @@
+Start scripting DTRMSimple Database
+Click on advanced scripting options after selecting database objects tables, views and stored procedures.
+	set false (Schema qualify object names)
+	set false (Script Extended Properties)
+	set false (Script USE DATABASE)
+	crop the file down till here CREATE TABLE [ApplicationPrinter](
+Options "Save to new query window)
+Run script
+Save script as "Create Database Script" into "Setup Database Scripts" folder 

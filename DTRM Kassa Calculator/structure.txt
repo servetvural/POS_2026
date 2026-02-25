@@ -1,0 +1,40 @@
+﻿string managedBy
+string controlledBy
+DateTime dayDate
+enum	ShiftType  (Day or Night)
+
+staffIncome
+===================
+int hours
+string name
+double rate
+double rateIncome
+double bonusIncome
+double tipIncome
+double IncomeTotal
+double missingTotal
+double correctedIncomeTotal
+
+double staffRateTotal = sumof rate
+double staffBonusIncomeTotal = sumof bonusIncome
+double staffTipIncomeTotal = sumof tipIncome
+
+double x_Amount
+double pinTotalFromKasa
+double pinTotalFromTerminal
+double afterSaleTotal
+double stepOneTotal = x_Amount -(pinTotal) + afterSaleTotal
+
+double expenseTotal => expense list item total
+
+double stepTwoTotal = stepOneTotal - expenseTotal - staffRateTotal - staffBonusIncomeTotal
+
+double shortAmount
+double excessAmount
+
+double finalTotal = stepTwoTotal - shortAmount + excessAmount
+
+
+
+
+

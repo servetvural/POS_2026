@@ -1,0 +1,58 @@
+﻿using PosLibrary;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace DTRMNS.Forms {
+    public partial class frmExpense : Form {
+
+        private DTRMSimpleBusiness bslayer;
+        public Expense expense;
+
+        public frmExpense(DTRMSimpleBusiness bslayer, Expense expense) {
+            InitializeComponent();
+            this.bslayer = bslayer;
+            this.expense = expense;
+        }
+
+        private void frmExpense_Load(object sender, EventArgs e) {
+            LoadExpense();
+        }
+
+        private void LoadExpense() {
+            if (expense != null) {
+                cmbExpense.Text = expense.Description;
+                txtAmount.Value = expense.Amount;
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e) {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e) {
+            expense.Description = cmbExpense.Text;
+            expense.Amount= txtAmount.Value;
+
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void txtAmount_Click(object sender, EventArgs e) {
+            DoubleTextBox nud = (DoubleTextBox)sender;
+            frmMoneyInput frm = new frmMoneyInput(nud.Value);
+            if (frm.ShowDialog() == DialogResult.OK) {
+                nud.Value = frm.Value;
+            }
+        }
+
+
+    }
+}

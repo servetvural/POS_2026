@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRM Simple Back Office", "DTRM Simple Back Office.csproj", "{312FCF32-3DBD-420D-8FC7-58D0444FAFFB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493} = {FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}
+		{80694823-6EF5-49B6-B24F-83CE7059960B} = {80694823-6EF5-49B6-B24F-83CE7059960B}
+		{8284792A-1911-4BED-A21D-97423D866134} = {8284792A-1911-4BED-A21D-97423D866134}
+		{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653} = {C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}
+		{4A21F5B5-279C-42E1-9730-9ED5E9BBE270} = {4A21F5B5-279C-42E1-9730-9ED5E9BBE270}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRMSimpleBusinessLayer", "..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj", "{C8C19685-1E1E-443A-86D3-5FF18925B069}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRM Kitchen Display", "..\DTRM Kitchen Display\DTRM Kitchen Display.csproj", "{80694823-6EF5-49B6-B24F-83CE7059960B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRM Stock Handler", "..\DTRM Stock Handler\DTRM Stock Handler.csproj", "{8284792A-1911-4BED-A21D-97423D866134}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRMSimpleAdaptor", "..\DTRMSimpleAdaptor\DTRMSimpleAdaptor.csproj", "{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C8C19685-1E1E-443A-86D3-5FF18925B069} = {C8C19685-1E1E-443A-86D3-5FF18925B069}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRMAdaptorFileCopier", "..\DTRMAdaptorFileCopier\DTRMAdaptorFileCopier.csproj", "{4A21F5B5-279C-42E1-9730-9ED5E9BBE270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRMSimpleClient", "..\DTRM SIMPLE CLIENT\DTRMSimpleClient.csproj", "{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRM Kassa Calculator", "..\DTRM Kassa Calculator\DTRM Kassa Calculator.csproj", "{0D7FD637-C748-43B7-9266-70F3823FCDD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{312FCF32-3DBD-420D-8FC7-58D0444FAFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{312FCF32-3DBD-420D-8FC7-58D0444FAFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{312FCF32-3DBD-420D-8FC7-58D0444FAFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{312FCF32-3DBD-420D-8FC7-58D0444FAFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8C19685-1E1E-443A-86D3-5FF18925B069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8C19685-1E1E-443A-86D3-5FF18925B069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8C19685-1E1E-443A-86D3-5FF18925B069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8C19685-1E1E-443A-86D3-5FF18925B069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80694823-6EF5-49B6-B24F-83CE7059960B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80694823-6EF5-49B6-B24F-83CE7059960B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80694823-6EF5-49B6-B24F-83CE7059960B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80694823-6EF5-49B6-B24F-83CE7059960B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8284792A-1911-4BED-A21D-97423D866134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8284792A-1911-4BED-A21D-97423D866134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8284792A-1911-4BED-A21D-97423D866134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8284792A-1911-4BED-A21D-97423D866134}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A21F5B5-279C-42E1-9730-9ED5E9BBE270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A21F5B5-279C-42E1-9730-9ED5E9BBE270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A21F5B5-279C-42E1-9730-9ED5E9BBE270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A21F5B5-279C-42E1-9730-9ED5E9BBE270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06166738-D524-4FE2-A18E-18C7399C2228}
+	EndGlobalSection
+EndGlobal

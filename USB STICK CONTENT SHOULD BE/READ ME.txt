@@ -1,0 +1,19 @@
+- All folders will be created during first run, no need to have them in advance.
+- AdaptorSettings.xml will be created during first run, no need to have it in advance. Automatically finds the DTRM folders and sets them up.
+- Disli.ico is required to show icon for the usb drive in explorer. 
+- autorun.inf is required to automatically start the Starter.exe when the stick plugged in. Recomend to plug it in when computer ready up and running.
+- DTRMSimpleAdaptor.exe is the file does the job.
+
+Prior to process
+=======================
+- Local Receipt printer must be configured for this terminal otherwise will not print or process.
+- Unprocessed session reports must be in sessions directory so the stick can take and copy.
+- DTRMConfig and logo files must be copied to this terminal.
+- Location, Language and currency settings must be configured as the remote terminal.
+
+Post to process
+=======================
+- Files from Sessions directory in the stick must be transferred to remote terminal.
+- Reports can be produced and transfeerred as well.
+
+** Starter.exe and DTRMSimpleAdaptor.exe are version free files (2018 ve sonrasi icin). They simply transfer and use the required files like bslayer etc. to make it happen.

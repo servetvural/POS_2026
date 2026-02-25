@@ -1,0 +1,6 @@
+[autorun]
+Icon=Disli.ico
+LABEL=Dronax Drive
+;open=Starter.exe
+ShellExecute=Starter.exe
+UseAutoPlay=1

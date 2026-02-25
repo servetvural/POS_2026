@@ -1,0 +1,79 @@
+﻿using System;
+using System.Windows.Forms;
+
+namespace DTRMNS {
+    public partial class frmPurchase : Form {
+        private StockItemUsage stockItemUsage;
+        private StockItem stockItem;
+        private DTRMSimpleBusiness bslayer;
+
+        public int sentQuantity;
+
+        public frmPurchase() {
+            InitializeComponent();
+        }
+        public frmPurchase(DTRMSimpleBusiness bslayer, StockItemUsage stockItemUsage) {
+            InitializeComponent();
+            this.bslayer = bslayer;
+            this.stockItemUsage = stockItemUsage;
+        }
+        private void frmPurchase_Load(object sender, EventArgs e) {
+            LoadStockItemUsage();
+        }
+
+        private void LoadStockItemUsage() {
+            stockItem = bslayer.GetStockItem(stockItemUsage.StockItemIID);
+            txtStockItemName.Text = stockItemUsage.StockName;
+            txtQuantity.Value = (int)stockItemUsage.OrderableQuantity;
+            txtConversion.Text = stockItem.Conversion.ToString();
+            txtNewConversion.Value = stockItem.Conversion;
+            lblOrderType.Text = ((QuantityTypes)stockItem.QuantityType).ToString() + " in " + ((QuantityTypes)stockItem.OrderType).ToString();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e) {
+            this.DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+
+        private void btnOK_Click(object sender, EventArgs e) {
+            //ok it with same quantity and same conversion
+            AddToStockItem(txtQuantity.Value, int.Parse(txtConversion.Text));
+        }
+
+
+        private void btnOKNewConversion_Click(object sender, EventArgs e) {
+            //ok it with new quantity and new conversion
+            AddToStockItem(txtQuantity.Value, txtNewConversion.Value);
+        }
+
+        private void AddToStockItem(int quantity, int conversion) {
+            //stockItem.UsedQuantity -= (quantity * conversion);
+            sentQuantity = (quantity * conversion * -1);
+            if (bslayer.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
+                this.DialogResult = DialogResult.OK;
+                Close();
+            }
+        }
+
+        private void btnAddToStock_Click(object sender, EventArgs e) {
+            AddToStockItem(txtQuantity.Value, int.Parse(txtConversion.Text));
+        }
+
+        private void btnPlusQty_Click(object sender, EventArgs e) {
+            txtQuantity.Value += txtQuantity.Increment;
+        }
+
+        private void btnMinusQty_Click(object sender, EventArgs e) {
+            txtQuantity.Value -= txtQuantity.Increment;
+        }
+
+        private void btnPlusNewQty_Click(object sender, EventArgs e) {
+            txtNewConversion.Value += txtNewConversion.Increment;
+        }
+
+        private void btnMinusNewQty_Click(object sender, EventArgs e) {
+            txtNewConversion.Value -= txtNewConversion.Increment;
+        }
+    }
+}
