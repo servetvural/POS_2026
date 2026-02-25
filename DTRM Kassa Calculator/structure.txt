@@ -33,10 +33,6 @@ double shortAmount
 double excessAmount
 
 double finalTotal = stepTwoTotal - shortAmount + excessAmount
-  
-
-
-github deneme
 
 
 
