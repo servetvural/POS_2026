@@ -13,19 +13,16 @@ namespace DTRMNS {
     /// Summary description for UF.
     /// </summary>
     public class UF {
-        public static Color ThemeBackColour = Color.Black;
-        public static Color ThemeForeColour = Color.White;
+        public static Color ThemeBackColour { get; set; } = Color.Black;
+        public static Color ThemeForeColour { get; set; } = Color.White;
 
-        //public static string SessionDirectory = DRFile.GetApplicationPath() + "Sessions";
-        //public static string BackupDirectory = DRFile.GetApplicationPath() + "Backups";
-        //public static string ReportsDirectory = DRFile.GetApplicationPath() + "Reports";
 
-        public static string SessionDirName = "Sessions";
-        public static string BackupDirName = "Backups";
-        public static string ReportsDirName = "Reports";
+        public static string SessionDirName { get; set; } = "Sessions";
+        public static string BackupDirName { get; set; } = "Backups";
+        public static string ReportsDirName { get; set; } = "Reports";
 
-        public static string DBListConfigFileName = "DBConfig.xml";
-        public static string DBConfigFileName = "DTRMConfig.xml";
+        public static string DBListConfigFileName { get; set; } = "DBConfig.xml";
+        public static string DBConfigFileName { get; set; } = "DTRMConfig.xml";
         public UF() {
         }
 
@@ -51,9 +48,29 @@ namespace DTRMNS {
 
         public static DTRMConfig GetConfig() {
             try {
-                return (DTRMConfig) PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
+
+                // Get the actual folder where the .exe is running
+                //string appDirectory = AppContext.BaseDirectory;
+                //string fullPath = Path.Combine(appDirectory, DBConfigFileName);
+
+                //if (File.Exists(fullPath))
+                //{
+                //    return (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(fullPath, typeof(DTRMConfig), true);
+                //} else
+                //{
+                //    return new DTRMConfig();
+                //}
+
+                //if (File.Exists(DBConfigFileName)) {
+                //    return (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
+                //} else {
+                //    return new DTRMConfig();
+                //}
+                DTRMConfig config = (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
+                return config;
             }
-            catch {
+            catch (Exception ex) {
+                string str = ex.Message;
                 return new DTRMConfig();
             }
         }

@@ -66,6 +66,12 @@ namespace DTRMSimpleBackOffice {
             if (cmbAccessLevels.Text == "")
                 return;
 
+            if (txtPassword.Text == "0") {
+                MessageBox.Show("Password must be a pin number.", "Invalid Password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPassword.SelectAll();
+                return;
+            }
+
             user.UserName = txtUserName.Text.Trim();
             user.UserPassword = txtPassword.Text.Trim();
             user.AccessLevel = (AccessLevels)Enum.Parse(typeof(AccessLevels), cmbAccessLevels.Text); // (AccessLevels)cmbAccessLevels.SelectedIndex;

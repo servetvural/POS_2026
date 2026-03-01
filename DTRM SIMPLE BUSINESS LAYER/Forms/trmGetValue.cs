@@ -1,6 +1,7 @@
 using System;
-using System.Windows.Forms;
+using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace DTRMNS {
 	/// <summary>
@@ -36,6 +37,7 @@ namespace DTRMNS {
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public float ReturnValue { get; set; }
 
         public TrmGetValue(NumberModes NumberMode)

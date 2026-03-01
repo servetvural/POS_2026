@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace DTRMNS {
@@ -18,7 +19,7 @@ namespace DTRMNS {
         private void ctlBozukPara_Load(object sender, EventArgs e) {
             Calculate();
         }
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public float Kurus {
             get { return _Kurus; }
             set {
@@ -26,6 +27,7 @@ namespace DTRMNS {
                 Calculate();
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public float Tane {
             get { return _Tane; }
             set {
@@ -33,6 +35,7 @@ namespace DTRMNS {
                 Calculate();
             }
         }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public float Value {
             get { return _Value; }
             set {

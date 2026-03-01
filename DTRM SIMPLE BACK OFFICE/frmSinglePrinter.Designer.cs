@@ -22,187 +22,193 @@ namespace DTRMSimpleBackOffice {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cmbFunctionalPrinterType = new System.Windows.Forms.ComboBox();
-            this.txtSpecialName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cmbNetworkName = new System.Windows.Forms.ComboBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.chkAdminOnly = new System.Windows.Forms.CheckBox();
-            this.chkDeliveryPrinter = new System.Windows.Forms.CheckBox();
-            this.chkTakeAwayPrinter = new System.Windows.Forms.CheckBox();
-            this.chkSetForThisTerminal = new System.Windows.Forms.CheckBox();
-            this.lblExistingClientIID = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            label8 = new System.Windows.Forms.Label();
+            label7 = new System.Windows.Forms.Label();
+            cmbFunctionalPrinterType = new System.Windows.Forms.ComboBox();
+            txtSpecialName = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            cmbNetworkName = new System.Windows.Forms.ComboBox();
+            btnSave = new System.Windows.Forms.Button();
+            btnCancel = new System.Windows.Forms.Button();
+            chkAdminOnly = new System.Windows.Forms.CheckBox();
+            chkDeliveryPrinter = new System.Windows.Forms.CheckBox();
+            chkTakeAwayPrinter = new System.Windows.Forms.CheckBox();
+            chkSetForThisTerminal = new System.Windows.Forms.CheckBox();
+            lblExistingClientIID = new System.Windows.Forms.Label();
+            SuspendLayout();
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(31, 32);
-            this.label8.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(131, 16);
-            this.label8.TabIndex = 52;
-            this.label8.Text = "Printer Special Name";
+            label8.AutoSize = true;
+            label8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label8.Location = new System.Drawing.Point(36, 37);
+            label8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(130, 16);
+            label8.TabIndex = 52;
+            label8.Text = "Printer Special Name";
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(262, 32);
-            this.label7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(141, 16);
-            this.label7.TabIndex = 57;
-            this.label7.Text = "Functional Printer Type";
+            label7.AutoSize = true;
+            label7.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label7.Location = new System.Drawing.Point(306, 37);
+            label7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(140, 16);
+            label7.TabIndex = 57;
+            label7.Text = "Functional Printer Type";
             // 
             // cmbFunctionalPrinterType
             // 
-            this.cmbFunctionalPrinterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFunctionalPrinterType.Font = new System.Drawing.Font("Arial", 12F);
-            this.cmbFunctionalPrinterType.FormattingEnabled = true;
-            this.cmbFunctionalPrinterType.Items.AddRange(new object[] {
-            "Unknown",
-            "Kitchen Printer",
-            "Receipt Printer",
-            "Mutant Printer"});
-            this.cmbFunctionalPrinterType.Location = new System.Drawing.Point(262, 50);
-            this.cmbFunctionalPrinterType.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-            this.cmbFunctionalPrinterType.Name = "cmbFunctionalPrinterType";
-            this.cmbFunctionalPrinterType.Size = new System.Drawing.Size(177, 26);
-            this.cmbFunctionalPrinterType.TabIndex = 56;
+            cmbFunctionalPrinterType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbFunctionalPrinterType.Font = new System.Drawing.Font("Arial", 12F);
+            cmbFunctionalPrinterType.FormattingEnabled = true;
+            cmbFunctionalPrinterType.Items.AddRange(new object[] { "Unknown", "Kitchen Printer", "Receipt Printer", "Mutant Printer" });
+            cmbFunctionalPrinterType.Location = new System.Drawing.Point(306, 58);
+            cmbFunctionalPrinterType.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            cmbFunctionalPrinterType.Name = "cmbFunctionalPrinterType";
+            cmbFunctionalPrinterType.Size = new System.Drawing.Size(206, 26);
+            cmbFunctionalPrinterType.TabIndex = 56;
             // 
             // txtSpecialName
             // 
-            this.txtSpecialName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.txtSpecialName.Location = new System.Drawing.Point(31, 49);
-            this.txtSpecialName.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-            this.txtSpecialName.Name = "txtSpecialName";
-            this.txtSpecialName.Size = new System.Drawing.Size(177, 26);
-            this.txtSpecialName.TabIndex = 53;
+            txtSpecialName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            txtSpecialName.Location = new System.Drawing.Point(36, 57);
+            txtSpecialName.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            txtSpecialName.Name = "txtSpecialName";
+            txtSpecialName.Size = new System.Drawing.Size(206, 26);
+            txtSpecialName.TabIndex = 53;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(31, 102);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(131, 16);
-            this.label1.TabIndex = 60;
-            this.label1.Text = "Mapped Local Printer";
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label1.Location = new System.Drawing.Point(36, 118);
+            label1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(130, 16);
+            label1.TabIndex = 60;
+            label1.Text = "Mapped Local Printer";
             // 
             // cmbNetworkName
             // 
-            this.cmbNetworkName.Font = new System.Drawing.Font("Arial", 12F);
-            this.cmbNetworkName.FormattingEnabled = true;
-            this.cmbNetworkName.Location = new System.Drawing.Point(31, 122);
-            this.cmbNetworkName.Name = "cmbNetworkName";
-            this.cmbNetworkName.Size = new System.Drawing.Size(408, 26);
-            this.cmbNetworkName.TabIndex = 61;
+            cmbNetworkName.Font = new System.Drawing.Font("Arial", 12F);
+            cmbNetworkName.FormattingEnabled = true;
+            cmbNetworkName.Location = new System.Drawing.Point(36, 141);
+            cmbNetworkName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbNetworkName.Name = "cmbNetworkName";
+            cmbNetworkName.Size = new System.Drawing.Size(475, 26);
+            cmbNetworkName.TabIndex = 61;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(359, 245);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(80, 39);
-            this.btnSave.TabIndex = 64;
-            this.btnSave.Text = "SAVE";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Location = new System.Drawing.Point(419, 283);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(93, 45);
+            btnSave.TabIndex = 64;
+            btnSave.Text = "SAVE";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(262, 245);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(80, 39);
-            this.btnCancel.TabIndex = 65;
-            this.btnCancel.Text = "CANCEL";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnClose_Click);
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(306, 283);
+            btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(93, 45);
+            btnCancel.TabIndex = 65;
+            btnCancel.Text = "CANCEL";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnClose_Click;
             // 
             // chkAdminOnly
             // 
-            this.chkAdminOnly.AutoSize = true;
-            this.chkAdminOnly.Location = new System.Drawing.Point(31, 201);
-            this.chkAdminOnly.Name = "chkAdminOnly";
-            this.chkAdminOnly.Size = new System.Drawing.Size(105, 17);
-            this.chkAdminOnly.TabIndex = 138;
-            this.chkAdminOnly.Text = "Admin View Only";
-            this.chkAdminOnly.UseVisualStyleBackColor = true;
+            chkAdminOnly.AutoSize = true;
+            chkAdminOnly.Location = new System.Drawing.Point(36, 232);
+            chkAdminOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkAdminOnly.Name = "chkAdminOnly";
+            chkAdminOnly.Size = new System.Drawing.Size(118, 19);
+            chkAdminOnly.TabIndex = 138;
+            chkAdminOnly.Text = "Admin View Only";
+            chkAdminOnly.UseVisualStyleBackColor = true;
             // 
             // chkDeliveryPrinter
             // 
-            this.chkDeliveryPrinter.AutoSize = true;
-            this.chkDeliveryPrinter.Location = new System.Drawing.Point(31, 234);
-            this.chkDeliveryPrinter.Name = "chkDeliveryPrinter";
-            this.chkDeliveryPrinter.Size = new System.Drawing.Size(97, 17);
-            this.chkDeliveryPrinter.TabIndex = 139;
-            this.chkDeliveryPrinter.Text = "Delivery Printer";
-            this.chkDeliveryPrinter.UseVisualStyleBackColor = true;
+            chkDeliveryPrinter.AutoSize = true;
+            chkDeliveryPrinter.Location = new System.Drawing.Point(36, 270);
+            chkDeliveryPrinter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkDeliveryPrinter.Name = "chkDeliveryPrinter";
+            chkDeliveryPrinter.Size = new System.Drawing.Size(106, 19);
+            chkDeliveryPrinter.TabIndex = 139;
+            chkDeliveryPrinter.Text = "Delivery Printer";
+            chkDeliveryPrinter.UseVisualStyleBackColor = true;
             // 
             // chkTakeAwayPrinter
             // 
-            this.chkTakeAwayPrinter.AutoSize = true;
-            this.chkTakeAwayPrinter.Location = new System.Drawing.Point(31, 267);
-            this.chkTakeAwayPrinter.Name = "chkTakeAwayPrinter";
-            this.chkTakeAwayPrinter.Size = new System.Drawing.Size(113, 17);
-            this.chkTakeAwayPrinter.TabIndex = 140;
-            this.chkTakeAwayPrinter.Text = "Take Away Printer";
-            this.chkTakeAwayPrinter.UseVisualStyleBackColor = true;
+            chkTakeAwayPrinter.AutoSize = true;
+            chkTakeAwayPrinter.Location = new System.Drawing.Point(36, 308);
+            chkTakeAwayPrinter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkTakeAwayPrinter.Name = "chkTakeAwayPrinter";
+            chkTakeAwayPrinter.Size = new System.Drawing.Size(120, 19);
+            chkTakeAwayPrinter.TabIndex = 140;
+            chkTakeAwayPrinter.Text = "Take Away Printer";
+            chkTakeAwayPrinter.UseVisualStyleBackColor = true;
             // 
             // chkSetForThisTerminal
             // 
-            this.chkSetForThisTerminal.AutoSize = true;
-            this.chkSetForThisTerminal.ForeColor = System.Drawing.Color.Red;
-            this.chkSetForThisTerminal.Location = new System.Drawing.Point(31, 167);
-            this.chkSetForThisTerminal.Name = "chkSetForThisTerminal";
-            this.chkSetForThisTerminal.Size = new System.Drawing.Size(182, 17);
-            this.chkSetForThisTerminal.TabIndex = 141;
-            this.chkSetForThisTerminal.Text = "Set This Printer For This Terminal";
-            this.chkSetForThisTerminal.UseVisualStyleBackColor = true;
+            chkSetForThisTerminal.AutoSize = true;
+            chkSetForThisTerminal.ForeColor = System.Drawing.Color.Red;
+            chkSetForThisTerminal.Location = new System.Drawing.Point(36, 193);
+            chkSetForThisTerminal.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkSetForThisTerminal.Name = "chkSetForThisTerminal";
+            chkSetForThisTerminal.Size = new System.Drawing.Size(199, 19);
+            chkSetForThisTerminal.TabIndex = 141;
+            chkSetForThisTerminal.Text = "Set This Printer For This Terminal";
+            chkSetForThisTerminal.UseVisualStyleBackColor = true;
             // 
             // lblExistingClientIID
             // 
-            this.lblExistingClientIID.ForeColor = System.Drawing.Color.Blue;
-            this.lblExistingClientIID.Location = new System.Drawing.Point(219, 164);
-            this.lblExistingClientIID.Name = "lblExistingClientIID";
-            this.lblExistingClientIID.Size = new System.Drawing.Size(220, 23);
-            this.lblExistingClientIID.TabIndex = 142;
-            this.lblExistingClientIID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            lblExistingClientIID.ForeColor = System.Drawing.Color.Blue;
+            lblExistingClientIID.Location = new System.Drawing.Point(255, 189);
+            lblExistingClientIID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblExistingClientIID.Name = "lblExistingClientIID";
+            lblExistingClientIID.Size = new System.Drawing.Size(257, 27);
+            lblExistingClientIID.TabIndex = 142;
+            lblExistingClientIID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // frmSinglePrinter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 314);
-            this.ControlBox = false;
-            this.Controls.Add(this.lblExistingClientIID);
-            this.Controls.Add(this.chkSetForThisTerminal);
-            this.Controls.Add(this.chkTakeAwayPrinter);
-            this.Controls.Add(this.chkDeliveryPrinter);
-            this.Controls.Add(this.chkAdminOnly);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.txtSpecialName);
-            this.Controls.Add(this.cmbNetworkName);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cmbFunctionalPrinterType);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.btnCancel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmSinglePrinter";
-            this.Padding = new System.Windows.Forms.Padding(10);
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "PRINTER EDITOR";
-            this.Load += new System.EventHandler(this.frmPrinterEditor_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(548, 375);
+            ControlBox = false;
+            Controls.Add(lblExistingClientIID);
+            Controls.Add(chkSetForThisTerminal);
+            Controls.Add(chkTakeAwayPrinter);
+            Controls.Add(chkDeliveryPrinter);
+            Controls.Add(chkAdminOnly);
+            Controls.Add(label8);
+            Controls.Add(txtSpecialName);
+            Controls.Add(cmbNetworkName);
+            Controls.Add(label1);
+            Controls.Add(cmbFunctionalPrinterType);
+            Controls.Add(btnSave);
+            Controls.Add(label7);
+            Controls.Add(btnCancel);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmSinglePrinter";
+            Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "PRINTER EDITOR";
+            Load += frmPrinterEditor_Load;
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

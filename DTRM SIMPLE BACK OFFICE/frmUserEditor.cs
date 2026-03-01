@@ -25,8 +25,10 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void LoadUsers() {
-            DataTable dt =  bslayer.db.GetDataTable("Select * from Users where AccessLevel < " + (int)bslayer.LoggedUser.AccessLevel + " order by AccessLevel desc");
-            dgv.DataSource = UF.StringifyEnumInDataTable(dt, "AccessLevel", "AccessLevelAsString", typeof(AccessLevels));
+            // DataTable dt =  bslayer.db.GetDataTable("Select * from Users where AccessLevel < " + (int)bslayer.LoggedUser.AccessLevel + " order by AccessLevel desc");
+            DataTable dt = bslayer.GetDataTable("Select * from Users");
+            // dgv.DataSource = UF.StringifyEnumInDataTable(dt, "AccessLevel", "AccessLevelAsString", typeof(AccessLevels));
+            dgv.DataSource = dt;
         }
         //private void dgv_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) {
         //    for (int i = 0; i < dgv.Rows.Count; i++) {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace DTRMNS {
@@ -9,7 +10,10 @@ namespace DTRMNS {
         public PictureBox PBox {  get { return pBox; } }
         public Label DetailLabel {  get { return lblDetail; } }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ShowFullScreen { get { return pnlFullScreen.Visible; } set { pnlFullScreen.Visible = value; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ShowExpander { get { return expMain.Visible; } set { expMain.Visible = value; } }
         public ctlKitchenOrderItem() {
             InitializeComponent();

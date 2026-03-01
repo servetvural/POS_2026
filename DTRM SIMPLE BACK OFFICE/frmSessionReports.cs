@@ -195,7 +195,6 @@ namespace DTRMSimpleBackOffice {
                     lblTotal.Text = (cardTotal + cashTotal).ToString("f2");
                 }
                 catch {
-                    string str = "";
                 }
             } else {
                 dgvOrders.DataSource = null;
@@ -813,8 +812,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                       
         void LoadSRangeList()
         {
-            int step = 2;
-            float total, selectedTotal = 0;
+            float total = 0;
             List<SRange> srList = new List<SRange>();
 
             total = float.Parse(lblTotal.Text);
@@ -870,10 +868,8 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                                 dgvOrders.Rows[i].Selected = true;
                             }
                         }
-                        //lblAfter.Text = sr.Sonuc.ToString("f2");
-                        //lblSelected.Text =  sr.Secilen.ToString("f2");
                     }
-                } catch (Exception ex)
+                } catch 
                 {
                     return;
                 }

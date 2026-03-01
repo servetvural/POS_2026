@@ -22,142 +22,146 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtUserName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cmbAccessLevels = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.txtPassword = new PosLibrary.IntegerTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            label8 = new System.Windows.Forms.Label();
+            txtUserName = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            cmbAccessLevels = new System.Windows.Forms.ComboBox();
+            label7 = new System.Windows.Forms.Label();
+            btnSave = new System.Windows.Forms.Button();
+            btnCancel = new System.Windows.Forms.Button();
+            txtPassword = new PosLibrary.IntegerTextBox();
+            label2 = new System.Windows.Forms.Label();
+            SuspendLayout();
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label8.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label8.Location = new System.Drawing.Point(29, 35);
-            this.label8.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(60, 13);
-            this.label8.TabIndex = 64;
-            this.label8.Text = "User Name";
+            label8.AutoSize = true;
+            label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            label8.ForeColor = System.Drawing.SystemColors.ControlText;
+            label8.Location = new System.Drawing.Point(34, 40);
+            label8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(60, 13);
+            label8.TabIndex = 64;
+            label8.Text = "User Name";
             // 
             // txtUserName
             // 
-            this.txtUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.txtUserName.Location = new System.Drawing.Point(95, 27);
-            this.txtUserName.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-            this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(177, 26);
-            this.txtUserName.TabIndex = 0;
+            txtUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            txtUserName.Location = new System.Drawing.Point(111, 31);
+            txtUserName.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            txtUserName.Name = "txtUserName";
+            txtUserName.Size = new System.Drawing.Size(206, 26);
+            txtUserName.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(29, 86);
-            this.label1.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 13);
-            this.label1.TabIndex = 68;
-            this.label1.Text = "Password";
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            label1.ForeColor = System.Drawing.SystemColors.ControlText;
+            label1.Location = new System.Drawing.Point(34, 99);
+            label1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(53, 13);
+            label1.TabIndex = 68;
+            label1.Text = "Password";
             // 
             // cmbAccessLevels
             // 
-            this.cmbAccessLevels.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbAccessLevels.Font = new System.Drawing.Font("Arial", 12F);
-            this.cmbAccessLevels.FormattingEnabled = true;
-            this.cmbAccessLevels.Items.AddRange(new object[] {
-            "User",
-            "Manager",
-            "SuperUser",
-            "TechnicalSupport"});
-            this.cmbAccessLevels.Location = new System.Drawing.Point(95, 146);
-            this.cmbAccessLevels.Margin = new System.Windows.Forms.Padding(3, 1, 3, 3);
-            this.cmbAccessLevels.Name = "cmbAccessLevels";
-            this.cmbAccessLevels.Size = new System.Drawing.Size(177, 26);
-            this.cmbAccessLevels.TabIndex = 2;
+            cmbAccessLevels.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbAccessLevels.Font = new System.Drawing.Font("Arial", 12F);
+            cmbAccessLevels.FormattingEnabled = true;
+            cmbAccessLevels.Items.AddRange(new object[] { "User", "Manager", "SuperUser", "TechnicalSupport" });
+            cmbAccessLevels.Location = new System.Drawing.Point(111, 168);
+            cmbAccessLevels.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            cmbAccessLevels.Name = "cmbAccessLevels";
+            cmbAccessLevels.Size = new System.Drawing.Size(206, 26);
+            cmbAccessLevels.TabIndex = 2;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label7.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label7.Location = new System.Drawing.Point(29, 153);
-            this.label7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 1);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 13);
-            this.label7.TabIndex = 67;
-            this.label7.Text = "User Type";
+            label7.AutoSize = true;
+            label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            label7.ForeColor = System.Drawing.SystemColors.ControlText;
+            label7.Location = new System.Drawing.Point(34, 177);
+            label7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(56, 13);
+            label7.TabIndex = 67;
+            label7.Text = "User Type";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(192, 208);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(80, 39);
-            this.btnSave.TabIndex = 3;
-            this.btnSave.Text = "SAVE";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Location = new System.Drawing.Point(224, 240);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(93, 45);
+            btnSave.TabIndex = 3;
+            btnSave.Text = "SAVE";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(92, 208);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(80, 39);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "CANCEL";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnClose_Click);
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(107, 240);
+            btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(93, 45);
+            btnCancel.TabIndex = 4;
+            btnCancel.Text = "CANCEL";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnClose_Click;
             // 
             // txtPassword
             // 
-            this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.txtPassword.Increment = 1;
-            this.txtPassword.Location = new System.Drawing.Point(95, 76);
-            this.txtPassword.MaxValue = 10000;
-            this.txtPassword.MinValue = -10000;
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(177, 29);
-            this.txtPassword.TabIndex = 1;
+            txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            txtPassword.Increment = 1;
+            txtPassword.Location = new System.Drawing.Point(111, 88);
+            txtPassword.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtPassword.MaxValue = 10000;
+            txtPassword.MinValue = -10000;
+            txtPassword.Name = "txtPassword";
+            txtPassword.Size = new System.Drawing.Size(206, 29);
+            txtPassword.TabIndex = 1;
+            txtPassword.Text = "0";
+            txtPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            txtPassword.Value = 0;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(97, 107);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 69;
-            this.label2.Text = "(Numbers Only)";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(113, 123);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(92, 15);
+            label2.TabIndex = 69;
+            label2.Text = "(Numbers Only)";
             // 
             // frmSingleUser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(311, 268);
-            this.ControlBox = false;
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.txtUserName);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cmbAccessLevels);
-            this.Controls.Add(this.label7);
-            this.Name = "frmSingleUser";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "USER";
-            this.Load += new System.EventHandler(this.frmSingleUser_Load);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(363, 309);
+            ControlBox = false;
+            Controls.Add(label2);
+            Controls.Add(txtPassword);
+            Controls.Add(btnSave);
+            Controls.Add(btnCancel);
+            Controls.Add(label8);
+            Controls.Add(txtUserName);
+            Controls.Add(label1);
+            Controls.Add(cmbAccessLevels);
+            Controls.Add(label7);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmSingleUser";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "USER";
+            Load += frmSingleUser_Load;
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

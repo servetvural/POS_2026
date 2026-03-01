@@ -1,0 +1,675 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
+using System.Windows.Forms;
+
+using DTRMNS;
+
+using PosLibrary;
+using PosLibrary.Forms;
+
+
+namespace DTRMSimpleBackOffice
+{
+    public partial class frmSessionReportsQuick : Form
+    {
+        private DTRMSimpleBusiness bslayer;
+
+        public frmSessionReportsQuick()
+        {
+            InitializeComponent();
+        }
+        public frmSessionReportsQuick(DTRMSimpleBusiness bslayer)
+        {
+            InitializeComponent();
+            this.bslayer = bslayer;
+        }
+        private void frmSessionReportsQuick_Load(object sender, EventArgs e)
+        {
+            ShowHideButtons(false);
+
+            LoadDBSessions();
+            LoadArchivedSessionsLocal();
+
+        }
+
+
+        private async void LoadDBSessions()
+        {
+            if (blnDgvDatabaseBusy)
+                return;
+
+            if (InvokeRequired)
+                Invoke(new DelegateNoParameter(LoadDBSessions), null);
+            else
+            {
+                dgvDatabase.DataSource = null;
+                lblTotal.Text = "";
+                lblInfo.Text = "";
+                btnAllSessionTotal.Text = "";
+
+                string sessionIID = bslayer.GetCurrentSessionIID();
+                try
+                {
+                    DataTable dt = bslayer.GetDataTable("Select * from SessionSum where IID <> '" + sessionIID + "' order by StartDate desc");
+
+                    if (dt == null)
+                    {
+                        MessageBox.Show("No data returned from database.");
+                        return;
+                    }
+
+                    object result = dt.Compute("Sum(GrossSessionTotal)", string.Empty);
+
+                    float total = 0;
+                    if (result == DBNull.Value)
+                    {
+                        total = 0f;
+                        return;
+                    } else
+                    {
+                        total = Convert.ToSingle(result);
+                    }
+
+                    dgvDatabase.DataSource = dt;
+
+                    btnAllSessionTotal.Text = total.ToString("N2");
+                } catch (Exception ex)
+                {
+                    string str = ex.Message;
+                }
+            }
+        }
+        private void LoadArchivedSessionsLocal()
+        {
+            if (InvokeRequired)
+                Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
+            else
+            {
+                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
+            }
+        }
+
+
+        float cardTotal = 0;
+        float cashTotal = 0;
+
+
+        float sessionMin;
+        float minBarrierAlt = 2000;
+        float minBarrierUst = 3000;
+
+        private void LoadOrders()
+        {
+            if (dgvDatabase.SelectedRows.Count > 0)
+            {
+                string SessionIID = dgvDatabase.SelectedRows[0].Cells["dbIID"].Value.ToString();
+                //IID, OrderDate, CalculatedValue
+                dgvOrders.DataSource = bslayer.GetDataTable("Select IID, OrderDate, Payment, CalculatedValue from OrdersView where SessionIID = '" + SessionIID + "' Order by OrderDate asc");
+                dgvOrders_SelectionChanged(null, null);
+
+                // LoadSRangeList();
+                try
+                {
+
+                    cardTotal = 0;
+                    cashTotal = 0;
+
+
+                    for (int i = 0; i < dgvOrders.Rows.Count; i++)
+                    {
+
+                        if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Cash)
+                        {
+                            cashTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
+                        }
+                        if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Card)
+                        {
+                            cardTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
+                        }
+                    }
+                    cardTotal = (float)(Math.Truncate(cardTotal * 100) / 100);
+                    cashTotal = (float)(Math.Truncate(cashTotal * 100) / 100);
+
+                    lblCard.Text = cardTotal.ToString("0.00");
+                    lblCash.Text = cashTotal.ToString("0.00");
+
+                    Random rand = new Random();
+                    float minBarrier = (float)(rand.NextDouble() * (minBarrierUst - minBarrierAlt) + minBarrierAlt);
+                    float carpan = (float)(rand.NextDouble() * (2.1 - 1.5) + 1.5);
+
+                    sessionMin = cardTotal * carpan;
+                    if (sessionMin < minBarrier)
+                        sessionMin = minBarrier;
+                    if (cardTotal > sessionMin)
+                    {
+                        sessionMin = cardTotal * carpan;
+                    }
+
+                    lblInfo.Text = "Min : " + sessionMin.ToString("N2");
+
+                    //SessionData sessionData = bslayer.GetSessionDataDynamic(SessionIID);                      
+                    // lblTotal.Text = sessionData.GrossSessionTotal.ToString("f2");
+                    lblTotal.Text = (cardTotal + cashTotal).ToString("0.00");
+                } catch
+                {
+                }
+            } else
+            {
+                dgvOrders.DataSource = null;
+                // lblTotal.Text = "TOTAL";
+                lblCard.Text = "";
+                lblCash.Text = "";
+            }
+
+        }
+        private void dgvOrders_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvOrders.SelectedRows.Count > 0)
+            {
+                string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
+
+
+                float total = 0;
+                for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
+                {
+                    try
+                    {
+                        total += float.Parse(dgvOrders.SelectedRows[i].Cells["colCalculatedValue"].Value.ToString());
+                    } catch
+                    {
+
+                    }
+                }
+                lblSelectedOrdersTotal.Text = total.ToString("N2");
+
+            } else
+            {
+                cmbRange.DataSource = null;
+                lblInfo.Text = "";
+                lblSelectedOrdersTotal.Text = "";
+            }
+        }
+
+
+        bool blnDgvDatabaseBusy = false;
+        private void dgvDatabase_SelectionChanged(object sender, EventArgs e)
+        {
+            blnDgvDatabaseBusy = true;
+            cmbRange.DataSource = null;
+            LoadOrders();
+            if (pnl3661.Visible)
+            {
+                LoadSRangeList();
+            }
+            blnDgvDatabaseBusy = false;
+
+
+
+            float total = 0;
+            for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)
+            {
+                try
+                {
+                    total += float.Parse(dgvDatabase.SelectedRows[i].Cells["cellDatabaseGrossTotal"].Value.ToString());
+                } catch
+                {
+
+                }
+            }
+            lblDatabaseSelectedTotal.Text = total.ToString("N2");
+        }
+
+
+        #region LOAD SESSION FROM SESSIONS DIRECTORY
+
+        private void btnLoadSessions_Click(object sender, EventArgs e)
+        {
+            if (dgvArchive.SelectedRows.Count > 0)
+            {
+                List<SessionDataShort> theList = new List<SessionDataShort>();
+                System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-GB");
+                for (int i = 0; i < dgvArchive.SelectedRows.Count; i++)
+                {
+                    SessionDataShort session = new SessionDataShort();
+                    session.IID = dgvArchive.SelectedRows[i].Cells["colArcIID"].Value.ToString();
+                    session.StartDate = Convert.ToDateTime(dgvArchive.SelectedRows[i].Cells["colArcStartDate"].Value.ToString(), culture);
+                    session.EndDate = Convert.ToDateTime(dgvArchive.SelectedRows[i].Cells["colArcEndDate"].Value.ToString(), culture);
+                    theList.Add(session);
+                }
+
+
+                //To call this function you must implement Delegate_BackGroundWork function
+                //with parameters (object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+                //args parameter must have an object array which will match with the second parameter
+                //of this function call.
+                frmProgress frm = new frmProgress(
+                    new Delegate_BackGroundWork(LoadSessionsInToDatabaseAsync),
+                    theList.ToArray(), true, ProgressDetailTypes.FullDetails, ProgressDialogViewTypes.CompactView, false, btnLoadSessions.Image);
+                frm.Text = "Loading Sessions into Database";
+                frm.Message = "Loading, Please DO NOT Cancel.";
+                frm.ShowDialog();
+
+                //Remove this line if you don't want result back, the result can be AsyncWorkResultTypes or bool or anything
+                object result = frm.AsyncResult;
+
+            }
+
+        }
+
+        private void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        {
+            SessionDataShort[] sessionList = (SessionDataShort[])args;
+            for (int i = 0; i < sessionList.Length; i++)
+            {
+                bslayer.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+                //bslayer.ReloadSessionFromFile(fileList[i]);
+                int percent = (100 / sessionList.Length) * (i + 1);
+                bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
+            }
+            LoadArchivedSessionsLocal();
+            LoadDBSessions();
+        }
+        #endregion
+
+        #region LOAD SESSIONS FROM CUSTOM DIRECTORY
+        private void btnLoadSessionsFromDirectory_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            dlg.Filter = "XML Session Files |*.xml";
+            dlg.InitialDirectory = Application.ExecutablePath;
+            dlg.Multiselect = true;
+            //string[] fileList = null;
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+
+                //To call this function you must implement Delegate_BackGroundWork function
+                //with parameters (object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+                //args parameter must have an object array which will match with the second parameter
+                //of this function call.
+                frmProgress frm = new frmProgress(
+                    new Delegate_BackGroundWork(LoadSessionsInToDatabaseFromDirectoryAsync),
+                    dlg.FileNames, true, ProgressDetailTypes.FullDetails, ProgressDialogViewTypes.CompactView, false, btnLoadSessionsFromDirectory.Image);
+                frm.Text = "Loading Sessions into Database";
+                frm.Message = "Loading, Please DO NOT Cancel.";
+                frm.ShowDialog();
+
+                //Remove this line if you don't want result back, the result can be AsyncWorkResultTypes or bool or anything
+                object result = frm.AsyncResult;
+            }
+        }
+
+        private void LoadSessionsInToDatabaseFromDirectoryAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        {
+            string[] fileList = (string[])args;
+            for (int i = 0; i < fileList.Length; i++)
+            {
+                bslayer.ReloadSessionFromFile(fileList[i]);
+                int percent = (100 / fileList.Length) * (i + 1);
+                bgWorker.ReportProgress(percent, "Loading " + fileList[i]);
+            }
+            LoadDBSessions();
+            //MessageBox.Show("Load Completed");
+        }
+        #endregion
+
+        #region ARCHIVE SESSIONS TO SPECIAL DIRECTORY
+        private void ArchiveSessionsInToDirectoryAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        {
+            object[] arguments = (object[])args;
+            string directoryPath = (string)arguments[0];
+            string[] SessionIIDList = (string[])arguments[1];
+
+            for (int i = 0; i < SessionIIDList.Length; i++)
+            {
+                bslayer.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
+                int percent = (100 / SessionIIDList.Length) * (i + 1);
+                bgWorker.ReportProgress(percent, "Archiving " + SessionIIDList[i]);
+            }
+            LoadDBSessions();
+            LoadArchivedSessionsLocal();
+        }
+        #endregion
+
+        #region ARCHIVE SESSIONS TO SESSIONS DIRECTORY
+        private void btnArchiveSessions_Click(object sender, EventArgs e)
+        {
+
+            string directoryPath = DRFile.GetApplicationPath() + UF.SessionDirName;
+
+            string[] SessionIIDList = new string[dgvDatabase.SelectedRows.Count];
+            for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)
+            {
+                SessionIIDList[i] = dgvDatabase.SelectedRows[i].Cells["dbIID"].Value.ToString();
+            }
+            object[] args = new object[] { directoryPath, SessionIIDList };
+
+
+            //To call this function you must implement Delegate_BackGroundWork function
+            //with parameters (object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+            //args parameter must have an object array which will match with the second parameter
+            //of this function call.
+            frmProgress frm = new frmProgress(
+                new Delegate_BackGroundWork(ArchiveSessionsInToDirectoryAsync),
+                args, true, ProgressDetailTypes.FullDetails, ProgressDialogViewTypes.CompactView, false, btnArchiveSessions.Image);
+            frm.Text = "Archiving Sessions into Directory";
+            frm.Message = "Archiving, Please DO NOT Cancel.";
+            frm.ShowDialog();
+
+            //Remove this line if you don't want result back, the result can be AsyncWorkResultTypes or bool or anything
+            object result = frm.AsyncResult;
+
+        }
+        #endregion
+
+
+        #region PRINT SESSIONS FROM DATABASE
+        private void btnPrintReport_Click(object sender, EventArgs e)
+        {
+            if (dgvDatabase.SelectedRows.Count > 0)
+            {
+                Report report = bslayer.GetReport(ReportFormatTypes.ZReport);
+
+
+                if (report.ReportType == ReportFormatTypes.ZReport)
+                {
+                    if (MessageBox.Show("Z Report will archive the sessions after print.\nAre you want to continue to ARCHIVE THE SESSION(S)?",
+                        "SESSION(S) WILL BE ARCHIVED", MessageBoxButtons.YesNoCancel) != System.Windows.Forms.DialogResult.Yes)
+                        return;
+                }
+
+                if (MessageBox.Show("You have selected " + dgvDatabase.SelectedRows.Count.ToString() +
+                   " sessions!\nThis will take several minutes!\nDo you want to continue?\r\n\r\n" +
+                   "\r\nThe print process will continue running in the background.",
+                   "REPORT CONFIRMATION", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                    if (fsp.ShowDialog() == DialogResult.OK)
+                    {
+                        List<CustomReportPrintJob> jobList = new List<CustomReportPrintJob>();
+                        for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)
+                        {
+                            jobList.Add(new CustomReportPrintJob(report.ReportType,
+                                fsp.SelectedPrinterIID,
+                                dgvDatabase.SelectedRows[i].Cells["dbIID"].Value.ToString(),
+                                DateTime.Parse(dgvDatabase.SelectedRows[i].Cells["colDBStartDate"].Value.ToString()), true));
+                        }
+
+                        //To call this function you must implement Delegate_BackGroundWork function
+                        //with parameters (object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+                        //args parameter must have an object array which will match with the second parameter
+                        //of this function call.
+                        frmProgress frm = new frmProgress(
+                            new Delegate_BackGroundWork(PrintSessionsAsync),
+                            new object[] { jobList }, true, ProgressDetailTypes.FullDetails, false);
+                        frm.Text = "Printing Sessions";
+                        frm.Message = "Printing, Please DO NOT Cancel.";
+                        frm.ShowDialog();
+
+                        //Remove this line if you don't want result back, the result can be AsyncWorkResultTypes or bool or anything
+                        // object result = frm.AsyncResult;
+                    }
+                }
+            }
+        }
+
+        private void PrintSessionsAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        {
+            object[] arguments = (object[])args;
+            List<CustomReportPrintJob> jobList = (List<CustomReportPrintJob>)arguments[0];
+
+            for (int i = 0; i < jobList.Count; i++)
+            {
+                CustomReportPrintJob job = jobList[i];
+                bslayer.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
+                int percent = (100 / jobList.Count) * (i + 1);
+                bgWorker.ReportProgress(percent, "Printing Session : " + job.SessionStartDate.ToString());
+            }
+
+            LoadDBSessions();
+        }
+        #endregion
+
+        private void btnReload_Click(object sender, EventArgs e)
+        {
+            LoadArchivedSessionsLocal();
+            LoadDBSessions();
+        }
+
+
+        private void btnSessionARCReload_Click(object sender, EventArgs e)
+        {
+            LoadArchivedSessionsLocal();
+        }
+
+        private void btnSessionDBReload_Click(object sender, EventArgs e)
+        {
+            LoadDBSessions();
+        }
+
+        private void dgvArchive_SelectionChanged(object sender, EventArgs e)
+        {
+
+            float total = 0;
+            for (int i = 0; i < dgvArchive.SelectedRows.Count; i++)
+            {
+                try
+                {
+                    total += float.Parse(dgvArchive.SelectedRows[i].Cells["cellArchivedGrossTotal"].Value.ToString());
+                } catch
+                {
+
+                }
+            }
+            lblArchivedSelectedTotal.Text = total.ToString("N2");
+        }
+
+        private void btnDelZeros_Click(object sender, EventArgs e)
+        {
+            DataTable dt = bslayer.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                string IID = dt.Rows[i]["IID"].ToString();
+                bslayer.DeleteOrder(IID);
+            }
+        }
+
+        private void btnCheck_Click(object sender, EventArgs e)
+        {
+            if (pnl3661.Visible)
+            {
+                ShowHideButtons(false);
+                return;
+            }
+            frmNo frm = new frmNo(true);
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                if (frm.val == 6252)
+                {
+                    ShowHideButtons(true);
+                } else
+                {
+                    ShowHideButtons(false);
+                }
+
+            } else
+            {
+                ShowHideButtons(false);
+            }
+        }
+
+        private void ShowHideButtons(bool blnShowHide)
+        {
+            pnl3661.Visible = btnWizard.Visible = lblInfo.Visible = blnShowHide;
+        }
+
+        private void tsSil_Click(object sender, EventArgs e)
+        {
+            DeleteSelected();
+        }
+
+        private void DeleteSelected()
+        {
+            if (pnl3661.Visible)
+            {
+                for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
+                {
+                    string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
+                    bslayer.DeleteOrder(orderIID);
+                }
+                LoadOrders();
+            }
+        }
+
+        private void btnLoadSelectables_Click(object sender, EventArgs e)
+        {
+            if (pnl3661.Visible)
+            {
+                LoadSRangeList();
+            }
+        }
+
+        List<SRange> srList;
+
+        void LoadSRangeList()
+        {
+            float total = 0;
+            srList = new List<SRange>();
+
+            total = float.Parse(lblTotal.Text);
+
+            for (int k = 2; k < 10; k++)
+            {
+                float pickTotal = 0;
+                int count = 0;
+                for (int i = 1; i < dgvOrders.Rows.Count - 2; i = i + k)
+                {
+                    if (int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) < 2)
+                    {
+                        pickTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
+                        count++;
+                    }
+                }
+
+                SRange sr = new SRange()
+                {
+                    ItemGap = k,
+                    Secilen = pickTotal,
+                    NakitSonuc = cashTotal - pickTotal,
+                    TotalSonuc = total - pickTotal,
+                    Adet = count
+                };
+                srList.Add(sr);
+            }
+
+            cmbRange.DataSource = srList;
+            cmbRange.DisplayMember = "DisplayValue";
+            cmbRange.ValueMember = "ItemGap";
+        }
+
+        private void cmbRange_SelectedValueChanged(object sender, EventArgs e)
+        {
+            if (pnl3661.Visible)
+            {
+                try
+                {
+                    SRange sr = (SRange)cmbRange.SelectedItem;
+
+                    if (sr != null)
+                    {
+                        dgvOrders.ClearSelection();
+                        for (int i = 1; i < dgvOrders.Rows.Count - 2; i = i + sr.ItemGap)
+                        {
+                            if (int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) < 2)
+                            {
+                                dgvOrders.Rows[i].Selected = true;
+                            }
+                        }
+                    }
+                } catch
+                {
+                    return;
+                }
+            }
+        }
+
+        private void btnShowHideArchive_Click(object sender, EventArgs e)
+        {
+            pnlArchivedSessions.Visible = !pnlArchivedSessions.Visible;
+        }
+
+        private void btnAllSessionTotal_Click(object sender, EventArgs e)
+        {
+            btnAllSessionTotal.Enabled = false;
+            LoadDBSessions();
+            btnAllSessionTotal.Enabled = true;
+        }
+
+        private async void btnWizard_Click(object sender, EventArgs e)
+        {
+            SingleDayMagic();
+        }
+
+        private async void SingleDayMagic()
+        {
+            LoadSRangeList();
+
+            if (srList != null && srList.Count > 0)
+            {
+                SRange closest = srList.OrderBy(sr => Math.Abs(sr.TotalSonuc - sessionMin)).FirstOrDefault();
+
+                try
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        if (srList[i].TotalSonuc > sessionMin)
+                        {
+                            closest = srList[i];
+                            break;
+                        }
+                    }
+                } catch
+                {
+                    string c = "";
+                }
+
+                if (closest == null)
+                {
+                    return;
+                }
+                if (closest.TotalSonuc < (sessionMin * 0.97))
+                {
+                    return;
+                } else
+                {
+                    cmbRange.SelectedIndex = closest.ItemGap - 2;
+                    DeleteSelected();
+                    int index = 0;
+                    try
+                    {
+                        index = dgvDatabase.SelectedRows[0].Index;
+                    } catch
+                    {
+
+                    }
+                    LoadDBSessions();
+                    try
+                    {
+                        dgvDatabase.Rows[0].Selected = false;
+                        dgvDatabase.Rows[index].Selected = true;
+                    } catch
+                    {
+
+                    }
+                }
+            }
+        }
+
+        private void btnRefreshDatabase_Click(object sender, EventArgs e)
+        {
+            bslayer.RefreshDatabase();
+        }
+    }
+}

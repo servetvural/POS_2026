@@ -395,7 +395,7 @@ namespace DTRMNS {
 
 
             //Now Archive Session if required
-            if (session != null && report.ReportType == ReportFormatTypes.ZReport) {   
+            if (session != null && report.ReportType == ReportFormatTypes.ZReport && bslayer.config.Z_Archive_Always) {   
                 if (session.SessionIID != bslayer.GetLatestSession().SessionIID) {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
                         bslayer.ArchiveSessionToDirectory(SessionDirectory, session.SessionIID, true);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace DTRMNS {
     public class InterfaceHolder : System.Windows.Forms.Control {
@@ -13,6 +14,8 @@ namespace DTRMNS {
             SelectedIndex = -1;
             Name = name;
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SelectedIndex {
             get {
                 if (_SelectedIndex < 0 && Panels.Count > 0)

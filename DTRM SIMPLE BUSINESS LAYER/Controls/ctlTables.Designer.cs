@@ -16,149 +16,224 @@ namespace DTRMNS {
          base.Dispose(disposing);
       }
 
-      #region Component Designer generated code
+        #region Component Designer generated code
 
-      /// <summary> 
-      /// Required method for Designer support - do not modify 
-      /// the contents of this method with the code editor.
-      /// </summary>
-      private void InitializeComponent() {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ctlTables));
-            this.pnlButtons = new System.Windows.Forms.Panel();
-            this.chkPrintOrder = new System.Windows.Forms.CheckBox();
-            this.chkAddSubTable = new System.Windows.Forms.CheckBox();
-            this.chkSplitTable = new System.Windows.Forms.CheckBox();
-            this.chkRenameTable = new System.Windows.Forms.CheckBox();
-            this.chkChangeTable = new System.Windows.Forms.CheckBox();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.chkUnlockTable = new System.Windows.Forms.CheckBox();
-            this.pnlTables = new System.Windows.Forms.Panel();
-            this.pnlGroups = new System.Windows.Forms.FlowLayoutPanel();
-            this.pnlButtons.SuspendLayout();
-            this.SuspendLayout();
+        /// <summary> 
+        /// Required method for Designer support - do not modify 
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            pnlButtons = new System.Windows.Forms.Panel();
+            chkPrintOrder = new System.Windows.Forms.CheckBox();
+            chkAddSubTable = new System.Windows.Forms.CheckBox();
+            chkSplitTable = new System.Windows.Forms.CheckBox();
+            chkRenameTable = new System.Windows.Forms.CheckBox();
+            chkChangeTable = new System.Windows.Forms.CheckBox();
+            btnClose = new System.Windows.Forms.Button();
+            chkUnlockTable = new System.Windows.Forms.CheckBox();
+            pnlTables = new System.Windows.Forms.Panel();
+            pnlGroups = new System.Windows.Forms.FlowLayoutPanel();
+            pnlButtons.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlButtons
             // 
-            this.pnlButtons.BackColor = System.Drawing.Color.Black;
-            this.pnlButtons.Controls.Add(this.chkPrintOrder);
-            this.pnlButtons.Controls.Add(this.chkAddSubTable);
-            this.pnlButtons.Controls.Add(this.chkSplitTable);
-            this.pnlButtons.Controls.Add(this.chkRenameTable);
-            this.pnlButtons.Controls.Add(this.chkChangeTable);
-            this.pnlButtons.Controls.Add(this.btnClose);
-            this.pnlButtons.Controls.Add(this.chkUnlockTable);
-            resources.ApplyResources(this.pnlButtons, "pnlButtons");
-            this.pnlButtons.Name = "pnlButtons";
+            pnlButtons.BackColor = System.Drawing.Color.Black;
+            pnlButtons.Controls.Add(chkPrintOrder);
+            pnlButtons.Controls.Add(chkAddSubTable);
+            pnlButtons.Controls.Add(chkSplitTable);
+            pnlButtons.Controls.Add(chkRenameTable);
+            pnlButtons.Controls.Add(chkChangeTable);
+            pnlButtons.Controls.Add(btnClose);
+            pnlButtons.Controls.Add(chkUnlockTable);
+            pnlButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlButtons.Location = new System.Drawing.Point(0, 0);
+            pnlButtons.Name = "pnlButtons";
+            pnlButtons.Padding = new System.Windows.Forms.Padding(5);
+            pnlButtons.Size = new System.Drawing.Size(717, 60);
+            pnlButtons.TabIndex = 0;
             // 
             // chkPrintOrder
             // 
-            resources.ApplyResources(this.chkPrintOrder, "chkPrintOrder");
-            this.chkPrintOrder.AutoEllipsis = true;
-            this.chkPrintOrder.BackColor = System.Drawing.Color.Fuchsia;
-            this.chkPrintOrder.FlatAppearance.BorderSize = 0;
-            this.chkPrintOrder.ForeColor = System.Drawing.Color.White;
-            this.chkPrintOrder.Image = global::DTRMNS.Properties.Resources.Print32;
-            this.chkPrintOrder.Name = "chkPrintOrder";
-            this.chkPrintOrder.UseVisualStyleBackColor = false;
+            chkPrintOrder.Appearance = System.Windows.Forms.Appearance.Button;
+            chkPrintOrder.AutoEllipsis = true;
+            chkPrintOrder.BackColor = System.Drawing.Color.Fuchsia;
+            chkPrintOrder.FlatAppearance.BorderSize = 0;
+            chkPrintOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkPrintOrder.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkPrintOrder.ForeColor = System.Drawing.Color.White;
+            chkPrintOrder.Image = Properties.Resources.Print32;
+            chkPrintOrder.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkPrintOrder.Location = new System.Drawing.Point(486, 5);
+            chkPrintOrder.Name = "chkPrintOrder";
+            chkPrintOrder.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkPrintOrder.Size = new System.Drawing.Size(90, 50);
+            chkPrintOrder.TabIndex = 14;
+            chkPrintOrder.Text = "PRINT\r\nORDER";
+            chkPrintOrder.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkPrintOrder.UseVisualStyleBackColor = false;
             // 
             // chkAddSubTable
             // 
-            resources.ApplyResources(this.chkAddSubTable, "chkAddSubTable");
-            this.chkAddSubTable.AutoEllipsis = true;
-            this.chkAddSubTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.chkAddSubTable.FlatAppearance.BorderSize = 0;
-            this.chkAddSubTable.ForeColor = System.Drawing.Color.White;
-            this.chkAddSubTable.Image = global::DTRMNS.Properties.Resources.arti32;
-            this.chkAddSubTable.Name = "chkAddSubTable";
-            this.chkAddSubTable.UseVisualStyleBackColor = false;
+            chkAddSubTable.Appearance = System.Windows.Forms.Appearance.Button;
+            chkAddSubTable.AutoEllipsis = true;
+            chkAddSubTable.BackColor = System.Drawing.Color.FromArgb(0, 0, 192);
+            chkAddSubTable.FlatAppearance.BorderSize = 0;
+            chkAddSubTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkAddSubTable.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkAddSubTable.ForeColor = System.Drawing.Color.White;
+            chkAddSubTable.Image = Properties.Resources.arti32;
+            chkAddSubTable.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkAddSubTable.Location = new System.Drawing.Point(390, 5);
+            chkAddSubTable.Name = "chkAddSubTable";
+            chkAddSubTable.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkAddSubTable.Size = new System.Drawing.Size(90, 50);
+            chkAddSubTable.TabIndex = 13;
+            chkAddSubTable.Text = "ADD\r\nORDER";
+            chkAddSubTable.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkAddSubTable.UseVisualStyleBackColor = false;
             // 
             // chkSplitTable
             // 
-            resources.ApplyResources(this.chkSplitTable, "chkSplitTable");
-            this.chkSplitTable.AutoEllipsis = true;
-            this.chkSplitTable.BackColor = System.Drawing.Color.DarkRed;
-            this.chkSplitTable.FlatAppearance.BorderSize = 0;
-            this.chkSplitTable.ForeColor = System.Drawing.Color.White;
-            this.chkSplitTable.Image = global::DTRMNS.Properties.Resources.Split32Down;
-            this.chkSplitTable.Name = "chkSplitTable";
-            this.chkSplitTable.UseVisualStyleBackColor = false;
+            chkSplitTable.Appearance = System.Windows.Forms.Appearance.Button;
+            chkSplitTable.AutoEllipsis = true;
+            chkSplitTable.BackColor = System.Drawing.Color.DarkRed;
+            chkSplitTable.FlatAppearance.BorderSize = 0;
+            chkSplitTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkSplitTable.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkSplitTable.ForeColor = System.Drawing.Color.White;
+            chkSplitTable.Image = Properties.Resources.Split32Down;
+            chkSplitTable.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkSplitTable.Location = new System.Drawing.Point(294, 5);
+            chkSplitTable.Name = "chkSplitTable";
+            chkSplitTable.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkSplitTable.Size = new System.Drawing.Size(90, 50);
+            chkSplitTable.TabIndex = 12;
+            chkSplitTable.Text = "SPLIT\r\nORDER";
+            chkSplitTable.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkSplitTable.UseVisualStyleBackColor = false;
             // 
             // chkRenameTable
             // 
-            resources.ApplyResources(this.chkRenameTable, "chkRenameTable");
-            this.chkRenameTable.AutoEllipsis = true;
-            this.chkRenameTable.BackColor = System.Drawing.Color.Fuchsia;
-            this.chkRenameTable.FlatAppearance.BorderSize = 0;
-            this.chkRenameTable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chkRenameTable.Image = global::DTRMNS.Properties.Resources.bottom_left;
-            this.chkRenameTable.Name = "chkRenameTable";
-            this.chkRenameTable.UseVisualStyleBackColor = false;
-            this.chkRenameTable.CheckedChanged += new System.EventHandler(this.chkRenameTable_CheckedChanged);
+            chkRenameTable.Appearance = System.Windows.Forms.Appearance.Button;
+            chkRenameTable.AutoEllipsis = true;
+            chkRenameTable.BackColor = System.Drawing.Color.Fuchsia;
+            chkRenameTable.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            chkRenameTable.FlatAppearance.BorderSize = 0;
+            chkRenameTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkRenameTable.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkRenameTable.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            chkRenameTable.Image = Properties.Resources.bottom_left;
+            chkRenameTable.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkRenameTable.Location = new System.Drawing.Point(198, 5);
+            chkRenameTable.Name = "chkRenameTable";
+            chkRenameTable.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkRenameTable.Size = new System.Drawing.Size(90, 50);
+            chkRenameTable.TabIndex = 11;
+            chkRenameTable.Text = "TABLE\r\nRENAME";
+            chkRenameTable.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkRenameTable.UseVisualStyleBackColor = false;
+            chkRenameTable.CheckedChanged += chkRenameTable_CheckedChanged;
             // 
             // chkChangeTable
             // 
-            resources.ApplyResources(this.chkChangeTable, "chkChangeTable");
-            this.chkChangeTable.AutoEllipsis = true;
-            this.chkChangeTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.chkChangeTable.FlatAppearance.BorderSize = 0;
-            this.chkChangeTable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.chkChangeTable.Image = global::DTRMNS.Properties.Resources.ActionRedo;
-            this.chkChangeTable.Name = "chkChangeTable";
-            this.chkChangeTable.UseVisualStyleBackColor = false;
-            this.chkChangeTable.CheckedChanged += new System.EventHandler(this.chkChangeTable_CheckedChanged);
+            chkChangeTable.Appearance = System.Windows.Forms.Appearance.Button;
+            chkChangeTable.AutoEllipsis = true;
+            chkChangeTable.BackColor = System.Drawing.Color.FromArgb(255, 128, 0);
+            chkChangeTable.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            chkChangeTable.FlatAppearance.BorderSize = 0;
+            chkChangeTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkChangeTable.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkChangeTable.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            chkChangeTable.Image = Properties.Resources.ActionRedo;
+            chkChangeTable.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkChangeTable.Location = new System.Drawing.Point(102, 5);
+            chkChangeTable.Name = "chkChangeTable";
+            chkChangeTable.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkChangeTable.Size = new System.Drawing.Size(90, 50);
+            chkChangeTable.TabIndex = 5;
+            chkChangeTable.Text = "MOVE\r\nTABLE";
+            chkChangeTable.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkChangeTable.UseVisualStyleBackColor = false;
+            chkChangeTable.CheckedChanged += chkChangeTable_CheckedChanged;
             // 
             // btnClose
             // 
-            this.btnClose.AutoEllipsis = true;
-            this.btnClose.BackColor = System.Drawing.Color.Black;
-            this.btnClose.BackgroundImage = global::DTRMNS.Properties.Resources.CLOSEBig;
-            resources.ApplyResources(this.btnClose, "btnClose");
-            this.btnClose.FlatAppearance.BorderSize = 0;
-            this.btnClose.ForeColor = System.Drawing.Color.White;
-            this.btnClose.Name = "btnClose";
-            this.btnClose.UseVisualStyleBackColor = false;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            btnClose.AutoEllipsis = true;
+            btnClose.BackColor = System.Drawing.Color.Black;
+            btnClose.BackgroundImage = Properties.Resources.CLOSEBig;
+            btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            btnClose.Dock = System.Windows.Forms.DockStyle.Right;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnClose.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
+            btnClose.ForeColor = System.Drawing.Color.White;
+            btnClose.Location = new System.Drawing.Point(632, 5);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new System.Drawing.Size(80, 50);
+            btnClose.TabIndex = 0;
+            btnClose.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            btnClose.UseVisualStyleBackColor = false;
+            btnClose.Click += btnClose_Click;
             // 
             // chkUnlockTable
             // 
-            resources.ApplyResources(this.chkUnlockTable, "chkUnlockTable");
-            this.chkUnlockTable.AutoEllipsis = true;
-            this.chkUnlockTable.BackColor = System.Drawing.Color.Green;
-            this.chkUnlockTable.FlatAppearance.BorderSize = 0;
-            this.chkUnlockTable.ForeColor = System.Drawing.Color.White;
-            this.chkUnlockTable.Image = global::DTRMNS.Properties.Resources.Link;
-            this.chkUnlockTable.Name = "chkUnlockTable";
-            this.chkUnlockTable.UseVisualStyleBackColor = false;
-            this.chkUnlockTable.CheckedChanged += new System.EventHandler(this.chkUnlockTable_CheckedChanged);
+            chkUnlockTable.Appearance = System.Windows.Forms.Appearance.Button;
+            chkUnlockTable.AutoEllipsis = true;
+            chkUnlockTable.BackColor = System.Drawing.Color.Green;
+            chkUnlockTable.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            chkUnlockTable.Dock = System.Windows.Forms.DockStyle.Left;
+            chkUnlockTable.FlatAppearance.BorderSize = 0;
+            chkUnlockTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            chkUnlockTable.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            chkUnlockTable.ForeColor = System.Drawing.Color.White;
+            chkUnlockTable.Image = Properties.Resources.Link;
+            chkUnlockTable.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            chkUnlockTable.Location = new System.Drawing.Point(5, 5);
+            chkUnlockTable.Name = "chkUnlockTable";
+            chkUnlockTable.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            chkUnlockTable.Size = new System.Drawing.Size(90, 50);
+            chkUnlockTable.TabIndex = 4;
+            chkUnlockTable.Text = "TABLE\r\nUNLOCK";
+            chkUnlockTable.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            chkUnlockTable.UseVisualStyleBackColor = false;
+            chkUnlockTable.CheckedChanged += chkUnlockTable_CheckedChanged;
             // 
             // pnlTables
             // 
-            this.pnlTables.BackColor = System.Drawing.Color.Black;
-            resources.ApplyResources(this.pnlTables, "pnlTables");
-            this.pnlTables.Name = "pnlTables";
+            pnlTables.BackColor = System.Drawing.Color.Black;
+            pnlTables.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlTables.Location = new System.Drawing.Point(90, 60);
+            pnlTables.Name = "pnlTables";
+            pnlTables.Size = new System.Drawing.Size(627, 476);
+            pnlTables.TabIndex = 1;
             // 
             // pnlGroups
             // 
-            this.pnlGroups.BackColor = System.Drawing.Color.Black;
-            resources.ApplyResources(this.pnlGroups, "pnlGroups");
-            this.pnlGroups.Name = "pnlGroups";
+            pnlGroups.BackColor = System.Drawing.Color.Black;
+            pnlGroups.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlGroups.Location = new System.Drawing.Point(0, 60);
+            pnlGroups.Name = "pnlGroups";
+            pnlGroups.Size = new System.Drawing.Size(90, 476);
+            pnlGroups.TabIndex = 2;
             // 
             // ctlTables
             // 
-            this.Controls.Add(this.pnlTables);
-            this.Controls.Add(this.pnlGroups);
-            this.Controls.Add(this.pnlButtons);
-            this.Name = "ctlTables";
-            resources.ApplyResources(this, "$this");
-            this.Load += new System.EventHandler(this.ctlTables_Load);
-            this.pnlButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
+            Controls.Add(pnlTables);
+            Controls.Add(pnlGroups);
+            Controls.Add(pnlButtons);
+            Name = "ctlTables";
+            Size = new System.Drawing.Size(717, 536);
+            Load += ctlTables_Load;
+            pnlButtons.ResumeLayout(false);
+            ResumeLayout(false);
 
-      }
+        }
 
-      #endregion
+        #endregion
 
-      private System.Windows.Forms.Panel pnlButtons;
+        private System.Windows.Forms.Panel pnlButtons;
       private System.Windows.Forms.Button btnClose;
       private System.Windows.Forms.CheckBox chkUnlockTable;
       private System.Windows.Forms.Panel pnlTables;

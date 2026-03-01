@@ -22,60 +22,65 @@
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.pnlTop = new System.Windows.Forms.Panel();
-            this.lblPrice = new System.Windows.Forms.Label();
-            this.lblItems = new System.Windows.Forms.Label();
-            this.pnlTop.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            pnlTop = new System.Windows.Forms.Panel();
+            lblPrice = new System.Windows.Forms.Label();
+            lblItems = new System.Windows.Forms.Label();
+            pnlTop.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlTop
             // 
-            this.pnlTop.Controls.Add(this.lblPrice);
-            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(100, 32);
-            this.pnlTop.TabIndex = 0;
+            pnlTop.Controls.Add(lblPrice);
+            pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlTop.Location = new System.Drawing.Point(0, 0);
+            pnlTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new System.Drawing.Size(117, 37);
+            pnlTop.TabIndex = 0;
             // 
             // lblPrice
             // 
-            this.lblPrice.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F, System.Drawing.FontStyle.Bold);
-            this.lblPrice.Location = new System.Drawing.Point(0, 0);
-            this.lblPrice.Name = "lblPrice";
-            this.lblPrice.Size = new System.Drawing.Size(100, 32);
-            this.lblPrice.TabIndex = 1;
-            this.lblPrice.Text = "900.50";
-            this.lblPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblPrice.Click += new System.EventHandler(this.lblPrice_Click);
+            lblPrice.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblPrice.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F, System.Drawing.FontStyle.Bold);
+            lblPrice.Location = new System.Drawing.Point(0, 0);
+            lblPrice.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblPrice.Name = "lblPrice";
+            lblPrice.Size = new System.Drawing.Size(117, 37);
+            lblPrice.TabIndex = 1;
+            lblPrice.Text = "900.50";
+            lblPrice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblPrice.Click += lblPrice_Click;
             // 
             // lblItems
             // 
-            this.lblItems.AutoSize = true;
-            this.lblItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblItems.Location = new System.Drawing.Point(0, 32);
-            this.lblItems.Name = "lblItems";
-            this.lblItems.Size = new System.Drawing.Size(0, 13);
-            this.lblItems.TabIndex = 1;
-            this.lblItems.Click += new System.EventHandler(this.lblItems_Click);
+            lblItems.AutoSize = true;
+            lblItems.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblItems.Location = new System.Drawing.Point(0, 37);
+            lblItems.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblItems.Name = "lblItems";
+            lblItems.Size = new System.Drawing.Size(0, 15);
+            lblItems.TabIndex = 1;
+            lblItems.Click += lblItems_Click;
             // 
             // ctlHoldButtonExtendable
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Controls.Add(this.lblItems);
-            this.Controls.Add(this.pnlTop);
-            this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(100, 50);
-            this.Name = "ctlHoldButtonExtendable";
-            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.Size = new System.Drawing.Size(100, 50);
-            this.pnlTop.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoSize = true;
+            BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            Controls.Add(lblItems);
+            Controls.Add(pnlTop);
+            DoubleBuffered = true;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MinimumSize = new System.Drawing.Size(116, 57);
+            Name = "ctlHoldButtonExtendable";
+            Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            Size = new System.Drawing.Size(117, 60);
+            pnlTop.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

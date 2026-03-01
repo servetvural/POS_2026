@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -50,12 +51,14 @@ namespace DTRMNS {
         
 
         private Order _OrderToDisplay;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Order OrderToDisplay { get { return _OrderToDisplay; } set { _OrderToDisplay = value; } }
 
         private Order _OrderToSplit;
         private ColumnHeader colCompletedQuantity;
         private Button btnViewKitchen;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Order OrderToSplit { get { return _OrderToSplit; } set { _OrderToSplit = value; } }
 
         public SplittingStatus SplitStatus = SplittingStatus.Normal;
@@ -96,6 +99,7 @@ namespace DTRMNS {
                 ZeroItemsLeft();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SplitDisplayHeight { get { return pnlSplit.Height; } set { pnlSplit.Height = value; } }
 
         public OrderDisplay() {
