@@ -52,6 +52,7 @@
             btnReports = new System.Windows.Forms.ToolStripButton();
             btnSessionAnalysis = new System.Windows.Forms.ToolStripButton();
             btnCloseAllWindows = new System.Windows.Forms.ToolStripButton();
+            btnCloseApplication = new System.Windows.Forms.ToolStripButton();
             tabForms = new System.Windows.Forms.TabControl();
             imgTabPageList = new System.Windows.Forms.ImageList(components);
             statusStrip1.SuspendLayout();
@@ -63,7 +64,7 @@
             statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { lblStatus });
             statusStrip1.Location = new System.Drawing.Point(0, 534);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new System.Drawing.Size(958, 22);
+            statusStrip1.Size = new System.Drawing.Size(1032, 22);
             statusStrip1.TabIndex = 8;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -75,10 +76,10 @@
             // 
             // barMain
             // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnConnect, btnDisconnect, mnuObjects, mnuInteractive, btnSettings, btnQuickReports, btnOrderPad, btnViewDump, btnReports, btnSessionAnalysis, btnCloseAllWindows });
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnConnect, btnDisconnect, mnuObjects, mnuInteractive, btnSettings, btnQuickReports, btnOrderPad, btnViewDump, btnReports, btnSessionAnalysis, btnCloseAllWindows, btnCloseApplication });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(958, 54);
+            barMain.Size = new System.Drawing.Size(1032, 54);
             barMain.TabIndex = 10;
             barMain.Text = "toolStrip1";
             // 
@@ -259,8 +260,8 @@
             btnSettings.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnSettings.Name = "btnSettings";
-            btnSettings.Size = new System.Drawing.Size(80, 51);
-            btnSettings.Text = "toolStripButton1";
+            btnSettings.Size = new System.Drawing.Size(60, 51);
+            btnSettings.Text = "SETTINGS";
             btnSettings.Click += btnSettings_Click;
             // 
             // btnQuickReports
@@ -344,8 +345,21 @@
             btnCloseAllWindows.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnCloseAllWindows.Name = "btnCloseAllWindows";
             btnCloseAllWindows.Size = new System.Drawing.Size(80, 51);
-            btnCloseAllWindows.Text = "toolStripButton1";
+            btnCloseAllWindows.Text = "Close All Windows";
             btnCloseAllWindows.Click += btnCloseAllWindows_Click;
+            // 
+            // btnCloseApplication
+            // 
+            btnCloseApplication.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            btnCloseApplication.AutoSize = false;
+            btnCloseApplication.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            btnCloseApplication.Image = Properties.Resources.SquareArrowRightExpander32;
+            btnCloseApplication.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnCloseApplication.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnCloseApplication.Name = "btnCloseApplication";
+            btnCloseApplication.Size = new System.Drawing.Size(70, 51);
+            btnCloseApplication.Text = "EXIT APPLICATION";
+            btnCloseApplication.Click += btnCloseApplication_Click;
             // 
             // tabForms
             // 
@@ -356,7 +370,7 @@
             tabForms.Location = new System.Drawing.Point(0, 54);
             tabForms.Name = "tabForms";
             tabForms.SelectedIndex = 0;
-            tabForms.Size = new System.Drawing.Size(958, 25);
+            tabForms.Size = new System.Drawing.Size(1032, 25);
             tabForms.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             tabForms.TabIndex = 12;
             tabForms.SelectedIndexChanged += tabForms_SelectedIndexChanged;
@@ -377,7 +391,7 @@
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             BackColor = System.Drawing.Color.White;
             BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            ClientSize = new System.Drawing.Size(958, 556);
+            ClientSize = new System.Drawing.Size(1032, 556);
             Controls.Add(tabForms);
             Controls.Add(statusStrip1);
             Controls.Add(barMain);
@@ -430,5 +444,6 @@
         private System.Windows.Forms.ToolStripButton btnReports;
         private System.Windows.Forms.ToolStripButton btnSessionAnalysis;
         private System.Windows.Forms.ToolStripButton btnCloseAllWindows;
+        private System.Windows.Forms.ToolStripButton btnCloseApplication;
     }
 }

@@ -13,6 +13,7 @@ using System.Net.Mail;
 using System.Drawing.Printing;
 using Microsoft.Data.SqlClient;
 using System.Linq;
+using System.Text.Json;
 
 namespace DTRMNS
 {
@@ -201,47 +202,7 @@ namespace DTRMNS
             return GetCulture(config.Terminal_Currency_Culture);
         }
 
-        #region LICENCE RELATED
 
-        //public void ValidateLicence() {
-        //    Thread validationThread = new Thread(CheckLicence);
-        //    validationThread.Start();
-        //}
-
-        /// <summary>
-        /// It is better to run this function on a difference thread using ValidateLicence() function above.
-        /// It delays the execution a lot.
-        /// </summary>
-        //public async void CheckLicence() {
-        //   // int i = 0;
-        //    //create client
-        //    LicenceClient lclient = new LicenceClient();
-
-
-        //    try {
-        //        //test if localhash file exist
-        //        config.TerminalLicence = await lclient.GetLicenceLocal();
-
-        //        //There is not even localhash block it 
-        //        LicenceVerified = !string.IsNullOrEmpty(config.TerminalLicence);
-
-        //        //Now check if online restore possible which will restore the localhash file if any
-        //        LicenceSimpleResponse response = await lclient.IsLicenceValid(SoftwareID);
-
-        //        //if there is no error to jump to catch then block or not
-        //        LicenceVerified = response.blnState;
-
-        //        //reload localhash
-        //        config.TerminalLicence = await lclient.GetLicenceLocal();
-        //        if (config.TerminalLicence.Length > 0)
-        //            LicenceVerified = true;
-
-        //    } catch (Exception ex) {
-        //       // config.TerminalLicence = await lclient.GetLicenceLocal();
-        //       // MessageBox.Show("Validate Licence Error : i=" + i.ToString() + " , " + ex.Message);
-        //    }
-        //}
-        #endregion
 
         public bool DoStartThings()
         {
@@ -285,6 +246,8 @@ namespace DTRMNS
                 // db = new DB(config.Database_Instance, config.Database_Name, config.Database_User_Name,config.Database_Password);
 
                 //connectionString = "Server=192.168.0.24;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
+
+                //connectionString = "Server=Servet2022\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
                 connectionString = "Server=" + config.Database_Instance +
                     ";Database=" + config.Database_Name +
                     ";User Id=" + config.Database_User_Name +
@@ -4056,6 +4019,47 @@ namespace DTRMNS
                 sf.Orders = GetOrderListForSession(SessionIID);
                 if (!DRFile.XmlSerialize(directoryPath + "\\" + SessionFileName, sf, typeof(SessionFamily), false))
                     return false;
+
+                //This deletes the session from database all together
+                if (blnDeleteSessionFromDatabase)
+                    db.RunQuery("DeleteSession", SessionIID);
+
+                return true;
+            } catch (Exception ex)
+            {
+                string str = ex.Message;
+                return false;
+            }
+        }
+
+        public bool ArchiveSessionToDirectoryAsJson(string directoryPath, string SessionIID, bool blnDeleteSessionFromDatabase)
+        {
+            try
+            {
+                SessionFamily sf = new SessionFamily
+                {
+                    sessionData = GetSessionDataDynamic(SessionIID)
+                };
+
+                string sessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
+                    sf.sessionData.SessionEndDateTime, "json");
+                string fullPath = Path.Combine(directoryPath, sessionFileName);
+
+                if (File.Exists(fullPath))
+                    return false;
+
+
+                if (sf.sessionData.SessionEndDateTime == sf.sessionData.SessionStartDateTime)
+                {
+                    sf.sessionData.SessionEndDateTime = DateTime.Now;
+                }
+
+                SaveSessionData(sf.sessionData);
+                sf.Orders = GetOrderListForSession(SessionIID);
+
+                // Serialize to JSON string and write to file
+                string jsonString = JsonSerializer.Serialize(sf, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(fullPath, jsonString);
 
                 //This deletes the session from database all together
                 if (blnDeleteSessionFromDatabase)

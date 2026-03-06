@@ -27,7 +27,13 @@
         {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -46,16 +52,18 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSessionReportsQuick));
             dgvDatabase = new System.Windows.Forms.DataGridView();
+            dbIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colDBStartDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colDBEndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            cellDatabaseGrossTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             sessionViewBindingSource = new System.Windows.Forms.BindingSource(components);
             dgvOrders = new System.Windows.Forms.DataGridView();
+            colOrderIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colPaymentMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            colCalculatedValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ordersViewBindingSource = new System.Windows.Forms.BindingSource(components);
             orderItemBindingSource = new System.Windows.Forms.BindingSource(components);
             dgvArchive = new System.Windows.Forms.DataGridView();
@@ -92,8 +100,8 @@
             btnReload = new System.Windows.Forms.ToolStripButton();
             btnLoadSessionsFromDirectory = new System.Windows.Forms.ToolStripButton();
             btnShowHideArchive = new System.Windows.Forms.ToolStripButton();
-            btnCheck = new System.Windows.Forms.ToolStripButton();
             btnRefreshDatabase = new System.Windows.Forms.ToolStripButton();
+            btnBackup = new System.Windows.Forms.ToolStripButton();
             dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -110,14 +118,6 @@
             dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colOrderIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colPaymentMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colCalculatedValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dbIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colDBStartDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colDBEndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            cellDatabaseGrossTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvDatabase).BeginInit();
             ((System.ComponentModel.ISupportInitialize)sessionViewBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
@@ -166,6 +166,48 @@
             dgvDatabase.TabIndex = 1;
             dgvDatabase.SelectionChanged += dgvDatabase_SelectionChanged;
             // 
+            // dbIID
+            // 
+            dbIID.DataPropertyName = "IID";
+            dbIID.HeaderText = "IID";
+            dbIID.Name = "dbIID";
+            dbIID.ReadOnly = true;
+            dbIID.Visible = false;
+            dbIID.Width = 5;
+            // 
+            // colDBStartDate
+            // 
+            colDBStartDate.DataPropertyName = "StartDate";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            colDBStartDate.DefaultCellStyle = dataGridViewCellStyle1;
+            colDBStartDate.HeaderText = "Session Start @";
+            colDBStartDate.Name = "colDBStartDate";
+            colDBStartDate.ReadOnly = true;
+            colDBStartDate.Width = 160;
+            // 
+            // colDBEndDate
+            // 
+            colDBEndDate.DataPropertyName = "EndDate";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            colDBEndDate.DefaultCellStyle = dataGridViewCellStyle2;
+            colDBEndDate.HeaderText = "Session End @";
+            colDBEndDate.Name = "colDBEndDate";
+            colDBEndDate.ReadOnly = true;
+            colDBEndDate.Width = 160;
+            // 
+            // cellDatabaseGrossTotal
+            // 
+            cellDatabaseGrossTotal.DataPropertyName = "GrossSessionTotal";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = "0";
+            cellDatabaseGrossTotal.DefaultCellStyle = dataGridViewCellStyle3;
+            cellDatabaseGrossTotal.HeaderText = "Gross Total";
+            cellDatabaseGrossTotal.Name = "cellDatabaseGrossTotal";
+            cellDatabaseGrossTotal.ReadOnly = true;
+            // 
             // sessionViewBindingSource
             // 
             sessionViewBindingSource.DataSource = typeof(DTRMNS.SessionView);
@@ -199,6 +241,49 @@
             dgvOrders.Size = new System.Drawing.Size(524, 455);
             dgvOrders.TabIndex = 71;
             dgvOrders.SelectionChanged += dgvOrders_SelectionChanged;
+            // 
+            // colOrderIID
+            // 
+            colOrderIID.DataPropertyName = "IID";
+            colOrderIID.HeaderText = "IID";
+            colOrderIID.Name = "colOrderIID";
+            colOrderIID.ReadOnly = true;
+            colOrderIID.Visible = false;
+            colOrderIID.Width = 5;
+            // 
+            // orderDateDataGridViewTextBoxColumn
+            // 
+            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.Format = "dd/MMM/yy HH:mm:ss";
+            dataGridViewCellStyle5.NullValue = null;
+            orderDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
+            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
+            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
+            orderDateDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // colPaymentMethod
+            // 
+            colPaymentMethod.DataPropertyName = "Payment";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            colPaymentMethod.DefaultCellStyle = dataGridViewCellStyle6;
+            colPaymentMethod.HeaderText = "Pymt";
+            colPaymentMethod.Name = "colPaymentMethod";
+            colPaymentMethod.ReadOnly = true;
+            colPaymentMethod.Width = 60;
+            // 
+            // colCalculatedValue
+            // 
+            colCalculatedValue.DataPropertyName = "CalculatedValue";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle7.Format = "N2";
+            dataGridViewCellStyle7.NullValue = null;
+            colCalculatedValue.DefaultCellStyle = dataGridViewCellStyle7;
+            colCalculatedValue.HeaderText = "Total";
+            colCalculatedValue.Name = "colCalculatedValue";
+            colCalculatedValue.ReadOnly = true;
+            colCalculatedValue.Width = 90;
             // 
             // ordersViewBindingSource
             // 
@@ -546,7 +631,7 @@
             // 
             // barMain
             // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnReload, btnLoadSessionsFromDirectory, btnShowHideArchive, btnCheck, btnRefreshDatabase });
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnReload, btnLoadSessionsFromDirectory, btnShowHideArchive, btnRefreshDatabase, btnBackup });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
             barMain.Size = new System.Drawing.Size(1584, 54);
@@ -587,18 +672,6 @@
             btnShowHideArchive.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             btnShowHideArchive.Click += btnShowHideArchive_Click;
             // 
-            // btnCheck
-            // 
-            btnCheck.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            btnCheck.AutoSize = false;
-            btnCheck.BackColor = System.Drawing.SystemColors.Control;
-            btnCheck.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            btnCheck.ImageTransparentColor = System.Drawing.Color.Magenta;
-            btnCheck.Name = "btnCheck";
-            btnCheck.Size = new System.Drawing.Size(100, 51);
-            btnCheck.Text = "toolStripButton2";
-            btnCheck.Click += btnCheck_Click;
-            // 
             // btnRefreshDatabase
             // 
             btnRefreshDatabase.AutoSize = false;
@@ -610,6 +683,18 @@
             btnRefreshDatabase.Text = "Refresh";
             btnRefreshDatabase.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             btnRefreshDatabase.Click += btnRefreshDatabase_Click;
+            // 
+            // btnBackup
+            // 
+            btnBackup.AutoSize = false;
+            btnBackup.Image = Properties.Resources.backup;
+            btnBackup.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnBackup.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnBackup.Name = "btnBackup";
+            btnBackup.Size = new System.Drawing.Size(70, 51);
+            btnBackup.Text = "Backup";
+            btnBackup.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnBackup.Click += btnBackup_Click;
             // 
             // dataGridViewTextBoxColumn6
             // 
@@ -793,91 +878,6 @@
             dataGridViewTextBoxColumn21.ReadOnly = true;
             dataGridViewTextBoxColumn21.Width = 200;
             // 
-            // colOrderIID
-            // 
-            colOrderIID.DataPropertyName = "IID";
-            colOrderIID.HeaderText = "IID";
-            colOrderIID.Name = "colOrderIID";
-            colOrderIID.ReadOnly = true;
-            colOrderIID.Visible = false;
-            colOrderIID.Width = 5;
-            // 
-            // orderDateDataGridViewTextBoxColumn
-            // 
-            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.Format = "dd/MMM/yy HH:mm:ss";
-            dataGridViewCellStyle5.NullValue = null;
-            orderDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
-            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
-            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
-            orderDateDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // colPaymentMethod
-            // 
-            colPaymentMethod.DataPropertyName = "Payment";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            colPaymentMethod.DefaultCellStyle = dataGridViewCellStyle6;
-            colPaymentMethod.HeaderText = "Pymt";
-            colPaymentMethod.Name = "colPaymentMethod";
-            colPaymentMethod.ReadOnly = true;
-            colPaymentMethod.Width = 60;
-            // 
-            // colCalculatedValue
-            // 
-            colCalculatedValue.DataPropertyName = "CalculatedValue";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            colCalculatedValue.DefaultCellStyle = dataGridViewCellStyle7;
-            colCalculatedValue.HeaderText = "Total";
-            colCalculatedValue.Name = "colCalculatedValue";
-            colCalculatedValue.ReadOnly = true;
-            colCalculatedValue.Width = 90;
-            // 
-            // dbIID
-            // 
-            dbIID.DataPropertyName = "IID";
-            dbIID.HeaderText = "IID";
-            dbIID.Name = "dbIID";
-            dbIID.ReadOnly = true;
-            dbIID.Visible = false;
-            dbIID.Width = 5;
-            // 
-            // colDBStartDate
-            // 
-            colDBStartDate.DataPropertyName = "StartDate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colDBStartDate.DefaultCellStyle = dataGridViewCellStyle1;
-            colDBStartDate.HeaderText = "Session Start @";
-            colDBStartDate.Name = "colDBStartDate";
-            colDBStartDate.ReadOnly = true;
-            colDBStartDate.Width = 160;
-            // 
-            // colDBEndDate
-            // 
-            colDBEndDate.DataPropertyName = "EndDate";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colDBEndDate.DefaultCellStyle = dataGridViewCellStyle2;
-            colDBEndDate.HeaderText = "Session End @";
-            colDBEndDate.Name = "colDBEndDate";
-            colDBEndDate.ReadOnly = true;
-            colDBEndDate.Width = 160;
-            // 
-            // cellDatabaseGrossTotal
-            // 
-            cellDatabaseGrossTotal.DataPropertyName = "GrossSessionTotal";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = "0";
-            cellDatabaseGrossTotal.DefaultCellStyle = dataGridViewCellStyle3;
-            cellDatabaseGrossTotal.HeaderText = "Gross Total";
-            cellDatabaseGrossTotal.Name = "cellDatabaseGrossTotal";
-            cellDatabaseGrossTotal.ReadOnly = true;
-            // 
             // frmSessionReportsQuick
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -961,7 +961,6 @@
         private System.Windows.Forms.Panel pnlSessions;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private System.Windows.Forms.Panel pnlArchivedSessions;
-        private System.Windows.Forms.ToolStripButton btnCheck;
         private System.Windows.Forms.Panel pnl3661;
         private System.Windows.Forms.Button btnSil;
         private System.Windows.Forms.ComboBox cmbRange;
@@ -988,5 +987,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn orderDateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPaymentMethod;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCalculatedValue;
+        private System.Windows.Forms.ToolStripButton btnBackup;
     }
 }

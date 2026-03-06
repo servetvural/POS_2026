@@ -1818,7 +1818,7 @@ namespace DTRMNS
             mnuFunctions.Location = new Point(435, 0);
             mnuFunctions.Name = "mnuFunctions";
             mnuFunctions.Padding = new Padding(7, 2, 0, 2);
-            mnuFunctions.Size = new Size(91, 68);
+            mnuFunctions.Size = new Size(211, 68);
             mnuFunctions.TabIndex = 31;
             mnuFunctions.Text = "menuStrip1";
             // 
@@ -2077,7 +2077,7 @@ namespace DTRMNS
             cmdCancel.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             cmdCancel.ForeColor = Color.White;
             cmdCancel.ImeMode = ImeMode.NoControl;
-            cmdCancel.Location = new Point(527, 3);
+            cmdCancel.Location = new Point(1, 82);
             cmdCancel.Margin = new Padding(1, 3, 1, 1);
             cmdCancel.Name = "cmdCancel";
             cmdCancel.Size = new Size(111, 74);
@@ -2097,7 +2097,7 @@ namespace DTRMNS
             btnExpandShrinkHoldButtonDetails.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             btnExpandShrinkHoldButtonDetails.ForeColor = Color.White;
             btnExpandShrinkHoldButtonDetails.ImeMode = ImeMode.NoControl;
-            btnExpandShrinkHoldButtonDetails.Location = new Point(1, 82);
+            btnExpandShrinkHoldButtonDetails.Location = new Point(114, 82);
             btnExpandShrinkHoldButtonDetails.Margin = new Padding(1, 3, 1, 1);
             btnExpandShrinkHoldButtonDetails.Name = "btnExpandShrinkHoldButtonDetails";
             btnExpandShrinkHoldButtonDetails.Size = new Size(89, 74);

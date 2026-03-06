@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>Starter</AssemblyName>
+    <AssemblyName>Wizard</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -21,19 +21,41 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <ApplicationIcon>Disli.ico</ApplicationIcon>
+    <ApplicationIcon>WizardIcon.ico</ApplicationIcon>
 
 	  <NoWarn>$(NoWarn);CA1416</NoWarn>
+
+	  <!--<ApplicationManifest>app.manifest</ApplicationManifest>-->
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Disli.ico" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <AdditionalFiles Remove="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
+    <Compile Remove="DirectorySetter.cs" />
+    <Compile Remove="frmDeleteFiles.cs" />
+    <Compile Remove="frmDeleteFiles.Designer.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="frmDeleteFiles.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WizardIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\net10.0-windows\work.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  
 </Project>

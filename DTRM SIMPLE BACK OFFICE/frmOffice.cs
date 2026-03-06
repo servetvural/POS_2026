@@ -15,48 +15,24 @@ namespace DTRMSimpleBackOffice
     {
 
         private ConnectionStatus conStatus;
-
         private DTRMSimpleBusiness bslayer;
+        private ViewModes viewMode = ViewModes.User;             
 
-        private ViewModes viewMode = ViewModes.User;
-
-        public frmOffice(string[] args)
+        public frmOffice()
         {
-            InitializeComponent();
-
-            if (args.Length > 0)
+            InitializeComponent();                 
+            if (!string.IsNullOrEmpty(Program.UserType))
             {
-                switch (args[0].ToLower())
-                {
-                    case "user":
-                        viewMode = ViewModes.User;
-                        break;
-                    case "accountant":
-                        viewMode = ViewModes.Accountant;
-                        break;
-                    case "menueditor":
-                        viewMode = ViewModes.MenuEditor;
-                        break;
-                    case "owner":
-                        viewMode = ViewModes.Owner;
-                        break;
-                    default:
-                        viewMode = ViewModes.User;
-                        break;
-                }
-                // Example: Set the form title to the first parameter
-                this.Text += " as " + viewMode.ToString();
+                if (!Enum.TryParse<ViewModes>(Program.UserType,true, out viewMode))
+                    viewMode = ViewModes.User;
             }
+            this.Text += " as " + viewMode.ToString();
         }
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-
             CheckTabHeight();
         }
-
-
-
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
@@ -213,10 +189,10 @@ namespace DTRMSimpleBackOffice
                         //  btnSessionAnalysis.Visible = true;
                         break;
                     case ViewModes.Accountant:
-                       //btnMenu.Enabled = true;
-                       //btnDistributions.Enabled = true;
-                       //btnUserEditor.Enabled = true;
-                       btnPrinters.Enabled = true;
+                        //btnMenu.Enabled = true;
+                        //btnDistributions.Enabled = true;
+                        //btnUserEditor.Enabled = true;
+                        btnPrinters.Enabled = true;
                         btnSuppliers.Enabled = true;
                         btnStockItemList.Enabled = true;
                         // btnImageList.Enabled = true;
@@ -240,7 +216,7 @@ namespace DTRMSimpleBackOffice
                         // btnSessionAnalysis.Visible = true;
                         break;
                     case ViewModes.MenuEditor:
-                       btnMenu.Enabled = true;
+                        btnMenu.Enabled = true;
                         btnDistributions.Enabled = true;
                         // btnUserEditor.Enabled = true;
                         btnPrinters.Enabled = true;
@@ -605,6 +581,14 @@ namespace DTRMSimpleBackOffice
             foreach (Form frm in this.MdiChildren)
             {
                 frm.Close();
+            }
+        }
+
+        private void btnCloseApplication_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to exit the application?", "Exit Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                Application.Exit();
             }
         }
     }

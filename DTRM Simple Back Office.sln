@@ -20,6 +20,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRMSimpleClient", "DTRM SI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTRM Kassa Calculator", "DTRM Kassa Calculator\DTRM Kassa Calculator.csproj", "{0D7FD637-C748-43B7-9266-70F3823FCDD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "DTRMAdaptorFileCopier\Wizard.csproj", "{49F5727D-8AA9-82C3-AB6D-45980373575B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinPOS", "WinPOS\WinPOS.csproj", "{B8E02246-CA34-4ECC-AD50-6B1B43DE8246}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSLayer", "POSLayer\POSLayer.csproj", "{784D15FB-3139-49C3-A178-657F57CBBFB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +56,18 @@ Global
 		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D7FD637-C748-43B7-9266-70F3823FCDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49F5727D-8AA9-82C3-AB6D-45980373575B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49F5727D-8AA9-82C3-AB6D-45980373575B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49F5727D-8AA9-82C3-AB6D-45980373575B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49F5727D-8AA9-82C3-AB6D-45980373575B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E02246-CA34-4ECC-AD50-6B1B43DE8246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E02246-CA34-4ECC-AD50-6B1B43DE8246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E02246-CA34-4ECC-AD50-6B1B43DE8246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E02246-CA34-4ECC-AD50-6B1B43DE8246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{784D15FB-3139-49C3-A178-657F57CBBFB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{784D15FB-3139-49C3-A178-657F57CBBFB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{784D15FB-3139-49C3-A178-657F57CBBFB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{784D15FB-3139-49C3-A178-657F57CBBFB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

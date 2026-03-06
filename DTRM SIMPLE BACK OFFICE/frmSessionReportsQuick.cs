@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
@@ -16,6 +18,19 @@ namespace DTRMSimpleBackOffice
     public partial class frmSessionReportsQuick : Form
     {
         private DTRMSimpleBusiness bslayer;
+
+        private bool blnBackUpCompleted;
+
+        bool IsBackupValid
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Program.RemoteBackUpDirectory))
+                    return false;
+                return blnBackUpCompleted;
+            }
+
+        }
 
         public frmSessionReportsQuick()
         {
@@ -136,7 +151,7 @@ namespace DTRMSimpleBackOffice
                     lblCard.Text = cardTotal.ToString("0.00");
                     lblCash.Text = cashTotal.ToString("0.00");
 
-                    Random rand = new Random();
+                    Random rand = new();
                     float minBarrier = (float)(rand.NextDouble() * (minBarrierUst - minBarrierAlt) + minBarrierAlt);
                     float carpan = (float)(rand.NextDouble() * (2.1 - 1.5) + 1.5);
 
@@ -229,7 +244,7 @@ namespace DTRMSimpleBackOffice
         {
             if (dgvArchive.SelectedRows.Count > 0)
             {
-                List<SessionDataShort> theList = new List<SessionDataShort>();
+                List<SessionDataShort> theList = new();
                 System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-GB");
                 for (int i = 0; i < dgvArchive.SelectedRows.Count; i++)
                 {
@@ -277,10 +292,12 @@ namespace DTRMSimpleBackOffice
         #region LOAD SESSIONS FROM CUSTOM DIRECTORY
         private void btnLoadSessionsFromDirectory_Click(object sender, EventArgs e)
         {
-            OpenFileDialog dlg = new OpenFileDialog();
-            dlg.Filter = "XML Session Files |*.xml";
-            dlg.InitialDirectory = Application.ExecutablePath;
-            dlg.Multiselect = true;
+            OpenFileDialog dlg = new()
+            {
+                Filter = "XML Session Files |*.xml",
+                InitialDirectory = Application.ExecutablePath,
+                Multiselect = true
+            };
             //string[] fileList = null;
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -330,6 +347,42 @@ namespace DTRMSimpleBackOffice
             }
             LoadDBSessions();
             LoadArchivedSessionsLocal();
+        }
+
+        private async Task<bool> BackupDBSessions(string directoryPath, bool blnRemoveFromDatabase = false)
+        {
+            try
+            {
+                string[] SessionIIDList = new string[dgvDatabase.Rows.Count];
+                for (int i = 0; i < dgvDatabase.Rows.Count; i++)
+                {
+                    SessionIIDList[i] = dgvDatabase.Rows[i].Cells["dbIID"].Value.ToString();
+                }
+                if (SessionIIDList.Length == 0)
+                {
+                    MessageBox.Show("No sessions available for backup.");
+                    return false;
+                }
+                for (int i = 0; i < SessionIIDList.Length; i++)
+                {
+                    await Task.Run(() => bslayer.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], blnRemoveFromDatabase));
+                    //await Task.Run(() => bslayer.ArchiveSessionToDirectoryAsJson(directoryPath, SessionIIDList[i], blnRemoveFromDatabase));
+
+                }
+                if (Directory.GetFiles(directoryPath).Length == SessionIIDList.Length)
+                {
+                    // MessageBox.Show("Archiving Completed to " + directoryPath + " with success.");
+                    return true;
+                } else
+                {
+                    // MessageBox.Show("Archiving Completed with some errors. Please check the directory and database.");
+                    return false;
+                }
+                //return true;
+            } catch
+            {
+                return false;
+            }
         }
         #endregion
 
@@ -388,7 +441,7 @@ namespace DTRMSimpleBackOffice
                     frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
                     if (fsp.ShowDialog() == DialogResult.OK)
                     {
-                        List<CustomReportPrintJob> jobList = new List<CustomReportPrintJob>();
+                        List<CustomReportPrintJob> jobList = new();
                         for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)
                         {
                             jobList.Add(new CustomReportPrintJob(report.ReportType,
@@ -476,29 +529,6 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private void btnCheck_Click(object sender, EventArgs e)
-        {
-            if (pnl3661.Visible)
-            {
-                ShowHideButtons(false);
-                return;
-            }
-            frmNo frm = new frmNo(true);
-            if (frm.ShowDialog() == DialogResult.OK)
-            {
-                if (frm.val == 6252)
-                {
-                    ShowHideButtons(true);
-                } else
-                {
-                    ShowHideButtons(false);
-                }
-
-            } else
-            {
-                ShowHideButtons(false);
-            }
-        }
 
         private void ShowHideButtons(bool blnShowHide)
         {
@@ -553,7 +583,7 @@ namespace DTRMSimpleBackOffice
                     }
                 }
 
-                SRange sr = new SRange()
+                SRange sr = new()
                 {
                     ItemGap = k,
                     Secilen = pickTotal,
@@ -632,7 +662,6 @@ namespace DTRMSimpleBackOffice
                     }
                 } catch
                 {
-                    string c = "";
                 }
 
                 if (closest == null)
@@ -670,6 +699,63 @@ namespace DTRMSimpleBackOffice
         private void btnRefreshDatabase_Click(object sender, EventArgs e)
         {
             bslayer.RefreshDatabase();
+        }
+
+        private async void btnBackup_Click(object sender, EventArgs e)
+        {
+            if (await DoCheck())
+            {
+                string theFolder = Program.RemoteBackUpDirectory + "\\" + DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                if (Directory.Exists(theFolder))
+                {
+                    MessageBox.Show("A backup folder with the same name already exists. A random number will be added to the folder name to avoid overwriting.");
+                    //theFolder += "_" + new Random().Next(1000, 9999).ToString();
+                    return;
+                }  else
+                {
+                    Directory.CreateDirectory(theFolder);
+                }
+                if (Directory.Exists(theFolder))
+                {
+                    blnBackUpCompleted = await BackupDBSessions(theFolder, false);
+                    if (blnBackUpCompleted)
+                    {
+                        ShowHideButtons(true);
+                    }   else
+                    {
+                        ShowHideButtons(false);
+                    }
+                } else
+                {
+                    MessageBox.Show("Failed to create backup directory. Please check the path and permissions.");
+                }
+            }
+        }
+
+        async Task<bool> DoCheck()
+        {
+            if (pnl3661.Visible)
+            {
+                ShowHideButtons(false);
+                return false;
+            }
+            frmNo frm = new frmNo(true);
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+
+                if (frm.val == Program.Profile)
+                {                     
+                    return true;
+                } else
+                {
+                    ShowHideButtons(false);                      
+                }
+
+            } else
+            {
+                ShowHideButtons(false);
+            }
+            return false;
         }
     }
 }

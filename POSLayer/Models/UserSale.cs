@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace POSLayer.Models;
+
+public partial class UserSale
+{
+    public string? SessionIid { get; set; }
+
+    public string? UserName { get; set; }
+
+    public double? Total { get; set; }
+}
