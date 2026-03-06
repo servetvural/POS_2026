@@ -1,12 +1,15 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
+using System.Windows.Forms;
 
 namespace DTRMNS {
     public partial class frmVariables : Form {
         private DTRMSimpleBusiness bslayer;
         private KitchenOrderItem koi;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string ItemVariableText { get; set; }
 
         private int ModifiedQuantity { get; set; }

@@ -10,9 +10,7 @@ namespace DTRMClientNS
     public partial class FrmLock : Form
     {
         private DTRMNS.DTRMSimpleBusiness bslayer;
-        // private bool blnValidUser;
         private trmOrderPadMain OrderPad;
-        // private int LogoCount;
         private int LoginCounter;
 
         public FrmLock()
@@ -30,24 +28,6 @@ namespace DTRMClientNS
                     pList[i].Kill();
             }
 
-            //LicenceTypes LicenceType = UF.ValidateLicence();
-            //switch (LicenceType) {
-            //    case LicenceTypes.None:
-            //        Application.Exit();
-            //        break;
-            //    case LicenceTypes.Evaluation:
-            //        //Lock some features
-            //        break;
-            //    case LicenceTypes.Valid:
-            //        //Ok to go ahead
-            //        break;
-            //    case LicenceTypes.ValidAdvanced:
-            //        //Enable extra features
-            //        break;
-            //    default:
-            //        Application.Exit();
-            //        break;
-            //}
             ResetProgress();
 
             if (bslayer == null || bslayer.config == null)
@@ -264,16 +244,6 @@ namespace DTRMClientNS
         {
             DisplayMessage("LOGIN YOUR KEY", 3);
             this.Hide();
-
-
-            //bslayer.CDSetCommandMode();
-            //if (bslayer.AttachedOrder == null) {
-            //    if (bslayer.config.Customer_Display_Unit_Connected_To_COM != SerialPortTypes.NONE)
-            //        bslayer.CDWelcome();
-
-            //}
-            //else
-            //    bslayer.CDOrderTotal(CDAreas.All);
 
             txtUserPassword.Clear();
             bslayer.LoggedUser = user.Clone();

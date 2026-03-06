@@ -22,242 +22,257 @@
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            this.pnlColor = new System.Windows.Forms.Panel();
-            this.pnlMain = new System.Windows.Forms.Panel();
-            this.tmrMain = new System.Windows.Forms.Timer(this.components);
-            this.lblReference = new System.Windows.Forms.Label();
-            this.pnlBottom = new System.Windows.Forms.Panel();
-            this.lblTime = new System.Windows.Forms.Label();
-            this.pBar = new System.Windows.Forms.ProgressBar();
-            this.pnlButtons = new System.Windows.Forms.Panel();
-            this.btnFullScreen = new System.Windows.Forms.Button();
-            this.btnPrintWithDetails = new System.Windows.Forms.Button();
-            this.btnPrintAsReceipt = new System.Windows.Forms.Button();
-            this.btnPrint = new System.Windows.Forms.Button();
-            this.btnDone = new System.Windows.Forms.Button();
-            this.pnlPayment = new System.Windows.Forms.Panel();
-            this.pnlColor.SuspendLayout();
-            this.pnlBottom.SuspendLayout();
-            this.pnlButtons.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            pnlColor = new System.Windows.Forms.Panel();
+            pnlPayment = new System.Windows.Forms.Panel();
+            pnlMain = new System.Windows.Forms.Panel();
+            tmrMain = new System.Windows.Forms.Timer(components);
+            lblReference = new System.Windows.Forms.Label();
+            pnlBottom = new System.Windows.Forms.Panel();
+            lblTime = new System.Windows.Forms.Label();
+            pBar = new System.Windows.Forms.ProgressBar();
+            pnlButtons = new System.Windows.Forms.Panel();
+            btnFullScreen = new System.Windows.Forms.Button();
+            btnPrintWithDetails = new System.Windows.Forms.Button();
+            btnPrintAsReceipt = new System.Windows.Forms.Button();
+            btnPrint = new System.Windows.Forms.Button();
+            btnDone = new System.Windows.Forms.Button();
+            pnlColor.SuspendLayout();
+            pnlBottom.SuspendLayout();
+            pnlButtons.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlColor
             // 
-            this.pnlColor.Controls.Add(this.pnlPayment);
-            this.pnlColor.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlColor.Location = new System.Drawing.Point(431, 0);
-            this.pnlColor.Name = "pnlColor";
-            this.pnlColor.Size = new System.Drawing.Size(26, 193);
-            this.pnlColor.TabIndex = 1;
-            this.pnlColor.Click += new System.EventHandler(this.PnlColor_Click);
-            // 
-            // pnlMain
-            // 
-            this.pnlMain.AutoSize = true;
-            this.pnlMain.BackColor = System.Drawing.Color.White;
-            this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMain.Location = new System.Drawing.Point(0, 100);
-            this.pnlMain.MinimumSize = new System.Drawing.Size(100, 60);
-            this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(431, 61);
-            this.pnlMain.TabIndex = 3;
-            // 
-            // tmrMain
-            // 
-            this.tmrMain.Enabled = true;
-            this.tmrMain.Interval = 1000;
-            this.tmrMain.Tick += new System.EventHandler(this.TmrMain_Tick);
-            // 
-            // lblReference
-            // 
-            this.lblReference.AutoSize = true;
-            this.lblReference.BackColor = System.Drawing.Color.Transparent;
-            this.lblReference.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblReference.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblReference.ForeColor = System.Drawing.Color.Red;
-            this.lblReference.Location = new System.Drawing.Point(0, 0);
-            this.lblReference.MinimumSize = new System.Drawing.Size(120, 0);
-            this.lblReference.Name = "lblReference";
-            this.lblReference.Size = new System.Drawing.Size(120, 20);
-            this.lblReference.TabIndex = 0;
-            this.lblReference.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
-            // 
-            // pnlBottom
-            // 
-            this.pnlBottom.BackColor = System.Drawing.Color.White;
-            this.pnlBottom.Controls.Add(this.lblTime);
-            this.pnlBottom.Controls.Add(this.lblReference);
-            this.pnlBottom.Controls.Add(this.pBar);
-            this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBottom.Location = new System.Drawing.Point(0, 161);
-            this.pnlBottom.MinimumSize = new System.Drawing.Size(0, 32);
-            this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(431, 32);
-            this.pnlBottom.TabIndex = 4;
-            // 
-            // lblTime
-            // 
-            this.lblTime.BackColor = System.Drawing.Color.White;
-            this.lblTime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblTime.Location = new System.Drawing.Point(120, 0);
-            this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(311, 22);
-            this.lblTime.TabIndex = 6;
-            this.lblTime.Text = "00";
-            this.lblTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // pBar
-            // 
-            this.pBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pBar.Location = new System.Drawing.Point(0, 22);
-            this.pBar.Name = "pBar";
-            this.pBar.Size = new System.Drawing.Size(431, 10);
-            this.pBar.TabIndex = 7;
-            this.pBar.Value = 50;
-            // 
-            // pnlButtons
-            // 
-            this.pnlButtons.BackColor = System.Drawing.Color.White;
-            this.pnlButtons.Controls.Add(this.btnFullScreen);
-            this.pnlButtons.Controls.Add(this.btnPrintWithDetails);
-            this.pnlButtons.Controls.Add(this.btnPrintAsReceipt);
-            this.pnlButtons.Controls.Add(this.btnPrint);
-            this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlButtons.Location = new System.Drawing.Point(0, 0);
-            this.pnlButtons.Name = "pnlButtons";
-            this.pnlButtons.Size = new System.Drawing.Size(431, 100);
-            this.pnlButtons.TabIndex = 5;
-            // 
-            // btnFullScreen
-            // 
-            this.btnFullScreen.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnFullScreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFullScreen.ForeColor = System.Drawing.Color.White;
-            this.btnFullScreen.Image = global::DTRMNS.Properties.Resources.fullscreen;
-            this.btnFullScreen.Location = new System.Drawing.Point(240, 0);
-            this.btnFullScreen.Name = "btnFullScreen";
-            this.btnFullScreen.Size = new System.Drawing.Size(80, 100);
-            this.btnFullScreen.TabIndex = 10;
-            this.btnFullScreen.UseVisualStyleBackColor = true;
-            this.btnFullScreen.Visible = false;
-            this.btnFullScreen.Click += new System.EventHandler(this.btnFullScreen_Click);
-            // 
-            // btnPrintWithDetails
-            // 
-            this.btnPrintWithDetails.BackColor = System.Drawing.Color.White;
-            this.btnPrintWithDetails.BackgroundImage = global::DTRMNS.Properties.Resources.chef64;
-            this.btnPrintWithDetails.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnPrintWithDetails.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnPrintWithDetails.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btnPrintWithDetails.FlatAppearance.BorderSize = 0;
-            this.btnPrintWithDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrintWithDetails.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnPrintWithDetails.ForeColor = System.Drawing.Color.White;
-            this.btnPrintWithDetails.Image = global::DTRMNS.Properties.Resources.Print32;
-            this.btnPrintWithDetails.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-            this.btnPrintWithDetails.Location = new System.Drawing.Point(160, 0);
-            this.btnPrintWithDetails.Name = "btnPrintWithDetails";
-            this.btnPrintWithDetails.Size = new System.Drawing.Size(80, 100);
-            this.btnPrintWithDetails.TabIndex = 9;
-            this.btnPrintWithDetails.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPrintWithDetails.UseVisualStyleBackColor = false;
-            this.btnPrintWithDetails.Click += new System.EventHandler(this.BtnPrintWithDetails_Click);
-            // 
-            // btnPrintAsReceipt
-            // 
-            this.btnPrintAsReceipt.BackColor = System.Drawing.Color.White;
-            this.btnPrintAsReceipt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnPrintAsReceipt.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnPrintAsReceipt.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btnPrintAsReceipt.FlatAppearance.BorderSize = 0;
-            this.btnPrintAsReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrintAsReceipt.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnPrintAsReceipt.ForeColor = System.Drawing.Color.Red;
-            this.btnPrintAsReceipt.Image = global::DTRMNS.Properties.Resources.Print;
-            this.btnPrintAsReceipt.Location = new System.Drawing.Point(80, 0);
-            this.btnPrintAsReceipt.Name = "btnPrintAsReceipt";
-            this.btnPrintAsReceipt.Size = new System.Drawing.Size(80, 100);
-            this.btnPrintAsReceipt.TabIndex = 8;
-            this.btnPrintAsReceipt.Text = "RCPT";
-            this.btnPrintAsReceipt.UseVisualStyleBackColor = false;
-            this.btnPrintAsReceipt.Click += new System.EventHandler(this.BtnPrintAsReceipt_Click);
-            // 
-            // btnPrint
-            // 
-            this.btnPrint.BackColor = System.Drawing.Color.White;
-            this.btnPrint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnPrint.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnPrint.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.btnPrint.FlatAppearance.BorderSize = 0;
-            this.btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrint.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
-            this.btnPrint.ForeColor = System.Drawing.Color.White;
-            this.btnPrint.Image = global::DTRMNS.Properties.Resources.Print;
-            this.btnPrint.Location = new System.Drawing.Point(0, 0);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(80, 100);
-            this.btnPrint.TabIndex = 7;
-            this.btnPrint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnPrint.UseVisualStyleBackColor = false;
-            this.btnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
-            // 
-            // btnDone
-            // 
-            this.btnDone.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnDone.BackColor = System.Drawing.Color.Black;
-            this.btnDone.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnDone.FlatAppearance.BorderSize = 0;
-            this.btnDone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDone.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.btnDone.ForeColor = System.Drawing.Color.White;
-            this.btnDone.Image = global::DTRMNS.Properties.Resources.right32;
-            this.btnDone.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.btnDone.Location = new System.Drawing.Point(457, 0);
-            this.btnDone.MinimumSize = new System.Drawing.Size(55, 60);
-            this.btnDone.Name = "btnDone";
-            this.btnDone.Size = new System.Drawing.Size(55, 193);
-            this.btnDone.TabIndex = 0;
-            this.btnDone.Text = "1";
-            this.btnDone.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.btnDone.UseVisualStyleBackColor = false;
-            this.btnDone.Click += new System.EventHandler(this.BtnDone_Click);
+            pnlColor.Controls.Add(pnlPayment);
+            pnlColor.Dock = System.Windows.Forms.DockStyle.Right;
+            pnlColor.Location = new System.Drawing.Point(503, 0);
+            pnlColor.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlColor.Name = "pnlColor";
+            pnlColor.Size = new System.Drawing.Size(30, 223);
+            pnlColor.TabIndex = 1;
+            pnlColor.Click += PnlColor_Click;
             // 
             // pnlPayment
             // 
-            this.pnlPayment.BackColor = System.Drawing.Color.Red;
-            this.pnlPayment.BackgroundImage = global::DTRMNS.Properties.Resources.card64;
-            this.pnlPayment.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pnlPayment.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlPayment.Location = new System.Drawing.Point(0, 0);
-            this.pnlPayment.Name = "pnlPayment";
-            this.pnlPayment.Size = new System.Drawing.Size(26, 26);
-            this.pnlPayment.TabIndex = 0;
-            this.pnlPayment.Visible = false;
+            pnlPayment.BackColor = System.Drawing.Color.Red;
+            pnlPayment.BackgroundImage = Properties.Resources.card64;
+            pnlPayment.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            pnlPayment.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlPayment.Location = new System.Drawing.Point(0, 0);
+            pnlPayment.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlPayment.Name = "pnlPayment";
+            pnlPayment.Size = new System.Drawing.Size(30, 30);
+            pnlPayment.TabIndex = 0;
+            pnlPayment.Visible = false;
+            // 
+            // pnlMain
+            // 
+            pnlMain.AutoSize = true;
+            pnlMain.BackColor = System.Drawing.Color.White;
+            pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            pnlMain.Location = new System.Drawing.Point(0, 115);
+            pnlMain.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlMain.MinimumSize = new System.Drawing.Size(117, 69);
+            pnlMain.Name = "pnlMain";
+            pnlMain.Size = new System.Drawing.Size(503, 71);
+            pnlMain.TabIndex = 3;
+            // 
+            // tmrMain
+            // 
+            tmrMain.Enabled = true;
+            tmrMain.Interval = 1000;
+            tmrMain.Tick += TmrMain_Tick;
+            // 
+            // lblReference
+            // 
+            lblReference.AutoSize = true;
+            lblReference.BackColor = System.Drawing.Color.Transparent;
+            lblReference.Dock = System.Windows.Forms.DockStyle.Left;
+            lblReference.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblReference.ForeColor = System.Drawing.Color.Red;
+            lblReference.Location = new System.Drawing.Point(0, 0);
+            lblReference.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblReference.MinimumSize = new System.Drawing.Size(140, 0);
+            lblReference.Name = "lblReference";
+            lblReference.Size = new System.Drawing.Size(140, 20);
+            lblReference.TabIndex = 0;
+            lblReference.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            // 
+            // pnlBottom
+            // 
+            pnlBottom.BackColor = System.Drawing.Color.White;
+            pnlBottom.Controls.Add(lblTime);
+            pnlBottom.Controls.Add(lblReference);
+            pnlBottom.Controls.Add(pBar);
+            pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pnlBottom.Location = new System.Drawing.Point(0, 186);
+            pnlBottom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlBottom.MinimumSize = new System.Drawing.Size(0, 37);
+            pnlBottom.Name = "pnlBottom";
+            pnlBottom.Size = new System.Drawing.Size(503, 37);
+            pnlBottom.TabIndex = 4;
+            // 
+            // lblTime
+            // 
+            lblTime.BackColor = System.Drawing.Color.White;
+            lblTime.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblTime.Location = new System.Drawing.Point(140, 0);
+            lblTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblTime.Name = "lblTime";
+            lblTime.Size = new System.Drawing.Size(363, 25);
+            lblTime.TabIndex = 6;
+            lblTime.Text = "00";
+            lblTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // pBar
+            // 
+            pBar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            pBar.Location = new System.Drawing.Point(0, 25);
+            pBar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pBar.Name = "pBar";
+            pBar.Size = new System.Drawing.Size(503, 12);
+            pBar.TabIndex = 7;
+            pBar.Value = 50;
+            // 
+            // pnlButtons
+            // 
+            pnlButtons.BackColor = System.Drawing.Color.White;
+            pnlButtons.Controls.Add(btnFullScreen);
+            pnlButtons.Controls.Add(btnPrintWithDetails);
+            pnlButtons.Controls.Add(btnPrintAsReceipt);
+            pnlButtons.Controls.Add(btnPrint);
+            pnlButtons.Dock = System.Windows.Forms.DockStyle.Top;
+            pnlButtons.Location = new System.Drawing.Point(0, 0);
+            pnlButtons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlButtons.Name = "pnlButtons";
+            pnlButtons.Size = new System.Drawing.Size(503, 115);
+            pnlButtons.TabIndex = 5;
+            // 
+            // btnFullScreen
+            // 
+            btnFullScreen.Dock = System.Windows.Forms.DockStyle.Left;
+            btnFullScreen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnFullScreen.ForeColor = System.Drawing.Color.White;
+            btnFullScreen.Image = Properties.Resources.fullscreen;
+            btnFullScreen.Location = new System.Drawing.Point(279, 0);
+            btnFullScreen.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnFullScreen.Name = "btnFullScreen";
+            btnFullScreen.Size = new System.Drawing.Size(93, 115);
+            btnFullScreen.TabIndex = 10;
+            btnFullScreen.UseVisualStyleBackColor = true;
+            btnFullScreen.Visible = false;
+            btnFullScreen.Click += btnFullScreen_Click;
+            // 
+            // btnPrintWithDetails
+            // 
+            btnPrintWithDetails.BackColor = System.Drawing.Color.White;
+            btnPrintWithDetails.BackgroundImage = Properties.Resources.chef64;
+            btnPrintWithDetails.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            btnPrintWithDetails.Dock = System.Windows.Forms.DockStyle.Left;
+            btnPrintWithDetails.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            btnPrintWithDetails.FlatAppearance.BorderSize = 0;
+            btnPrintWithDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnPrintWithDetails.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            btnPrintWithDetails.ForeColor = System.Drawing.Color.White;
+            btnPrintWithDetails.Image = Properties.Resources.Print32;
+            btnPrintWithDetails.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+            btnPrintWithDetails.Location = new System.Drawing.Point(186, 0);
+            btnPrintWithDetails.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPrintWithDetails.Name = "btnPrintWithDetails";
+            btnPrintWithDetails.Size = new System.Drawing.Size(93, 115);
+            btnPrintWithDetails.TabIndex = 9;
+            btnPrintWithDetails.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnPrintWithDetails.UseVisualStyleBackColor = false;
+            btnPrintWithDetails.Click += BtnPrintWithDetails_Click;
+            // 
+            // btnPrintAsReceipt
+            // 
+            btnPrintAsReceipt.BackColor = System.Drawing.Color.White;
+            btnPrintAsReceipt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            btnPrintAsReceipt.Dock = System.Windows.Forms.DockStyle.Left;
+            btnPrintAsReceipt.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            btnPrintAsReceipt.FlatAppearance.BorderSize = 0;
+            btnPrintAsReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnPrintAsReceipt.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            btnPrintAsReceipt.ForeColor = System.Drawing.Color.Red;
+            btnPrintAsReceipt.Image = Properties.Resources.Print;
+            btnPrintAsReceipt.Location = new System.Drawing.Point(93, 0);
+            btnPrintAsReceipt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPrintAsReceipt.Name = "btnPrintAsReceipt";
+            btnPrintAsReceipt.Size = new System.Drawing.Size(93, 115);
+            btnPrintAsReceipt.TabIndex = 8;
+            btnPrintAsReceipt.Text = "RCPT";
+            btnPrintAsReceipt.UseVisualStyleBackColor = false;
+            btnPrintAsReceipt.Click += BtnPrintAsReceipt_Click;
+            // 
+            // btnPrint
+            // 
+            btnPrint.BackColor = System.Drawing.Color.White;
+            btnPrint.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            btnPrint.Dock = System.Windows.Forms.DockStyle.Left;
+            btnPrint.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            btnPrint.FlatAppearance.BorderSize = 0;
+            btnPrint.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnPrint.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            btnPrint.ForeColor = System.Drawing.Color.White;
+            btnPrint.Image = Properties.Resources.Print;
+            btnPrint.Location = new System.Drawing.Point(0, 0);
+            btnPrint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPrint.Name = "btnPrint";
+            btnPrint.Size = new System.Drawing.Size(93, 115);
+            btnPrint.TabIndex = 7;
+            btnPrint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnPrint.UseVisualStyleBackColor = false;
+            btnPrint.Click += BtnPrint_Click;
+            // 
+            // btnDone
+            // 
+            btnDone.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            btnDone.BackColor = System.Drawing.Color.Black;
+            btnDone.Dock = System.Windows.Forms.DockStyle.Right;
+            btnDone.FlatAppearance.BorderSize = 0;
+            btnDone.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnDone.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            btnDone.ForeColor = System.Drawing.Color.White;
+            btnDone.Image = Properties.Resources.right32;
+            btnDone.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
+            btnDone.Location = new System.Drawing.Point(533, 0);
+            btnDone.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDone.MinimumSize = new System.Drawing.Size(64, 69);
+            btnDone.Name = "btnDone";
+            btnDone.Size = new System.Drawing.Size(64, 223);
+            btnDone.TabIndex = 0;
+            btnDone.Text = "1";
+            btnDone.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            btnDone.UseVisualStyleBackColor = false;
+            btnDone.Click += BtnDone_Click;
             // 
             // ctlKitchenOrder
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.BackColor = System.Drawing.Color.Black;
-            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.Controls.Add(this.pnlMain);
-            this.Controls.Add(this.pnlBottom);
-            this.Controls.Add(this.pnlButtons);
-            this.Controls.Add(this.pnlColor);
-            this.Controls.Add(this.btnDone);
-            this.DoubleBuffered = true;
-            this.Name = "ctlKitchenOrder";
-            this.Size = new System.Drawing.Size(512, 193);
-            this.Load += new System.EventHandler(this.CtlKitchenOrder_Load);
-            this.pnlColor.ResumeLayout(false);
-            this.pnlBottom.ResumeLayout(false);
-            this.pnlBottom.PerformLayout();
-            this.pnlButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            AutoSize = true;
+            BackColor = System.Drawing.Color.Black;
+            BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            Controls.Add(pnlMain);
+            Controls.Add(pnlBottom);
+            Controls.Add(pnlButtons);
+            Controls.Add(pnlColor);
+            Controls.Add(btnDone);
+            DoubleBuffered = true;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "ctlKitchenOrder";
+            Size = new System.Drawing.Size(597, 223);
+            Load += CtlKitchenOrder_Load;
+            pnlColor.ResumeLayout(false);
+            pnlBottom.ResumeLayout(false);
+            pnlBottom.PerformLayout();
+            pnlButtons.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

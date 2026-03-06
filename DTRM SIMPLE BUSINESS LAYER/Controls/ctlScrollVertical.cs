@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace DTRMNS {
     public partial class ctlScrollVertical : UserControl {
         private DataGridView _Dgv;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public DataGridView Dgv { get { return _Dgv; } set { _Dgv = value; } }
         public ctlScrollVertical() {
             InitializeComponent();

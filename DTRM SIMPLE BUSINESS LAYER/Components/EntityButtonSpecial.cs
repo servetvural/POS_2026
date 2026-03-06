@@ -1,7 +1,12 @@
-﻿namespace DTRMNS {
+﻿using System.ComponentModel;
+
+namespace DTRMNS {
     public class EntityButtonSpecial : System.Windows.Forms.Button {
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string PrintableTypeIID { get; set; }
-        //public string EntityIID { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string EntityName { get; set; }
         //public string EntityButtonName { get; set; }
 

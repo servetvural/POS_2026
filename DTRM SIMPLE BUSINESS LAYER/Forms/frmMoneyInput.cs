@@ -147,7 +147,7 @@ namespace DTRMNS {
                         break;
                     case MathActions.Divide:
                         if (display== 0) {
-                            Register = Register;
+                            //Register = Register;
                         } else {
                             Register = Register / display;
                         }                        

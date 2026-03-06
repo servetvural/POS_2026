@@ -157,7 +157,6 @@ namespace DTRMSimpleBackOffice {
                 sfd.Filter = "JSON Files (*.json)|";
                 sfd.FileName = "backup.json";
                 sfd.ShowDialog();
-                DirectoryInfo dinfo = null;
 
                 if (sfd.FileName != null && sfd.FileName != "")
                 {
@@ -1408,7 +1407,6 @@ namespace DTRMSimpleBackOffice {
                     sfd.Filter = "JSON Files (*.json)|";
                     sfd.FileName = menu.MenuName + ".json";
                     sfd.ShowDialog();
-                    DirectoryInfo dinfo = null;
 
                     if (sfd.FileName != null && sfd.FileName != "")
                     {

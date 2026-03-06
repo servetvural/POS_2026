@@ -1,12 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <ProjectType>Local</ProjectType>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FC5F8615-7B4D-470E-8CDD-FAACC3ABB493}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ApplicationIcon>POS.ico</ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
@@ -21,19 +16,12 @@
     <RootNamespace>DTRMClientNS</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>DTRMClientNS.Program</StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
     <TargetZone>LocalIntranet</TargetZone>
     <GenerateManifests>false</GenerateManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ManifestCertificateThumbprint>67FBD06FC78E8A01D169619AE4A4F8C273E076FB</ManifestCertificateThumbprint>
     <ManifestKeyFile>DTRMSimpleClient_TemporaryKey.pfx</ManifestKeyFile>
     <SignManifests>false</SignManifests>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -50,133 +38,33 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <BootstrapperComponentsUrl>C:\Program Files\Microsoft Visual Studio 8</BootstrapperComponentsUrl>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
-    <Optimize>false</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
-    <Optimize>true</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <AssemblyTitle>POS</AssemblyTitle>
+    <Description>Point Of Sale</Description>
+    <Company>Pos</Company>
+    <Product>POS</Product>
+    <Copyright>Systems %40 2002</Copyright>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+
+	  <NoWarn>$(NoWarn);CA1416</NoWarn>
+	  <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Pos Library">
-      <HintPath>..\..\Pos Library\Pos Library\bin\Debug\Pos Library.dll</HintPath>
-    </Reference>
-    <Reference Include="System">
-      <Name>System</Name>
-      <HintPath>C:\WINNT\Microsoft.NET\Framework\v1.0.3705\System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Configuration.Install">
-      <Name>System.Configuration.Install</Name>
-      <HintPath>C:\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Configuration.Install.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core">
+    <Reference Update="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data">
-      <Name>System.Data</Name>
-      <HintPath>C:\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Design" />
-    <Reference Include="System.Drawing">
+    <Reference Update="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
-    <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Windows.Forms">
-      <Name>System.Windows.Forms</Name>
-      <HintPath>C:\WINNT\Microsoft.NET\Framework\v1.0.3705\System.Windows.Forms.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml">
+    <Reference Update="System.Xml">
       <Name>System.XML</Name>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="frmLock.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmLock.Designer.cs">
-      <DependentUpon>frmLock.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="frmLock.resx">
-      <DependentUpon>frmLock.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <None Include="app.config" />
-    <None Include="img\shadow.png" />
-    <None Include="Properties\DataSources\DTRMNS.ApplicationPrinter.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.User.datasource" />
-    <None Include="Properties\DataSources\DronaxLibrary.ScheduledJob.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.AppButton.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.CatalogList.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.PeopleCountData.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.ReportList.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.SessionProcessList.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.SessionProcessLookUpView.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.SessionView.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.SimpleEntityButton.datasource" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="Properties\DataSources\DTRMNS.Customer.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.Deal.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.DealItem.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.Entity.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.EntityButton.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.OrdersView.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.RemoteStation.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.SizeBarButton.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.StockItem.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.StoreGroup.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.StoreItem.datasource" />
-    <None Include="Properties\DataSources\DTRMNS.StoreList.datasource" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -208,31 +96,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DronaxPOS.ico" />
-    <None Include="img\Logo.png" />
     <Content Include="POS.ico" />
-    <None Include="Resources\Keyboard96_60.png" />
-    <None Include="Resources\shadow.png" />
-    <None Include="Resources\mandal.png" />
-    <None Include="Resources\LOGOUT.png" />
-    <None Include="Resources\LOGIN.png" />
-    <None Include="Resources\pad.png" />
-    <None Include="Resources\Save.png" />
-    <None Include="Resources\CLOSEBig.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\" />
+    <ProjectReference Include="..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj">
-      <Project>{c8c19685-1e1e-443a-86d3-5ff18925b069}</Project>
-      <Name>DTRMSimpleBusinessLayer</Name>
-    </ProjectReference>
+  <ItemGroup Label="Compile items now included by globbing that were not in the original project file">
+    <Compile Remove="trmLock.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <ItemGroup Label="EmbeddedResource items now included by globbing that were not in the original project file">
+    <EmbeddedResource Remove="trmLock.resx" />
+  </ItemGroup>
 </Project>

@@ -22,376 +22,397 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmLock));
-            this.pnlAlign = new System.Windows.Forms.Panel();
-            this.txtUserPassword = new System.Windows.Forms.TextBox();
-            this.lblSaat = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btn8 = new System.Windows.Forms.Button();
-            this.lblNotify = new System.Windows.Forms.Label();
-            this.btn2 = new System.Windows.Forms.Button();
-            this.pBar = new System.Windows.Forms.ProgressBar();
-            this.btn3 = new System.Windows.Forms.Button();
-            this.btn6 = new System.Windows.Forms.Button();
-            this.btn7 = new System.Windows.Forms.Button();
-            this.btn0 = new System.Windows.Forms.Button();
-            this.btn9 = new System.Windows.Forms.Button();
-            this.btn1 = new System.Windows.Forms.Button();
-            this.btn5 = new System.Windows.Forms.Button();
-            this.btn4 = new System.Windows.Forms.Button();
-            this.tmrSaat = new System.Windows.Forms.Timer(this.components);
-            this.LogoBox = new System.Windows.Forms.PictureBox();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnClear = new System.Windows.Forms.Button();
-            this.btnLogon = new System.Windows.Forms.Button();
-            this.pnlAlign.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LogoBox)).BeginInit();
-            this.SuspendLayout();
+            pnlAlign = new System.Windows.Forms.Panel();
+            LogoBox = new System.Windows.Forms.PictureBox();
+            txtUserPassword = new System.Windows.Forms.TextBox();
+            btnExit = new System.Windows.Forms.Button();
+            lblSaat = new System.Windows.Forms.Label();
+            panel1 = new System.Windows.Forms.Panel();
+            btn8 = new System.Windows.Forms.Button();
+            btnClear = new System.Windows.Forms.Button();
+            lblNotify = new System.Windows.Forms.Label();
+            btn2 = new System.Windows.Forms.Button();
+            pBar = new System.Windows.Forms.ProgressBar();
+            btn3 = new System.Windows.Forms.Button();
+            btn6 = new System.Windows.Forms.Button();
+            btn7 = new System.Windows.Forms.Button();
+            btn0 = new System.Windows.Forms.Button();
+            btn9 = new System.Windows.Forms.Button();
+            btn1 = new System.Windows.Forms.Button();
+            btn5 = new System.Windows.Forms.Button();
+            btn4 = new System.Windows.Forms.Button();
+            btnLogon = new System.Windows.Forms.Button();
+            tmrSaat = new System.Windows.Forms.Timer(components);
+            pnlAlign.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)LogoBox).BeginInit();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // pnlAlign
             // 
-            this.pnlAlign.Controls.Add(this.LogoBox);
-            this.pnlAlign.Controls.Add(this.txtUserPassword);
-            this.pnlAlign.Controls.Add(this.btnExit);
-            this.pnlAlign.Controls.Add(this.lblSaat);
-            this.pnlAlign.Controls.Add(this.panel1);
-            this.pnlAlign.Controls.Add(this.btnLogon);
-            this.pnlAlign.Location = new System.Drawing.Point(150, 0);
-            this.pnlAlign.Name = "pnlAlign";
-            this.pnlAlign.Size = new System.Drawing.Size(724, 742);
-            this.pnlAlign.TabIndex = 100;
-            // 
-            // txtUserPassword
-            // 
-            this.txtUserPassword.BackColor = System.Drawing.Color.Black;
-            this.txtUserPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtUserPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F);
-            this.txtUserPassword.ForeColor = System.Drawing.Color.White;
-            this.txtUserPassword.Location = new System.Drawing.Point(207, 144);
-            this.txtUserPassword.Name = "txtUserPassword";
-            this.txtUserPassword.PasswordChar = '*';
-            this.txtUserPassword.ReadOnly = true;
-            this.txtUserPassword.Size = new System.Drawing.Size(330, 43);
-            this.txtUserPassword.TabIndex = 98;
-            this.txtUserPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lblSaat
-            // 
-            this.lblSaat.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold);
-            this.lblSaat.ForeColor = System.Drawing.Color.White;
-            this.lblSaat.Location = new System.Drawing.Point(190, 702);
-            this.lblSaat.Name = "lblSaat";
-            this.lblSaat.Size = new System.Drawing.Size(362, 36);
-            this.lblSaat.TabIndex = 97;
-            this.lblSaat.Text = "00:00:00";
-            this.lblSaat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.btn8);
-            this.panel1.Controls.Add(this.btnClear);
-            this.panel1.Controls.Add(this.lblNotify);
-            this.panel1.Controls.Add(this.btn2);
-            this.panel1.Controls.Add(this.pBar);
-            this.panel1.Controls.Add(this.btn3);
-            this.panel1.Controls.Add(this.btn6);
-            this.panel1.Controls.Add(this.btn7);
-            this.panel1.Controls.Add(this.btn0);
-            this.panel1.Controls.Add(this.btn9);
-            this.panel1.Controls.Add(this.btn1);
-            this.panel1.Controls.Add(this.btn5);
-            this.panel1.Controls.Add(this.btn4);
-            this.panel1.Location = new System.Drawing.Point(190, 203);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(362, 496);
-            this.panel1.TabIndex = 0;
-            // 
-            // btn8
-            // 
-            this.btn8.AutoEllipsis = true;
-            this.btn8.BackColor = System.Drawing.Color.Black;
-            this.btn8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn8.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn8.ForeColor = System.Drawing.Color.White;
-            this.btn8.Location = new System.Drawing.Point(132, 5);
-            this.btn8.Name = "btn8";
-            this.btn8.Size = new System.Drawing.Size(100, 100);
-            this.btn8.TabIndex = 2;
-            this.btn8.TabStop = false;
-            this.btn8.Text = "8";
-            this.btn8.UseVisualStyleBackColor = false;
-            this.btn8.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // lblNotify
-            // 
-            this.lblNotify.ForeColor = System.Drawing.Color.White;
-            this.lblNotify.Location = new System.Drawing.Point(16, 455);
-            this.lblNotify.Name = "lblNotify";
-            this.lblNotify.Size = new System.Drawing.Size(331, 17);
-            this.lblNotify.TabIndex = 93;
-            this.lblNotify.Text = "LOGIN  YOUR  KEY";
-            // 
-            // btn2
-            // 
-            this.btn2.AutoEllipsis = true;
-            this.btn2.BackColor = System.Drawing.Color.Black;
-            this.btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn2.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn2.ForeColor = System.Drawing.Color.White;
-            this.btn2.Location = new System.Drawing.Point(132, 228);
-            this.btn2.Name = "btn2";
-            this.btn2.Size = new System.Drawing.Size(100, 100);
-            this.btn2.TabIndex = 8;
-            this.btn2.TabStop = false;
-            this.btn2.Text = "2";
-            this.btn2.UseVisualStyleBackColor = false;
-            this.btn2.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // pBar
-            // 
-            this.pBar.Location = new System.Drawing.Point(17, 475);
-            this.pBar.MarqueeAnimationSpeed = 30;
-            this.pBar.Maximum = 10;
-            this.pBar.Name = "pBar";
-            this.pBar.Size = new System.Drawing.Size(328, 12);
-            this.pBar.TabIndex = 92;
-            this.pBar.Text = "progressBarX1";
-            // 
-            // btn3
-            // 
-            this.btn3.AutoEllipsis = true;
-            this.btn3.BackColor = System.Drawing.Color.Black;
-            this.btn3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn3.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn3.ForeColor = System.Drawing.Color.White;
-            this.btn3.Location = new System.Drawing.Point(245, 228);
-            this.btn3.Name = "btn3";
-            this.btn3.Size = new System.Drawing.Size(100, 100);
-            this.btn3.TabIndex = 9;
-            this.btn3.TabStop = false;
-            this.btn3.Text = "3";
-            this.btn3.UseVisualStyleBackColor = false;
-            this.btn3.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn6
-            // 
-            this.btn6.AutoEllipsis = true;
-            this.btn6.BackColor = System.Drawing.Color.Black;
-            this.btn6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn6.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn6.ForeColor = System.Drawing.Color.White;
-            this.btn6.Location = new System.Drawing.Point(245, 116);
-            this.btn6.Name = "btn6";
-            this.btn6.Size = new System.Drawing.Size(100, 100);
-            this.btn6.TabIndex = 6;
-            this.btn6.TabStop = false;
-            this.btn6.Text = "6";
-            this.btn6.UseVisualStyleBackColor = false;
-            this.btn6.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn7
-            // 
-            this.btn7.AutoEllipsis = true;
-            this.btn7.BackColor = System.Drawing.Color.Black;
-            this.btn7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn7.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn7.ForeColor = System.Drawing.Color.White;
-            this.btn7.Location = new System.Drawing.Point(17, 5);
-            this.btn7.Name = "btn7";
-            this.btn7.Size = new System.Drawing.Size(100, 100);
-            this.btn7.TabIndex = 1;
-            this.btn7.TabStop = false;
-            this.btn7.Text = "7";
-            this.btn7.UseVisualStyleBackColor = false;
-            this.btn7.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn0
-            // 
-            this.btn0.AutoEllipsis = true;
-            this.btn0.BackColor = System.Drawing.Color.Black;
-            this.btn0.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn0.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn0.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn0.ForeColor = System.Drawing.Color.White;
-            this.btn0.Location = new System.Drawing.Point(17, 340);
-            this.btn0.Name = "btn0";
-            this.btn0.Size = new System.Drawing.Size(100, 100);
-            this.btn0.TabIndex = 10;
-            this.btn0.TabStop = false;
-            this.btn0.Text = "0";
-            this.btn0.UseVisualStyleBackColor = false;
-            this.btn0.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn9
-            // 
-            this.btn9.AutoEllipsis = true;
-            this.btn9.BackColor = System.Drawing.Color.Black;
-            this.btn9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn9.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn9.ForeColor = System.Drawing.Color.White;
-            this.btn9.Location = new System.Drawing.Point(245, 5);
-            this.btn9.Name = "btn9";
-            this.btn9.Size = new System.Drawing.Size(100, 100);
-            this.btn9.TabIndex = 3;
-            this.btn9.TabStop = false;
-            this.btn9.Text = "9";
-            this.btn9.UseVisualStyleBackColor = false;
-            this.btn9.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn1
-            // 
-            this.btn1.AutoEllipsis = true;
-            this.btn1.BackColor = System.Drawing.Color.Black;
-            this.btn1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn1.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn1.ForeColor = System.Drawing.Color.White;
-            this.btn1.Location = new System.Drawing.Point(17, 228);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(100, 100);
-            this.btn1.TabIndex = 7;
-            this.btn1.TabStop = false;
-            this.btn1.Text = "1";
-            this.btn1.UseVisualStyleBackColor = false;
-            this.btn1.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn5
-            // 
-            this.btn5.AutoEllipsis = true;
-            this.btn5.BackColor = System.Drawing.Color.Black;
-            this.btn5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn5.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn5.ForeColor = System.Drawing.Color.White;
-            this.btn5.Location = new System.Drawing.Point(132, 116);
-            this.btn5.Name = "btn5";
-            this.btn5.Size = new System.Drawing.Size(100, 100);
-            this.btn5.TabIndex = 5;
-            this.btn5.TabStop = false;
-            this.btn5.Text = "5";
-            this.btn5.UseVisualStyleBackColor = false;
-            this.btn5.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // btn4
-            // 
-            this.btn4.AutoEllipsis = true;
-            this.btn4.BackColor = System.Drawing.Color.Black;
-            this.btn4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btn4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn4.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
-            this.btn4.ForeColor = System.Drawing.Color.White;
-            this.btn4.Location = new System.Drawing.Point(17, 116);
-            this.btn4.Name = "btn4";
-            this.btn4.Size = new System.Drawing.Size(100, 100);
-            this.btn4.TabIndex = 4;
-            this.btn4.TabStop = false;
-            this.btn4.Text = "4";
-            this.btn4.UseVisualStyleBackColor = false;
-            this.btn4.Click += new System.EventHandler(this.KeyHandle);
-            // 
-            // tmrSaat
-            // 
-            this.tmrSaat.Enabled = true;
-            this.tmrSaat.Interval = 1000;
-            this.tmrSaat.Tick += new System.EventHandler(this.TmrSaat_Tick);
+            pnlAlign.Controls.Add(LogoBox);
+            pnlAlign.Controls.Add(txtUserPassword);
+            pnlAlign.Controls.Add(btnExit);
+            pnlAlign.Controls.Add(lblSaat);
+            pnlAlign.Controls.Add(panel1);
+            pnlAlign.Controls.Add(btnLogon);
+            pnlAlign.Location = new System.Drawing.Point(84, 0);
+            pnlAlign.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pnlAlign.Name = "pnlAlign";
+            pnlAlign.Size = new System.Drawing.Size(845, 747);
+            pnlAlign.TabIndex = 100;
             // 
             // LogoBox
             // 
-            this.LogoBox.Image = global::DTRMClientNS.Properties.Resources.Logo;
-            this.LogoBox.Location = new System.Drawing.Point(342, 22);
-            this.LogoBox.Name = "LogoBox";
-            this.LogoBox.Size = new System.Drawing.Size(48, 48);
-            this.LogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.LogoBox.TabIndex = 88;
-            this.LogoBox.TabStop = false;
-            this.LogoBox.Click += new System.EventHandler(this.LogoBox_Click);
-            this.LogoBox.DoubleClick += new System.EventHandler(this.LogoBox_DoubleClick);
+            LogoBox.Image = Properties.Resources.Logo;
+            LogoBox.Location = new System.Drawing.Point(404, 12);
+            LogoBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            LogoBox.Name = "LogoBox";
+            LogoBox.Size = new System.Drawing.Size(56, 55);
+            LogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            LogoBox.TabIndex = 88;
+            LogoBox.TabStop = false;
+            LogoBox.Click += LogoBox_Click;
+            LogoBox.DoubleClick += LogoBox_DoubleClick;
+            // 
+            // txtUserPassword
+            // 
+            txtUserPassword.BackColor = System.Drawing.Color.Black;
+            txtUserPassword.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            txtUserPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 22F);
+            txtUserPassword.ForeColor = System.Drawing.Color.White;
+            txtUserPassword.Location = new System.Drawing.Point(241, 69);
+            txtUserPassword.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtUserPassword.Name = "txtUserPassword";
+            txtUserPassword.PasswordChar = '*';
+            txtUserPassword.ReadOnly = true;
+            txtUserPassword.Size = new System.Drawing.Size(385, 34);
+            txtUserPassword.TabIndex = 98;
+            txtUserPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // btnExit
             // 
-            this.btnExit.AutoEllipsis = true;
-            this.btnExit.BackColor = System.Drawing.Color.Black;
-            this.btnExit.BackgroundImage = global::DTRMClientNS.Properties.Resources.LOGOUT;
-            this.btnExit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnExit.FlatAppearance.BorderSize = 0;
-            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExit.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnExit.ForeColor = System.Drawing.Color.White;
-            this.btnExit.Location = new System.Drawing.Point(16, 529);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(128, 128);
-            this.btnExit.TabIndex = 2;
-            this.btnExit.Text = "LOGOUT";
-            this.btnExit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnExit.UseVisualStyleBackColor = false;
-            this.btnExit.Click += new System.EventHandler(this.BtnExit_Click);
+            btnExit.AutoEllipsis = true;
+            btnExit.BackColor = System.Drawing.Color.Black;
+            btnExit.BackgroundImage = Properties.Resources.LOGOUT;
+            btnExit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            btnExit.FlatAppearance.BorderSize = 0;
+            btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnExit.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            btnExit.ForeColor = System.Drawing.Color.White;
+            btnExit.Location = new System.Drawing.Point(19, 498);
+            btnExit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new System.Drawing.Size(149, 148);
+            btnExit.TabIndex = 2;
+            btnExit.Text = "LOGOUT";
+            btnExit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnExit.UseVisualStyleBackColor = false;
+            btnExit.Click += BtnExit_Click;
+            // 
+            // lblSaat
+            // 
+            lblSaat.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold);
+            lblSaat.ForeColor = System.Drawing.Color.White;
+            lblSaat.Location = new System.Drawing.Point(222, 686);
+            lblSaat.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSaat.Name = "lblSaat";
+            lblSaat.Size = new System.Drawing.Size(422, 42);
+            lblSaat.TabIndex = 97;
+            lblSaat.Text = "00:00:00";
+            lblSaat.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(btn8);
+            panel1.Controls.Add(btnClear);
+            panel1.Controls.Add(lblNotify);
+            panel1.Controls.Add(btn2);
+            panel1.Controls.Add(pBar);
+            panel1.Controls.Add(btn3);
+            panel1.Controls.Add(btn6);
+            panel1.Controls.Add(btn7);
+            panel1.Controls.Add(btn0);
+            panel1.Controls.Add(btn9);
+            panel1.Controls.Add(btn1);
+            panel1.Controls.Add(btn5);
+            panel1.Controls.Add(btn4);
+            panel1.Location = new System.Drawing.Point(222, 109);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(422, 572);
+            panel1.TabIndex = 0;
+            // 
+            // btn8
+            // 
+            btn8.AutoEllipsis = true;
+            btn8.BackColor = System.Drawing.Color.Black;
+            btn8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn8.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn8.ForeColor = System.Drawing.Color.White;
+            btn8.Location = new System.Drawing.Point(154, 6);
+            btn8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn8.Name = "btn8";
+            btn8.Size = new System.Drawing.Size(117, 115);
+            btn8.TabIndex = 2;
+            btn8.TabStop = false;
+            btn8.Text = "8";
+            btn8.UseVisualStyleBackColor = false;
+            btn8.Click += KeyHandle;
             // 
             // btnClear
             // 
-            this.btnClear.AutoEllipsis = true;
-            this.btnClear.BackColor = System.Drawing.Color.Maroon;
-            this.btnClear.BackgroundImage = global::DTRMClientNS.Properties.Resources.shadow;
-            this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClear.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnClear.ForeColor = System.Drawing.Color.White;
-            this.btnClear.Location = new System.Drawing.Point(245, 340);
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(100, 100);
-            this.btnClear.TabIndex = 11;
-            this.btnClear.TabStop = false;
-            this.btnClear.Text = "CLEAR";
-            this.btnClear.UseVisualStyleBackColor = false;
-            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
+            btnClear.AutoEllipsis = true;
+            btnClear.BackColor = System.Drawing.Color.Maroon;
+            btnClear.BackgroundImage = Properties.Resources.shadow;
+            btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btnClear.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnClear.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            btnClear.ForeColor = System.Drawing.Color.White;
+            btnClear.Location = new System.Drawing.Point(286, 392);
+            btnClear.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClear.Name = "btnClear";
+            btnClear.Size = new System.Drawing.Size(117, 115);
+            btnClear.TabIndex = 11;
+            btnClear.TabStop = false;
+            btnClear.Text = "CLEAR";
+            btnClear.UseVisualStyleBackColor = false;
+            btnClear.Click += BtnClear_Click;
+            // 
+            // lblNotify
+            // 
+            lblNotify.ForeColor = System.Drawing.Color.White;
+            lblNotify.Location = new System.Drawing.Point(19, 525);
+            lblNotify.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblNotify.Name = "lblNotify";
+            lblNotify.Size = new System.Drawing.Size(386, 20);
+            lblNotify.TabIndex = 93;
+            lblNotify.Text = "LOGIN  YOUR  KEY";
+            // 
+            // btn2
+            // 
+            btn2.AutoEllipsis = true;
+            btn2.BackColor = System.Drawing.Color.Black;
+            btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn2.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn2.ForeColor = System.Drawing.Color.White;
+            btn2.Location = new System.Drawing.Point(154, 263);
+            btn2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn2.Name = "btn2";
+            btn2.Size = new System.Drawing.Size(117, 115);
+            btn2.TabIndex = 8;
+            btn2.TabStop = false;
+            btn2.Text = "2";
+            btn2.UseVisualStyleBackColor = false;
+            btn2.Click += KeyHandle;
+            // 
+            // pBar
+            // 
+            pBar.Location = new System.Drawing.Point(20, 548);
+            pBar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pBar.MarqueeAnimationSpeed = 30;
+            pBar.Maximum = 10;
+            pBar.Name = "pBar";
+            pBar.Size = new System.Drawing.Size(383, 14);
+            pBar.TabIndex = 92;
+            pBar.Text = "progressBarX1";
+            // 
+            // btn3
+            // 
+            btn3.AutoEllipsis = true;
+            btn3.BackColor = System.Drawing.Color.Black;
+            btn3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn3.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn3.ForeColor = System.Drawing.Color.White;
+            btn3.Location = new System.Drawing.Point(286, 263);
+            btn3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn3.Name = "btn3";
+            btn3.Size = new System.Drawing.Size(117, 115);
+            btn3.TabIndex = 9;
+            btn3.TabStop = false;
+            btn3.Text = "3";
+            btn3.UseVisualStyleBackColor = false;
+            btn3.Click += KeyHandle;
+            // 
+            // btn6
+            // 
+            btn6.AutoEllipsis = true;
+            btn6.BackColor = System.Drawing.Color.Black;
+            btn6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn6.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn6.ForeColor = System.Drawing.Color.White;
+            btn6.Location = new System.Drawing.Point(286, 134);
+            btn6.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn6.Name = "btn6";
+            btn6.Size = new System.Drawing.Size(117, 115);
+            btn6.TabIndex = 6;
+            btn6.TabStop = false;
+            btn6.Text = "6";
+            btn6.UseVisualStyleBackColor = false;
+            btn6.Click += KeyHandle;
+            // 
+            // btn7
+            // 
+            btn7.AutoEllipsis = true;
+            btn7.BackColor = System.Drawing.Color.Black;
+            btn7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn7.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn7.ForeColor = System.Drawing.Color.White;
+            btn7.Location = new System.Drawing.Point(20, 6);
+            btn7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn7.Name = "btn7";
+            btn7.Size = new System.Drawing.Size(117, 115);
+            btn7.TabIndex = 1;
+            btn7.TabStop = false;
+            btn7.Text = "7";
+            btn7.UseVisualStyleBackColor = false;
+            btn7.Click += KeyHandle;
+            // 
+            // btn0
+            // 
+            btn0.AutoEllipsis = true;
+            btn0.BackColor = System.Drawing.Color.Black;
+            btn0.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn0.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn0.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn0.ForeColor = System.Drawing.Color.White;
+            btn0.Location = new System.Drawing.Point(20, 392);
+            btn0.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn0.Name = "btn0";
+            btn0.Size = new System.Drawing.Size(117, 115);
+            btn0.TabIndex = 10;
+            btn0.TabStop = false;
+            btn0.Text = "0";
+            btn0.UseVisualStyleBackColor = false;
+            btn0.Click += KeyHandle;
+            // 
+            // btn9
+            // 
+            btn9.AutoEllipsis = true;
+            btn9.BackColor = System.Drawing.Color.Black;
+            btn9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn9.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn9.ForeColor = System.Drawing.Color.White;
+            btn9.Location = new System.Drawing.Point(286, 6);
+            btn9.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn9.Name = "btn9";
+            btn9.Size = new System.Drawing.Size(117, 115);
+            btn9.TabIndex = 3;
+            btn9.TabStop = false;
+            btn9.Text = "9";
+            btn9.UseVisualStyleBackColor = false;
+            btn9.Click += KeyHandle;
+            // 
+            // btn1
+            // 
+            btn1.AutoEllipsis = true;
+            btn1.BackColor = System.Drawing.Color.Black;
+            btn1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn1.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn1.ForeColor = System.Drawing.Color.White;
+            btn1.Location = new System.Drawing.Point(20, 263);
+            btn1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn1.Name = "btn1";
+            btn1.Size = new System.Drawing.Size(117, 115);
+            btn1.TabIndex = 7;
+            btn1.TabStop = false;
+            btn1.Text = "1";
+            btn1.UseVisualStyleBackColor = false;
+            btn1.Click += KeyHandle;
+            // 
+            // btn5
+            // 
+            btn5.AutoEllipsis = true;
+            btn5.BackColor = System.Drawing.Color.Black;
+            btn5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn5.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn5.ForeColor = System.Drawing.Color.White;
+            btn5.Location = new System.Drawing.Point(154, 134);
+            btn5.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn5.Name = "btn5";
+            btn5.Size = new System.Drawing.Size(117, 115);
+            btn5.TabIndex = 5;
+            btn5.TabStop = false;
+            btn5.Text = "5";
+            btn5.UseVisualStyleBackColor = false;
+            btn5.Click += KeyHandle;
+            // 
+            // btn4
+            // 
+            btn4.AutoEllipsis = true;
+            btn4.BackColor = System.Drawing.Color.Black;
+            btn4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            btn4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btn4.Font = new System.Drawing.Font("Arial", 40F, System.Drawing.FontStyle.Bold);
+            btn4.ForeColor = System.Drawing.Color.White;
+            btn4.Location = new System.Drawing.Point(20, 134);
+            btn4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btn4.Name = "btn4";
+            btn4.Size = new System.Drawing.Size(117, 115);
+            btn4.TabIndex = 4;
+            btn4.TabStop = false;
+            btn4.Text = "4";
+            btn4.UseVisualStyleBackColor = false;
+            btn4.Click += KeyHandle;
             // 
             // btnLogon
             // 
-            this.btnLogon.AutoEllipsis = true;
-            this.btnLogon.BackColor = System.Drawing.Color.Black;
-            this.btnLogon.BackgroundImage = global::DTRMClientNS.Properties.Resources.LOGIN;
-            this.btnLogon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnLogon.FlatAppearance.BorderSize = 0;
-            this.btnLogon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLogon.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnLogon.ForeColor = System.Drawing.Color.White;
-            this.btnLogon.Location = new System.Drawing.Point(580, 529);
-            this.btnLogon.Name = "btnLogon";
-            this.btnLogon.Size = new System.Drawing.Size(128, 128);
-            this.btnLogon.TabIndex = 1;
-            this.btnLogon.TabStop = false;
-            this.btnLogon.Text = "LOGON";
-            this.btnLogon.UseVisualStyleBackColor = false;
-            this.btnLogon.Click += new System.EventHandler(this.BtnLogon_Click);
+            btnLogon.AutoEllipsis = true;
+            btnLogon.BackColor = System.Drawing.Color.Black;
+            btnLogon.BackgroundImage = Properties.Resources.LOGIN;
+            btnLogon.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            btnLogon.FlatAppearance.BorderSize = 0;
+            btnLogon.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnLogon.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            btnLogon.ForeColor = System.Drawing.Color.White;
+            btnLogon.Location = new System.Drawing.Point(677, 498);
+            btnLogon.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnLogon.Name = "btnLogon";
+            btnLogon.Size = new System.Drawing.Size(149, 148);
+            btnLogon.TabIndex = 1;
+            btnLogon.TabStop = false;
+            btnLogon.Text = "LOGON";
+            btnLogon.UseVisualStyleBackColor = false;
+            btnLogon.Click += BtnLogon_Click;
+            // 
+            // tmrSaat
+            // 
+            tmrSaat.Enabled = true;
+            tmrSaat.Interval = 1000;
+            tmrSaat.Tick += TmrSaat_Tick;
             // 
             // FrmLock
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1008, 729);
-            this.ControlBox = false;
-            this.Controls.Add(this.pnlAlign);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "FrmLock";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
-            this.Load += new System.EventHandler(this.FrmLock_Load);
-            this.Shown += new System.EventHandler(this.FrmLock_Shown);
-            this.pnlAlign.ResumeLayout(false);
-            this.pnlAlign.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.LogoBox)).EndInit();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            BackColor = System.Drawing.Color.Black;
+            ClientSize = new System.Drawing.Size(1022, 772);
+            ControlBox = false;
+            Controls.Add(pnlAlign);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "FrmLock";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Load += FrmLock_Load;
+            Shown += FrmLock_Shown;
+            pnlAlign.ResumeLayout(false);
+            pnlAlign.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)LogoBox).EndInit();
+            panel1.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

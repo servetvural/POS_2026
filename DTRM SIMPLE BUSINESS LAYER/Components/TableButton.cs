@@ -1,11 +1,17 @@
-﻿using System.Drawing;
+﻿using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace DTRMNS{
     public class TableButton : System.Windows.Forms.Button{
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string IID { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string TableNumber { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public TableTypes TableType { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public ButtonShapeTypes Shape { get; set; }
 
         public bool IsPrimary {

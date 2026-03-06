@@ -1,17 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C60A90B4-D3D8-4D14-93C7-94A0AA5AC653}</ProjectGuid>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DTRMSimpleAdaptor</RootNamespace>
-    <AssemblyName>DTRMSimpleAdaptor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
@@ -27,132 +17,15 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationIcon>Disli.ico</ApplicationIcon>
+
+	  <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DTRMSimpleBusinessLayer">
-      <HintPath>..\DTRM SIMPLE BUSINESS LAYER\bin\Debug\DTRMSimpleBusinessLayer.dll</HintPath>
-    </Reference>
-    <Reference Include="Pos Library">
-      <HintPath>..\..\Pos Library\Pos Library\bin\Debug\Pos Library.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DirectorySetter.cs" />
-    <Compile Include="frmInput.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmInput.Designer.cs">
-      <DependentUpon>frmInput.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmMainAdaptor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmMainAdaptor.Designer.cs">
-      <DependentUpon>frmMainAdaptor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmOrderView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmOrderView.Designer.cs">
-      <DependentUpon>frmOrderView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmInput.resx">
-      <DependentUpon>frmInput.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmInput.tr.resx">
-      <DependentUpon>frmInput.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmMainAdaptor.resx">
-      <DependentUpon>frmMainAdaptor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmMainAdaptor.tr.resx">
-      <DependentUpon>frmMainAdaptor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmOrderView.resx">
-      <DependentUpon>frmOrderView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmOrderView.tr.resx">
-      <DependentUpon>frmOrderView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\DataSources\DTRMNS.TaxSummary.datasource" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Arrow Green - Right.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Arrow Red - Left.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Gears32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Update.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Printer32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\mektup32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Export32.png" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Disli.ico" />
@@ -164,12 +37,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <ProjectReference Include="..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj" />
+  </ItemGroup>
 </Project>

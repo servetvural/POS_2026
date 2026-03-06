@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using PosLibrary;
 using DTRMNS.Controls;
+using System.ComponentModel;
 
 namespace DTRMNS {
     public partial class ctlKitchenDisplay : UserControl {
@@ -16,6 +17,7 @@ namespace DTRMNS {
 
         private DateTime KitchenModified;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool DisplayClock { get { return lblClock.Visible; }
             set { lblClock.Visible = value; }
         }
@@ -307,6 +309,7 @@ namespace DTRMNS {
             pnlCompletedOrders.Controls.RemoveByKey(korderIID);
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ChangeDistributionVisible { get { return btnStationSelector.Visible; } set { btnStationSelector.Visible = value; } }
 
     }

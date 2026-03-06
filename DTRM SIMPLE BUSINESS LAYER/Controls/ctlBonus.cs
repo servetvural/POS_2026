@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -8,21 +9,22 @@ namespace DTRMNS.Controls {
         private DTRMSimpleBusiness bslayer;
         private bool blnUpdating;
 
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Font ControlFont {  get { return Font; } set { lblPrevious.Font = lblNext.Font = lblCiro.Font  = value; } }
 
-       // public Font ProgressBarFont { get { return pBar.Font; } set { pBar.Font = value; } }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color ControlBackColor {  get { return BackColor;  } set { lblPrevious.BackColor = lblNext.BackColor = lblCiro.BackColor =  BackColor = value; } }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public Color ControlForeColor { get { return ForeColor; } set { pBar.ForeColor = lblPrevious.ForeColor = lblNext.ForeColor = lblCiro.ForeColor =  ForeColor = value; } }
 
-       // public Color ProgressBarForeColor { get { return pBar.ForeColor; } set{ pBar.ForeColor = value; } } 
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool EnableAutoUpdate { get { return tmrMain.Enabled; } set { tmrMain.Enabled = value; } }
 
-      //  public Size ProgressBarSize { get { return pBar.Size; } set { pBar.Size = value; } }
-
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public PosLibrary.DRProgressBar ProgressBar { get { return pBar; } }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int ProgressBarWidth {  get { return pBar.Width; }  set { pBar.Width = value; } }
 
         public ctlBonus() {

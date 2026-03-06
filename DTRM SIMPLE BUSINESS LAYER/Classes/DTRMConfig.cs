@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace DTRMNS {
+namespace DTRMNS
+{
 
     //CategoryAttribute 	This attribute places your property in the appropriate category in a node on the property grid.
     //DescriptionAttribute	This attribute places a description of your property at the bottom of the property grid
@@ -29,7 +30,8 @@ namespace DTRMNS {
 
 
     [System.Serializable]
-    public class DTRMConfig {
+    public class DTRMConfig
+    {
 
 
         #region 10.Connection Settings
@@ -38,34 +40,39 @@ namespace DTRMNS {
 
         private string _TerminalName = "Terminal ##";
         [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Name of this terminal"), DisplayName("Unique name of this Terminal")]
-        public string Terminal_Name {
+        public string Terminal_Name
+        {
             get { return _TerminalName; }
             set { _TerminalName = value; }
-        }    
+        }
 
         private string _Database_Instance = ".";
         [CategoryAttribute("10.Connection Settings"), DescriptionAttribute(@". or .\SQLEXPRESS or 192.168.1.20\SQLEXPRESS"), DisplayName("Database Server IP and/or instance name")]
-       //[EditorAttribute(typeof(DatabaseServerEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public string Database_Instance {
+        //[EditorAttribute(typeof(DatabaseServerEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        public string Database_Instance
+        {
             get { return _Database_Instance; }
             set { _Database_Instance = value; }
         }
 
         private string _Database_Name = "DTRMSimple";
         [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Database Name  exp:DTRMSimple , must be a valid name."), DisplayName("Name of Database")]
-        public string Database_Name {
+        public string Database_Name
+        {
             get { return _Database_Name; }
             set { _Database_Name = value; }
         }
         private string _Database_User_Name = "sa";
         [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("It must be a valid username to access the database."), PasswordPropertyText(true), DisplayName("Database Username")]
-        public string Database_User_Name {
+        public string Database_User_Name
+        {
             get { return _Database_User_Name; }
             set { _Database_User_Name = value; }
         }
         private string _Database_Password = "servetvural";
         [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("It must be the given password during installation"), PasswordPropertyText(true), DisplayName("Database Password")]
-        public string Database_Password {
+        public string Database_Password
+        {
             get { return _Database_Password; }
             set { _Database_Password = value; }
         }
@@ -86,30 +93,30 @@ namespace DTRMNS {
 
         #region 11.Direct Sale Order Settings
         private bool _Direct_Sale_Allowed = true;
-        [CategoryAttribute("11.Direct Sale Order Settings"),DisplayName("Allow direct sale method"), DescriptionAttribute("Is Direct Sale Allowed On This Terminal")]
+        [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("Allow direct sale method"), DescriptionAttribute("Is Direct Sale Allowed On This Terminal")]
         public bool Direct_Sale_Allowed { get { return _Direct_Sale_Allowed; } set { _Direct_Sale_Allowed = value; } }
 
         private int _Direct_Sale_Receipt_Count = 1;
-        [CategoryAttribute("11.Direct Sale Order Settings"),DisplayName("How many receipt for direct sale to print"), DescriptionAttribute("Direct Sale Receipt Count")]
+        [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("How many receipt for direct sale to print"), DescriptionAttribute("Direct Sale Receipt Count")]
         public int Direct_Sale_Receipt_Count { get { return _Direct_Sale_Receipt_Count; } set { _Direct_Sale_Receipt_Count = value; } }
 
         private AutoPaymentMethods _DirectSalePaymentMehtod = AutoPaymentMethods.AutoCash;
-        [CategoryAttribute("11.Direct Sale Order Settings"),DisplayName("Auto payment method for direct sale"), DescriptionAttribute("Direct Sale Default Payment Method")]
+        [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("Auto payment method for direct sale"), DescriptionAttribute("Direct Sale Default Payment Method")]
         public AutoPaymentMethods Direct_Sale_Auto_Payment_Mehtod { get { return _DirectSalePaymentMehtod; } set { _DirectSalePaymentMehtod = value; } }
 
         private string _Direct_Sale_Order_Button_Text = "SALE";
-        [CategoryAttribute("11.Direct Sale Order Settings"),DisplayName("Text on direct sale button"), DescriptionAttribute("Direct Sale Button Text")]
+        [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("Text on direct sale button"), DescriptionAttribute("Direct Sale Button Text")]
         public string Direct_Sale_Order_Button_Text { get { return _Direct_Sale_Order_Button_Text; } set { _Direct_Sale_Order_Button_Text = value; } }
 
         private int _Direct_Sale_Button_Width = 100;
-        [CategoryAttribute("11.Direct Sale Order Settings"),DisplayName("Width of direct sale button"), DescriptionAttribute("Direct Sale Button Width")]
+        [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("Width of direct sale button"), DescriptionAttribute("Direct Sale Button Width")]
         public int Direct_Sale_Button_Width { get { return _Direct_Sale_Button_Width; } set { _Direct_Sale_Button_Width = value; } }
 
         #endregion
 
         #region 12.Hold Order Settings
         private bool _Hold_Order_Available = true;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Allow order hold"), DescriptionAttribute("Can Hold Orders")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Allow order hold"), DescriptionAttribute("Can Hold Orders")]
         public bool Hold_Order_Available { get { return _Hold_Order_Available; } set { _Hold_Order_Available = value; } }
 
         private int _Hold_Button_Maximum_Shrunk_Width = 100;
@@ -130,14 +137,16 @@ namespace DTRMNS {
         [CategoryAttribute("12.Hold Order Settings"), DisplayName("Maximum Height of Extended Hold Order Button"), DescriptionAttribute("Maximum Height of Extended Hold Order Button When Extended")]
         public int Hold_Button_Maximum_Extended_Height { get { return _Hold_Button_Maximum_Extended_Height; } set { _Hold_Button_Maximum_Extended_Height = value; } }
 
-       
+
 
 
         private int _Hold_Order_Reload_Seconds = 5;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Held orders reload seconds"), DescriptionAttribute("Number of seconds to reload Hold Orders")]
-        public int Hold_Orders_Reload_Seconds {
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Held orders reload seconds"), DescriptionAttribute("Number of seconds to reload Hold Orders")]
+        public int Hold_Orders_Reload_Seconds
+        {
             get { return _Hold_Order_Reload_Seconds; }
-            set {
+            set
+            {
                 if (value < 3)
                     _Hold_Order_Reload_Seconds = 3;
                 else
@@ -146,28 +155,28 @@ namespace DTRMNS {
         }
 
         private int _Hold_Order_Maximum_Allowed = 12;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Maximum number of held orders allowed"), DescriptionAttribute("Maximum number of Hold Orders allowed")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Maximum number of held orders allowed"), DescriptionAttribute("Maximum number of Hold Orders allowed")]
         public int Hold_Order_Maximum_Allowed { get { return _Hold_Order_Maximum_Allowed; } set { _Hold_Order_Maximum_Allowed = value; } }
 
         private bool _Hold_Order_Print_in_Kitchen = false;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Print held orders in kitchen printer"), DescriptionAttribute("Will print Hold Orders in Kitchen/Bar")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Print held orders in kitchen printer"), DescriptionAttribute("Will print Hold Orders in Kitchen/Bar")]
         public bool Hold_Order_Print_in_Kitchen { get { return _Hold_Order_Print_in_Kitchen; } set { _Hold_Order_Print_in_Kitchen = value; } }
 
         private bool _Hold_Order_Display_in_Kitchen = false;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Display held orders in kitchen screen"), DescriptionAttribute("Will display Hold Orders in Kitchen/Bar")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Display held orders in kitchen screen"), DescriptionAttribute("Will display Hold Orders in Kitchen/Bar")]
         public bool Hold_Order_Display_in_Kitchen { get { return _Hold_Order_Display_in_Kitchen; } set { _Hold_Order_Display_in_Kitchen = value; } }
 
         private bool _Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted = false;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Allow kitchen to delete completed orders from screen"), DescriptionAttribute("True: Prevents prepared items to be deleted from order")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Allow kitchen to delete completed orders from screen"), DescriptionAttribute("True: Prevents prepared items to be deleted from order")]
         public bool Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted { get { return _Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted; } set { _Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted = value; } }
 
-       
+
         private float _Hold_Button_Price_Font_Size = 22;
-        [CategoryAttribute("12.Hold Order Settings"),DisplayName("Font size of held order buttons"), DescriptionAttribute("Hold button price font size")]
+        [CategoryAttribute("12.Hold Order Settings"), DisplayName("Font size of held order buttons"), DescriptionAttribute("Hold button price font size")]
         public float Hold_Button_Price_Font_Size { get { return _Hold_Button_Price_Font_Size; } set { _Hold_Button_Price_Font_Size = value; } }
 
 
-        private bool _Hold_Order_Auto_Close= false;
+        private bool _Hold_Order_Auto_Close = false;
         [CategoryAttribute("12.Hold Order Settings"), DisplayName("Hold Order Auto Close Enabled"), DescriptionAttribute("False: Closes the Hold Order automatically after certain period of time if no change is made")]
         public bool Hold_Order_Auto_Close { get { return _Hold_Order_Auto_Close; } set { _Hold_Order_Auto_Close = value; } }
 
@@ -176,37 +185,37 @@ namespace DTRMNS {
         [CategoryAttribute("12.Hold Order Settings"), DisplayName("Hold Order Auto Close Seconds"), DescriptionAttribute("How many seconds to wait to close the Hold Order automatically")]
         public int Hold_Order_Auto_Close_Seconds { get { return _Hold_Order_Auto_Close_Seconds; } set { _Hold_Order_Auto_Close_Seconds = value < 5 ? 5 : value; } }
 
-        
+
         #endregion
 
         #region 13.Table Orders Settings
         private bool _Table_Orders_Allowed = false;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("Allow table orders"), DescriptionAttribute("Table Sale Allowed On This Terminal")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("Allow table orders"), DescriptionAttribute("Table Sale Allowed On This Terminal")]
         public bool Table_Orders_Allowed { get { return _Table_Orders_Allowed; } set { _Table_Orders_Allowed = value; } }
 
         private int _Table_Orders_Receipt_Count = 1;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("How many receipt for table order to print"), DescriptionAttribute("Table Sale Receipt Count")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("How many receipt for table order to print"), DescriptionAttribute("Table Sale Receipt Count")]
         public int Table_Orders_Receipt_Count { get { return _Table_Orders_Receipt_Count; } set { _Table_Orders_Receipt_Count = value; } }
 
         private int _Table_Orders_Kitchen_Receipt_Count = 1;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("How many kitchen receipt for table order to print"), DescriptionAttribute("Table Kitchen Receipt Count")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("How many kitchen receipt for table order to print"), DescriptionAttribute("Table Kitchen Receipt Count")]
         public int Table_Orders_Kitchen_Receipt_Count { get { return _Table_Orders_Kitchen_Receipt_Count; } set { _Table_Orders_Kitchen_Receipt_Count = value; } }
 
         private AutoPaymentMethods _Table_Orders_Auto_Payment_Method = AutoPaymentMethods.Selective;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("Auto payment method for table orders"), DescriptionAttribute("Table Sale Default Payment Method")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("Auto payment method for table orders"), DescriptionAttribute("Table Sale Default Payment Method")]
         public AutoPaymentMethods Table_Orders_Auto_Payment_Method { get { return _Table_Orders_Auto_Payment_Method; } set { _Table_Orders_Auto_Payment_Method = value; } }
-                
+
 
         private string _Table_Orders_Button_Text = "TABLES";
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("Text on table order button"), DescriptionAttribute("Table Sale Button Text")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("Text on table order button"), DescriptionAttribute("Table Sale Button Text")]
         public string Table_Orders_Button_Text { get { return _Table_Orders_Button_Text; } set { _Table_Orders_Button_Text = value; } }
 
         private int _Table_Orders_Button_Width = 100;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("Width of table order button"), DescriptionAttribute("Table Sale Button Width")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("Width of table order button"), DescriptionAttribute("Table Sale Button Width")]
         public int Table_Orders_Button_Width { get { return _Table_Orders_Button_Width; } set { _Table_Orders_Button_Width = value; } }
 
         private bool _Table_Orders_Display_Kitchen_Orders = false;
-        [CategoryAttribute("13.Table Orders Settings"),DisplayName("Display table orders in kitchen screen"), DescriptionAttribute("Create/Allow table orders to be displayed in kitchen display")]
+        [CategoryAttribute("13.Table Orders Settings"), DisplayName("Display table orders in kitchen screen"), DescriptionAttribute("Create/Allow table orders to be displayed in kitchen display")]
         public bool Table_Orders_Display_Kitchen_Orders { get { return _Table_Orders_Display_Kitchen_Orders; } set { _Table_Orders_Display_Kitchen_Orders = value; } }
 
         private bool _Table_Orders_Always_Shrinked = true;
@@ -217,19 +226,19 @@ namespace DTRMNS {
 
         #region 14.Take-Away Orders Settings
         private bool _TakeAway_Orders_Allowed;
-        [CategoryAttribute("14.Take-Away Orders Settings"),DisplayName("Allow take-away orders"), DescriptionAttribute("Is Take-Away Sale Allowed On This Terminal")]
+        [CategoryAttribute("14.Take-Away Orders Settings"), DisplayName("Allow take-away orders"), DescriptionAttribute("Is Take-Away Sale Allowed On This Terminal")]
         public bool TakeAway_Orders_Allowed { get { return _TakeAway_Orders_Allowed; } set { _TakeAway_Orders_Allowed = value; } }
 
         private int _TakeAway_Orders_Receipt_Count = 1;
-        [CategoryAttribute("14.Take-Away Orders Settings"),DisplayName("How many receipt for take-away orders to print"), DescriptionAttribute("Take-Away Sale Receipt Count")]
+        [CategoryAttribute("14.Take-Away Orders Settings"), DisplayName("How many receipt for take-away orders to print"), DescriptionAttribute("Take-Away Sale Receipt Count")]
         public int TakeAway_Orders_Receipt_Count { get { return _TakeAway_Orders_Receipt_Count; } set { _TakeAway_Orders_Receipt_Count = value; } }
 
         private AutoPaymentMethods _TakeAway_Orders_Auto_Payment_Method = AutoPaymentMethods.AutoCash;
-        [CategoryAttribute("14.Take-Away Orders Settings"),DisplayName("Auto payment method for take-away orders"), DescriptionAttribute("Take-Away Sale Default Payment Method")]
+        [CategoryAttribute("14.Take-Away Orders Settings"), DisplayName("Auto payment method for take-away orders"), DescriptionAttribute("Take-Away Sale Default Payment Method")]
         public AutoPaymentMethods TakeAway_Orders_Auto_Payment_Method { get { return _TakeAway_Orders_Auto_Payment_Method; } set { _TakeAway_Orders_Auto_Payment_Method = value; } }
 
         private string _TakeAway_Orders_Button_Text = "Take Away";
-        [CategoryAttribute("14.Take-Away Orders Settings"),DisplayName("Text on take-away order button"), DescriptionAttribute("Take-Away Sale Button Text")]
+        [CategoryAttribute("14.Take-Away Orders Settings"), DisplayName("Text on take-away order button"), DescriptionAttribute("Take-Away Sale Button Text")]
         public string TakeAway_Orders_Button_Text { get { return _TakeAway_Orders_Button_Text; } set { _TakeAway_Orders_Button_Text = value; } }
 
         private int _TakeAway_Orders_Button_Width = 100;
@@ -237,26 +246,26 @@ namespace DTRMNS {
         public int TakeAway_Orders_Button_Width { get { return _TakeAway_Orders_Button_Width; } set { _TakeAway_Orders_Button_Width = value; } }
 
         private bool _TakeAway_Orders_Display_Kitchen_Orders = false;
-        [CategoryAttribute("14.Take-Away Orders Settings"),DisplayName("Display take-away orders in kitchen screen"), DescriptionAttribute("Allow takeaway orders to be displayed in kitchen display")]
+        [CategoryAttribute("14.Take-Away Orders Settings"), DisplayName("Display take-away orders in kitchen screen"), DescriptionAttribute("Allow takeaway orders to be displayed in kitchen display")]
         public bool TakeAway_Orders_Display_Kitchen_Orders { get { return _TakeAway_Orders_Display_Kitchen_Orders; } set { _TakeAway_Orders_Display_Kitchen_Orders = value; } }
 
         #endregion
 
         #region 15.Delivery Orders Settings
         private bool _Delivery_Orders_Allowed;
-        [CategoryAttribute("15.Delivery Orders Settings"),DisplayName("Allow delivery orders"), DescriptionAttribute("Is Delivery Sale Allowed On This Terminal")]
+        [CategoryAttribute("15.Delivery Orders Settings"), DisplayName("Allow delivery orders"), DescriptionAttribute("Is Delivery Sale Allowed On This Terminal")]
         public bool Delivery_Orders_Allowed { get { return _Delivery_Orders_Allowed; } set { _Delivery_Orders_Allowed = value; } }
 
         private int _Delivery_Orders_Receipt_Count = 2;
-        [CategoryAttribute("15.Delivery Orders Settings"),DisplayName("How many receipt for delivery orders to print"), DescriptionAttribute("Delivery Sale Receipt Count")]
+        [CategoryAttribute("15.Delivery Orders Settings"), DisplayName("How many receipt for delivery orders to print"), DescriptionAttribute("Delivery Sale Receipt Count")]
         public int Delivery_Orders_Receipt_Count { get { return _Delivery_Orders_Receipt_Count; } set { _Delivery_Orders_Receipt_Count = value; } }
 
         private AutoPaymentMethods _Delivery_Orders_Auto_Payment_Method = AutoPaymentMethods.Selective;
-        [CategoryAttribute("15.Delivery Orders Settings"),DisplayName("Auto payment method for delivery orders"), DescriptionAttribute("Delivery Sale Default Payment Method")]
+        [CategoryAttribute("15.Delivery Orders Settings"), DisplayName("Auto payment method for delivery orders"), DescriptionAttribute("Delivery Sale Default Payment Method")]
         public AutoPaymentMethods Delivery_Orders_Auto_Payment_Method { get { return _Delivery_Orders_Auto_Payment_Method; } set { _Delivery_Orders_Auto_Payment_Method = value; } }
 
         private string _Delivery_Orders_Button_Text = "Delivery";
-        [CategoryAttribute("15.Delivery Orders Settings"),DisplayName("Text on delivery order button"), DescriptionAttribute("Delivery Sale Button Text")]
+        [CategoryAttribute("15.Delivery Orders Settings"), DisplayName("Text on delivery order button"), DescriptionAttribute("Delivery Sale Button Text")]
         public string Delivery_Orders_Button_Text { get { return _Delivery_Orders_Button_Text; } set { _Delivery_Orders_Button_Text = value; } }
 
         private int _Delivery_Orders_Button_Width = 100;
@@ -265,7 +274,7 @@ namespace DTRMNS {
 
 
         private bool _Delivery_Orders_Display_Kitchen_Orders = false;
-        [CategoryAttribute("15.Delivery Orders Settings"),DisplayName("Display delivery orders in kitchen screen"), DescriptionAttribute("Allow delivery orders to be displayed in kitchen display")]
+        [CategoryAttribute("15.Delivery Orders Settings"), DisplayName("Display delivery orders in kitchen screen"), DescriptionAttribute("Allow delivery orders to be displayed in kitchen display")]
         public bool Delivery_Orders_Display_Kitchen_Orders { get { return _Delivery_Orders_Display_Kitchen_Orders; } set { _Delivery_Orders_Display_Kitchen_Orders = value; } }
 
 
@@ -294,7 +303,7 @@ namespace DTRMNS {
         public bool Pad_Allowed { get { return _Pad_Allowed; } set { _Pad_Allowed = value; } }
 
         private OrderTypes _Order_Pad_Default_Order_Type = OrderTypes.DirectSale;
-        [CategoryAttribute("16.Other Order Settings"),DisplayName("Default order type for OrderPad"), DescriptionAttribute("Pad Default Order Type. Identifies which order type should be instantiated when Pad Button Clicked")]
+        [CategoryAttribute("16.Other Order Settings"), DisplayName("Default order type for OrderPad"), DescriptionAttribute("Pad Default Order Type. Identifies which order type should be instantiated when Pad Button Clicked")]
         public OrderTypes Order_Pad_Default_Order_Type { get { return _Order_Pad_Default_Order_Type; } set { _Order_Pad_Default_Order_Type = value; } }
 
         private OrientationTypes _OrderPad_Orientation = OrientationTypes.Landscape;
@@ -325,7 +334,8 @@ namespace DTRMNS {
 
         private bool _DeleteSupervisionRequired = false;
         [CategoryAttribute("16.Other Order Settings"), DisplayName("Force order deletion for supervisor user"), DescriptionAttribute("Delete Order Item Requires Supervisor Authorisation")]
-        public bool Deleting_OrderItem_Requires_Supervision {
+        public bool Deleting_OrderItem_Requires_Supervision
+        {
             get { return _DeleteSupervisionRequired; }
             set { _DeleteSupervisionRequired = value; }
         }
@@ -372,11 +382,11 @@ namespace DTRMNS {
         public bool Cash_Drawer_Void_Open_Allowed { get { return _Cash_Drawer_Void_Open_Allowed; } set { _Cash_Drawer_Void_Open_Allowed = value; } }
 
         private CashDrawerTypes _Attached_Cash_Drawer_Type = CashDrawerTypes.None;
-        [CategoryAttribute("18.Cash Drawer Settings"),DisplayName("Which type of cash drawer used"), DescriptionAttribute("Attached Cash Drawer Type")]
+        [CategoryAttribute("18.Cash Drawer Settings"), DisplayName("Which type of cash drawer used"), DescriptionAttribute("Attached Cash Drawer Type")]
         public CashDrawerTypes Attached_Cash_Drawer_Type { get { return _Attached_Cash_Drawer_Type; } set { _Attached_Cash_Drawer_Type = value; } }
 
         private SerialPortTypes _Cash_Drawer_Serial_Port = SerialPortTypes.COM1;
-        [CategoryAttribute("18.Cash Drawer Settings"),DisplayName("Which COM Port is cash drawer connected to"), DescriptionAttribute("Cash Drawer Serially Connected to Port exp: COM1, COM4 etc")]
+        [CategoryAttribute("18.Cash Drawer Settings"), DisplayName("Which COM Port is cash drawer connected to"), DescriptionAttribute("Cash Drawer Serially Connected to Port exp: COM1, COM4 etc")]
         public SerialPortTypes Cash_Drawer_Serial_Port { get { return _Cash_Drawer_Serial_Port; } set { _Cash_Drawer_Serial_Port = value; } }
 
 
@@ -385,21 +395,28 @@ namespace DTRMNS {
         #region 19.Screen Lock / Screen Saver Settings
         private System.Windows.Forms.FormWindowState _Lock_Screen_Window_Format = System.Windows.Forms.FormWindowState.Normal;
         [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Allow lock screen block the entire display"), DescriptionAttribute("Lock screen will cover the entire window")]
-        public System.Windows.Forms.FormWindowState Lock_Screen_Window_Format {
+        public System.Windows.Forms.FormWindowState Lock_Screen_Window_Format
+        {
             get { return _Lock_Screen_Window_Format; }
             set { _Lock_Screen_Window_Format = value; }
         }
 
         private ScreenLockTypes _Screen_Lock_Method = ScreenLockTypes.None;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"),DisplayName("Screen locking method"), DescriptionAttribute("How to lock the system when there is no interaction")]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Screen locking method"), DescriptionAttribute("How to lock the system when there is no interaction")]
         public ScreenLockTypes Screen_Lock_Method { get { return _Screen_Lock_Method; } set { _Screen_Lock_Method = value; } }
 
         private int _Seconds_Before_ScreenLock = 30;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"),DisplayName("Seconds to wait"), DescriptionAttribute("Activates screen saver after ? seconds")]
-        public int Seconds_Before_ScreenLock { get {return _Seconds_Before_ScreenLock; } set {
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Seconds to wait"), DescriptionAttribute("Activates screen saver after ? seconds")]
+        public int Seconds_Before_ScreenLock
+        {
+            get { return _Seconds_Before_ScreenLock; }
+            set
+            {
                 if (value < 3)
                     value = 3;
-                _Seconds_Before_ScreenLock = value; } }
+                _Seconds_Before_ScreenLock = value;
+            }
+        }
 
         private string _Screen_Saver_Image_Folder = "";
         [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Image Folder"), Editor(typeof(FolderNameEditor), typeof(UITypeEditor)), DescriptionAttribute("Image Folder to pickup screen saver images")]
@@ -407,7 +424,7 @@ namespace DTRMNS {
 
 
         private int _Screen_Saver_Image_Spacer = 20;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"),  DisplayName("Extra space between images"), DefaultValueAttribute(20), DescriptionAttribute("Extra space required between images")]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Extra space between images"), DefaultValueAttribute(20), DescriptionAttribute("Extra space required between images")]
         public int Screen_Saver_Image_Spacer { get { return _Screen_Saver_Image_Spacer; } set { _Screen_Saver_Image_Spacer = value <= 0 || value > 50 ? 20 : value; } }
 
         private int _Screen_Saver_Maximum_Image_Count = 20;
@@ -415,7 +432,7 @@ namespace DTRMNS {
         public int Screen_Saver_Maximum_Image_Count { get { return _Screen_Saver_Maximum_Image_Count; } set { _Screen_Saver_Maximum_Image_Count = value <= 0 || value > 150 ? 20 : value; } }
 
         private int _Screen_Saver_Maximum_Drawable_Image_Count = 5;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Maximum number of drawable images") , DefaultValueAttribute(5), DescriptionAttribute("Maximum number of images can be drawn at any time on the screen descp attribute")]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Maximum number of drawable images"), DefaultValueAttribute(5), DescriptionAttribute("Maximum number of images can be drawn at any time on the screen descp attribute")]
         public int Screen_Saver_Maximum_Drawable_Image_Count { get { return _Screen_Saver_Maximum_Drawable_Image_Count; } set { _Screen_Saver_Maximum_Drawable_Image_Count = value <= 0 || value > 100 ? 5 : value; } }
 
 
@@ -435,17 +452,17 @@ namespace DTRMNS {
         private int _Screen_Saver_Right_Step = 3;
         [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Speed towards right"), DefaultValueAttribute(3), DescriptionAttribute("Movement speed towards the right 0 to 10  pixels a second")]
         public int Screen_Saver_Right_Step { get { return _Screen_Saver_Right_Step; } set { _Screen_Saver_Right_Step = value <= 0 || value > 10 ? 0 : value; } }
-                     
+
         private int _Screen_Saver_Timer_Interval = 5000;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Redraw cycle in miliseconds"),DescriptionAttribute("Redraw cycle in miliseconds for timer"), DefaultValueAttribute(50)]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Redraw cycle in miliseconds"), DescriptionAttribute("Redraw cycle in miliseconds for timer"), DefaultValueAttribute(50)]
         public int Screen_Saver_Timer_Interval { get { return _Screen_Saver_Timer_Interval; } set { _Screen_Saver_Timer_Interval = value <= 20 || value > 10000 ? 50 : value; } }
 
         private bool _Screen_Saver_Capture_Mouse_Down_Event = true;
         [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Stop screen saver if mouse clicked"), DescriptionAttribute("Ensures mouse down event captured to activate screen saver"), DefaultValueAttribute(true)]
         public bool Screen_Saver_Capture_Mouse_Down_Event { get { return _Screen_Saver_Capture_Mouse_Down_Event; } set { _Screen_Saver_Capture_Mouse_Down_Event = value; } }
-        
+
         private bool _Screen_Saver_Capture_Mouse_Move_Event = false;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Stop screen saver if mouse moved"),DescriptionAttribute("Ensures mouse moves captured to activate screen saver"), DefaultValueAttribute(false)]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Stop screen saver if mouse moved"), DescriptionAttribute("Ensures mouse moves captured to activate screen saver"), DefaultValueAttribute(false)]
         public bool Screen_Saver_Capture_Mouse_Move_Event { get { return _Screen_Saver_Capture_Mouse_Move_Event; } set { _Screen_Saver_Capture_Mouse_Move_Event = value; } }
 
         private bool _Screen_Saver_Show_Pos_Logo = true;
@@ -457,10 +474,10 @@ namespace DTRMNS {
         public bool Screen_Saver_Debug { get { return _Screen_Saver_Debug; } set { _Screen_Saver_Debug = value; } }
 
         private ScreenSaverTypes _Screen_Saver_Type = ScreenSaverTypes.None;
-        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"),DisplayName("Type of screen saver"), DescriptionAttribute("Appication specific screen saver type")]
+        [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Type of screen saver"), DescriptionAttribute("Appication specific screen saver type")]
         public ScreenSaverTypes Screen_Saver_Type { get { return _Screen_Saver_Type; } set { _Screen_Saver_Type = value; } }
 
-        private ScreenSaverColourTypes _Screen_Saver_Color =  ScreenSaverColourTypes.BlackBackGroundWhiteBrush;
+        private ScreenSaverColourTypes _Screen_Saver_Color = ScreenSaverColourTypes.BlackBackGroundWhiteBrush;
         [CategoryAttribute("19.Screen Lock / Screen Saver Settings"), DisplayName("Color format of the screen saver"), DescriptionAttribute("Colour of the screen saver"), DefaultValueAttribute(ScreenSaverColourTypes.BlackBackGroundWhiteBrush)]
         public ScreenSaverColourTypes Screen_Saver_Color { get { return _Screen_Saver_Color; } set { _Screen_Saver_Color = value; } }
 
@@ -504,9 +521,9 @@ namespace DTRMNS {
 
 
         #region 20.Kitchen Display Settings
-        private string _Default_Distribution_Terminal_Type_List = "";        
+        private string _Default_Distribution_Terminal_Type_List = "";
         [Browsable(false)]
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Which distribution type to display on primary kitchen screen"), DescriptionAttribute("Select do display which preparation terminal")]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Which distribution type to display on primary kitchen screen"), DescriptionAttribute("Select do display which preparation terminal")]
         public string Default_Distribution_Terminal_Type_List { get { return _Default_Distribution_Terminal_Type_List; } set { _Default_Distribution_Terminal_Type_List = value; } }
 
         private string _Secondary_Distribution_Terminal_Type_List = "";
@@ -519,8 +536,8 @@ namespace DTRMNS {
         [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Allowed good time for kitchen in seconds"), DescriptionAttribute("Will display Kitchen/Bar order preperation good time (in seconds")]
         public int Kitchen_Prep_Good_Time { get { return _Kitchen_Prep_Good_Time; } set { _Kitchen_Prep_Good_Time = value; } }
 
-        private int _Kitchen_Prep_Bad_Time = 40; 
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Allowed bad time for kitchen in seconds"), DescriptionAttribute("Will display Kitchen/Bar order preperation bad time (in seconds), will start flashing after time elapsed")]
+        private int _Kitchen_Prep_Bad_Time = 40;
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Allowed bad time for kitchen in seconds"), DescriptionAttribute("Will display Kitchen/Bar order preperation bad time (in seconds), will start flashing after time elapsed")]
         public int Kitchen_Prep_Bad_Time { get { return _Kitchen_Prep_Bad_Time; } set { _Kitchen_Prep_Bad_Time = value; } }
 
         private bool _Kitchen_Show_Progress_Bar = false;
@@ -528,18 +545,20 @@ namespace DTRMNS {
         public bool Kitchen_Show_Progress_Bar { get { return _Kitchen_Show_Progress_Bar; } set { _Kitchen_Show_Progress_Bar = value; } }
 
         private bool _Show_Clock_in_Kitchen = false;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Display clock on kitchen screen"), DescriptionAttribute("Show Clock in Kitchen Displays")]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Display clock on kitchen screen"), DescriptionAttribute("Show Clock in Kitchen Displays")]
         public bool Show_Clock_in_Kitchen { get { return _Show_Clock_in_Kitchen; } set { _Show_Clock_in_Kitchen = value; } }
-       
+
         private int _Kitchen_Max_Completed_Order_Count = 10;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Delete completed orders after how many"), DescriptionAttribute("Will only display x number of completed orders in display terminal")]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Delete completed orders after how many"), DescriptionAttribute("Will only display x number of completed orders in display terminal")]
         public int Kitchen_Max_Completed_Order_Count { get { return _Kitchen_Max_Completed_Order_Count; } set { _Kitchen_Max_Completed_Order_Count = value; } }
 
         private int _Kitchen_Small_Font_Size = 12;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Kitchen screen small font size"), DescriptionAttribute("Kitchen small font (irrelevant item's font) size.")]
-        public int Kitchen_Small_Font_Size {
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Kitchen screen small font size"), DescriptionAttribute("Kitchen small font (irrelevant item's font) size.")]
+        public int Kitchen_Small_Font_Size
+        {
             get { return _Kitchen_Small_Font_Size; }
-            set {
+            set
+            {
                 if (value < 10)
                     value = 10;
                 if (value > 16)
@@ -549,10 +568,12 @@ namespace DTRMNS {
         }
 
         private int _Kitchen_Large_Font_Size = 12;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Kitchen screen big font size"), DescriptionAttribute("Kitchen large font (relevant item's font) size.")]
-        public int Kitchen_Large_Font_Size {
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Kitchen screen big font size"), DescriptionAttribute("Kitchen large font (relevant item's font) size.")]
+        public int Kitchen_Large_Font_Size
+        {
             get { return _Kitchen_Large_Font_Size; }
-            set {
+            set
+            {
                 if (value < 10)
                     value = 10;
                 if (value > 16)
@@ -562,10 +583,12 @@ namespace DTRMNS {
         }
 
         private int _Kitchen_Detail_Font_Size = 10;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Kitchen screen detailed font size"), DescriptionAttribute("Kitchen detail font (detailed description text) size.")]
-        public int Kitchen_Detail_Font_Size {
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Kitchen screen detailed font size"), DescriptionAttribute("Kitchen detail font (detailed description text) size.")]
+        public int Kitchen_Detail_Font_Size
+        {
             get { return _Kitchen_Detail_Font_Size; }
-            set {
+            set
+            {
                 if (value < 8)
                     value = 8;
                 if (value > 13)
@@ -575,11 +598,11 @@ namespace DTRMNS {
         }
 
         private float _KitchenPrintFontSize = 10;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Kitchen printer font size"), DescriptionAttribute("Kitchen Print Font Size, 7 to 12"), DefaultValueAttribute(10)]
-        public float KitchenPrintFontSize { get { return _KitchenPrintFontSize; }  set { _KitchenPrintFontSize = value < 7 || value > 12 ? 10 : value; } }
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Kitchen printer font size"), DescriptionAttribute("Kitchen Print Font Size, 7 to 12"), DefaultValueAttribute(10)]
+        public float KitchenPrintFontSize { get { return _KitchenPrintFontSize; } set { _KitchenPrintFontSize = value < 7 || value > 12 ? 10 : value; } }
 
         private float _KitchenPrintDetailFontSize = 8;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Kitchen printer detailed font size"), DescriptionAttribute("Kitchen Print Font Size, 7 to 12"), DefaultValueAttribute(8)]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Kitchen printer detailed font size"), DescriptionAttribute("Kitchen Print Font Size, 7 to 12"), DefaultValueAttribute(8)]
         public float KitchenPrintDetailFontSize { get { return _KitchenPrintDetailFontSize; } set { _KitchenPrintDetailFontSize = value < 7 || value > 9 ? 8 : value; } }
 
 
@@ -594,8 +617,10 @@ namespace DTRMNS {
         /// </summary>
         /// <param name="fontsize"></param>
         /// <returns></returns>
-        public int GetFontMaximumCharacter(int fontsize) {
-            switch (fontsize) {
+        public int GetFontMaximumCharacter(int fontsize)
+        {
+            switch (fontsize)
+            {
                 case 7:
                     return 45;
                 case 8:
@@ -612,16 +637,17 @@ namespace DTRMNS {
                     return 30;
             }
         }
-        public int GetFontMaximumCharacter(float fontsize) {
+        public int GetFontMaximumCharacter(float fontsize)
+        {
             return GetFontMaximumCharacter((int)fontsize);
-        }        
+        }
 
         private bool _Kitchen_Can_Print = false;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("Allow kitchen to print orders from this terminal"), DescriptionAttribute("Kitchen can print orders locally")]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Allow kitchen to print orders from this terminal"), DescriptionAttribute("Kitchen can print orders locally")]
         public bool Kitchen_Can_Print { get { return _Kitchen_Can_Print; } set { _Kitchen_Can_Print = value; } }
 
         private KitchenDisplayTypes _Kitchen_Monitor_Auto_Display_Type = KitchenDisplayTypes.None;
-        [CategoryAttribute("20.Kitchen Display Settings"),DisplayName("How many distribution type to display on kitchen screen"), DescriptionAttribute("Automatically Jumps to Display Screen 1,2,3 or none")]
+        [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("How many distribution type to display on kitchen screen"), DescriptionAttribute("Automatically Jumps to Display Screen 1,2,3 or none")]
         public KitchenDisplayTypes Kitchen_Monitor_Auto_Display_Type { get { return _Kitchen_Monitor_Auto_Display_Type; } set { _Kitchen_Monitor_Auto_Display_Type = value; } }
 
         private bool _Display_Kitchen_Orders_As_Reminders = true;
@@ -646,15 +672,15 @@ namespace DTRMNS {
 
         #region 21.Prep Window Settings
         private bool _Prep_Can_Hold = true;
-        [CategoryAttribute("21.Prep Window Settings"),DisplayName("Allow Prep window to hold orders"), DescriptionAttribute("Prep Window Can Hold without payment")]
+        [CategoryAttribute("21.Prep Window Settings"), DisplayName("Allow Prep window to hold orders"), DescriptionAttribute("Prep Window Can Hold without payment")]
         public bool Prep_Can_Hold { get { return _Prep_Can_Hold; } set { _Prep_Can_Hold = value; } }
 
         private bool _Prep_Can_Hold_And_Cash = false;
-        [CategoryAttribute("21.Prep Window Settings"),DisplayName("Allow Prep window to hold and cash orders"), DescriptionAttribute("Prep Window Can Hold and Cashout")]
+        [CategoryAttribute("21.Prep Window Settings"), DisplayName("Allow Prep window to hold and cash orders"), DescriptionAttribute("Prep Window Can Hold and Cashout")]
         public bool Prep_Can_Hold_And_Cash { get { return _Prep_Can_Hold_And_Cash; } set { _Prep_Can_Hold_And_Cash = value; } }
 
         private bool _Prep_Can_Hold_Cash_And_Print = false;
-        [CategoryAttribute("21.Prep Window Settings"),DisplayName("Allow Prep window to hold, cash and print orders"), DescriptionAttribute("Prep Window Can Hold, Cashout and Print Receipt")]
+        [CategoryAttribute("21.Prep Window Settings"), DisplayName("Allow Prep window to hold, cash and print orders"), DescriptionAttribute("Prep Window Can Hold, Cashout and Print Receipt")]
         public bool Prep_Can_Hold_Cash_And_Print { get { return _Prep_Can_Hold_Cash_And_Print; } set { _Prep_Can_Hold_Cash_And_Print = value; } }
         #endregion
 
@@ -761,7 +787,7 @@ namespace DTRMNS {
         [CategoryAttribute("24.X Report Settings"), DisplayName("Print online paid order list report in X Report"), DescriptionAttribute("True: Online Paid Order List report is printed"), DefaultValueAttribute(false)]
         public bool X_Print_Online_Order_List { get { return _X_Print_Online_Order_List; } set { _X_Print_Online_Order_List = value; } }
 
-       
+
         #endregion
 
         #region 25.Z Report Settings
@@ -796,6 +822,10 @@ namespace DTRMNS {
         private bool _Z_Print_Online_Order_List = false;
         [CategoryAttribute("25.Z Report Settings"), DisplayName("Print online paid order list report in Z Report"), DescriptionAttribute("True: Online Paid Order List report is printed"), DefaultValueAttribute(false)]
         public bool Z_Print_Online_Order_List { get { return _Z_Print_Online_Order_List; } set { _Z_Print_Online_Order_List = value; } }
+
+        private bool _Z_Archive_Always = false;
+        [CategoryAttribute("25.Z Report Settings"), DisplayName("Archive Z Report Always"), DescriptionAttribute("True: Archives Z Report anytime report is printed"), DefaultValueAttribute(false)]
+        public bool Z_Archive_Always { get { return _Z_Archive_Always; } set { _Z_Archive_Always = value; } }
 
         #endregion
 
@@ -900,7 +930,8 @@ namespace DTRMNS {
 
         private OrderDisplayHeightTypes _Order_Item_Display_Height = OrderDisplayHeightTypes.Narrow;
         [CategoryAttribute("29.User Interface Settings"), DisplayName("Order item display height"), DescriptionAttribute("Order Item Display Height on Order Screen")]
-        public OrderDisplayHeightTypes Order_Item_Display_Height {
+        public OrderDisplayHeightTypes Order_Item_Display_Height
+        {
             get { return _Order_Item_Display_Height; }
             set { _Order_Item_Display_Height = value; }
         }
@@ -934,11 +965,15 @@ namespace DTRMNS {
         #region 30.User Interface Money Panel Settings
         private int _MoneyActionPanelHeight = 325;
         [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Money Action Panel Height"), DescriptionAttribute("Change the Hold Button Height, Default:98")]
-        public int MoneyActionPanelHeight { get { return _MoneyActionPanelHeight; } 
-            set {
+        public int MoneyActionPanelHeight
+        {
+            get { return _MoneyActionPanelHeight; }
+            set
+            {
                 _MoneyActionPanelHeight = value > 500 ? 500 : value;
-                _MoneyActionPanelHeight = value < 100 ? 100 : value; 
-            } }
+                _MoneyActionPanelHeight = value < 100 ? 100 : value;
+            }
+        }
 
 
 
@@ -1123,7 +1158,8 @@ namespace DTRMNS {
 
         private string _DtPrinterCashDrawerIID = "";
         [BrowsableAttribute(false)]
-        public string DtPrinterCashDrawerIID {
+        public string DtPrinterCashDrawerIID
+        {
             get { return _DtPrinterCashDrawerIID; }
             set { _DtPrinterCashDrawerIID = value; }
         }
@@ -1134,7 +1170,8 @@ namespace DTRMNS {
 
         private string _DTClientLocalReceiptPrinterIID = "";
         [BrowsableAttribute(false)]
-        public string DTClientLocalReceiptPrinterIID {
+        public string DTClientLocalReceiptPrinterIID
+        {
             get { return _DTClientLocalReceiptPrinterIID; }
             set { _DTClientLocalReceiptPrinterIID = value; }
         }
@@ -1143,7 +1180,7 @@ namespace DTRMNS {
 
 
 
-       
+
 
         #region
         //private string[] _test1 = new string[]{};
@@ -1166,15 +1203,17 @@ namespace DTRMNS {
 
 
 
-        public DTRMConfig() {
+        public DTRMConfig()
+        {
 
         }
 
-        public string GetInfoAsSting() {
+        public string GetInfoAsSting()
+        {
             return Database_Instance + ",DTRMSimple," + Database_User_Name + "," + Database_Password;
         }
     }
 
 
-    
+
 }
