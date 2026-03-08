@@ -43,6 +43,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\POSWinFormLayer\POSWinFormLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

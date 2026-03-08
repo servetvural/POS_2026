@@ -17,7 +17,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<ApplicationPrinter> ApplicationPrinters { get; set; }
 
-    public virtual DbSet<Bonu> Bonus { get; set; }
+    public virtual DbSet<Bonus> Bonus { get; set; }
 
     public virtual DbSet<Customer> Customers { get; set; }
 
@@ -105,11 +105,11 @@ public partial class PosDbContext : DbContext
     {
         modelBuilder.Entity<ApplicationPrinter>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("ApplicationPrinter");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -118,11 +118,11 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Bonu>(entity =>
+        modelBuilder.Entity<Bonus>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -134,11 +134,11 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("Customer");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -192,22 +192,22 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Distribution>(entity =>
         {
-            entity.HasKey(e => e.Iid).HasName("PK_FoodType");
+            entity.HasKey(e => e.IID).HasName("PK_FoodType");
 
             entity.ToTable("Distribution");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.DistributionName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
-            entity.Property(e => e.PrinterIid)
+            entity.Property(e => e.PrinterIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PrinterIID");
@@ -225,18 +225,18 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.DistributionName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.MenuName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
-            entity.Property(e => e.PrinterIid)
+            entity.Property(e => e.PrinterIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PrinterIID");
@@ -250,11 +250,11 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("Employee");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -266,15 +266,15 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Entity>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("Entity");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
@@ -293,7 +293,7 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FStyle");
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
@@ -301,38 +301,38 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<EntityButton>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("EntityButton");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.Barcode)
                 .HasMaxLength(24)
                 .IsUnicode(false);
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
             entity.Property(e => e.EntityButtonName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Ffamily)
+            entity.Property(e => e.FFamily)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FFamily");
-            entity.Property(e => e.Fsize).HasColumnName("FSize");
-            entity.Property(e => e.Fstyle)
+            entity.Property(e => e.FSize).HasColumnName("FSize");
+            entity.Property(e => e.FStyle)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FStyle");
-            entity.Property(e => e.ParentEntityIid)
+            entity.Property(e => e.ParentEntityIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentEntityIID");
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
@@ -340,22 +340,22 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<EntityButtonStockItemLookUp>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("EntityButtonStockItemLookUp");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.Comment)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
-            entity.Property(e => e.StockItemIid)
+            entity.Property(e => e.StockItemIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("StockItemIID");
@@ -367,18 +367,18 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("EntityButtonStockItemRecipe");
 
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
             entity.Property(e => e.EntityButtonName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
-            entity.Property(e => e.StockItemIid)
+            entity.Property(e => e.StockItemIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("StockItemIID");
@@ -394,7 +394,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.DisplayImage).HasColumnType("image");
             entity.Property(e => e.ExtraText).IsUnicode(false);
             entity.Property(e => e.ImageFileName).IsUnicode(false);
-            entity.Property(e => e.ReferenceIid)
+            entity.Property(e => e.ReferenceIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ReferenceIID");
@@ -406,11 +406,11 @@ public partial class PosDbContext : DbContext
 
             entity.Property(e => e.CompletedDateTime).HasColumnType("datetime");
             entity.Property(e => e.CreatedDateTime).HasColumnType("datetime");
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.OrderIid)
+            entity.Property(e => e.OrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OrderIID");
@@ -426,20 +426,20 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToTable("KitchenOrderItem");
 
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.ItemText).IsUnicode(false);
-            entity.Property(e => e.KitchenOrderIid)
+            entity.Property(e => e.KitchenOrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("KitchenOrderIID");
@@ -455,7 +455,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.EventDateTime)
                 .HasDefaultValueSql("(getdate())", "DF_LogItems_EventDateTime")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -478,7 +478,7 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToTable("Luv");
 
-            entity.Property(e => e.CurrentSessionIid)
+            entity.Property(e => e.CurrentSessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CurrentSessionIID");
@@ -549,11 +549,11 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Menu>(entity =>
         {
-            entity.HasKey(e => e.Iid).HasName("PK_FoodMenu");
+            entity.HasKey(e => e.IID).HasName("PK_FoodMenu");
 
             entity.ToTable("Menu");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -564,9 +564,9 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -580,7 +580,7 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CName");
-            entity.Property(e => e.CustomerIid)
+            entity.Property(e => e.CustomerIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CustomerIID");
@@ -608,11 +608,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Reference)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
-            entity.Property(e => e.TableIid)
+            entity.Property(e => e.TableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TableIID");
@@ -632,37 +632,37 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<OrderItem>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("OrderItem");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
-            entity.Property(e => e.EntityIid)
+            entity.Property(e => e.EntityIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityIID");
             entity.Property(e => e.EntityName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.OrderGroupIid)
+            entity.Property(e => e.OrderGroupIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OrderGroupIID");
             entity.Property(e => e.OrderItemText)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentOrderIid)
+            entity.Property(e => e.ParentOrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentOrderIID");
@@ -675,38 +675,38 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("OrderItemView");
 
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
-            entity.Property(e => e.EntityIid)
+            entity.Property(e => e.EntityIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityIID");
             entity.Property(e => e.EntityName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.OrderGroupIid)
+            entity.Property(e => e.OrderGroupIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OrderGroupIID");
             entity.Property(e => e.OrderItemText)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentOrderIid)
+            entity.Property(e => e.ParentOrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentOrderIID");
             entity.Property(e => e.Price).HasColumnType("money");
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
@@ -731,14 +731,14 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.CustomerDetails)
                 .HasMaxLength(563)
                 .IsUnicode(false);
-            entity.Property(e => e.CustomerIid)
+            entity.Property(e => e.CustomerIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CustomerIID");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -763,11 +763,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Reference)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
-            entity.Property(e => e.TableIid)
+            entity.Property(e => e.TableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TableIID");
@@ -787,15 +787,15 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<PrinterLookup>(entity =>
         {
-            entity.HasKey(e => new { e.PrinterIid, e.ClientIid });
+            entity.HasKey(e => new { e.PrinterIID, e.ClientIID });
 
             entity.ToTable("PrinterLookup");
 
-            entity.Property(e => e.PrinterIid)
+            entity.Property(e => e.PrinterIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PrinterIID");
-            entity.Property(e => e.ClientIid)
+            entity.Property(e => e.ClientIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ClientIID");
@@ -813,11 +813,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.ApplicationName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ClientIid)
+            entity.Property(e => e.ClientIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ClientIID");
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -832,7 +832,7 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("ServiceChargeSummary");
 
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
@@ -840,9 +840,9 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Session>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -877,7 +877,7 @@ public partial class PosDbContext : DbContext
 
             entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
             entity.Property(e => e.GrossSessionTotalUncompleted).HasColumnType("money");
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -909,14 +909,14 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToTable("StockItem");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
             entity.Property(e => e.StockName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.SupplierIid)
+            entity.Property(e => e.SupplierIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SupplierIID");
@@ -931,14 +931,14 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Comment)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.StockItemIid)
+            entity.Property(e => e.StockItemIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("StockItemIID");
             entity.Property(e => e.StockName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.SupplierIid)
+            entity.Property(e => e.SupplierIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SupplierIID");
@@ -961,7 +961,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Email2)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -978,20 +978,20 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Table>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.CurrentOrderIid)
+            entity.Property(e => e.CurrentOrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CurrentOrderIID");
             entity.Property(e => e.DefaultName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.GroupIid)
+            entity.Property(e => e.GroupIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("GroupIID");
@@ -1000,7 +1000,7 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("LockedClientIP");
-            entity.Property(e => e.ParentTableIid)
+            entity.Property(e => e.ParentTableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentTableIID");
@@ -1014,11 +1014,11 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<TableGroup>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("TableGroup");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -1033,7 +1033,7 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("TaxPercentList");
 
-            entity.Property(e => e.ParentMenuIid)
+            entity.Property(e => e.ParentMenuIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentMenuIID");
@@ -1046,7 +1046,7 @@ public partial class PosDbContext : DbContext
                 .ToView("TaxSummary");
 
             entity.Property(e => e.EndDate).HasColumnType("smalldatetime");
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
@@ -1066,7 +1066,7 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("UncompletedOrdersSessionSum");
 
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
@@ -1091,14 +1091,14 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.CustomerDetails)
                 .HasMaxLength(563)
                 .IsUnicode(false);
-            entity.Property(e => e.CustomerIid)
+            entity.Property(e => e.CustomerIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CustomerIID");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -1123,11 +1123,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Reference)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
-            entity.Property(e => e.TableIid)
+            entity.Property(e => e.TableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TableIID");
@@ -1147,9 +1147,9 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Iid).HasName("PK_User");
+            entity.HasKey(e => e.IID).HasName("PK_User");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -1167,7 +1167,7 @@ public partial class PosDbContext : DbContext
                 .HasNoKey()
                 .ToView("UserSales");
 
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
@@ -1178,11 +1178,11 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<Xorder>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("XOrders");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -1196,7 +1196,7 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CName");
-            entity.Property(e => e.CustomerIid)
+            entity.Property(e => e.CustomerIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CustomerIID");
@@ -1224,11 +1224,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Reference)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
-            entity.Property(e => e.TableIid)
+            entity.Property(e => e.TableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TableIID");
@@ -1248,37 +1248,37 @@ public partial class PosDbContext : DbContext
 
         modelBuilder.Entity<XorderItem>(entity =>
         {
-            entity.HasKey(e => e.Iid);
+            entity.HasKey(e => e.IID);
 
             entity.ToTable("XOrderItem");
 
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
-            entity.Property(e => e.DistributionIid)
+            entity.Property(e => e.DistributionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("DistributionIID");
-            entity.Property(e => e.EntityButtonIid)
+            entity.Property(e => e.EntityButtonIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityButtonIID");
-            entity.Property(e => e.EntityIid)
+            entity.Property(e => e.EntityIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("EntityIID");
             entity.Property(e => e.EntityName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.OrderGroupIid)
+            entity.Property(e => e.OrderGroupIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("OrderGroupIID");
             entity.Property(e => e.OrderItemText)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.ParentOrderIid)
+            entity.Property(e => e.ParentOrderIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("ParentOrderIID");
@@ -1304,14 +1304,14 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.CustomerDetails)
                 .HasMaxLength(563)
                 .IsUnicode(false);
-            entity.Property(e => e.CustomerIid)
+            entity.Property(e => e.CustomerIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("CustomerIID");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Iid)
+            entity.Property(e => e.IID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("IID");
@@ -1336,11 +1336,11 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Reference)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.SessionIid)
+            entity.Property(e => e.SessionIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("SessionIID");
-            entity.Property(e => e.TableIid)
+            entity.Property(e => e.TableIID)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TableIID");

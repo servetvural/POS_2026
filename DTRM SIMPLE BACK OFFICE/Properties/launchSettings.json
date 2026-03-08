@@ -2,7 +2,7 @@
   "profiles": {
     "DTRM Simple Back Office": {
       "commandName": "Project",
-      "commandLineArgs": "accountant  6252"
+      "commandLineArgs": "owner  6252"
     }
   }
 }

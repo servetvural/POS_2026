@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Debug
+public partial class Debug    : BaseClass
 {
     public int DebugNo { get; set; }
 

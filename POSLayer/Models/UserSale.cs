@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class UserSale
+public partial class UserSale : BaseClass
 {
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
     public string? UserName { get; set; }
 

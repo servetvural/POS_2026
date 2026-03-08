@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 using PosLayer.Repository;
 
@@ -25,8 +26,12 @@ internal static class Program
      .ConfigureServices((context, services) =>
      {
          // 1. Register DbContext (Database First)
-         services.AddDbContext<PosDbContext>(options =>
-             options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;"));
+         //services.AddDbContext<PosDbContext>(options =>
+         //    options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;"));
+
+         services.AddDbContextFactory<PosDbContext>(options =>
+                      options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;", b => b.MigrationsAssembly("POSLayer"))); // Specify where migrations live
+
 
          // 2. Register Generic Repository
          services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

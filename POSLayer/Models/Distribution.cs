@@ -3,17 +3,16 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Distribution
+public partial class Distribution : BaseClass
 {
-    public string Iid { get; set; } = null!;
 
     public string? DistributionName { get; set; }
 
     public string? ShortName { get; set; }
 
-    public string? PrinterIid { get; set; }
+    public string? PrinterIID { get; set; }
 
     public int DisplayOrder { get; set; }
 
-    public string? ParentMenuIid { get; set; }
+    public string? ParentMenuIID { get; set; }
 }

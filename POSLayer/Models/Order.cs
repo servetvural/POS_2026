@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using POSLayer.Library;
+
 namespace POSLayer.Models;
 
-public partial class Order
+public partial class Order  : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
-    public string? TableIid { get; set; }
+    public string? TableIID { get; set; }
 
     public string? TableName { get; set; }
 
@@ -15,15 +15,15 @@ public partial class Order
 
     public int? Covers { get; set; }
 
-    public int? OrderType { get; set; }
+    public OrderTypes OrderType { get; set; }
 
-    public int? Payment { get; set; }
+    public PaymentMethods Payment { get; set; }
 
-    public string? CustomerIid { get; set; }
+    public string? CustomerIID { get; set; }
 
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
-    public int? Status { get; set; }
+    public StatusFlags Status { get; set; }
 
     public string? LockedClientIp { get; set; }
 

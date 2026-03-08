@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Session
+public partial class Session      : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
     public DateTime StartDate { get; set; }
 
     public DateTime? EndDate { get; set; }

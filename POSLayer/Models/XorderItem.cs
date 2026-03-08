@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class XorderItem
+public partial class XorderItem : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
-    public string EntityIid { get; set; } = null!;
+    public string EntityIID { get; set; } = null!;
 
     public string? EntityName { get; set; }
 
@@ -19,16 +17,15 @@ public partial class XorderItem
 
     public decimal? Price { get; set; }
 
-    public string? OrderGroupIid { get; set; }
+    public string? OrderGroupIID { get; set; }
 
-    public string? EntityButtonIid { get; set; }
+    public string? EntityButtonIID { get; set; }
 
-    public string? DistributionIid { get; set; }
+    public string? DistributionIID { get; set; }
 
-    public string? ParentOrderIid { get; set; }
+    public string? ParentOrderIID { get; set; }
 
     public int ItemType { get; set; }
-
     public int DisplayOrder { get; set; }
 
     public double TaxPercent { get; set; }

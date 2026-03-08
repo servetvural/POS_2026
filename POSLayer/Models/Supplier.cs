@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Supplier
+public partial class Supplier   : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
     public string SupplierName { get; set; } = null!;
 
     public string Tel { get; set; } = null!;

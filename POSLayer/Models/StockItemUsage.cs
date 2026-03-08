@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class StockItemUsage
+public partial class StockItemUsage    : BaseClass
 {
-    public string StockItemIid { get; set; } = null!;
+    public string StockItemIID { get; set; } = null!;
 
     public double? SessionQuantity { get; set; }
 
@@ -23,7 +23,7 @@ public partial class StockItemUsage
 
     public int OrderableType { get; set; }
 
-    public string SupplierIid { get; set; } = null!;
+    public string SupplierIID { get; set; } = null!;
 
     public string? SupplierName { get; set; }
 

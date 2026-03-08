@@ -48,24 +48,6 @@ namespace DTRMNS {
 
         public static DTRMConfig GetConfig() {
             try {
-
-                // Get the actual folder where the .exe is running
-                //string appDirectory = AppContext.BaseDirectory;
-                //string fullPath = Path.Combine(appDirectory, DBConfigFileName);
-
-                //if (File.Exists(fullPath))
-                //{
-                //    return (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(fullPath, typeof(DTRMConfig), true);
-                //} else
-                //{
-                //    return new DTRMConfig();
-                //}
-
-                //if (File.Exists(DBConfigFileName)) {
-                //    return (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
-                //} else {
-                //    return new DTRMConfig();
-                //}
                 DTRMConfig config = (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
                 return config;
             }
@@ -108,121 +90,6 @@ namespace DTRMNS {
             return PosLibrary.DRFile.XmlSerialize(DBConfigFileName, config, typeof(DTRMConfig), true);
         }
 
-        public static Object GetXMLFile(string filename, Type type) {
-            try {
-                return PosLibrary.DRFile.XmlDeSerialize(filename, type, true);
-            }
-            catch {
-                return null;
-            }
-        }
-
-
-        public static string SerializeObject(Type type, Object objectToSerialize) {
-            System.Xml.Serialization.XmlSerializer xser = new System.Xml.Serialization.XmlSerializer(type);
-            System.IO.StringWriter writer = new System.IO.StringWriter();
-            xser.Serialize(writer, objectToSerialize);
-            return writer.ToString();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="xmlfilename">Include xml extension suchas "customconfig.xml"</param>
-        /// <returns></returns>
-        public static bool SaveCustomConfig(DTRMConfig config, string xmlfilename) {
-            return PosLibrary.DRFile.XmlSerialize(xmlfilename, config, typeof(DTRMConfig), true);
-        }
-
-        public static string GetConfigInfo() {
-            string msg = "";
-            try
-            {
-                string[] valueNames = Application.UserAppDataRegistry.GetValueNames();
-                foreach (string v in valueNames)
-                {
-                    if (v != "DBUserName" && v != "DBPassword")
-                    {
-                        if (v == "DataSource" || v == "DBCatalog")
-                            msg += v + " = " + DRFormat.Decode(Application.UserAppDataRegistry.GetValue(v).ToString()) + "\r\n";
-                        else
-                            msg += v + " = " + Application.UserAppDataRegistry.GetValue(v).ToString() + "\r\n";
-                    }
-                }
-                return msg;
-            }
-            catch (Exception ex)
-            {
-                return "Error occured....!!!!\r\n" + ex.Message;
-            }
-
-
-
-        }
-
-        public static string GetStatusFlagAsString(StatusFlags Flag) {
-            switch (Flag) {
-                case StatusFlags.NEW:
-                    return "NewOrder";
-                case StatusFlags.DONE:
-                    return "DoneOrder";
-                case StatusFlags.COMPLETED:
-                    return "CompletedOrder";
-                case StatusFlags.ARCHIVED:
-                    return "ArchievedOrder";
-                default:
-                    return "Unknown";
-            }
-        }
-
-        public static string GetStatusFlagAsStringForReports(StatusFlags Flag) {
-            switch (Flag) {
-                case StatusFlags.NEW:
-                    return "*";
-                case StatusFlags.DONE:
-                    return "*";
-                case StatusFlags.COMPLETED:
-                    return "";
-                case StatusFlags.ARCHIVED:
-                    return "";
-                default:
-                    return "";
-            }
-        }
-
-        public static string[] GetLocalDirectoryList(DirectoryTypes dType) {
-            string searchtype = "";
-            switch (dType) {
-                case DirectoryTypes.All:
-                    searchtype = "*";
-                    break;
-                case DirectoryTypes.ShopDirectory:
-                    searchtype = "DTShop_*";
-                    break;
-                case DirectoryTypes.WareHouseDirectory:
-                    searchtype = "DTWare_*";
-                    break;
-                default:
-                    searchtype = "*";
-                    break;
-            }
-            return Directory.GetDirectories(DRFile.GetApplicationPath(), searchtype);
-        }
-
-        public static string GetPaymentMethodsText(PaymentMethods pt) {
-            switch (pt) {
-                case PaymentMethods.Cash:
-                    return "Cash";
-                case PaymentMethods.Card:
-                    return "Card";                
-                case PaymentMethods.Online:
-                    return "Online";
-                case PaymentMethods.Unknown:
-                    return "Unknown";
-            }
-            return "Unknown";
-        }
 
         public static StatusFlags UpdateStatus(StatusFlags CurrentFlag, StatusFlags NewFlag, bool blnForce) {
             if (((int)NewFlag) > ((int)CurrentFlag)) {
@@ -274,68 +141,11 @@ namespace DTRMNS {
             }
         }
 
-        public static string GetOrderTypeAsShortText(OrderTypes OrderType) {
-            switch (OrderType) {
-                case OrderTypes.DirectSale:
-                    return "DS";
-                case OrderTypes.InHouse:
-                    return "H";
-                case OrderTypes.TakeAwayB:
-                    return "TA";
-                case OrderTypes.InternetTakeAway:
-                    return "ITA";
-                case OrderTypes.Delivery:
-                    return "D";
-                case OrderTypes.InternetDelivery:
-                    return "ID";
-                default:
-                    return "U";
-            }
-        }
+      
 
-        public static string GetAccessLevelAsText(AccessLevels accesslevel) {
-            //User, Manager, Developer
-            switch (accesslevel) {
-                case AccessLevels.User:
-                    return "User";
-                case AccessLevels.Manager:
-                    return "Manager";
-                case AccessLevels.SuperUser:
-                    return "Super User";
-                case AccessLevels.TechnicalSupport:
-                    return "Technical Support";
-            }
-            return "";
-        }
-
-        public static bool LoadLuv(ref DTRMConfig dtrmConfig) {
-            dtrmConfig = GetConfig();
-            return true;
-        }            
-
-        public static bool IsRemoteServerConfigAvailable(string ServerIP, string PortNumber) {
-            try {
-                if (ServerIP == "")
-                    return false;
-                if (ServerIP == null)
-                    return false;
-                if (int.Parse(PortNumber) > 0)
-                    return true;
-            }
-            catch {
-                return false;
-            }
-            return false;
-        }
 
         public static float GetRelatedPrice(OrderItem oi, Entity en, EntityButton eb, Order order) {
             return eb.GetPrice(order.OrderType);
-        }
-
-
-        public static WeekDays ConvertDayOfWeekTODTRMWeekDays(DayOfWeek dayofweek) {
-            //WeekDays {  NoDay =0, Monday =1, Tuesday= 2,Wednesday =4, Thursday = 8, Friday = 16, Saturday = 32, Sunday = 64 }
-            return (WeekDays)Enum.Parse(typeof(WeekDays), dayofweek.ToString());
         }
         public static WeekDays GetTodaysDTRMWeekDay() {
             return (WeekDays)Enum.Parse(typeof(WeekDays), DateTime.Now.DayOfWeek.ToString());
@@ -388,33 +198,7 @@ namespace DTRMNS {
                 control.BackColor = oldColour;
             }
         }
-        public static void SetForegroundColour(Control control, string newColourName) {
-            Color oldColour = control.ForeColor;
-            try {
-                control.ForeColor = Color.FromName(newColourName);
-            }
-            catch {
-                control.ForeColor = oldColour;
-            }
-        }
-        public static void SetImageForButton(Button btn, string filename, Image defaultImage) {
-            if (filename == null)
-                return;
-            if (filename == "") {
-                btn.Image = defaultImage;
-                return;
-            }
-
-            else {
-                try {
-                    Image img = Image.FromFile(filename);
-                    btn.Image = img;
-                }
-                catch {
-                    btn.Image = defaultImage;
-                }
-            }
-        }
+        
         public static void SetBackgroundImageForButton(Button btn, string filename, Image defaultImage, ImageLayout layout) {
             if (filename == null)
                 return;

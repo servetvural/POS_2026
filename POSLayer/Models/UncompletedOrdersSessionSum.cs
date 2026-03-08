@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class UncompletedOrdersSessionSum
+public partial class UncompletedOrdersSessionSum     : BaseClass
 {
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
     public double? GrossSessionTotalUncompleted { get; set; }
 }

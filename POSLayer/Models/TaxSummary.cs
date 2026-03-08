@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class TaxSummary
+public partial class TaxSummary    : BaseClass
 {
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
     public DateTime StartDate { get; set; }
 

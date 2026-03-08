@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class User
+public partial class User : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
     public string? UserName { get; set; }
 
     public string? UserPassword { get; set; }

@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 
 using DTRMNS;
+
+using Newtonsoft.Json;
+
 using PosLibrary;
 
 namespace DTRMSimpleBackOffice {
@@ -93,6 +96,59 @@ namespace DTRMSimpleBackOffice {
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     PrintHandler printer = new PrintHandler(bslayer, exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
+                }
+            }
+        }
+
+
+
+        private void btnExportAsJson_Click(object sender, EventArgs e)
+        {
+            List<Distribution> theList = bslayer.GetDistributionList();
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "JSON Files (*.json)|";
+                sfd.FileName = "Distribution List.json";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    if (sfd.FileName != null && sfd.FileName != "")
+                    {
+
+
+                        var jsonString = JsonConvert.SerializeObject(theList, Formatting.Indented);
+                        if (UF.SaveTextFile(sfd.FileName, jsonString))
+                            MessageBox.Show("Saved Distribution List");
+                        else
+                            MessageBox.Show("Failed to Save Distribution List");
+                    }
+                }
+            }
+        }
+
+        private void btnImportFromJson_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog sfd = new OpenFileDialog())
+            {
+                sfd.Filter = "JSON Files (*.json)|";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    if (sfd.FileName != null && sfd.FileName != "")
+                    {
+                        string content = UF.GetTextFile(sfd.FileName);
+                        if (!string.IsNullOrEmpty(content))
+                        {
+                            List<Distribution> theList = JsonConvert.DeserializeObject<List<Distribution>>(content);
+                            foreach (var item in theList)
+                            {
+                                bslayer.SaveDistribution(item);
+                            }
+                            MessageBox.Show("Saved Distribution List");
+                        } else
+                        {
+                            MessageBox.Show("Failed to Get Distribution List");
+                        }
+                        LoadDistributions();
+                    }
                 }
             }
         }

@@ -2236,6 +2236,15 @@ namespace DTRMNS
             return DistributionList;
         }
 
+        public List<Distribution> GetDistributionList()
+        {
+            List<Distribution> DistributionList = new List<Distribution>();
+            DataTable dt = db.GetDataTable("SELECT * FROM Distribution");
+            for (int i = 0; i < dt.Rows.Count; i++)
+                DistributionList.Add(new Distribution(dt.Rows[i]));
+            return DistributionList;
+        }
+
         public string GetDistributionPrinterNetworkName(string DistributionIID)
         {
             try

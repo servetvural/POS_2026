@@ -106,4 +106,10 @@ namespace DTRMNS {
     public enum ScreenSaverColourTypes {  BlackBackGroundWhiteBrush, WhiteBackGroundBlackBrush}
     public enum AlignmentTypes {  Left, Center, Right}
 
+
+
+
+
+  
+
 }

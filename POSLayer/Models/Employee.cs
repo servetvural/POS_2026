@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Employee
+public partial class Employee : BaseClass
 {
-    public string Iid { get; set; } = null!;
 
     public string? EmployeeName { get; set; }
 

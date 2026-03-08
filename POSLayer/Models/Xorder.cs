@@ -3,11 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Xorder
+public partial class Xorder : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
-    public string? TableIid { get; set; }
+    public string? TableIID { get; set; }
 
     public string? TableName { get; set; }
 
@@ -19,9 +17,9 @@ public partial class Xorder
 
     public int? Payment { get; set; }
 
-    public string? CustomerIid { get; set; }
+    public string? CustomerIID { get; set; }
 
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
     public int? Status { get; set; }
 

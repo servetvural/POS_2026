@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class ServiceChargeSummary
+public partial class ServiceChargeSummary : BaseClass
 {
-    public string? SessionIid { get; set; }
+    public string? SessionIID { get; set; }
 
     public double? ServiceChargeTotal { get; set; }
 

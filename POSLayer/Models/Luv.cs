@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Luv
+public partial class Luv    : BaseClass 
 {
-    public string? CurrentSessionIid { get; set; }
+    public string? CurrentSessionIID { get; set; }
 
     public DateTime? SessionStartDateTime { get; set; }
 

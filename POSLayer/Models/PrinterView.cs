@@ -3,15 +3,14 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class PrinterView
+public partial class PrinterView : BaseClass
 {
-    public string Iid { get; set; } = null!;
 
     public string? ApplicationName { get; set; }
 
     public int? PrinterType { get; set; }
 
-    public string ClientIid { get; set; } = null!;
+    public string ClientIID { get; set; } = null!;
 
     public string NetworkName { get; set; } = null!;
 

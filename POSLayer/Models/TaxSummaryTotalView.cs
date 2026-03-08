@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class TaxSummaryTotalView
+public partial class TaxSummaryTotalView : BaseClass
 {
     public double TaxPercent { get; set; }
 

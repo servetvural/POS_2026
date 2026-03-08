@@ -3,15 +3,13 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class KitchenOrder
+public partial class KitchenOrder : BaseClass
 {
-    public string Iid { get; set; } = null!;
-
     public string Reference { get; set; } = null!;
 
     public DateTime CreatedDateTime { get; set; }
 
-    public string OrderIid { get; set; } = null!;
+    public string OrderIID { get; set; } = null!;
 
     public DateTime CompletedDateTime { get; set; }
 
