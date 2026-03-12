@@ -80,7 +80,7 @@ namespace DTRMNS {
                     bslayer.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }
 
-            if (blnOpenCashDrawer && bslayer.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
+            if (blnOpenCashDrawer && bslayer.config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
                 bslayer.OpenCashDrawer(false);
             this.Close();
         }

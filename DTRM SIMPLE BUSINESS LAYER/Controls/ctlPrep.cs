@@ -28,7 +28,7 @@ namespace DTRMNS {
         {
             DataGridViewImageCell cellTick = dgv.Rows[e.RowIndex].Cells[4] as DataGridViewImageCell;
             KitchenOrderItem koi = (KitchenOrderItem)korder.items[e.RowIndex];
-            OrderItem oi = null;
+            POSLayer.Models.OrderItem oi = null;
 
             switch (e.ColumnIndex)
             {

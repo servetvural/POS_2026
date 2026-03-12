@@ -1,7 +1,4 @@
-﻿using DTRMNS;
-using Newtonsoft.Json;
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,33 +9,49 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using DTRMNS;
+
+using Newtonsoft.Json;
+
+using POSLayer.Library;
+//using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmEmployeeList : Form {
 
         private DTRMSimpleBusiness bslayer;
-        public Employee SelectedEmployee;
+        public POSLayer.Models.Employee SelectedEmployee;
+        //  PosDbContext dbContext;
+        IRepository<POSLayer.Models.Employee> repoEmployee;
 
         public frmEmployeeList(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             this.bslayer = bslayer;
+            // dbContext = ServiceHelper.GetService<PosDbContext>();
+            repoEmployee = ServiceHelper.GetRepository<POSLayer.Models.Employee>();
         }
 
         private void frmEmployeeList_Load(object sender, EventArgs e) {
             LoadEmployees();
         }
 
-        private void LoadEmployees() {
+        private async void LoadEmployees() {
             lvwEmployee.Items.Clear();
-            List<Employee> employees = bslayer.GetAllEmployeeList();
+            //List<POSLayer.Models.Employee> employees = await repoEmployee.GetAllAsync(); 
+            List<Employee> employees= bslayer.GetAllEmployeeList();
 
             imgList.Images.Clear();
-            foreach (Employee employee in employees) {
+            foreach (Employee employee in employees)
+            {
                 GenericImage gim = bslayer.GetGenericImage(employee.IID);
-                Image imgProfil = null;
-                if (gim == null) {
+                System.Drawing.Image imgProfil = null;
+                if (gim == null)
+                {
                     imgProfil = Properties.Resources.BlueMan32;
-                } else {
-                    imgProfil = gim.DisplayImage;                    
+                } else
+                {
+                    imgProfil = gim.DisplayImage;
                 }
 
                 imgList.Images.RemoveByKey(employee.IID);
@@ -55,19 +68,19 @@ namespace DTRMSimpleBackOffice {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            frmEmployee frm = new frmEmployee(bslayer, new Employee());
+            frmEmployee frm = new frmEmployee(bslayer, new DTRMNS.Employee());
             if (frm.ShowDialog() == DialogResult.OK)
                 btnReload_Click(sender, e);
         }
 
         private void btnEdit_Click(object sender, EventArgs e) {
-            if (lvwEmployee.SelectedItems.Count > 0) {
-                ListViewItem lvi = lvwEmployee.SelectedItems[0];
-                Employee employee = bslayer.GetEmployee(lvi.ImageKey);
-                frmEmployee frm = new frmEmployee(bslayer, employee);
-                if (frm.ShowDialog() == DialogResult.OK)
-                    btnReload_Click(sender, e);
-            }
+            //if (lvwEmployee.SelectedItems.Count > 0) {
+            //    ListViewItem lvi = lvwEmployee.SelectedItems[0];
+            //    Employee employee = bslayer.GetEmployee(lvi.ImageKey);
+            //    frmEmployee frm = new frmEmployee(bslayer, employee);
+            //    if (frm.ShowDialog() == DialogResult.OK)
+            //        btnReload_Click(sender, e);
+            //}
         }
 
         private void btnDelete_Click(object sender, EventArgs e) {
@@ -89,11 +102,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void btnSelect_Click(object sender, EventArgs e) {
-            //if (dgv.SelectedRows.Count > 0) {
-            //    SelectedEmployee = bslayer.GetEmployee(dgv.SelectedRows[0].Cells["colIID"].Value.ToString());
-            //    this.DialogResult = DialogResult.OK;
-            //    Close();
-            //}
+
         }
 
         private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
@@ -144,54 +153,54 @@ namespace DTRMSimpleBackOffice {
 
         private void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Employee> employeeList = bslayer.GetAllEmployeeList();
-            using (SaveFileDialog sfd = new SaveFileDialog())
-            {
-                sfd.Filter = "JSON Files (*.json)|";
-                sfd.FileName = "Employee List.json";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    if (sfd.FileName != null && sfd.FileName != "")
-                    {
+            //List<Employee> employeeList = bslayer.GetAllEmployeeList();
+            //using (SaveFileDialog sfd = new SaveFileDialog())
+            //{
+            //    sfd.Filter = "JSON Files (*.json)|";
+            //    sfd.FileName = "Employee List.json";
+            //    if (sfd.ShowDialog() == DialogResult.OK)
+            //    {
+            //        if (sfd.FileName != null && sfd.FileName != "")
+            //        {
 
                         
-                        var jsonString = JsonConvert.SerializeObject(employeeList,Formatting.Indented);
-                        if (UF.SaveTextFile(sfd.FileName, jsonString))
-                            MessageBox.Show("Saved Employee List");
-                        else
-                            MessageBox.Show("Failed to Save Employee List");
-                    }
-                }
-            }
+            //            var jsonString = JsonConvert.SerializeObject(employeeList,Formatting.Indented);
+            //            if (UF.SaveTextFile(sfd.FileName, jsonString))
+            //                MessageBox.Show("Saved Employee List");
+            //            else
+            //                MessageBox.Show("Failed to Save Employee List");
+            //        }
+            //    }
+            //}
         }
 
         private void btnImportFromJson_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog sfd = new OpenFileDialog())
-            {
-                sfd.Filter = "JSON Files (*.json)|";
-               // sfd.FileName = "Employee List";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    if (sfd.FileName != null && sfd.FileName != "")
-                    {
-                        string content = UF.GetTextFile(sfd.FileName);
-                        if (!string.IsNullOrEmpty(content))
-                        {
-                            List<Employee> employeeList = JsonConvert.DeserializeObject<List<Employee>>(content);
-                            foreach (Employee employee in employeeList)
-                            {
-                                bslayer.SaveEmployee(employee);
-                            }
-                            MessageBox.Show("Saved Employee List");
-                        } else
-                        {
-                            MessageBox.Show("Failed to Get Employee List");
-                        }
-                        LoadEmployees();
-                    }
-                }
-            }
+            //using (OpenFileDialog sfd = new OpenFileDialog())
+            //{
+            //    sfd.Filter = "JSON Files (*.json)|";
+            //   // sfd.FileName = "Employee List";
+            //    if (sfd.ShowDialog() == DialogResult.OK)
+            //    {
+            //        if (sfd.FileName != null && sfd.FileName != "")
+            //        {
+            //            string content = UF.GetTextFile(sfd.FileName);
+            //            if (!string.IsNullOrEmpty(content))
+            //            {
+            //                List<Employee> employeeList = JsonConvert.DeserializeObject<List<Employee>>(content);
+            //                foreach (Employee employee in employeeList)
+            //                {
+            //                    bslayer.SaveEmployee(employee);
+            //                }
+            //                MessageBox.Show("Saved Employee List");
+            //            } else
+            //            {
+            //                MessageBox.Show("Failed to Get Employee List");
+            //            }
+            //            LoadEmployees();
+            //        }
+            //    }
+            //}
         }
     }
 }

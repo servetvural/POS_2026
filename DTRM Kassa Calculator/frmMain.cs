@@ -12,8 +12,9 @@ using DTRMNS;
 namespace DTRM_Kassa_Calculator {
     public partial class frmMain : Form {
         private DTRMSimpleBusiness bslayer;
-        public frmMain() {
+        public frmMain(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            this.bslayer = bslayer;
         }
 
         private void frmKassaCalculator_Load(object sender, EventArgs e) {
@@ -25,7 +26,8 @@ namespace DTRM_Kassa_Calculator {
                         Application.Exit();
                     }
                 }
-                bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+
+                bslayer.CustomInitialize( UF.GetConfig());
                 if (bslayer != null) {
                    
                 }
@@ -44,7 +46,7 @@ namespace DTRM_Kassa_Calculator {
         private bool AskForConfig(DTRMSimpleBusiness testbslayer) {
             frmConfig frm = new frmConfig(testbslayer);
             if (frm.ShowDialog() == DialogResult.OK) {
-                bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+                bslayer.CustomInitialize(UF.GetConfig());
                 return true;
             } else
                 return false;

@@ -100,7 +100,7 @@ namespace DTRMNS {
             // 
             // fMenuBindingSource
             // 
-            this.fMenuBindingSource.DataSource = typeof(DTRMNS.FMenu);
+            this.fMenuBindingSource.DataSource = typeof(DTRMNS.Menu);
             // 
             // frmMenuSelector
             // 

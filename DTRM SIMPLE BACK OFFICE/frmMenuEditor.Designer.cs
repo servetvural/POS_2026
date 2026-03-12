@@ -365,7 +365,7 @@
             // 
             // catalogBindingSource
             // 
-            this.catalogBindingSource.DataSource = typeof(DTRMNS.FMenu);
+            this.catalogBindingSource.DataSource = typeof(DTRMNS.Menu);
             // 
             // popEntityButton
             // 

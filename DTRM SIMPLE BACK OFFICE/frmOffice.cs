@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
+
+using DTRMNS;
+
+using Microsoft.Extensions.Hosting;
+
+using POSLayer.Library;
+
 using PosLibrary;
 using PosLibrary.DBSpace;
-using DTRMNS;
-using System.Collections.Generic;
 
 
 namespace DTRMSimpleBackOffice
@@ -14,16 +20,17 @@ namespace DTRMSimpleBackOffice
     public partial class frmOffice : Form
     {
 
-        private ConnectionStatus conStatus;
+        private DTRMNS.ConnectionStatus conStatus;
         private DTRMSimpleBusiness bslayer;
-        private ViewModes viewMode = ViewModes.User;             
+        private ViewModes viewMode = ViewModes.User;
 
-        public frmOffice()
+        public frmOffice(DTRMSimpleBusiness _bslayer)
         {
-            InitializeComponent();                 
+            InitializeComponent();
+            bslayer = _bslayer;
             if (!string.IsNullOrEmpty(Program.UserType))
             {
-                if (!Enum.TryParse<ViewModes>(Program.UserType,true, out viewMode))
+                if (!Enum.TryParse<ViewModes>(Program.UserType, true, out viewMode))
                     viewMode = ViewModes.User;
             }
             this.Text += " as " + viewMode.ToString();
@@ -34,24 +41,24 @@ namespace DTRMSimpleBackOffice
             CheckTabHeight();
         }
 
-        private void btnConnect_Click(object sender, EventArgs e)
+        private async  void btnConnect_Click(object sender, EventArgs e)
         {
             bool blnLocalDatabase = false;
             switch (conStatus)
             {
-                case ConnectionStatus.Disconnected:
+                case DTRMNS.ConnectionStatus.Disconnected:
                 TryAgainLocally:
-                    if (UF.IsConfigFileExist())
+                    if (POSLayer.Library.UF.IsConfigFileExist())
                     {
-                        DTRMConfig config = UF.GetConfig();
+                        DTRMConfig config = DTRMNS.UF.GetConfig();
                         if (config.Database_Instance == null |
                             config.Database_User_Name == null || config.Database_Password == null)
                         {
-                            frmConfig frm = new frmConfig(null);
+                            frmConfig frm = ServiceHelper.GetService<frmConfig>();
                             if (frm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                                 Application.Exit();
                         }
-                        bslayer = new DTRMSimpleBusiness(config);
+                        bslayer.CustomInitialize(config);
 
                         if (!bslayer.DBConnectionSuccessful)
                         {
@@ -59,7 +66,7 @@ namespace DTRMSimpleBackOffice
                                 Application.Exit();
                             return;
                         }
-                        if (bslayer.DoStartThings())
+                        if (await bslayer.DoStartThings())
                         {
                             blnLocalDatabase = (DRUF.IsLocalIpAddress(config.Database_Instance) || config.Database_Instance == ".");
                             bslayer.EnsureRequiredUsers();
@@ -76,13 +83,13 @@ namespace DTRMSimpleBackOffice
                                     //Identify connection type
                                     if (blnLocalDatabase)
                                     {
-                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
+                                        conStatus = bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.ConnectedLocally;
                                         btnPrinters.Enabled = true;
                                         btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
                                     } else
                                     {
                                         //remote connection
-                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
+                                        conStatus = bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.ConnectedRemotely;
                                         //btnPrinters.Enabled = false;
                                         btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
                                     }
@@ -111,14 +118,14 @@ namespace DTRMSimpleBackOffice
                                 // config.Database_Name = db.DatabaseName;
                                 config.Database_User_Name = db.UserName;
                                 config.Database_Password = db.Password;
-                                UF.SaveConfig(config);
+                                DTRMNS.UF.SaveConfig(config);
                                 goto TryAgainLocally;
 
                             }
                         }
                     } else
                     {
-                        frmConfig frm = new frmConfig(null);
+                        frmConfig frm = ServiceHelper.GetService<frmConfig>();
                         if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                             goto TryAgainLocally;
                         else
@@ -136,10 +143,10 @@ namespace DTRMSimpleBackOffice
         {
             switch (conStatus)
             {
-                case ConnectionStatus.ConnectedLocally:
-                case ConnectionStatus.ConnectedRemotely:
+                case DTRMNS.ConnectionStatus.ConnectedLocally:
+                case DTRMNS.ConnectionStatus.ConnectedRemotely:
 
-                    conStatus = ConnectionStatus.Disconnected;
+                    conStatus = DTRMNS.ConnectionStatus.Disconnected;
                     try
                     {
                         bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.Disconnected;
@@ -390,7 +397,8 @@ namespace DTRMSimpleBackOffice
 
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            frmConfig frm = new frmConfig(bslayer);
+            //frmConfig frm = new frmConfig(bslayer);
+            frmConfig frm = ServiceHelper.GetService<frmConfig>();
             frm.Show();
         }
 
@@ -534,7 +542,10 @@ namespace DTRMSimpleBackOffice
 
         private void btnKassaCalculator_Click(object sender, EventArgs e)
         {
-            frmKassaCalculator frm = new frmKassaCalculator(bslayer);
+            //frmKassaCalculator frm = new frmKassaCalculator();
+            //frm.MdiParent = this;
+            //frm.Show();
+            var frm = ServiceHelper.GetService<frmKassaCalculator>();
             frm.MdiParent = this;
             frm.Show();
         }

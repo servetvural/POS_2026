@@ -12,8 +12,9 @@ namespace DTRM_Kitchen_Display {
     public partial class frmDisplaySelector : Form {
         private DTRMSimpleBusiness bslayer;
 
-        public frmDisplaySelector() {
+        public frmDisplaySelector(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            this.bslayer = bslayer;
         }
         private void frmDisplaySelector_Load(object sender, EventArgs e) {
             
@@ -28,7 +29,8 @@ namespace DTRM_Kitchen_Display {
                         Application.Exit();
                     }
                 }
-                bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+
+                bslayer.CustomInitialize( UF.GetConfig());
                 if (bslayer != null) {
                     switch (bslayer.config.Kitchen_Monitor_Auto_Display_Type) {
                         case KitchenDisplayTypes.None:
@@ -70,7 +72,7 @@ namespace DTRM_Kitchen_Display {
         private bool  AskForConfig(DTRMSimpleBusiness testbslayer) {
             frmConfig frm = new frmConfig(testbslayer);
             if (frm.ShowDialog() == DialogResult.OK) {
-                bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+                bslayer.CustomInitialize(UF.GetConfig());
                 return true;
             } else
                 return false;

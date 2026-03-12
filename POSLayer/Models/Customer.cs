@@ -6,25 +6,25 @@ namespace POSLayer.Models;
 public partial class Customer   : BaseClass
 {
 
-    public string? Cname { get; set; }
+    public string CName { get; set; } =string.Empty;
 
-    public string? CompanyName { get; set; }
+    public string CompanyName { get; set; }  = string.Empty;  
 
-    public string? Postcode { get; set; }
+    public string Postcode { get; set; }     = string.Empty;
 
-    public string? Address { get; set; }
+    public string Address { get; set; }       = string.Empty;
 
-    public string? Buzzer { get; set; }
+    public string Buzzer { get; set; }    = string.Empty;
 
-    public string? Town { get; set; }
+    public string Town { get; set; }     = string.Empty;
 
-    public string? Tel { get; set; }
+    public string Tel { get; set; }      = string.Empty;
 
-    public string? Fax { get; set; }
+    public string Fax { get; set; }       = string.Empty;
 
-    public string? Mobile { get; set; }
+    public string Mobile { get; set; }  = string.Empty;
 
-    public string? Email { get; set; }
+    public string Email { get; set; }    = string.Empty;
 
-    public string? Cpassword { get; set; }
+    public string CPassword { get; set; } = string.Empty;
 }

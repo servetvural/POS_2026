@@ -13,9 +13,10 @@ namespace DTRMClientNS
         private trmOrderPadMain OrderPad;
         private int LoginCounter;
 
-        public FrmLock()
+        public FrmLock(DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
+            this.bslayer = bslayer;
             txtUserPassword.Text = "";
         }
 
@@ -117,10 +118,9 @@ namespace DTRMClientNS
                 }
 
                 DisplayMessage("VALIDATING CONFIGURATION........   ", 2);
-                bslayer = new DTRMSimpleBusiness
-                {
-                    config = UF.GetConfig()
-                };
+                DTRMConfig config = UF.GetConfig();
+                //bslayer.config = config;
+                bslayer.CustomInitialize(config);
 
 
                 //Validate Client IP
@@ -154,11 +154,10 @@ namespace DTRMClientNS
         private void BtnLogon_Click(object sender, System.EventArgs e)
         {
             this.TopMost = false;
-            bslayer = new DTRMSimpleBusiness();
-            //if (!bslayer.CheckNecessaryInstallationsAndFiles())
-            //    return;
+           // bslayer = new DTRMSimpleBusiness();
+           
             this.TopMost = true;
-            bslayer = null;
+           // bslayer = null;
 
             if (txtUserPassword.Text.Length == 0)
                 return;
@@ -168,15 +167,15 @@ namespace DTRMClientNS
 
             try
             {
-                if (bslayer == null || bslayer.config == null || bslayer.db == null)
-                {
+                //if (bslayer == null || bslayer.config == null || bslayer.db == null)
+                //{
                     if (ValidateConfiguration())
                     {
                         //DisplayMessage("CHECKING DATABASE UPDATES.............        ", 2);
                         //bslayer.CheckAndUpdateDatabaseVersion();
 
                         DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
-                        if (!bslayer.DoStartThings())
+                        if (!bslayer.DoStartThings().Result)
                         {
                             DisplayMessage("Cannot Start Business Layer", 2);
                             return;
@@ -202,7 +201,7 @@ namespace DTRMClientNS
                     {
                         goto StartAgain;
                     }
-                }
+                //}
                 CheckUser();
                 txtUserPassword.Clear();
             } catch

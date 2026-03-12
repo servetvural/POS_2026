@@ -237,7 +237,7 @@ namespace DTRMNS {
         }
 
 
-        private void HandlePriceChange(OrderTypes RequestedType) {
+        private void HandlePriceChange(POSLayer.Library.OrderTypes RequestedType) {
             //switch (DTRMSimpleBusiness.MessageBoxDT("Do you want all item prices to be changed ?", "CHANGE PRICES", DialogTypes.YesNoCancel)) {
             //   case DialogResult.Yes:
             //Close tabpages to ensure the last open top order item having completed effect

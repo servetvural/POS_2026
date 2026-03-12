@@ -2305,7 +2305,7 @@ namespace DTRMNS
 
             pnlPendingOrders.Visible = bslayer.config.Hold_Order_Available;
 
-            btnCashDrawer.Text = bslayer.GetLuv().VoidText;
+            btnCashDrawer.Text = bslayer.GetLuv().Result.VoidText;
             if (OUI == null)
                 OUI = new InterfaceHolder("orderpad");
             OUI.Panels.Clear();
@@ -2580,7 +2580,7 @@ namespace DTRMNS
 
 
 
-        public bool SafelyPackTheOrder(StatusFlags NewOrderStatus, bool blnLoadingNew)
+        public bool SafelyPackTheOrder(POSLayer.Library.StatusFlags NewOrderStatus, bool blnLoadingNew)
         {
             bool blnHaveItemsToPrint = false;
             bool blnNewInHouseOrder = false;
@@ -2591,11 +2591,11 @@ namespace DTRMNS
 
             if (bslayer.AttachedOrder != null)
             {
-                blnNewInHouseOrder = (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && bslayer.AttachedOrder.Status == StatusFlags.NEW);// bslayer.OldOpennedOrder == null);
+                blnNewInHouseOrder = (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.AttachedOrder.Status == POSLayer.Library.StatusFlags.NEW);// bslayer.OldOpennedOrder == null);
 
-                blnPrintableOldInHouseOrder = (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && bslayer.AttachedOrder.HasItemsForKitchen());  //bslayer.AttachedOrder.Subtract(bslayer.OldOpennedOrder).items.Count > 0);
-                blnPrintableOtherOrderType = bslayer.AttachedOrder.OrderType == OrderTypes.Delivery || bslayer.AttachedOrder.OrderType == OrderTypes.TakeAwayB;
-                blnOldInHouseOrder = bslayer.AttachedOrder.Status == StatusFlags.DONE;  // bslayer.OldOpennedOrder != null;
+                blnPrintableOldInHouseOrder = (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.AttachedOrder.HasItemsForKitchen());  //bslayer.AttachedOrder.Subtract(bslayer.OldOpennedOrder).items.Count > 0);
+                blnPrintableOtherOrderType = bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery || bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.TakeAwayB;
+                blnOldInHouseOrder = bslayer.AttachedOrder.Status == POSLayer.Library.StatusFlags.DONE;  // bslayer.OldOpennedOrder != null;
                 blnOrderHasMultipleOrderGroupIID = bslayer.AttachedOrder.HasMultipleOrderGroupIID();
                 blnHaveItemsToPrint = blnNewInHouseOrder || blnPrintableOldInHouseOrder || blnPrintableOtherOrderType || blnOrderHasMultipleOrderGroupIID;
             }
@@ -2623,9 +2623,9 @@ namespace DTRMNS
                     //if ((blnNewInHouseOrder || blnPrintableOldInHouseOrder) && bslayer.config.Display_Kitchen_Orders) {
                     //This is where you call CreateKitchenOrderForInHouseOrder / if prep denied/cancelled go back
 
-                    KitchenOrder korder = null;
+                    POSLayer.Models.KitchenOrder korder = null;
 
-                    Order order = bslayer.AttachedOrder.GetOrderWithKitchenableItems();
+                    POSLayer.Models.Order order = bslayer.AttachedOrder.GetOrderWithKitchenableItems();
                     if (order.items.Count == 0)
                         bslayer.DeleteKitchenOrdersForOrder(bslayer.AttachedOrder.IID);
                     else
@@ -2635,30 +2635,13 @@ namespace DTRMNS
                             return false;
                     }
 
-                    //Here print if inhouse order print required and there is something to print
-                    //if ((korder != null && korder.items.Count > 0) &&
-                    //    (blnNewInHouseOrder || blnOldInHouseOrder) && 
-                    //    bslayer.config.Table_Orders_Kitchen_Receipt_Count > 0 ) {
-                    //    bslayer.PrintForKitchen(korder); //   bslayer.AttachedOrder, false, true, true, true);
-                    //}
-
-
-
-                    if (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && bslayer.config.Table_Orders_Always_Shrinked)
+                    if (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.config.Table_Orders_Always_Shrinked)
                         bslayer.AttachedOrder.ShrinkOrder();
 
                 }
 
                 if (blnHaveItemsToPrint)
                 {
-                    //if (blnNewInHouseOrder && bslayer.config.Table_Kitchen_Receipt_Count > 0) {
-                    //    bslayer.PrintForKitchen(bslayer.AttachedOrder, false, true, true, true);
-                    //}
-
-                    //if (blnPrintableOldInHouseOrder && bslayer.config.Table_Orders_Kitchen_Receipt_Count > 0) {
-                    //    bslayer.PrintForKitchen(bslayer.AttachedOrder, true, true, true, true);
-                    //}
-
 
                     bslayer.AttachedOrder.Status = NewOrderStatus;
                     if (blnPrintableOtherOrderType)
@@ -2674,15 +2657,15 @@ namespace DTRMNS
                     if (bslayer.AttachedOrder.items.Count > 0)
                     {
                         bslayer.AttachedOrder.Status = UF.UpdateStatus(bslayer.AttachedOrder.Status, NewOrderStatus, true);
-                        if (bslayer.AttachedOrder.Status == StatusFlags.UNKNOWN ||
-                            bslayer.AttachedOrder.Status == StatusFlags.NEW)
+                        if (bslayer.AttachedOrder.Status == POSLayer.Library.StatusFlags.UNKNOWN ||
+                            bslayer.AttachedOrder.Status == POSLayer.Library.StatusFlags.NEW)
                         {
                             bslayer.DeleteOrder(bslayer.AttachedOrder.IID);
                             bslayer.AttachedOrder = null;
                         } else
                             bslayer.SaveOrder(bslayer.AttachedOrder);
                         UnloadOrder();
-                    } else if (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse)
+                    } else if (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse)
                     {
                         UnloadOrder();
                     } else
@@ -2936,10 +2919,10 @@ namespace DTRMNS
                 }
 
 
-                if (bslayer.config.TakeAway_Orders_Display_Kitchen_Orders && bslayer.AttachedOrder.OrderType == OrderTypes.TakeAwayB)
+                if (bslayer.config.TakeAway_Orders_Display_Kitchen_Orders && bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.TakeAwayB)
                     bslayer.CreateKitchenOrderForTakeAwayAndDeliveryOrder(bslayer.AttachedOrder);
 
-                if (bslayer.config.Delivery_Orders_Display_Kitchen_Orders && bslayer.AttachedOrder.OrderType == OrderTypes.Delivery)
+                if (bslayer.config.Delivery_Orders_Display_Kitchen_Orders && bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
                     bslayer.CreateKitchenOrderForTakeAwayAndDeliveryOrder(bslayer.AttachedOrder);
 
 
@@ -2972,7 +2955,7 @@ namespace DTRMNS
                 if (bslayer.AttachedOrder.OrderType == OrderTypes.Delivery || bslayer.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||
                     bslayer.AttachedOrder.OrderType == OrderTypes.InternetDelivery || bslayer.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
                     return false;
-                if (SafelyPackTheOrder(StatusFlags.DONE, false))
+                if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, false))
                 {
                     //if (bslayer.config.Customer_Display_Type != CustomerDisplayTypes.NONE)
                     //    bslayer.CDSendMessage("KITCHEN REQUEST SENT", CDAreas.All);
@@ -3153,24 +3136,24 @@ namespace DTRMNS
 
 
 
-        private ViewTypes OrderTypeToViewType(OrderTypes otype)
+        private POSLayer.Library.ViewTypes OrderTypeToViewType(POSLayer.Library.OrderTypes otype)
         {
             switch (otype)
             {
-                case OrderTypes.DirectSale:
-                    return ViewTypes.DirectSaleOrderView;
-                case OrderTypes.InHouse:
-                    return ViewTypes.InHouseOrderView;
-                case OrderTypes.TakeAwayB:
-                    return ViewTypes.TakeAwayOrderView;
-                case OrderTypes.Delivery:
-                    return ViewTypes.DeliveryOrderView;
-                case OrderTypes.InternetDelivery:
-                    return ViewTypes.InternetDeliveryView;
-                case OrderTypes.InternetTakeAway:
-                    return ViewTypes.InternetTakeAwayView;
+                case POSLayer.Library.OrderTypes.DirectSale:
+                    return POSLayer.Library.ViewTypes.DirectSaleOrderView;
+                case POSLayer.Library.OrderTypes.InHouse:
+                    return POSLayer.Library.ViewTypes.InHouseOrderView;
+                case POSLayer.Library.OrderTypes.TakeAwayB:
+                    return POSLayer.Library.ViewTypes.TakeAwayOrderView;
+                case POSLayer.Library.OrderTypes.Delivery:
+                    return POSLayer.Library.ViewTypes.DeliveryOrderView;
+                case POSLayer.Library.OrderTypes.InternetDelivery:
+                    return POSLayer.Library.ViewTypes.InternetDeliveryView;
+                case POSLayer.Library.OrderTypes.InternetTakeAway:
+                    return POSLayer.Library.ViewTypes.InternetTakeAwayView;
                 default:
-                    return ViewTypes.Unknown;
+                    return POSLayer.Library.ViewTypes.Unknown;
             }
 
         }
@@ -3505,9 +3488,9 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            if (SafelyPackTheOrder(StatusFlags.DONE, true))
+            if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                bslayer.AttachedOrder = new Order(OrderTypes.DirectSale);
+                bslayer.AttachedOrder = new Order(POSLayer.Library.OrderTypes.DirectSale);
                 bslayer.AttachedOrder.ServiceChargeRate = bslayer.luv.ServiceChargeRate;
                 bslayer.AttachedOrder.ServiceChargeTaxRate = bslayer.luv.ServiceChargeTaxRate;
 
@@ -3524,7 +3507,7 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            if (SafelyPackTheOrder(StatusFlags.DONE, true))
+            if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
                 ctlTables tpanel = new ctlTables(bslayer, new GenericFunctionCall(DetachPanel),
                     new GenericEventHandler(btnTableButton_Click), new GenericEventHandler(btnDirectTable_Click));
@@ -3536,9 +3519,9 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            if (SafelyPackTheOrder(StatusFlags.DONE, true))
+            if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                bslayer.AttachedOrder = new Order(OrderTypes.InHouse, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
+                bslayer.AttachedOrder = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.InHouse, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
                 LoadAttachedOrder();
             }
         }
@@ -3547,9 +3530,9 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            if (SafelyPackTheOrder(StatusFlags.DONE, true))
+            if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                bslayer.AttachedOrder = new Order(OrderTypes.TakeAwayB, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
+                bslayer.AttachedOrder = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.TakeAwayB, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
             }
@@ -3559,9 +3542,9 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            if (SafelyPackTheOrder(StatusFlags.DONE, true))
+            if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                bslayer.AttachedOrder = new Order(OrderTypes.Delivery, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
+                bslayer.AttachedOrder = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.Delivery, bslayer.luv.ServiceChargeRate, bslayer.luv.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
             }
@@ -3582,14 +3565,14 @@ namespace DTRMNS
                 //MessageBox.Show(bslayer.AttachedOrder.Status.ToString());
                 switch (bslayer.AttachedOrder.Status)
                 {
-                    case StatusFlags.NEW:
-                    case StatusFlags.UNKNOWN:
-                    case StatusFlags.VOID:
+                    case POSLayer.Library.StatusFlags.NEW:
+                    case POSLayer.Library.StatusFlags.UNKNOWN:
+                    case POSLayer.Library.StatusFlags.VOID:
                         bslayer.DeleteOrder(bslayer.AttachedOrder.IID);
                         bslayer.AttachedOrder = null;
                         UnloadOrder();
                         return;
-                    case StatusFlags.DONE:
+                    case POSLayer.Library.StatusFlags.DONE:
                         string tableIID = bslayer.AttachedOrder.TableIID;
                         bslayer.AttachedOrder = null;
                         UnloadOrder();
@@ -3600,9 +3583,9 @@ namespace DTRMNS
                             bslayer.SaveTable(table);
                         }
                         return;
-                    case StatusFlags.PENDING:
-                    case StatusFlags.COMPLETED:
-                    case StatusFlags.ARCHIVED:
+                    case POSLayer.Library.StatusFlags.PENDING:
+                    case POSLayer.Library.StatusFlags.COMPLETED:
+                    case POSLayer.Library.StatusFlags.ARCHIVED:
                         bslayer.AttachedOrder = null;
                         UnloadOrder();
                         return;
@@ -3651,7 +3634,7 @@ namespace DTRMNS
             {
                 if (bslayer.AttachedOrder != null)
                 {
-                    if (!this.SafelyPackTheOrder(StatusFlags.DONE, true))
+                    if (!this.SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
                         return;
                 }
                 ctlOrders fo = new ctlOrders(bslayer, new GenericFunctionCall(UnloadOrder),
@@ -3840,14 +3823,14 @@ namespace DTRMNS
         {
             if (bslayer.AttachedOrder == null)
             {
-                if (bslayer.config.Order_Pad_Default_Order_Type == OrderTypes.InHouse)
+                if (bslayer.config.Order_Pad_Default_Order_Type == POSLayer.Library.OrderTypes.InHouse)
                 {
                     ctlTables tpanel = new ctlTables(bslayer, new GenericFunctionCall(DetachPanel), new GenericEventHandler(btnTableButton_Click), new GenericEventHandler(btnDirectTable_Click));
                     AttachPanel(tpanel);
                     return;
                 } else
                 {
-                    bslayer.AttachedOrder = new Order(bslayer.config.Order_Pad_Default_Order_Type);
+                    bslayer.AttachedOrder = new POSLayer.Models.Order(bslayer.config.Order_Pad_Default_Order_Type);
                     EnsureCompulsoryExtras();
                     blnPadOpenning = true;
                     LoadAttachedOrder();
@@ -3870,7 +3853,7 @@ namespace DTRMNS
         private void tsReloadMenu_Click(object sender, EventArgs e)
         {
             //ensure order closed  if any open already
-            SafelyPackTheOrder(StatusFlags.DONE, true);
+            SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true);
             bslayer.GetActiveMenu(true, true);
             RefreshUserInterface();
         }

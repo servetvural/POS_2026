@@ -751,7 +751,7 @@ namespace DTRMNS {
             this.bslayer.AttachedOrder.CName = txtName.Text;
             this.bslayer.AttachedOrder.Buzzer = txtBuzzer.Text;
             this.bslayer.AttachedOrder.Address = txtAddress.Text;
-            this.bslayer.AttachedOrder.PostCode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+            this.bslayer.AttachedOrder.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
             this.bslayer.AttachedOrder.Town = txtTown.Text;
             this.bslayer.AttachedOrder.Tel = txtTel.Text;
             this.bslayer.AttachedOrder.Mobile = txtMobile.Text;
@@ -768,7 +768,7 @@ namespace DTRMNS {
         public void UICustomerToCustomer() {
             bslayer.AttachedOrder.CName = txtName.Text;
             bslayer.AttachedOrder.Buzzer = txtBuzzer.Text;
-            bslayer.AttachedOrder.PostCode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+            bslayer.AttachedOrder.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
             bslayer.AttachedOrder.Address = txtAddress.Text;
             bslayer.AttachedOrder.Town = txtTown.Text;
             bslayer.AttachedOrder.Tel = txtTel.Text;
@@ -858,7 +858,7 @@ namespace DTRMNS {
         }
 
         private void btnNotRequired_Click(object sender, EventArgs e) {
-            if (bslayer.AttachedOrder.OrderType == OrderTypes.Delivery)
+            if (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
                 return;
 
             //bslayer.AttachedOrder.IsCustomerDetailsRequired = false;

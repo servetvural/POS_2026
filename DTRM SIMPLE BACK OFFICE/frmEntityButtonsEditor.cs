@@ -1711,8 +1711,8 @@ namespace DTRMSimpleBackOffice {
             txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = 0;
         }
 
-        private void btnSetTaxToDefault_Click(object sender, EventArgs e) {
-            Luv luv = bslayer.GetLuv();
+        private async void btnSetTaxToDefault_Click(object sender, EventArgs e) {
+            POSLayer.Models.Luv luv =await bslayer.GetLuv();
             txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = luv.DefaultTaxRate;
         }
 

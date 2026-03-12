@@ -54,8 +54,8 @@
     <PackageReference Include="Dronax.PosLibrary" Version="1.0.3" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="System.IO.Ports" Version="10.0.3" />
-    <PackageReference Include="System.Management" Version="10.0.3" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.5" />
+    <PackageReference Include="System.Management" Version="10.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Components\EntityButtonSpecial.cs">
@@ -277,6 +277,9 @@
     <EmbeddedResource Remove="Components\IntegerTextBox.resx" />
     <EmbeddedResource Remove="Components\DropDownButtonItem.resx" />
     <EmbeddedResource Remove="Components\ButtonX.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

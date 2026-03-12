@@ -585,10 +585,10 @@ namespace DTRMNS {
             string SelectedIID = "";
             if (dgv.SelectedRows.Count > 0) {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
+                POSLayer.Models.Order order = bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
 
                 if (order != null) {
-                    order.Payment = PaymentMethods.Unknown;
+                    order.Payment = POSLayer.Library.PaymentMethods.Unknown;
                     order.PaymentFlag = "";
                     bslayer.SaveOrder(order);
                     LoadOrders(true);
@@ -606,7 +606,7 @@ namespace DTRMNS {
 
         private void btnPrintReceipt_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Order order = bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                POSLayer.Models.Order order = bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
                 ApplicationPrinter ap = bslayer.GetPrinterForOrderType(order.OrderType);
                 if (ap != null)
                     bslayer.PrintReceipt(order.IID, ap, 1);
@@ -644,7 +644,7 @@ namespace DTRMNS {
             string SelectedIID = "";
             if (dgv.SelectedRows.Count > 0) {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = bslayer.GetOrder(SelectedIID);
+                POSLayer.Models.Order order = bslayer.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse) {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
@@ -653,14 +653,14 @@ namespace DTRMNS {
 
                 if (bslayer.AttachedOrder != null) {
                     if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED)) {
-                        if (bslayer.AttachedOrder.Payment == PaymentMethods.Unknown) {
+                        if (bslayer.AttachedOrder.Payment == POSLayer.Library.PaymentMethods.Unknown) {
                             PassControlEvent(new ctlPayment(bslayer, new GenericFunctionCall(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
                                 0, true, false, true));
 
                             return;
                         }
-                        bslayer.AttachedOrder.Status = StatusFlags.COMPLETED;
+                        bslayer.AttachedOrder.Status = POSLayer.Library.StatusFlags.COMPLETED;
                         bslayer.SaveOrder(bslayer.AttachedOrder);
                         UnloadOrderEvent();
                         PassControlEvent(this);

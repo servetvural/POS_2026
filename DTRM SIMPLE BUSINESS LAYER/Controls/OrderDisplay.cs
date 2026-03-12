@@ -50,16 +50,16 @@ namespace DTRMNS {
 
         
 
-        private Order _OrderToDisplay;
+        private POSLayer.Models.Order _OrderToDisplay;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public Order OrderToDisplay { get { return _OrderToDisplay; } set { _OrderToDisplay = value; } }
+        public POSLayer.Models.Order OrderToDisplay { get { return _OrderToDisplay; } set { _OrderToDisplay = value; } }
 
-        private Order _OrderToSplit;
+        private POSLayer.Models.Order _OrderToSplit;
         private ColumnHeader colCompletedQuantity;
         private Button btnViewKitchen;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public Order OrderToSplit { get { return _OrderToSplit; } set { _OrderToSplit = value; } }
+        public POSLayer.Models.Order OrderToSplit { get { return _OrderToSplit; } set { _OrderToSplit = value; } }
 
         public SplittingStatus SplitStatus = SplittingStatus.Normal;
 
@@ -549,7 +549,7 @@ namespace DTRMNS {
             if (OrderToSplit == null)
                 return;
             lvwSplittingOrder.Items.Clear();
-            foreach (OrderItem oi in OrderToSplit.items) {
+            foreach (POSLayer.Models.OrderItem oi in OrderToSplit.items) {
                 lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.Total.ToString("N2")}));
             }
         }
@@ -564,8 +564,8 @@ namespace DTRMNS {
 
             if (bslayer.AttachedOrder != null) {
                 btnViewKitchen.Visible = bslayer.config.Display_Kitchen_Chef_on_Display &&
-                    ((bslayer.AttachedOrder.OrderType == OrderTypes.DirectSale && bslayer.config.Hold_Order_Available && bslayer.config.Hold_Order_Display_in_Kitchen) ||
-                    (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && bslayer.config.Table_Orders_Allowed && bslayer.config.Table_Orders_Display_Kitchen_Orders));
+                    ((bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.DirectSale && bslayer.config.Hold_Order_Available && bslayer.config.Hold_Order_Display_in_Kitchen) ||
+                    (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.config.Table_Orders_Allowed && bslayer.config.Table_Orders_Display_Kitchen_Orders));
 
                 colCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
@@ -600,7 +600,7 @@ namespace DTRMNS {
 
 
             switch (OrderToDisplay.Status) {
-                case StatusFlags.NEW:
+                case POSLayer.Library.StatusFlags.NEW:
                     switch (SplitStatus) {
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
@@ -615,8 +615,8 @@ namespace DTRMNS {
                             break;
                     }
                     break;
-                case StatusFlags.PENDING:
-                case StatusFlags.DONE:
+                case POSLayer.Library.StatusFlags.PENDING:
+                case POSLayer.Library.StatusFlags.DONE:
                     switch (SplitStatus) {
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
@@ -1005,7 +1005,7 @@ namespace DTRMNS {
                 string IID = lvwSplittingOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                OrderItem  oiNew =  OrderToSplit.GetOrderItem(IID).Clone(false);
+                POSLayer.Models.OrderItem  oiNew =  OrderToSplit.GetOrderItem(IID).Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToDisplay.IID;
 
@@ -1032,7 +1032,7 @@ namespace DTRMNS {
                 string IID = lvwOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                OrderItem oiNew = OrderToDisplay.GetOrderItem(IID).Clone(false);
+                POSLayer.Models.OrderItem oiNew = OrderToDisplay.GetOrderItem(IID).Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToSplit.IID;
                 
@@ -1044,7 +1044,7 @@ namespace DTRMNS {
                 bslayer.SaveOrder(OrderToDisplay);
 
                 //Add new item to ordertosplit and save
-                OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID,oiNew.OrderGroupIID);
+                POSLayer.Models.OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID,oiNew.OrderGroupIID);
                 if (oiToIncrement == null)
                     OrderToSplit.AddOrderItem(oiNew);
                 else
@@ -1062,7 +1062,7 @@ namespace DTRMNS {
             OnSplitContinuing();
             if (lvwSplittingOrder.SelectedItems.Count > 0) {
                 ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
-                OrderItem oi = OrderToSplit.GetOrderItem(lvi.Text);
+                POSLayer.Models.OrderItem oi = OrderToSplit.GetOrderItem(lvi.Text);
                 oi.ParentOrderIID = OrderToDisplay.IID;
                 OrderToSplit.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToSplit);
@@ -1078,7 +1078,7 @@ namespace DTRMNS {
             OnSplitContinuing();
             if (lvwOrder.SelectedItems.Count > 0) {
                 ListViewItem lvi = lvwOrder.SelectedItems[0];
-                OrderItem oi = OrderToDisplay.GetOrderItem(lvi.Text);
+                POSLayer.Models.OrderItem oi = OrderToDisplay.GetOrderItem(lvi.Text);
                 oi.ParentOrderIID = oi.OrderGroupIID = OrderToSplit.IID;
                 OrderToDisplay.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToDisplay);

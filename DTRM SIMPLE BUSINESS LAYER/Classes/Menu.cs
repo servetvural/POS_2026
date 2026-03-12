@@ -14,7 +14,7 @@ namespace DTRMNS {
     [System.Xml.Serialization.XmlInclude(typeof(PrintColors))]
     [System.Xml.Serialization.XmlInclude(typeof(Distribution))] 
     [System.Serializable]
-    public class FMenu {
+    public class Menu {
         private string _IID = ShortGuid.NewGuid().ToString();
         public string IID { get { return _IID; } set { _IID = value; } }
         private List<Distribution> _Distribution = new List<Distribution>();
@@ -23,36 +23,24 @@ namespace DTRMNS {
         private List<Entity> _items = new List<Entity>();
         public List<Entity> items { get { return _items; } set { _items = value; } }
 
-        //private List<Image> _images = new List<Image>();
-        //public List<Image> images { get { return _images; } set { _images = value; } }
-
-        //private List<Supplier> _suppliers = new List<Supplier>();
-        //public List<Supplier> suppliers { get { return _suppliers; } set { _suppliers = value; } }
-
-        //private List<StockItem> _stockitems = new List<StockItem>();
-        //public List<StockItem> stockitems { get { return _stockitems; } set { _stockitems = value; } }
-
-        //private List<StockItemUsage> _stockitemusages = new List<StockItemUsage>();
-        //public List<StockItemUsage> stockitemusages { get { return _stockitemusages; } set { _stockitemusages = value; } }
-
         public string MenuName { get; set; }
 
         public bool IsActiveMenu { get; set; }
 
-        public FMenu() {
+        public Menu() {
         }
 
-        public FMenu(string NewMenuName) {
+        public Menu(string NewMenuName) {
             //this.IID = ShortGuid.NewGuid().ToString();
             this.MenuName = NewMenuName;
         }
-        public FMenu(DataTable dt) {
+        public Menu(DataTable dt) {
             if (dt.Rows.Count > 0) {
                 IID = dt.Rows[0]["IID"].ToString();
                 MenuName = dt.Rows[0]["MenuName"].ToString();
             }
         }
-        public FMenu(DataRow dr) {
+        public Menu(DataRow dr) {
             if (dr != null) {
                 IID = dr["IID"].ToString();
                 MenuName = dr["MenuName"].ToString();

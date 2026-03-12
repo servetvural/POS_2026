@@ -328,7 +328,7 @@ namespace DTRMNS {
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     oiNew.Quantity = 1;
                     oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
 
@@ -359,7 +359,7 @@ namespace DTRMNS {
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     if (oiNew.Quantity > 1) {
                         frmNumericInput frm = new frmNumericInput();
                         if (frm.ShowDialog() == DialogResult.OK) {
@@ -381,7 +381,7 @@ namespace DTRMNS {
 
                     //Ensure no zero quantity item left
                     try {
-                        OrderItem testItem = odSourceTable.OrderToDisplay.GetOrderItem(IID);
+                        POSLayer.Models.OrderItem testItem = odSourceTable.OrderToDisplay.GetOrderItem(IID);
                         if (testItem != null) {
                             if (testItem.Quantity == 0)
                                 odSourceTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
@@ -414,7 +414,7 @@ namespace DTRMNS {
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
                     oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
@@ -449,7 +449,7 @@ namespace DTRMNS {
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     oiNew.Quantity = 1;
                     oiNew.ParentOrderIID = odSourceTable.OrderToDisplay.IID;
 
@@ -485,7 +485,7 @@ namespace DTRMNS {
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     if (oiNew.Quantity > 1) {
                         frmNumericInput frm = new frmNumericInput();
                         if (frm.ShowDialog() == DialogResult.OK) {
@@ -506,7 +506,7 @@ namespace DTRMNS {
 
                     //Ensure no zero quantity item left
                     try {
-                        OrderItem testItem = odTargetTable.OrderToDisplay.GetOrderItem(IID);
+                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.GetOrderItem(IID);
                         if (testItem != null) {
                             if (testItem.Quantity == 0)
                                 odTargetTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
@@ -539,7 +539,7 @@ namespace DTRMNS {
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
                     oiNew.ParentOrderIID = odSourceTable.OrderToDisplay.IID;

@@ -169,7 +169,7 @@ namespace DTRMNS {
         }
 
         private void btnOnline_Click(object sender, System.EventArgs e) {
-            bslayer.AttachedOrder.Payment = PaymentMethods.Online;
+            bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
             CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
             CloseFunction();
         }
@@ -178,7 +178,7 @@ namespace DTRMNS {
             frmConfirmCardPayment frm = new frmConfirmCardPayment();
             if (frm.ShowDialog() == DialogResult.OK) {
                 //PrintFinalPayment(PaymentMethods.Card, true);
-                bslayer.AttachedOrder.Payment = PaymentMethods.Card;
+                bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
                 CompleteAttachedOrder(1, true, true, true);
                 CloseFunction();
             }
@@ -188,7 +188,7 @@ namespace DTRMNS {
         }
 
         private void btnCash_Click(object sender, System.EventArgs e) {
-            bslayer.AttachedOrder.Payment = PaymentMethods.Cash;
+            bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
             CompleteAttachedOrder(1, blnArchive, true, blnEnforceDeliveryArchive);
             CloseFunction();
         }

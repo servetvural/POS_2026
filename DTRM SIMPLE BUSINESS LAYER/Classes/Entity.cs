@@ -15,6 +15,7 @@ namespace DTRMNS {
         public int ForeColour { get; set; }
         public int ButtonHeight { get; set; }
         public int ButtonWidth { get; set; }
+
         public string ParentMenuIID;
         public List<EntityButton> Buttons;
 

@@ -46,11 +46,11 @@ namespace DTRMNS {
             {
                 switch (bslayer.config.Screen_Saver_Color)
                 {
-                    case ScreenSaverColourTypes.BlackBackGroundWhiteBrush:
+                    case POSLayer.Library.ScreenSaverColourTypes.BlackBackGroundWhiteBrush:
                         pBox.BackColor = Color.Black;
                         textColorBrush = Brushes.White;
                         break;
-                    case ScreenSaverColourTypes.WhiteBackGroundBlackBrush:
+                    case POSLayer.Library.ScreenSaverColourTypes.WhiteBackGroundBlackBrush:
                         pBox.BackColor = Color.White;
                         textColorBrush = Brushes.Black;
                         break;
@@ -87,7 +87,7 @@ namespace DTRMNS {
                 totalimagecount = files.Length;
 
 
-                if (bslayer.config.Screen_Saver_Type == ScreenSaverTypes.Flow) {
+                if (bslayer.config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
 
                     int[] regions = new int[] { swidth / 3, (sheight / 3) * 2 };
                     int regioncounter = 0;
@@ -155,7 +155,7 @@ namespace DTRMNS {
                 pBox.Refresh();
 
             fillthelist:
-                if (bslayer.config.Screen_Saver_Type == ScreenSaverTypes.Flow) {
+                if (bslayer.config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
                     if (drawingList.Count < bslayer.config.Screen_Saver_Maximum_Drawable_Image_Count) {
                         if (nonDrawableList.Count > 0) {
                             drawingList.Add(nonDrawableList[0]);
@@ -180,10 +180,10 @@ namespace DTRMNS {
             try {
 
                 switch (bslayer.config.Screen_Saver_Type) {
-                    case ScreenSaverTypes.None:
+                    case POSLayer.Library.ScreenSaverTypes.None:
 
                         break;
-                    case ScreenSaverTypes.SingleDisplay:
+                    case POSLayer.Library.ScreenSaverTypes.SingleDisplay:
                         if (!Directory.Exists(bslayer.config.Screen_Saver_Image_Folder)) {
                             this.Close();
                             return;
@@ -220,13 +220,13 @@ namespace DTRMNS {
 
                                 int x_image = 0;
                                 switch (bslayer.config.Screen_Saver_Image_Alignment) {
-                                    case AlignmentTypes.Center:
+                                    case POSLayer.Library.AlignmentTypes.Center:
                                         x_image = ((x_text - img.Width) / 2) + bslayer.config.Screen_Saver_Image_Indent;
                                         break;
-                                    case AlignmentTypes.Left:
+                                    case POSLayer.Library.AlignmentTypes.Left:
                                         x_image = bslayer.config.Screen_Saver_Image_Indent;
                                         break;
-                                    case AlignmentTypes.Right:
+                                    case POSLayer.Library.AlignmentTypes.Right:
                                         x_image = (x_text - img.Width) - bslayer.config.Screen_Saver_Image_Indent;
                                         break;
                                 }
@@ -261,7 +261,7 @@ namespace DTRMNS {
                             singleDisplayCounter++;
                         }
                         break;
-                    case ScreenSaverTypes.Flow:
+                    case POSLayer.Library.ScreenSaverTypes.Flow:
                         if (drawingList != null && drawingList.Count > 0) {
                             int x = 0;
                             int y = 0;

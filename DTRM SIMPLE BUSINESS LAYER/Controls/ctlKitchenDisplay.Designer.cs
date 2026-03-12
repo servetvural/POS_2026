@@ -79,14 +79,19 @@
             // 
             ctrlBonus.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             ctrlBonus.BackColor = System.Drawing.Color.Black;
+            ctrlBonus.ControlBackColor = System.Drawing.Color.Black;
+            ctrlBonus.ControlFont = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            ctrlBonus.ControlForeColor = System.Drawing.Color.White;
             ctrlBonus.Dock = System.Windows.Forms.DockStyle.Bottom;
+            ctrlBonus.EnableAutoUpdate = true;
             ctrlBonus.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             ctrlBonus.ForeColor = System.Drawing.Color.White;
             ctrlBonus.Location = new System.Drawing.Point(0, 53);
-            ctrlBonus.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            ctrlBonus.Margin = new System.Windows.Forms.Padding(5);
             ctrlBonus.MinimumSize = new System.Drawing.Size(117, 23);
             ctrlBonus.Name = "ctrlBonus";
             ctrlBonus.Padding = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            ctrlBonus.ProgressBarWidth = 202;
             ctrlBonus.Size = new System.Drawing.Size(295, 25);
             ctrlBonus.TabIndex = 0;
             // 

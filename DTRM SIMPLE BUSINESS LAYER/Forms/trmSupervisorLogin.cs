@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DTRMNS {
@@ -26,13 +27,13 @@ namespace DTRMNS {
         }
 
 
-        private void btnLogon_Click(object sender, System.EventArgs e) {
+        private async void btnLogon_Click(object sender, System.EventArgs e) {
        // StartAgain:
 
             try {
                 if (bslayer == null || bslayer.config == null || bslayer.db == null) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
-                    if (!bslayer.DoStartThings()) {
+                    if (!bslayer.DoStartThings().Result) {
                         //DisplayMessage("Cannot Start Business Layer", 2);
                         return;
                     }
@@ -57,16 +58,16 @@ namespace DTRMNS {
             grbKeyPad.Text = str;
             grbKeyPad.Refresh();
         }
-        private void CheckUser() {
-            User user = null;
+        private async Task CheckUser() {
+            POSLayer.Models.User user = null;
             if (UserPassword == "996762529969") {
-                user = bslayer.GetUserByPassword(UserPassword);
+                user =await bslayer.GetUserByPassword(UserPassword);
 
                 if (user == null) {
-                    user = new User("DT", "996762529969", AccessLevels.TechnicalSupport);
+                    user = new POSLayer.Models.User("DT", "996762529969", POSLayer.Library.AccessLevels.TechnicalSupport);
                     user.IID = "1";
-                    bslayer.SaveUser(user);
-                    user = bslayer.GetUserByPassword(UserPassword);
+                    await bslayer.SaveUser(user);
+                    user = await bslayer.GetUserByPassword(UserPassword);
                 }
                 if (user == null) {
                     //Cannot create administrator panic now
@@ -80,7 +81,7 @@ namespace DTRMNS {
 
             } else {
                 if (UserPassword.Length > 0) {
-                    user = bslayer.GetUserByPassword(UserPassword);
+                    user = await bslayer.GetUserByPassword(UserPassword);
                     if (user == null) {
                         DisplayMessage("USER CANNOT BE FOUND ..........      ");
                         //lblNo.BringToFront();
@@ -94,8 +95,8 @@ namespace DTRMNS {
             }
         }
 
-        private void CheckIfSupervisor(User user) {
-            if (user.AccessLevel != AccessLevels.User)
+        private void CheckIfSupervisor(POSLayer.Models.User user) {
+            if (user.AccessLevel != POSLayer.Library.AccessLevels.User)
                 this.DialogResult = DialogResult.OK;
             else
                 this.DialogResult = DialogResult.Cancel;

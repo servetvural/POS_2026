@@ -31,7 +31,7 @@ namespace DTRMNS {
             ctlKitchenSecond.LoadAll();
 
 
-            if (bslayer.config.OrderPad_Orientation == OrientationTypes.Portrait) {
+            if (bslayer.config.OrderPad_Orientation == POSLayer.Library.OrientationTypes.Portrait) {
                 splitMain.Orientation = Orientation.Horizontal;
             }
         }
@@ -61,7 +61,7 @@ namespace DTRMNS {
         private void CtlKitchenSecond_DisplayTypeWillBeChange() {
             frmDistributionSelector frm = new frmDistributionSelector(bslayer, true, bslayer.GetSecondDisplayTypeList());
             if (frm.ShowDialog() == DialogResult.OK) {
-                List<Distribution> theList = frm.selectedDistributions;
+                List<POSLayer.Models.Distribution> theList = frm.selectedDistributions;
                 if (theList.Count > 0) {
                     bslayer.config.Secondary_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
                     UF.SaveConfig(bslayer.config);

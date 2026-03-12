@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
-using DTRMNS;
-using PosLibrary;
-using PosLibrary.Forms;
 using System.Globalization;
-
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+using DTRMNS;
+
 using Newtonsoft.Json;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Header;
+
+using POSLayer.Library;
+
+using PosLibrary;
+using PosLibrary.Forms;
+
 
 namespace DTRMSimpleBackOffice {
     public partial class FrmMenuEditor : Form {
@@ -32,11 +37,12 @@ namespace DTRMSimpleBackOffice {
 
 
         #region MENU FUNCTIONS
-        private void LoadMenuList() {
+        private async void LoadMenuList() {
             UnloadMenuList();
-            dgvMenu.DataSource = bslayer.GetMenuList();
-            //If there is menu enable entity section
-            barEntity.Enabled = barEntityButton.Enabled = barStockUsage.Enabled = barSearchCategoryItems.Enabled = dgvMenu.SelectedRows.Count > 0;
+            var bindingList = new BindingList<POSLayer.Models.Menu>( await bslayer.GetMenuList());
+            dgvMenu.DataSource = bindingList;
+          //If there is menu enable entity section
+          barEntity.Enabled = barEntityButton.Enabled = barStockUsage.Enabled = barSearchCategoryItems.Enabled = dgvMenu.SelectedRows.Count > 0;
 
         }
         private void UnloadMenuList() {
@@ -73,20 +79,23 @@ namespace DTRMSimpleBackOffice {
         private void BtnAddMenu_Click(object sender, EventArgs e) {
             using (frmInputForm frm = new frmInputForm("New Menu")) {
                 if (frm.ShowDialog() == DialogResult.OK) {
-                    FMenu menu = new FMenu(frm.InputValue);
-                    if (bslayer.SaveMenu(menu))
+                    POSLayer.Models.Menu menu = new POSLayer.Models.Menu()
+                    {
+                        MenuName = frm.InputValue
+                    };
+                    if (bslayer.SaveMenu(menu).Result)
                         LoadMenuList();
                 }
             }
         }
         private void BtnEditMenu_Click(object sender, EventArgs e) {
             if (dgvMenu.SelectedRows.Count > 0) {
-                FMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                POSLayer.Models.Menu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
 
                 using (frmInputForm frm = new frmInputForm(menu.MenuName)) {
                     if (frm.ShowDialog() == DialogResult.OK) {
                         menu.MenuName = frm.InputValue;
-                        if (bslayer.SaveMenu(menu))
+                        if (bslayer.SaveMenu(menu).Result)
                             LoadMenuList();
                     }
                 }
@@ -103,7 +112,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnBackupMenu_Click(object sender, EventArgs e) {
+        private async Task BtnBackupMenu_Click(object sender, EventArgs e) {
             //if (dgvMenu.SelectedRows.Count > 0) {
             //    FMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             //    using (SaveFileDialog sfd = new SaveFileDialog()) {
@@ -125,7 +134,7 @@ namespace DTRMSimpleBackOffice {
             //}
 
 
-            DTRMBackup backup = new DTRMBackup();
+            POSLayerBackup backup = new POSLayerBackup();
 
             //Get menus
             if (dgvMenu.Rows.Count > 0)
@@ -137,7 +146,7 @@ namespace DTRMSimpleBackOffice {
             }
 
             //Get printers
-            backup.printers = bslayer.GetAllPrinters();
+            backup.printers = await bslayer.GetAllPrinters();
             //Get employees
             backup.employees = bslayer.GetAllEmployeeList();
             //Get suppliers
@@ -161,7 +170,7 @@ namespace DTRMSimpleBackOffice {
                 if (sfd.FileName != null && sfd.FileName != "")
                 {
                     var jsonString = JsonConvert.SerializeObject(backup, Formatting.Indented);
-                    if (UF.SaveTextFile(sfd.FileName, jsonString))
+                    if (POSLayer.Library.UF.SaveTextFile(sfd.FileName, jsonString))
                         MessageBox.Show("Saved Backup as JSON");
                     else
                         MessageBox.Show("Failed to Save Backup as JSON");
@@ -198,13 +207,13 @@ namespace DTRMSimpleBackOffice {
                     if (sfd.FileName != null && sfd.FileName != "")
                     {
 
-                        string content = UF.GetTextFile(sfd.FileName);
+                        string content = POSLayer.Library.UF.GetTextFile(sfd.FileName);
                         if (!string.IsNullOrEmpty(content))
                         {
                             DTRMBackup backup = JsonConvert.DeserializeObject<DTRMBackup>(content);
 
                             //Save menus
-                            foreach (FMenu menu in backup.menus)
+                            foreach (DTRMNS.Menu menu in backup.menus)
                             {
                                 bslayer.SaveMenuDB(menu);
                                 statusMessage += menu.MenuName + " Saved " + Environment.NewLine;
@@ -726,7 +735,7 @@ namespace DTRMSimpleBackOffice {
                     btnEBSample.Image = null;
                 }
 
-                 DataTable dt = UF.StringifyEnumInDataTable(bslayer.GetStockItemsForEB(selEBIID), "QuantityType", "QuantityTypeAsString", typeof(QuantityTypes));
+                 DataTable dt = POSLayer.Library.UF.StringifyEnumInDataTable(bslayer.GetStockItemsForEB(selEBIID), "QuantityType", "QuantityTypeAsString", typeof(POSLayer.Library.QuantityTypes));
                 dgvStockItems.DataSource = dt;
             }
         }
@@ -761,7 +770,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
         private void BtnZoomStockUsage_Click(object sender, EventArgs e) {
-            UF.ChangeDataGridViewZoom(dgvStockItems);
+            POSWinFormLayer.UFWin.ChangeDataGridViewZoom(dgvStockItems);
         }
         private void BtnReorderStockUsage_Click(object sender, EventArgs e) {
             if (dgvStockItems.Rows.Count > 0) {
@@ -985,17 +994,17 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void BtnZoomEntity_Click(object sender, EventArgs e) {
-            UF.ChangeDataGridViewZoom(dgvEntity);
+            POSWinFormLayer.UFWin.ChangeDataGridViewZoom(dgvEntity);
         }
 
         private void BtnZoomEntityButton_Click(object sender, EventArgs e) {
-            UF.ChangeDataGridViewZoom(dgvEntityButton);
+            POSWinFormLayer.UFWin.ChangeDataGridViewZoom(dgvEntityButton);
         }
 
 
 
         private void BtnZoomMenu_Click(object sender, EventArgs e) {
-            UF.ChangeDataGridViewZoom(dgvMenu);
+            POSWinFormLayer.UFWin.ChangeDataGridViewZoom(dgvMenu);
         }
 
         private void buttonItem1_Click(object sender, EventArgs e) {
@@ -1375,7 +1384,7 @@ namespace DTRMSimpleBackOffice {
         private void mnuSetAsDefaultMenu_Click(object sender, EventArgs e) {
             if (SelectedMenuIID != null && SelectedMenuIID != "") {
                 bslayer.config.ActiveMenuIID = SelectedMenuIID;
-                UF.SaveConfig(bslayer.config);
+                POSLayer.Library.UF.SaveConfig(bslayer.config);
                 bslayer.GetActiveMenu(true, true);
                 LoadMenuList();
             }
@@ -1401,7 +1410,7 @@ namespace DTRMSimpleBackOffice {
 
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                FMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                DTRMNS.Menu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "JSON Files (*.json)|";
@@ -1411,7 +1420,7 @@ namespace DTRMSimpleBackOffice {
                     if (sfd.FileName != null && sfd.FileName != "")
                     {
                         var jsonString = JsonConvert.SerializeObject(menu, Formatting.Indented);
-                        if (UF.SaveTextFile(sfd.FileName, jsonString))
+                        if (POSLayer.Library.UF.SaveTextFile(sfd.FileName, jsonString))
                             MessageBox.Show("Saved Menu Backup as JSON");
                         else
                             MessageBox.Show("Failed to Save Menu Backup as JSON");
@@ -1435,10 +1444,10 @@ namespace DTRMSimpleBackOffice {
                     if (sfd.FileName != null && sfd.FileName != "")
                     {
 
-                        string content = UF.GetTextFile(sfd.FileName);
+                        string content = POSLayer.Library.UF.GetTextFile(sfd.FileName);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            FMenu fm = JsonConvert.DeserializeObject<FMenu>(content);
+                            DTRMNS.Menu fm = JsonConvert.DeserializeObject<DTRMNS.Menu>(content);
                             bslayer.SaveMenuDB(fm);
 
                             MessageBox.Show("Saved Printer List");

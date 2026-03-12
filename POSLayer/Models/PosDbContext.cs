@@ -284,12 +284,12 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.EntityName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Ffamily)
+            entity.Property(e => e.FFamily)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FFamily");
-            entity.Property(e => e.Fsize).HasColumnName("FSize");
-            entity.Property(e => e.Fstyle)
+            entity.Property(e => e.FSize).HasColumnName("FSize");
+            entity.Property(e => e.FStyle)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("FStyle");
@@ -576,7 +576,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Buzzer)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Cname)
+            entity.Property(e => e.CName)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CName");
@@ -590,7 +590,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Instruction)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.LockedClientIp)
+            entity.Property(e => e.LockedClientIP)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("LockedClientIP");

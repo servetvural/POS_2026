@@ -29,6 +29,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj" />
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\POSWinFormLayer\POSWinFormLayer.csproj" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

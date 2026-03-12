@@ -51,14 +51,14 @@ namespace DTRMNS {
         public List<ApplicationPrinter> printerList { get; set; }
 
         //Global Settings
-        public Luv luv { get; set; }
+        public POSLayer.Models.Luv luv { get; set; }
         public SessionData currentSession { get; set; }
 
         //Table Layout
         public List<TableGroup> tableGroupList { get; set; }
         public List<Table> tableList { get; set; }
 
-        public List<FMenu> menuList { get; set; }
+        public List<Menu> menuList { get; set; }
 
         public StockManager stockManager { get; set; }
 
@@ -88,7 +88,7 @@ namespace DTRMNS {
             printerList = new List<ApplicationPrinter>();
             tableGroupList = new List<TableGroup>();
             tableList = new List<Table>();
-            menuList = new List<FMenu>();
+            menuList = new List<Menu>();
 
             orderList = new List<Order>();
             xorderList = new List<Order>();

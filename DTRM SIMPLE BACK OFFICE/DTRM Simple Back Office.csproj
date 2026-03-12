@@ -103,6 +103,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DTRM SIMPLE BUSINESS LAYER\DTRMSimpleBusinessLayer.csproj" />
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\POSWinFormLayer\POSWinFormLayer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="frmSessionReportsQuick.cs">

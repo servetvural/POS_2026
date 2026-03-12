@@ -25,7 +25,7 @@ namespace DTRMNS {
         private bool blnSpecialSessionDirectory;
 
 
-        private KitchenOrder korder;
+        private POSLayer.Models.KitchenOrder korder;
 
         private Brush brush;
         private Graphics g;
@@ -44,17 +44,17 @@ namespace DTRMNS {
         private DataTable dtStockUsage;
         private string StockSupplierName;
 
-        private ApplicationPrinter aPrinter;
+        private POSLayer.Models.ApplicationPrinter aPrinter;
 
         //private string printerNetworkName;
 
-        public ReportGenerator(Graphics g, DTRMSimpleBusiness bslayer, ApplicationPrinter ap, int linespace) {
+        public ReportGenerator(Graphics g, DTRMSimpleBusiness bslayer, POSLayer.Models.ApplicationPrinter ap, int linespace) {
                 this.g = g;
                 blnCustomGraphic = true;
 
                 CreateGenerator(bslayer, ap,  linespace);
         }
-        public ReportGenerator(DTRMSimpleBusiness bslayer,ApplicationPrinter ap, int linespace) {
+        public ReportGenerator(DTRMSimpleBusiness bslayer, POSLayer.Models.ApplicationPrinter ap, int linespace) {
                CreateGenerator(bslayer, ap, linespace);
         }
         //public ReportGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
@@ -761,7 +761,7 @@ namespace DTRMNS {
         private Font detailFont;
         private int detailFontHeight;
         #region KITCHEN
-        public bool PrintKitchen(KitchenOrder korderlocal, bool blnWithDetail = false) {
+        public bool PrintKitchen(POSLayer.Models.KitchenOrder korderlocal, bool blnWithDetail = false) {
             if (korderlocal == null)
                 return false;
 

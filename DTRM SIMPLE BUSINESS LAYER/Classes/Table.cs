@@ -11,9 +11,9 @@ namespace DTRMNS {
         public string TableName { get; set; }
         public int TableCovers { get; set; }
         public string LockedClientIP { get; set; }
-        public string CurrentOrderIID { get; set; }
+        public string CurrentOrderIID { get; set; }                         
         public TableTypes TableType { get; set; }
-        public Order AttachedOrder { get; set; }
+        public POSLayer.Models.Order AttachedOrder { get; set; }
         public int XLocation { get; set; }
         public int YLocation { get; set; }
         public int Width { get; set; }

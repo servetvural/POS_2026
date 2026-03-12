@@ -8,7 +8,7 @@ namespace DTRMNS {
     public class SessionFamily
     {
         public SessionData sessionData { get; set; }
-        public List<Order> Orders { get; set; }
+        public List<POSLayer.Models.Order> Orders { get; set; }
         public SessionFamily()
         {
         }

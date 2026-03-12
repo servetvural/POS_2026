@@ -24,7 +24,7 @@ namespace DTRMNS {
         private double stepOneTotal;
 
         bool blnTerminate = false;
-        public frmKassaCalculator() {
+        public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             if (!UF.IsConfigFileExist()) {
                 if (!AskForConfig(null)) {
@@ -34,7 +34,8 @@ namespace DTRMNS {
                     Application.Exit();
                 }
             }
-            bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+            this.bslayer = bslayer;
+            this.bslayer.CustomInitialize(UF.GetConfig());
 
 
             frmPassword frmpswd = new frmPassword(bslayer,"");
@@ -47,18 +48,18 @@ namespace DTRMNS {
         }
         private bool AskForConfig(DTRMSimpleBusiness testbslayer) {
             frmConfig frm = new frmConfig(testbslayer);
-            if (frm.ShowDialog() == DialogResult.OK) {
-                bslayer = new DTRMSimpleBusiness(UF.GetConfig());
+            if (frm.ShowDialog() == DialogResult.OK) {                 
+                bslayer.CustomInitialize(UF.GetConfig());
                 return true;
             } else
                 return false;
 
         }
 
-        public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
-            InitializeComponent();
-            this.bslayer = bslayer;
-        }
+        //public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
+        //    InitializeComponent();
+        //    this.bslayer = bslayer;
+        //}
 
         private void frmKassaCalculator_Load(object sender, EventArgs e) {
             if (blnTerminate)

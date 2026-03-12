@@ -5,6 +5,7 @@ namespace POSLayer.Repository.IRepository;
 
 public interface IRepository<T> where T : BaseClass
 {
+    PosDbContext GetDBContext();
     Task<bool> IsDatabaseExist();
    // Task<T> Get(int Id, string includeItems = "");
     Task<T> Get(string IID, string includeItems = "");

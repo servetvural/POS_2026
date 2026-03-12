@@ -37,7 +37,6 @@ namespace DTRMNS {
         public string FFamily { get; set; }
         public float FSize { get; set; }
         public string FStyle { get; set; }
-
         public bool WithImage { get; set; }
 
         public EntityButton()
@@ -148,38 +147,38 @@ namespace DTRMNS {
         
         
 
-        public float GetPrice(OrderTypes orderType)
+        public float GetPrice(POSLayer.Library.OrderTypes orderType)
         {
             switch (orderType) {
-                case OrderTypes.DirectSale:
+                case POSLayer.Library.OrderTypes.DirectSale:
                     return DirectSalePrice;
-                case OrderTypes.InHouse:
+                case POSLayer.Library.OrderTypes.InHouse:
                     return InHousePrice;
-                case OrderTypes.TakeAwayB:
+                case POSLayer.Library.OrderTypes.TakeAwayB:
                     return TakeAwayPrice;
-                case OrderTypes.InternetTakeAway:
+                case POSLayer.Library.OrderTypes.InternetTakeAway:
                     return TakeAwayPrice;
-                case OrderTypes.Delivery:
+                case POSLayer.Library.OrderTypes.Delivery:
                     return DeliveryPrice;
-                case OrderTypes.InternetDelivery:
+                case POSLayer.Library.OrderTypes.InternetDelivery:
                     return DeliveryPrice;
                 default:
                     return 0f;
             }
         }
-        public float GetTaxRate(OrderTypes orderType) {
+        public float GetTaxRate(POSLayer.Library.OrderTypes orderType) {
             switch (orderType) {
-                case OrderTypes.DirectSale:
+                case POSLayer.Library.OrderTypes.DirectSale:
                     return DirectSaleTaxPercent;
-                case OrderTypes.InHouse:
+                case POSLayer.Library.OrderTypes.InHouse:
                     return InHouseTaxPercent;
-                case OrderTypes.TakeAwayB:
+                case POSLayer.Library.OrderTypes.TakeAwayB:
                     return TakeAwayTaxPercent;
-                case OrderTypes.InternetTakeAway:
+                case POSLayer.Library.OrderTypes.InternetTakeAway:
                     return TakeAwayTaxPercent;
-                case OrderTypes.Delivery:
+                case POSLayer.Library.OrderTypes.Delivery:
                     return DeliveryTaxPercent;
-                case OrderTypes.InternetDelivery:
+                case POSLayer.Library.OrderTypes.InternetDelivery:
                     return DeliveryTaxPercent;
                 default:
                     return 0f;

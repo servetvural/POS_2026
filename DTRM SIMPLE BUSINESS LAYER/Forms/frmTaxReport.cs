@@ -73,8 +73,8 @@ namespace DTRMNS {
 
         }
 
-        private void btnArcEmailAsCsv_Click(object sender, EventArgs e) {
-            Luv luv = bslayer.GetLuv();
+        private async  void btnArcEmailAsCsv_Click(object sender, EventArgs e) {
+            POSLayer.Models.Luv luv = await bslayer.GetLuv();
             if (luv.NotificationEmail == "") {
                 MessageBox.Show("There is no valid email address to send");
                 return;

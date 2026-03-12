@@ -23,7 +23,7 @@ public partial class Luv    : BaseClass
 
     public string? VoidText { get; set; }
 
-    public double DefaultTaxRate { get; set; }
+    public float DefaultTaxRate { get; set; }
 
     public int MdfFileVersion { get; set; }
 
@@ -63,7 +63,7 @@ public partial class Luv    : BaseClass
 
     public string? CustomerPassword { get; set; }
 
-    public double ServiceChargeRate { get; set; }
+    public float ServiceChargeRate { get; set; }
 
-    public double ServiceChargeTaxRate { get; set; }
+    public float ServiceChargeTaxRate { get; set; }
 }

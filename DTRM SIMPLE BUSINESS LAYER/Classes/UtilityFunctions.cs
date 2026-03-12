@@ -7,6 +7,7 @@ using PosLibrary;
 
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using POSLayer.Library;
 
 namespace DTRMNS {
     /// <summary>
@@ -46,9 +47,9 @@ namespace DTRMNS {
             return File.Exists(DBConfigFileName);
         }
 
-        public static DTRMConfig GetConfig() {
+        public static PosConfig GetConfig() {
             try {
-                DTRMConfig config = (DTRMConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(DTRMConfig), true);
+                PosConfig config = (PosConfig)PosLibrary.DRFile.XmlDeSerialize(DBConfigFileName, typeof(PosConfig), true);
                 return config;
             }
             catch (Exception ex) {
@@ -86,12 +87,12 @@ namespace DTRMNS {
 
 
 
-        public static bool SaveConfig(DTRMConfig config) {
-            return PosLibrary.DRFile.XmlSerialize(DBConfigFileName, config, typeof(DTRMConfig), true);
+        public static bool SaveConfig(PosConfig config) {
+            return PosLibrary.DRFile.XmlSerialize(DBConfigFileName, config, typeof(PosConfig), true);
         }
 
 
-        public static StatusFlags UpdateStatus(StatusFlags CurrentFlag, StatusFlags NewFlag, bool blnForce) {
+        public static POSLayer.Library.StatusFlags UpdateStatus(POSLayer.Library.StatusFlags CurrentFlag, POSLayer.Library.StatusFlags NewFlag, bool blnForce) {
             if (((int)NewFlag) > ((int)CurrentFlag)) {
                 return NewFlag;
             }
@@ -144,7 +145,7 @@ namespace DTRMNS {
       
 
 
-        public static float GetRelatedPrice(OrderItem oi, Entity en, EntityButton eb, Order order) {
+        public static float GetRelatedPrice(POSLayer.Models.OrderItem oi, POSLayer.Models.Entity en, POSLayer.Models.EntityButton eb, POSLayer.Models.Order order) {
             return eb.GetPrice(order.OrderType);
         }
         public static WeekDays GetTodaysDTRMWeekDay() {
@@ -155,19 +156,19 @@ namespace DTRMNS {
 
             string days = "";
 
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Monday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Monday))
                 days += "Monday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Tuesday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Tuesday))
                 days += "Tuesday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Wednesday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Wednesday))
                 days += "Wednesday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Thursday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Thursday))
                 days += "Thursday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Friday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Friday))
                 days += "Friday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Saturday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Saturday))
                 days += "Saturday, ";
-            if (DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Sunday))
+            if (POSLayer.Library.DRNumeric.IsBitSet(daysnumeric, (int)WeekDays.Sunday))
                 days += "Sunday";
 
             days = days.Trim();

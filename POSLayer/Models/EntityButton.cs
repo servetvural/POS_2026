@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 using POSLayer.Library;
 
@@ -7,55 +8,33 @@ namespace POSLayer.Models;
 
 public partial class EntityButton : BaseClass
 {
-
     public string? EntityButtonName { get; set; }
     public int DisplayOrder { get; set; }
-    public int? ButtonColor { get; set; }
-
-    public int? ForeColor { get; set; }
-
-    public int? ButtonType { get; set; }
-
-    public int? AvailableFor { get; set; }
-
-    public string? ParentEntityIID { get; set; }
-
-    public string? ParentMenuIID { get; set; }
-
+    public int ButtonColor { get; set; } = SystemColors.Control.ToArgb();
+    public int ForeColor { get; set; } = Color.Black.ToArgb();
+    public EntityButtonTypes ButtonType { get; set; } = EntityButtonTypes.SimpleItem;
+    public int? AvailableFor { get; set; } = (int)AvailabilityTypes.All;
+    public string ParentEntityIID { get; set; } = string.Empty;
+    public string ParentMenuIID { get; set; } = string.Empty;
     public int Compulsary { get; set; }
-
-    public string? Barcode { get; set; }
-
+    public string Barcode { get; set; } = string.Empty;
     public double DirectSaleTaxPercent { get; set; }
-
     public double InHouseTaxPercent { get; set; }
-
     public double TakeAwayTaxPercent { get; set; }
-
     public double DeliveryTaxPercent { get; set; }
+    public PadFlags PadFlag { get; set; } = PadFlags.EBOnly;
 
-    public int PadFlag { get; set; }
-
+    public string DistributionIID { get; set; } = string.Empty;
     public double DirectSalePrice { get; set; }
-
     public double InHousePrice { get; set; }
-
     public double TakeAwayPrice { get; set; }
-
     public double DeliveryPrice { get; set; }
 
-    public int ButtonWidth { get; set; }
-
-    public int ButtonHeight { get; set; }
-
-    public string FFamily { get; set; } = null!;
-
-    public double FSize { get; set; }
-
-    public string FStyle { get; set; } = null!;
-
-    public string DistributionIID { get; set; } = null!;
-
+    public int ButtonWidth { get; set; } = 50;
+    public int ButtonHeight { get; set; } = 50;
+    public string FFamily { get; set; } = "Arial";
+    public double FSize { get; set; } = 10;
+    public string FStyle { get; set; } = "Regular";
     public int WithImage { get; set; }
 
 
@@ -63,37 +42,39 @@ public partial class EntityButton : BaseClass
 
     public EntityButton Clone()
     {
-        EntityButton eb = new EntityButton();
-        eb.IID = this.IID;
-        eb.EntityButtonName = this.EntityButtonName;
-        eb.DisplayOrder = this.DisplayOrder;
-        eb.ButtonColor = this.ButtonColor;
-        eb.ForeColor = this.ForeColor;
-        eb.ButtonType = this.ButtonType;
-        eb.AvailableFor = this.AvailableFor;
-        eb.ParentEntityIID = this.ParentEntityIID;
-        eb.ParentMenuIID = this.ParentMenuIID;
-        eb.Compulsary = this.Compulsary;
-        eb.Barcode = this.Barcode;
-        eb.DirectSaleTaxPercent = this.DirectSaleTaxPercent;
-        eb.InHouseTaxPercent = this.InHouseTaxPercent;
-        eb.TakeAwayTaxPercent = this.TakeAwayTaxPercent;
-        eb.DeliveryTaxPercent = this.DeliveryTaxPercent;
-        eb.PadFlag = this.PadFlag;
+        EntityButton eb = new EntityButton()
+        {
+            IID = IID,
+            EntityButtonName = EntityButtonName,
+            DisplayOrder = DisplayOrder,
+            ButtonColor = ButtonColor,
+            ForeColor = ForeColor,
+            ButtonType = ButtonType,
+            AvailableFor = AvailableFor,
+            ParentEntityIID = ParentEntityIID,
+            ParentMenuIID = ParentMenuIID,
+            Compulsary = Compulsary,
+            Barcode = Barcode,
+            DirectSaleTaxPercent = DirectSaleTaxPercent,
+            InHouseTaxPercent = InHouseTaxPercent,
+            TakeAwayTaxPercent = TakeAwayTaxPercent,
+            DeliveryTaxPercent = DeliveryTaxPercent,
+            PadFlag = PadFlag,
 
-        eb.DistributionIID = this.DistributionIID;
-        eb.DirectSalePrice = this.DirectSalePrice;
-        eb.InHousePrice = this.InHousePrice;
-        eb.TakeAwayPrice = this.TakeAwayPrice;
-        eb.DeliveryPrice = this.DeliveryPrice;
+            DistributionIID = DistributionIID,
+            DirectSalePrice = DirectSalePrice,
+            InHousePrice = InHousePrice,
+            TakeAwayPrice = TakeAwayPrice,
+            DeliveryPrice = DeliveryPrice,
 
-        eb.ButtonWidth = this.ButtonWidth;
-        eb.ButtonHeight = this.ButtonHeight;
-        //eb.ImageFileName = this.ImageFileName;
+            ButtonWidth = ButtonWidth,
+            ButtonHeight = ButtonHeight,
+            //ImageFileName = ImageFileName,
 
-        eb.FFamily = this.FFamily;
-        eb.FSize = this.FSize;
-        eb.FStyle = this.FStyle;
+            FFamily = FFamily,
+            FSize = FSize,
+            FStyle = FStyle,
+        };
 
         return eb;
 
@@ -112,44 +93,58 @@ public partial class EntityButton : BaseClass
 
 
 
-    public double GetPrice(OrderTypes orderType)
+    public double GetPrice(POSLayer.Library.OrderTypes orderType)
     {
         switch (orderType)
         {
-            case OrderTypes.DirectSale:
+            case POSLayer.Library.OrderTypes.DirectSale:
                 return DirectSalePrice;
-            case OrderTypes.InHouse:
+            case POSLayer.Library.OrderTypes.InHouse:
                 return InHousePrice;
-            case OrderTypes.TakeAwayB:
+            case POSLayer.Library.OrderTypes.TakeAwayB:
                 return TakeAwayPrice;
-            case OrderTypes.InternetTakeAway:
+            case POSLayer.Library.OrderTypes.InternetTakeAway:
                 return TakeAwayPrice;
-            case OrderTypes.Delivery:
+            case POSLayer.Library.OrderTypes.Delivery:
                 return DeliveryPrice;
-            case OrderTypes.InternetDelivery:
+            case POSLayer.Library.OrderTypes.InternetDelivery:
                 return DeliveryPrice;
             default:
                 return 0f;
         }
     }
-    public double GetTaxRate(OrderTypes orderType)
+    public double GetTaxRate(POSLayer.Library.OrderTypes orderType)
     {
         switch (orderType)
         {
-            case OrderTypes.DirectSale:
+            case POSLayer.Library.OrderTypes.DirectSale:
                 return DirectSaleTaxPercent;
-            case OrderTypes.InHouse:
+            case POSLayer.Library.OrderTypes.InHouse:
                 return InHouseTaxPercent;
-            case OrderTypes.TakeAwayB:
+            case POSLayer.Library.OrderTypes.TakeAwayB:
                 return TakeAwayTaxPercent;
-            case OrderTypes.InternetTakeAway:
+            case POSLayer.Library.OrderTypes.InternetTakeAway:
                 return TakeAwayTaxPercent;
-            case OrderTypes.Delivery:
+            case POSLayer.Library.OrderTypes.Delivery:
                 return DeliveryTaxPercent;
-            case OrderTypes.InternetDelivery:
+            case POSLayer.Library.OrderTypes.InternetDelivery:
                 return DeliveryTaxPercent;
             default:
                 return 0f;
         }
     }
 }
+
+public class EntityButtonSearchResult
+{
+    public string IID { get; set; }
+    public string EntityButtonName { get; set; }
+    public string EntityName { get; set; }
+    public Image DisplayImage { get; set; }
+
+    public EntityButtonSearchResult()
+    {
+
+    }
+}
+

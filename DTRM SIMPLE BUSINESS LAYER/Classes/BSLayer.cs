@@ -14,11 +14,16 @@ using System.Drawing.Printing;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.AspNetCore.DataProtection.Repositories;
+using POSLayer.Repository.IRepository;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using POSLayer.Library;
 
 namespace DTRMNS
 {
 
-    [System.Xml.Serialization.XmlInclude(typeof(FMenu))]
+    [System.Xml.Serialization.XmlInclude(typeof(Menu))]
     [System.Xml.Serialization.XmlInclude(typeof(Order))]
     [System.Xml.Serialization.XmlInclude(typeof(Luv))]
     [System.Xml.Serialization.XmlInclude(typeof(DTRMConfig))]
@@ -31,16 +36,16 @@ namespace DTRMNS
 
 
         [System.Xml.Serialization.XmlIgnore]
-        public DTRMConfig config;
+        public POSLayer.Library.PosConfig config;
 
         [System.Xml.Serialization.XmlIgnore]
-        public Luv luv;
+        public POSLayer.Models.Luv luv;
 
-        public User LoggedUser;
-        public Order AttachedOrder;
+        public POSLayer.Models.User LoggedUser;
+        public POSLayer.Models.Order AttachedOrder;
 
         [System.Xml.Serialization.XmlIgnore]
-        public FMenu ActiveMenu;
+        public POSLayer.Models.Menu ActiveMenu;
 
         [System.Xml.Serialization.XmlIgnore]
         public DB db;
@@ -63,22 +68,12 @@ namespace DTRMNS
 
         public int maxHeight;
 
-        public Bonus currentBonusScheme;
+        public POSLayer.Models.Bonus currentBonusScheme;
 
         private CultureInfo ci;
 
 
-        private string connectionString { get; set; }
-
-        public void ShutDown()
-        {
-            Application.Exit();
-        }
-
-        public void Restart()
-        {
-            Application.Restart();
-        }
+        private string connectionString { get; set; }         
 
         public event GenericFunctionCall OrderLoaded;
         public void OnOrderLoaded()
@@ -99,14 +94,8 @@ namespace DTRMNS
             DisplayOrder?.Invoke();
         }
 
-        public event GenericFunctionCall KitchenRequestSent;
-        public void OnKitchenRequestSent()
-        {
-            KitchenRequestSent?.Invoke();
-        }
-
         public event KitchenEventHandler KitchenRequestOccured;
-        public void OnKitchenRequestOccured(KitchenOrder order)
+        public void OnKitchenRequestOccured(POSLayer.Models.KitchenOrder order)
         {
             KitchenRequestOccured?.Invoke(order);
         }
@@ -117,26 +106,52 @@ namespace DTRMNS
             ImmediateDebugOccured?.Invoke(str);
         }
 
-        public DTRMSimpleBusiness()
-        {
-        }
 
-        public DTRMSimpleBusiness(DTRMConfig config)
+        IRepository<POSLayer.Models.Employee> repoEmployee;
+        IRepository<POSLayer.Models.Menu> repoMenu;
+        IRepository<POSLayer.Models.Luv> repoLuv;
+        IRepository<POSLayer.Models.User> repoUser;
+        IRepository<POSLayer.Models.Debug> repoDebug;
+        IRepository<POSLayer.Models.Entity> repoEntity;
+        IRepository<POSLayer.Models.EntityButton> repoEntityButton;
+        IRepository<POSLayer.Models.Distribution> repoDistribution;
+        IRepository<POSLayer.Models.ApplicationPrinter> repoAppPrinter;
+        IRepository<POSLayer.Models.Order> repoOrder;
+        IRepository<POSLayer.Models.OrderItem> repoOrderItem;
+        public DTRMSimpleBusiness(IRepository<POSLayer.Models.Employee> _repoEmployee,
+            IRepository<POSLayer.Models.Menu> _repoMenu, IRepository<POSLayer.Models.Luv> _repoLuv, 
+            IRepository<POSLayer.Models.User> _repoUser, IRepository<POSLayer.Models.Debug> _repoDebug,
+            IRepository<POSLayer.Models.Entity> _repoEntity, IRepository<POSLayer.Models.EntityButton> _repoEntityButton,
+            IRepository<POSLayer.Models.Distribution> _repoDistribution, IRepository<POSLayer.Models.ApplicationPrinter> _repoAppPrinter,
+            IRepository<POSLayer.Models.Order> _repoOrder, IRepository<POSLayer.Models.OrderItem> _repoOrderItem)
         {
-            this.config = config;
+            this.repoEmployee = _repoEmployee;
+            this.repoMenu = _repoMenu;
+            repoLuv = _repoLuv;
+            repoUser = _repoUser;
+            repoDebug = _repoDebug;
+            repoEntity = _repoEntity;
+            repoEntityButton = _repoEntityButton;
+            repoDistribution = _repoDistribution;
+            repoAppPrinter = _repoAppPrinter;
+            repoOrder = _repoOrder;
+            repoOrderItem = _repoOrderItem;
+
             EstablishDatabaseConnection();
+            this.repoOrder = repoOrder;
         }
 
-        //used to get simple bslayer for database panel on lock screen
-        public DTRMSimpleBusiness(bool blnCheckDatabase, DTRMConfig config)
+        public void CustomInitialize(PosConfig config)
         {
             this.config = config;
-            if (blnCheckDatabase)
-                EstablishDatabaseConnection();
+            if (!EstablishDatabaseConnection())
+            {
+                Environment.Exit(0);
+            }
         }
-        public bool IsLoginSuccess(string password)
+        public async Task<bool> IsLoginSuccess(string password)
         {
-            User user = GetUserByPassword(password);
+            POSLayer.Models.User user =await GetUserByPassword(password);
             if (user != null)
             {
                 LoggedUser = user;
@@ -144,9 +159,9 @@ namespace DTRMNS
             } else
                 return false;
         }
-        public bool IsAdmin(string password)
+        public async Task<bool> IsAdmin(string password)
         {
-            User user = GetUserByPassword(password);
+            POSLayer.Models.User user = await GetUserByPassword(password);
             if (user != null && user.IsManagerOrMore())
             {
                 LoggedUser = user;
@@ -154,30 +169,6 @@ namespace DTRMNS
             } else
                 return false;
         }
-
-
-        public DTRMSimpleBusiness(DTRMConfig config, bool blnCheckDBConnection /*, bool blnCreateReport*/)
-        {
-            this.config = config;
-            if (blnCheckDBConnection)
-                EstablishDatabaseConnection();
-            else
-                EstablishDirectDatabaseConnection();
-        }
-
-        public DTRMSimpleBusiness(bool blnReoptainConfigFile, bool blnEnsureDatabase)
-        {
-            if (blnReoptainConfigFile)
-            {
-                config = UF.GetConfig();
-                if (blnEnsureDatabase)
-                {
-                    EstablishDatabaseConnection();
-                }
-            }
-        }
-
-
 
         /// <summary>
         /// 
@@ -204,11 +195,11 @@ namespace DTRMNS
 
 
 
-        public bool DoStartThings()
+        public async Task<bool> DoStartThings()
         {
             try
             {
-                luv = GetLuv();
+                luv = await GetLuv();
                 ci = GetDBCulture();
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(config.Terminal_Currency_Culture);
             } catch
@@ -242,17 +233,20 @@ namespace DTRMNS
         {
             try
             {
+                //if (config == null)
+                //    return false;
+
                 //Connect to remote SQLExpress Server
                 // db = new DB(config.Database_Instance, config.Database_Name, config.Database_User_Name,config.Database_Password);
 
                 //connectionString = "Server=192.168.0.24;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
 
-                //connectionString = "Server=Servet2022\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
-                connectionString = "Server=" + config.Database_Instance +
-                    ";Database=" + config.Database_Name +
-                    ";User Id=" + config.Database_User_Name +
-                    ";Password=" + config.Database_Password +
-                    ";Encrypt=True;TrustServerCertificate=True;";
+                connectionString = "Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
+                //connectionString = "Server=" + config.Database_Instance +
+                //    ";Database=" + config.Database_Name +
+                //    ";User Id=" + config.Database_User_Name +
+                //    ";Password=" + config.Database_Password +
+                //    ";Encrypt=True;TrustServerCertificate=True;";
 
                 db = new DB(connectionString);
 
@@ -277,102 +271,26 @@ namespace DTRMNS
                 DBConnectionSuccessful = false;
             }
             return DBConnectionSuccessful;
-        }
-
-        public void InitiateDBObject()
+        }        
+        public void RePriceOrderForOrderType(POSLayer.Models.Order order, POSLayer.Library.OrderTypes orderType)
         {
-            try
-            {
-                db = new DB(config.Database_Instance, config.Database_Name, config.Database_User_Name,
-                    config.Database_Password);
-                if (config != null)
-                    db.DebugMode = config.DebugMode;
-            } catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// This method doesn't ping the database server.
-        /// </summary>
-        /// <returns></returns>
-        public bool EstablishDirectDatabaseConnection()
-        {
-            try
-            {
-                db = new DB(config.Database_Instance, config.Database_Name, config.Database_User_Name,
-                    config.Database_Password);
-                if (config != null)
-                    db.DebugMode = config.DebugMode;
-                return db.CheckDatabaseConnection();
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public bool IsDBAvailable()
-        {
-            try
-            {
-                DataTable dt = db.GetDataTable("Select * from Menu");
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public bool CheckIfConfigFileExist()
-        {
-        CheckConfig:
-            //Check DTRMConfig if exist
-            if (!File.Exists(DRFile.GetApplicationPath() + "\\DTRMConfig.xml"))
-            {
-
-                using (frmConfig frm = new frmConfig(null))
-                {
-                    if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                    {
-                        // bslayer.config = frm.config;
-
-                        goto CheckConfig;
-                    } else
-                    {
-                        //Application.Exit();
-                        return false;
-                    }
-                }
-            }
-
-            //Check if config for localdb or server
-            config = UF.GetConfig();
-            if (config == null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public void RePriceOrderForOrderType(Order order, OrderTypes orderType)
-        {
-            FMenu fm = ActiveMenu;
-            OrderItem oi;
+            POSLayer.Models.Menu fm = ActiveMenu;
+            POSLayer.Models.OrderItem oi;
             for (int i = 0; i < order.items.Count; i++)
             {
-                oi = (OrderItem)order.items[i];
+                oi = (POSLayer.Models.OrderItem)order.items[i];
                 oi.Price = fm.GetItemPrice(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
         }
 
-        public void ReTaxOrderForOrderType(Order order, OrderTypes orderType)
+        public void ReTaxOrderForOrderType(POSLayer.Models.Order order, POSLayer.Library.OrderTypes orderType)
         {
-            FMenu fm = ActiveMenu;
-            OrderItem oi;
+            POSLayer.Models.Menu fm = ActiveMenu;
+            POSLayer.Models.OrderItem oi;
             for (int i = 0; i < order.items.Count; i++)
             {
-                oi = (OrderItem)order.items[i];
+                oi = (POSLayer.Models.OrderItem)order.items[i];
                 oi.TaxPercent = fm.GetItemTaxRate(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
@@ -385,7 +303,7 @@ namespace DTRMNS
                 AttachedOrder.CName = customer.CName;
                 AttachedOrder.Buzzer = customer.Buzzer;
                 AttachedOrder.Address = customer.Address;
-                AttachedOrder.PostCode = customer.PostCode;
+                AttachedOrder.Postcode = customer.PostCode;
                 AttachedOrder.Town = customer.Town;
                 AttachedOrder.Tel = customer.Tel;
                 AttachedOrder.Mobile = customer.Mobile;
@@ -400,7 +318,7 @@ namespace DTRMNS
                 CName = AttachedOrder.CName,
                 Buzzer = AttachedOrder.Buzzer,
                 Address = AttachedOrder.Address,
-                PostCode = AttachedOrder.PostCode,
+                PostCode = AttachedOrder.Postcode,
                 Town = AttachedOrder.Town,
                 Tel = AttachedOrder.Tel,
                 Mobile = AttachedOrder.Mobile,
@@ -408,146 +326,154 @@ namespace DTRMNS
             };
             return customer;
         }
-
-
-
-
-
-        public bool IsServerConnected()
+        public async Task<bool> IsServerConnected()
         {
-            List<FMenu> ml;
-            try
-            {
-                ml = this.GetMenuListDB();
-                return true;
-            } catch
-            {
-                return false;
-            }
+            //List<FMenu> ml;
+            //try
+            //{
+                return await repoMenu.IsDatabaseExist();
+                //ml = this.GetMenuListDB();
+               // return true;
+            //} catch
+            //{
+            //    return false;
+            //}
         }
 
         public DataTable GetDataTable(string sql)
         {
-
-            // return db.GetDataTable(sql);
-
-            DataTable dt = new DataTable();
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-                adapter.Fill(dt); // Fills the table in one go
+                var dt = new DataTable();
+                var connection = repoMenu.GetDBContext().Database.GetDbConnection();
+
+                // Use the context's connection directly
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = sql;
+                    command.CommandType = CommandType.Text;
+
+                    // Open connection if it's not already open
+                    if (connection.State != ConnectionState.Open)
+                        connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        dt.Load(reader); // Efficiently fills the DataTable from a DataReader
+                    }
+                }
                 return dt;
+            } catch (Exception ex)
+            {
+
+                DataTable dt = new DataTable();
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
+                    adapter.Fill(dt); // Fills the table in one go
+                    return dt;
+                }
+            } finally
+            {
+                string str = "";
             }
         }
-
         public bool RunQuery(string sql)
         {
-            // return db.RunQuery(sql);
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }
+            return repoMenu.GetDBContext().Database.ExecuteSqlRawAsync(sql).Result > 0;
+            //using (SqlConnection conn = new SqlConnection(connectionString))
+            //{
+            //    SqlCommand cmd = new SqlCommand(sql, conn);
+            //    conn.Open();
+            //    return cmd.ExecuteNonQuery() > 0;
+            //}
         }
 
         #region "ADMIN FUNCTIONS"
 
-        public List<Table> ReturnAllAndGetTableList(string ClientIP)
-        {
-            ReturnAllTablesAndOrders(ClientIP);
-            return GetTableList();
-        }
+        //public int CheckDBRowCount(string TableName)
+        //{
 
-        public void ReturnAllTablesAndOrders(string ClientIP)
-        {
-            db.RunQuery("ReturnAllTablesAndOrders '" + config.Terminal_Name + "'");
-        }
+        //    return repoMenu.GetDBContext().Luvs.Count();
+        //    //DataTable dt = db.GetDataTable("select count(*) as howmany from " + TableName);
+        //    //return int.Parse(dt.Rows[0]["howmany"].ToString());
+        //}
 
-        public int CheckDBRowCount(string TableName)
-        {
-            DataTable dt = db.GetDataTable("select count(*) as howmany from " + TableName);
-            return int.Parse(dt.Rows[0]["howmany"].ToString());
-        }
+        //public DataTable GetLuvDB()
+        //{
+        //    if (CheckDBRowCount("Luv") == 0)
+        //    {
+        //        SaveLuv(new Luv());
+        //    }
+        //    return db.GetDataTable("GetLuv");
+        //}
 
-        public DataTable GetLuvDB()
-        {
-            if (CheckDBRowCount("Luv") == 0)
-            {
-                SaveLuv(new Luv());
-            }
-            return db.GetDataTable("GetLuv");
-        }
-
-        public Luv GetLuv()
+        public async Task<POSLayer.Models.Luv> GetLuv()
         {
             try
             {
-                return new Luv(GetLuvDB());
+                POSLayer.Models.Luv luv =repoMenu.GetDBContext().Luvs.FirstOrDefault();
+                return luv ?? new POSLayer.Models.Luv();
+                //return new Luv(GetLuvDB());
             } catch
             {
-                return new Luv();
+                return new POSLayer.Models.Luv();
             }
         }
-        public void SaveLuv()
+        public void SaveLuv(POSLayer.Models.Luv luv)
         {
-            SaveLuv(luv);
+            repoLuv.Save(luv);
+            //try
+            //{
+            //    string smtppassword = (luv.SmtpPassword == null ? "" : luv.SmtpPassword.Replace("'", "''"));
+            //    string customerpassword = (luv.CustomerPassword == null ? "" : luv.CustomerPassword.Replace("'", "''"));
+
+            //    string query = "SaveLuv '" +
+            //        luv.ShopName.Replace("'", "''") + "','" +
+            //        luv.ShopAddress.Replace("'", "''") + "','" +
+            //        luv.Tel1.Replace("'", "''") + "','" +
+            //        luv.Tel2.Replace("'", "''") + "','" +
+            //        luv.Fax.Replace("'", "''") + "','" +
+            //        luv.Vat.Replace("'", "''") + "','" +
+            //        luv.PurchaseEmail.Replace("'", "''") + "','" +
+            //        luv.OrdersEmail.Replace("'", "''") + "','" +
+            //        luv.ReportEmail.Replace("'", "''") + "','" +
+            //        luv.NotificationEmail.Replace("'", "''") + "','" +
+            //        luv.CurrentSessionIID + "'," +
+            //        DRDateTime.DatetimeToMSSql(luv.SessionStartDateTime) + ",'" +
+            //        luv.VoidText.ToUpper().Replace("'", "''") + "','" +
+            //        luv.DefaultTaxRate + "','" +
+            //        luv.ServiceChargeRate + "','" +
+            //        luv.ServiceChargeTaxRate + "','" +
+            //        luv.ReceiptHeader.Replace("'", "''") + "','" +
+            //        luv.ReceiptFooter.Replace("'", "''") + "','" +
+            //        luv.KitchenHeader.Replace("'", "''") + "','" +
+            //        luv.KitchenFooter.Replace("'", "''") + "','" +
+            //        luv.ReportHeader.Replace("'", "''") + "','" +
+            //        luv.ReportFooter.Replace("'", "''") + "','" +
+            //        luv.SmtpServer.Replace("'", "''") + "','" +
+            //        luv.SmtpEmailAddress.Replace("'", "''") + "','" +
+            //        luv.SmtpFromLabel.Replace("'", "''") + "','" +
+            //        luv.SmtpAccountName.Replace("'", "''") + "','" +
+            //        DRFormat.Encode(smtppassword) + "','" +
+            //        luv.CustomerKey.Replace("'", "''") + "','" +
+            //        DRFormat.Encode(customerpassword) + "'";
+
+            //    db.RunQuery(query);
+            //} catch (Exception ex)
+            //{
+            //    MessageBox.Show("Save Luv Error : " + ex.Message);
+            //}
         }
-        public void SaveLuv(Luv luv)
-        {
-            try
-            {
-                string smtppassword = (luv.SmtpPassword == null ? "" : luv.SmtpPassword.Replace("'", "''"));
-                string customerpassword = (luv.CustomerPassword == null ? "" : luv.CustomerPassword.Replace("'", "''"));
-
-                string query = "SaveLuv '" +
-                    luv.ShopName.Replace("'", "''") + "','" +
-                    luv.ShopAddress.Replace("'", "''") + "','" +
-                    luv.Tel1.Replace("'", "''") + "','" +
-                    luv.Tel2.Replace("'", "''") + "','" +
-                    luv.Fax.Replace("'", "''") + "','" +
-                    luv.Vat.Replace("'", "''") + "','" +
-                    luv.PurchaseEmail.Replace("'", "''") + "','" +
-                    luv.OrdersEmail.Replace("'", "''") + "','" +
-                    luv.ReportEmail.Replace("'", "''") + "','" +
-                    luv.NotificationEmail.Replace("'", "''") + "','" +
-                    luv.CurrentSessionIID + "'," +
-                    DRDateTime.DatetimeToMSSql(luv.SessionStartDateTime) + ",'" +
-                    luv.VoidText.ToUpper().Replace("'", "''") + "','" +
-                    luv.DefaultTaxRate + "','" +
-                    luv.ServiceChargeRate + "','" +
-                    luv.ServiceChargeTaxRate + "','" +
-                    luv.ReceiptHeader.Replace("'", "''") + "','" +
-                    luv.ReceiptFooter.Replace("'", "''") + "','" +
-                    luv.KitchenHeader.Replace("'", "''") + "','" +
-                    luv.KitchenFooter.Replace("'", "''") + "','" +
-                    luv.ReportHeader.Replace("'", "''") + "','" +
-                    luv.ReportFooter.Replace("'", "''") + "','" +
-                    luv.SmtpServer.Replace("'", "''") + "','" +
-                    luv.SmtpEmailAddress.Replace("'", "''") + "','" +
-                    luv.SmtpFromLabel.Replace("'", "''") + "','" +
-                    luv.SmtpAccountName.Replace("'", "''") + "','" +
-                    DRFormat.Encode(smtppassword) + "','" +
-                    luv.CustomerKey.Replace("'", "''") + "','" +
-                    DRFormat.Encode(customerpassword) + "'";
-
-                db.RunQuery(query);
-            } catch (Exception ex)
-            {
-                MessageBox.Show("Save Luv Error : " + ex.Message);
-            }
-        }
-
-
         public DataTable GetAllTaxRates()
         {
-            return
-                db.GetDataTable("Select * from TaxPercentList where ParentMenuIID = '" + config.ActiveMenuIID + "'");
+            // return repoMenu.GetDBContext().Database.ExecuteSqlInterpolated($"Select * from TaxPercentList where ParentMenuIID = '{config.ActiveMenuIID}'");
+            return GetDataTable("Select * from TaxPercentList where ParentMenuIID = '" + config.ActiveMenuIID + "'");
         }
 
         public bool SetTaxRate(float DBTaxRate, float NewTaxRate)
         {
-            return db.RunQuery("UpdateTaxRates '" + config.ActiveMenuIID + "'," + DBTaxRate + "," + NewTaxRate);
+            return RunQuery("UpdateTaxRates '" + config.ActiveMenuIID + "'," + DBTaxRate + "," + NewTaxRate);
         }
 
         #endregion
@@ -555,76 +481,66 @@ namespace DTRMNS
 
         #region "USER FUNCTIONS"
 
-        public void EnsureRequiredUsers()
+        public async void EnsureRequiredUsers()
         {
-            SaveUser(new User("1", "Waiter", "1", AccessLevels.User));
-            SaveUser(new User("2", "Manager", "2", AccessLevels.Manager));
-            SaveUser(new User("3", "Admin", "9999", AccessLevels.SuperUser));
-            SaveUser(new User("4", "Tech", "2020", AccessLevels.TechnicalSupport));
+            await SaveUser(new POSLayer.Models.User("1", "Waiter", "1", POSLayer.Library.AccessLevels.User));
+            await SaveUser(new POSLayer.Models.User("2", "Manager", "2", POSLayer.Library.AccessLevels.Manager));
+            await SaveUser(new POSLayer.Models.User("3", "Admin", "9999", POSLayer.Library.AccessLevels.SuperUser));
+            await SaveUser(new POSLayer.Models.User("4", "Tech", "2020", POSLayer.Library.AccessLevels.TechnicalSupport));
         }
 
-        public List<User> GetUserList()
+        public async Task<List<POSLayer.Models.User>> GetUserList()
         {
-            List<User> UserList = new List<User>();
-            DataTable dt = db.GetDataTable("GetAllUsers");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                UserList.Add(new User(dt.Rows[i]));
-            return UserList;
+            return await repoUser.GetAllAsync();
+            //List<User> UserList = new List<User>();
+            //DataTable dt = db.GetDataTable("GetAllUsers");
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //    UserList.Add(new User(dt.Rows[i]));
+            //return UserList;
+        }
+        public async Task<POSLayer.Models.User> GetUserByPassword(string Password)
+        {
+            return await repoUser.GetByField("Password",Password);
+            //DataTable dt = db.GetDataTable("GetUserByPassword", Password);
+            //if (dt.Rows.Count > 0)
+            //    return new User(dt.Rows[0]);
+            //else
+            //    return null;
         }
 
-        public DataTable GetUsers()
+        public async Task<POSLayer.Models.User> GetUser(string UserIID)
         {
-            return db.GetDataTable("GetAllUsers");
+            return await repoUser.Get(UserIID);
+            //DataTable dt = db.GetDataTable("GetUser", UserIID);
+            //if (dt.Rows.Count > 0)
+            //    return new User(dt.Rows[0]);
+            //else
+            //    return null;
         }
 
-        public bool IsPasswordExist(string Password)
+        public async Task<bool> SaveUser(POSLayer.Models.User user)
         {
-            DataTable dt = db.GetDataTable("GetUserByPassword", Password);
-            if (dt.Rows.Count > 0)
-                return true;
-            else
-                return false;
+            return await repoUser.Save(user) != null;
+
+            //return db.RunQuery("SaveUser '" + user.IID + "','" + user.UserName + "','" +
+            //                   user.UserPassword + "'," + (int)user.AccessLevel);
         }
 
-        public User GetUserByPassword(string Password)
+        public async Task<bool> DeleteUser(string UserIID)
         {
-            DataTable dt = db.GetDataTable("GetUserByPassword", Password);
-            if (dt.Rows.Count > 0)
-                return new User(dt.Rows[0]);
-            else
-                return null;
-        }
-
-        public User GetUser(string UserIID)
-        {
-            DataTable dt = db.GetDataTable("GetUser", UserIID);
-            if (dt.Rows.Count > 0)
-                return new User(dt.Rows[0]);
-            else
-                return null;
-        }
-
-        public bool SaveUser(User user)
-        {
-            return db.RunQuery("SaveUser '" + user.IID + "','" + user.UserName + "','" +
-                               user.UserPassword + "'," + (int)user.AccessLevel);
-        }
-
-        public void DeleteUser(string UserIID)
-        {
-            db.RunQuery("DeleteUser", UserIID);
+            return await repoUser.Delete(UserIID) > 0;
+            //db.RunQuery("DeleteUser", UserIID);
         }
 
         #endregion
 
         #region "ENTITY FUNCTIONS"
 
-        public FMenu GetActiveMenu(bool blnReloadConfig, bool blnReloadMenu)
+        public Menu GetActiveMenu(bool blnReloadConfig, bool blnReloadMenu)
         {
             if (blnReloadMenu)
             {
                 if (blnReloadConfig)
-                    //DeSerializeConfig();
                     config = UF.GetConfig();
                 //Get and load active menu 
                 if (config.ActiveMenuIID == null || config.ActiveMenuIID == "")
@@ -650,222 +566,134 @@ namespace DTRMNS
             return ActiveMenu;
         }
 
-        public void SaveMenuA(FMenu foodMenu)
+        public void SaveMenuA(Menu foodMenu)
         {
             DRFile.XmlSerialize(DRFile.GetApplicationPath() + foodMenu.GetMenuFileName(), foodMenu,
-                typeof(FMenu), false);
+                typeof(Menu), false);
         }
 
-        public DataTable GetMenuList()
+        public async Task<List<POSLayer.Models.Menu>> GetMenuList()
         {
-            if (config != null)
-            {
-                DataTable dt = db.GetDataTable("GetMenuList");
-                dt.Columns.Add("IsActiveMenu");
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    if (dt.Rows[i]["IID"].ToString() == config.ActiveMenuIID)
-                        dt.Rows[i]["IsActiveMenu"] = true;
-                }
-                return dt;
-            } else
-            {
-                return null;
-            }
+            List<POSLayer.Models.Menu> menuList = await repoMenu.GetAllAsync();
+            return menuList;
+            //if (config != null)
+            //{
+            //    DataTable dt = db.GetDataTable("GetMenuList");
+            //    dt.Columns.Add("IsActiveMenu");
+            //    for (int i = 0; i < dt.Rows.Count; i++)
+            //    {
+            //        if (dt.Rows[i]["IID"].ToString() == config.ActiveMenuIID)
+            //            dt.Rows[i]["IsActiveMenu"] = true;
+            //    }
+            //    return dt;
+            //} else
+            //{
+            //    return null;
+            //}
         }
 
         public bool IsMenuExist(string MenuIID)
         {
-            DataTable dt = db.GetDataTable("Select * from Menu where IID = '" + MenuIID + "'");
-            return dt.Rows.Count > 0;
+            return repoMenu.Get(MenuIID) != null; 
+          // return repoMenu.GetDBContext().Menus.Any(x => x.IID == MenuIID);
+            //DataTable dt = db.GetDataTable("Select * from Menu where IID = '" + MenuIID + "'");
+            //return dt.Rows.Count > 0;
         }
 
         public string GetFirstMenuIID()
         {
-            DataTable dt = db.GetDataTable("GetMenuList");
-            if (dt.Rows.Count == 0)
-                return "";
-            else
-                return dt.Rows[0]["IID"].ToString();
+            POSLayer.Models.Menu  menu = repoMenu.GetAllAsync().Result.FirstOrDefault();
+            return menu?.IID ?? "";
+
+            //DataTable dt = db.GetDataTable("GetMenuList");
+            //if (dt.Rows.Count == 0)
+            //    return "";
+            //else
+            //    return dt.Rows[0]["IID"].ToString();
         }
 
-        public List<FMenu> GetMenuListDB()
+        public async Task<List<POSLayer.Models.Menu>> GetMenuListDB()
         {
-            DataTable dt = db.GetDataTable("GetMenuList");
-            List<FMenu> MenuList = new List<FMenu>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                FMenu fm = new FMenu(dt.Rows[i]["IID"].ToString())
-                {
-                    MenuName = dt.Rows[i]["MenuName"].ToString()
-                };
-                MenuList.Add(fm);
-            }
-            return MenuList;
+            return await repoMenu.GetAllAsync();
+            //DataTable dt = db.GetDataTable("GetMenuList");
+            //List<FMenu> MenuList = new List<FMenu>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    FMenu fm = new FMenu(dt.Rows[i]["IID"].ToString())
+            //    {
+            //        MenuName = dt.Rows[i]["MenuName"].ToString()
+            //    };
+            //    MenuList.Add(fm);
+            //}
+            //return MenuList;
         }
 
         /// <summary>
         /// Returns list of menus in the database. Menus have all the entities and entity buttons in it
         /// </summary>
         /// <returns></returns>
-        public List<FMenu> GetAllMenuList(GenericProgressFunction progress = null, int startfrom = 0)
+        public async Task<List<POSLayer.Models.Menu>> GetAllMenuList(GenericProgressFunction progress = null, int startfrom = 0)
         {
-            DataTable dt = db.GetDataTable("GetMenuList");
-            List<FMenu> MenuList = new List<FMenu>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                string IID = dt.Rows[i]["IID"].ToString();
-                MenuList.Add(GetMenuDB(IID));
-                progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
-            }
-            return MenuList;
+            return await repoMenu.GetAllAsync("Entity");
+            //DataTable dt = db.GetDataTable("GetMenuList");
+            //List<FMenu> MenuList = new List<FMenu>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    string IID = dt.Rows[i]["IID"].ToString();
+            //    MenuList.Add(GetMenuDB(IID));
+            //    progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
+            //}
+            //return MenuList;
         }
 
-        public List<IIDName> GetJustMenuIIDNameList()
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, MenuName as Name from Menu");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public IIDName GetJustMenuIIDName(string MenuIID)
-        {
-            DataTable dt = db.GetDataTable("GetMenu", MenuIID);
-            if (dt.Rows.Count > 0)
-            {
-                return new IIDName(dt);
-            } else
-                return null;
-        }
-
-        public List<IIDName> GetJustEntityIIDNameList(string MenuIID)
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, EntityName as Name from Entity where ParentMenuIID = '" + MenuIID + "' order by DisplayOrder");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public List<IIDName> GetJustEntityButtonIIDNameList(string EntityIID)
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, EntityButtonName as Name from EntityButton where ParentEntityIID = '" + EntityIID + "' order by DisplayOrder");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-
-        public List<IIDName> GetJustDistributionIIDNameList(string MenuIID)
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, DistributionName as Name from Distribution where ParentMenuIID = '" + MenuIID + "' order by DisplayOrder");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public List<IIDName> GetJustSupplierIIDNameList()
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, SupplierName as Name from Supplier order by SupplierName");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public List<IIDName> GetJustStockItemIIDNameList(string SupplierIID)
-        {
-            List<IIDName> theList = new List<IIDName>();
-            DataTable dt = db.GetDataTable("Select IID, StockName as Name from StockItem Where SupplierIID = '" + SupplierIID + "' order by StockName");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDName(dt.Rows[i]));
-            }
-            return theList;
-        }
-
-        public List<IIDValueDate> GetOrdersIIDValueDateList()
-        {
-            List<IIDValueDate> theList = new List<IIDValueDate>();
-            DataTable dt = db.GetDataTable("Select IID, CalculatedValue as Value, OrderDate as Date from OrdersView order by OrderDate");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDValueDate(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public float GetOrdersTotal()
-        {
-            DataTable dt = db.GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView");
-            return float.Parse(dt.Rows[0]["Total"].ToString());
-        }
         public float GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
         {
             DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
             return float.Parse(dt.Rows[0]["Total"].ToString());
         }
-        public List<IIDValueDate> GetXOrdersIIDValueDateList()
-        {
-            List<IIDValueDate> theList = new List<IIDValueDate>();
-            DataTable dt = db.GetDataTable("Select IID, CalculatedValue as Value, OrderDate as Date from XOrdersView order by OrderDate");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDValueDate(dt.Rows[i]));
-            }
-            return theList;
-        }
-        public float GetXOrdersTotal()
-        {
-            DataTable dt = db.GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from XOrdersView");
-            return float.Parse(dt.Rows[0]["Total"].ToString());
-        }
-        public List<IIDDate> GetKitchenOrdersIIDDateList()
-        {
-            List<IIDDate> theList = new List<IIDDate>();
-            DataTable dt = db.GetDataTable("Select IID, CreatedDateTime as Date from KitchenOrders order by CreatedDateTime");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new IIDDate(dt.Rows[i]));
-            }
-            return theList;
-        }
 
-        public List<Debug> GetDebugList()
+        public async Task<List<POSLayer.Models.Debug>> GetDebugList()
         {
-            List<Debug> theList = new List<Debug>();
-            DataTable dt = db.GetDataTable("Select * from Debug order by EventDateTime");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new Debug(dt.Rows[i]));
-            }
-            return theList;
-        }
+            return await repoDebug.GetAllAsync();
 
-        public FMenu GetMenuDB(string MenuIID, GenericProgressFunction progress = null, int startfrom = 0)
+            //List<Debug> theList = new List<Debug>();
+            //DataTable dt = db.GetDataTable("Select * from Debug order by EventDateTime");
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    theList.Add(new Debug(dt.Rows[i]));
+            //}
+            //return theList;
+        }
+        public async Task<POSLayer.Models.Menu> GetMenuDB(string MenuIID, GenericProgressFunction progress = null, int startfrom = 0)
         {
-            DataTable dt = db.GetDataTable("GetMenu", MenuIID);
-            if (dt.Rows.Count > 0)
+            POSLayer.Models.Menu menu =await repoMenu.Get(MenuIID);
+            if (menu != null)
             {
-                FMenu fm = new FMenu(dt);
-                dt = this.GetEntitiesForMenuDB(MenuIID);
-                for (int i = 0; i < dt.Rows.Count; i++)
+                menu.items = await repoEntity.GetDBContext().Entities.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
+                for (int i = 0; i < menu.items.Count; i++)
                 {
-                    fm.items.Add(this.GetEntityDB(dt.Rows[i]["IID"].ToString()));
-                    progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
+                    menu.items[i].Buttons = await repoEntityButton.GetDBContext().EntityButtons.Where(x => x.ParentEntityIID == menu.items[i].IID).ToListAsync();
                 }
-                fm.Distributions = this.GetDistributionList(MenuIID);
-                return fm;
+                menu.Distributions = await repoDistribution.GetDBContext().Distributions.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
+
+                return menu;
             } else
                 return null;
+
+            //DataTable dt = db.GetDataTable("GetMenu", MenuIID);
+            //if (dt.Rows.Count > 0)
+            //{
+            //    Menu fm = new Menu(dt);
+            //    dt = this.GetEntitiesForMenuDB(MenuIID);
+            //    for (int i = 0; i < dt.Rows.Count; i++)
+            //    {
+            //        fm.items.Add(this.GetEntityDB(dt.Rows[i]["IID"].ToString()));
+            //        progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
+            //    }
+            //    fm.Distributions = this.GetDistributionList(MenuIID);
+            //    return fm;
+            //} else
+            //    return null;
         }
 
         /// <summary>
@@ -873,20 +701,11 @@ namespace DTRMNS
         /// </summary>
         /// <param name="menu"></param>
         /// <returns></returns>
-        public bool SaveMenu(FMenu menu)
+        public async Task<bool> SaveMenu(POSLayer.Models.Menu menu)
         {
-            return db.RunQuery("SaveMenu '" + menu.IID + "','" + menu.MenuName + "'");
-        }
+            return await repoMenu.Save(menu) != null;
 
-        /// <summary>
-        /// Saves only menu's name
-        /// </summary>
-        /// <param name="menuIID"></param>
-        /// <param name="menuName"></param>
-        /// <returns></returns>
-        public bool SaveMenu(string menuIID, string menuName)
-        {
-            return db.RunQuery("SaveMenu '" + menuIID + "','" + menuName + "'");
+           // return db.RunQuery("SaveMenu '" + menu.IID + "','" + menu.MenuName + "'");
         }
 
 
@@ -894,7 +713,7 @@ namespace DTRMNS
         /// Saves the entire menu
         /// </summary>
         /// <param name="foodMenu"></param>
-        public void SaveMenuDB(FMenu foodMenu)
+        public void SaveMenuDB(Menu foodMenu)
         {
             //Delete old Database version
             //Save new Database version
@@ -940,10 +759,10 @@ namespace DTRMNS
             SaveMenuA(foodMenu);
         }
 
-        public bool DeleteMenuDB(string MenuIID)
+        public async Task<bool> DeleteMenuDB(string MenuIID)
         {
-            //Delete database version
-            return db.RunQuery("DeleteMenu", MenuIID);
+            return await repoMenu.Delete(MenuIID) > 0;
+            //return db.RunQuery("DeleteMenu", MenuIID);
         }
         public Entity GetEntityDB(string EntityIID, GenericProgressFunction progress = null, int startfrom = 0)
         {
@@ -965,43 +784,9 @@ namespace DTRMNS
             return db.GetDataTable("GetEntitiesForMenu", ParentMenuIID);
         }
 
-        public DataTable GetEntitiesByType(string ParentMenuIID, EntityTypes EntityType)
-        {
-            return db.GetDataTable("GetEntitiesByType '" + ParentMenuIID + "'," + (int)EntityType);
-        }
-
-        public EntityView GetEntityView(string IID)
-        {
-            return new EntityView(db.GetDataTable("Select * from Entity where IID = '" + IID + "'"));
-        }
-
-        public bool SaveEntityView(EntityView entity)
-        {
-            CultureInfo ci = GetDBCulture();
-            //This only saves the entity in the EntityTable
-            return db.RunQuery("SaveEntity '" + entity.IID + "','" + entity.EntityName.Replace("'", "''") + "'," +
-                               entity.DisplayOrder + "," + entity.PanelColor + "," + entity.ButtonHeight + "," +
-                               entity.ButtonWidth + ",'" + entity.SizeBarIID + "','" +
-                               entity.DivisionBarIID + "','" + entity.ParentMenuIID + "'," +
-                               (int)entity.EntityType + ",'" + entity.TaxPercent.ToString(ci) + "','" +
-                               entity.DistributionIID + "','" + entity.DistributionName + "','" +
-                               entity.FFamily + "','" + entity.FSize.ToString() + "','" + entity.FStyle + "'");
-        }
-
-        public bool SaveJustEntity(Entity entity)
-        {
-            CultureInfo ci = GetDBCulture();
-            //This only saves the entity in the EntityTable
-            return db.RunQuery("SaveEntity '" + entity.IID + "','" + entity.EntityName.Replace("'", "''") + "'," +
-                        entity.DisplayOrder + "," + entity.BackColour + "," + entity.ButtonHeight + "," +
-                        entity.ButtonWidth + ",'" + entity.ParentMenuIID + "'," +
-                        (int)entity.entityType + ",'" + entity.DistributionIID + "','" + entity.DistributionName + "','" +
-                        entity.FFamily + "','" + entity.FSize.ToString(ci) + "','" + entity.FStyle + "'," + entity.ForeColour);
-        }
-
         public bool SetEntityDisplayOrder(string EntityIID, int displayOrder)
         {
-            return db.RunQuery("Update Entity set DisplayOrder = " + displayOrder + " where IID = '" + EntityIID + "'");
+            return RunQuery("Update Entity set DisplayOrder = " + displayOrder + " where IID = '" + EntityIID + "'");
         }
 
         public void SaveEntityDB(Entity entity)
@@ -1027,15 +812,7 @@ namespace DTRMNS
             {
                 string DBEntityButtonIID = dt.Rows[r]["IID"].ToString();
                 bool blnEntityButtonRequired = false;
-                //for (int i = 0; i < entity.Buttons.Count; i++) {
-                //    if (((EntityButton)entity.Buttons[i]).IID == DBEntityButtonIID) {
-                //        blnEntityButtonRequired = true;
-                //        break;
-                //    }
-                //}
-
                 blnEntityButtonRequired = entity.Buttons.Find(x => x.IID == DBEntityButtonIID) != null;
-
 
                 if (!blnEntityButtonRequired)
                     this.DeleteEntityButtonDB(DBEntityButtonIID);
@@ -1062,58 +839,50 @@ namespace DTRMNS
             //This should call EntityList for active food Menu but as far as the server is concerned what is the active Menu?
             return db.GetDataTable("GetEntityListForMenu", ActiveMenu.IID);
         }
-
-        public DataTable GetActiveNormalEntityList()
-        {
-            //This should call EntityList for active food Menu but as far as the server is concerned what is the active Menu?
-            return db.GetDataTable("GetNormalEntitiesForMenu", ActiveMenu.IID);
-        }
-
-        public float GetEBTaxPercent(EntityButton eb)
+        public double GetEBTaxPercent(POSLayer.Models.EntityButton eb)
         {
             if (AttachedOrder == null)
                 return 0.0f;
             switch (AttachedOrder.OrderType)
             {
-                case OrderTypes.DirectSale:
+                case POSLayer.Library.OrderTypes.DirectSale:
                     return eb.DirectSaleTaxPercent;
-                case OrderTypes.InHouse:
+                case POSLayer.Library.OrderTypes.InHouse:
                     return eb.InHouseTaxPercent;
-                case OrderTypes.TakeAwayB:
-                case OrderTypes.InternetTakeAway:
+                case POSLayer.Library.OrderTypes.TakeAwayB:
+                case POSLayer.Library.OrderTypes.InternetTakeAway:
                     return eb.TakeAwayTaxPercent;
-                case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
+                case POSLayer.Library.OrderTypes.Delivery:
+                case POSLayer.Library.OrderTypes.InternetDelivery:
                     return eb.DeliveryTaxPercent;
                 default:
                     return eb.DirectSaleTaxPercent;
             }
         }
-        public float GetEBTaxPercentForGenericOrder(Order order, EntityButton eb)
+        public double GetEBTaxPercentForGenericOrder(POSLayer.Models.Order order, POSLayer.Models.EntityButton eb)
         {
             if (order == null)
                 return 0.0f;
             switch (order.OrderType)
             {
-                case OrderTypes.DirectSale:
+                case POSLayer.Library.OrderTypes.DirectSale:
                     return eb.DirectSaleTaxPercent;
-                case OrderTypes.InHouse:
+                case POSLayer.Library.OrderTypes.InHouse:
                     return eb.InHouseTaxPercent;
-                case OrderTypes.TakeAwayB:
-                case OrderTypes.InternetTakeAway:
+                case POSLayer.Library.OrderTypes.TakeAwayB:
+                case POSLayer.Library.OrderTypes.InternetTakeAway:
                     return eb.TakeAwayTaxPercent;
-                case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
+                case POSLayer.Library.OrderTypes.Delivery:
+                case POSLayer.Library.OrderTypes.InternetDelivery:
                     return eb.DeliveryTaxPercent;
                 default:
                     return eb.DirectSaleTaxPercent;
             }
         }
-
-
-        public EntityButton GetJustEntityButton(string EntityButtonIID)
+        public async Task<POSLayer.Models.EntityButton> GetJustEntityButton(string EntityButtonIID)
         {
-            return new EntityButton(db.GetDataTable("GetEntityButton", EntityButtonIID).Rows[0]);
+            return await repoEntityButton.Get(EntityButtonIID);
+           // return new POSLayer.Models.EntityButton(db.GetDataTable("GetEntityButton", EntityButtonIID).Rows[0]);
         }
 
         public DataTable GetEntityButtonsForEntityDB(string PEIID)
@@ -1124,11 +893,6 @@ namespace DTRMNS
         {
             return db.GetDataTable("GetEntityButtonsForEntityWithImage", PEIID);
         }
-        public DataTable GetSubEntityButtonsForEntityButtonDB(string PEBIID)
-        {
-            return db.GetDataTable("GetSubEntityButtonsForEntityButton", PEBIID);
-        }
-
         public bool SetEntityButtonDisplayOrder(string EBIID, int displayOrder)
         {
             return db.RunQuery("Update EntityButton set DisplayOrder = " + displayOrder + " where IID = '" + EBIID + "'");
@@ -1169,12 +933,6 @@ namespace DTRMNS
         {
             db.RunQuery("DeleteEntityButton", EntityButtonIID);
         }
-
-        public void DeleteEntityButtonsForEntityDB(string PEIID)
-        {
-            db.RunQuery("DeleteEntityButtonsForEntity", PEIID);
-        }
-
         public DataTable GetEntityC(string EntityIID)
         {
             return db.GetDataTable("GetEntity", EntityIID);
@@ -1192,20 +950,17 @@ namespace DTRMNS
         {
             return new Employee(db.GetDataTable("GetEmployee", IID));
         }
+        public async Task<List<POSLayer.Models.Employee>> GetAllEmployeeList()
+        {
+            return await repoEmployee.GetAllAsync();
 
-        public DataTable GetAllEmployees()
-        {
-            return db.GetDataTable("GetAllEmployees");
-        }
-        public List<Employee> GetAllEmployeeList()
-        {
-            DataTable dt = db.GetDataTable("GetAllEmployees");
-            List<Employee> theList = new List<Employee>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new Employee(dt.Rows[i]));
-            }
-            return theList.OrderBy(x => x.EmployeeName).ToList();
+            //DataTable dt = db.GetDataTable("GetAllEmployees");
+            //List<Employee> theList = new List<Employee>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    theList.Add(new Employee(dt.Rows[i]));
+            //}
+            //return theList.OrderBy(x => x.EmployeeName).ToList();
         }
         public bool SaveEmployee(Employee employee)
         {
@@ -1221,24 +976,6 @@ namespace DTRMNS
             {
                 return false;
             }
-        }
-        public bool SaveEmployeeList(List<Employee> theList)
-        {
-            if (theList != null)
-            {
-                try
-                {
-                    foreach (Employee item in theList)
-                    {
-                        SaveEmployee(item);
-                    }
-                    return true;
-                } catch
-                {
-                    return false;
-                }
-            }
-            return false;
         }
         public void DeleteEmployee(string IID)
         {
@@ -1258,16 +995,6 @@ namespace DTRMNS
         {
             return db.GetDataTable("GetAllCustomers");
         }
-        public List<Customer> GetAllCustomerList()
-        {
-            DataTable dt = db.GetDataTable("GetAllCustomers");
-            List<Customer> theList = new List<Customer>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new Customer(dt.Rows[i]));
-            }
-            return theList;
-        }
         public bool SaveCustomer(Customer customer)
         {
             if (customer == null)
@@ -1286,25 +1013,6 @@ namespace DTRMNS
                 return false;
             }
         }
-        public bool SaveCustomerList(List<Customer> theList)
-        {
-            if (theList != null)
-            {
-                try
-                {
-                    foreach (Customer item in theList)
-                    {
-                        SaveCustomer(item);
-                    }
-                    return true;
-                } catch
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
-
         public void DeleteCustomer(string IID)
         {
             //Check order table if this Customer IID repeated more than once do not delete customer 
@@ -1335,46 +1043,6 @@ namespace DTRMNS
         {
             return db.GetDataTable("SearchCustomersByEmail", Email);
         }
-
-        public DataTable GetCustomerPreviousOrders(string CustomerIID)
-        {
-            return db.GetDataTable("GetCustomerPreviousOrders", CustomerIID);
-        }
-
-        public int GetCustomerPreviousOrdersCount(string CustomerIID)
-        {
-            return db.GetDataTable("GetCustomerPreviousOrders", CustomerIID).Rows.Count;
-        }
-
-        public int GetCustomersCountByTel(string CTelNumber)
-        {
-            return db.GetDataTable("SearchCustomersByTel", CTelNumber).Rows.Count;
-        }
-
-        public Customer GetCustomerByTel(string CTelNumber)
-        {
-            return new Customer(db.GetDataTable("SearchCustomersByTel", CTelNumber));
-        }
-
-        public Customer GetCustomerByEmailAndPassword(string Email, string Password)
-        {
-            return new Customer(db.GetDataTable("GetCustomerByEmailAndPassword '" + Email.Replace("'", "''") + "','" +
-                                                Password.Replace("'", "''") + "'"));
-        }
-
-        public Customer GetCustomerByEmailAndTel(string Email, string Tel)
-        {
-            return new Customer(db.GetDataTable("GetCustomerByEmailAndTel '" + Email.Replace("'", "''") + "','" +
-                                                Tel.Replace("'", "''") + "'"));
-        }
-
-        public Customer GetCustomerByEmailTelAndPassword(string Email, string Tel, string Password)
-        {
-            return
-                new Customer(db.GetDataTable("GetCustomerByEmailTelAndPassword '" + Email.Replace("'", "''") + "','" +
-                                             Tel.Replace("'", "''") + "','" + Password.Replace("'", "''") + "'"));
-        }
-
         #endregion
 
         #region "TABLE FUNCTIONS"
@@ -1388,25 +1056,7 @@ namespace DTRMNS
         {
             return new TableGroup(db.GetDataTable("GetTableGroup '" + IID + "'"));
         }
-
-        public Table GetTableByName(string TableName)
-        {
-            DataTable dt = db.GetDataTable("GetTableByItsName", TableName);
-            if (dt.Rows.Count > 0)
-                return new Table(dt.Rows[0]);
-            else
-                return null;
-        }
-
-        public List<Table> GetTableList()
-        {
-            List<Table> TableList = new List<Table>();
-            DataTable dt = db.GetDataTable("GetAllTables");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                TableList.Add(new Table(dt.Rows[i]));
-            return TableList;
-        }
-
+        
         public List<Table> GetTableList(string GroupIID)
         {
             List<Table> TableList = new List<Table>();
@@ -1469,8 +1119,6 @@ namespace DTRMNS
         public string GenerateSubTableName(Table mainTable)
         {
             List<Table> subTableList = GetTableAndSubTables(mainTable.IID);
-            // char test = 'A';
-            //MessageBox.Show(((int) test).ToString());
             bool blnFound;// = false;
 
             for (int i = 65; i < 70; i++)
@@ -1564,7 +1212,7 @@ namespace DTRMNS
                     {
                         //if table has order attached to it
                         //set table ClientIP(busy), set table OrderIID(occupied) , set order tableIID, set order ClientIP (busy), 
-                        Order order = GetOrder(table.CurrentOrderIID);
+                        POSLayer.Models.Order order = GetOrder(table.CurrentOrderIID);
                         order.TableIID = table.IID;
                         order.TableName = table.TableName;
                         order.LockedClientIP = config.Terminal_Name;
@@ -1578,7 +1226,7 @@ namespace DTRMNS
                     } else
                     {
                         //create a new order
-                        Order order = new Order(OrderTypes.InHouse)
+                        POSLayer.Models.Order order = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.InHouse)
                         {
                             //order.customer = new Customer();
                             TableIID = table.IID,
@@ -1663,7 +1311,7 @@ namespace DTRMNS
         }
 
         ///Used to return an inhouse order , this function is ONLY CALLED BY RETURN ORDER
-        private void ReturnTable(Order order)
+        private void ReturnTable(POSLayer.Models.Order order)
         {
             Table table = GetTable(order.TableIID);
             if (table == null)
@@ -1772,7 +1420,7 @@ namespace DTRMNS
             blnTargetPrimary = targetTable.TableType == TableTypes.StaticTable;
             blnTargetEmpty = !targetTable.HasActiveOrder();
 
-            Order sourceOrder;
+            POSLayer.Models.Order sourceOrder;
             //Order targetOrder;
             Table subTargetTable;
 
@@ -1946,12 +1594,7 @@ namespace DTRMNS
             return db.GetDataTable("Select DefaultName from Tables where DefaultName = '" + subName + "'").Rows.Count > 0;
         }
 
-        private bool ChangeSubTableName(Table subTable, string newSubName)
-        {
-            return db.RunQuery("Update Tables set TableName ='" + newSubName + "' where IID ='" + subTable.IID + "'");
-        }
-
-        private Order MakeOrderFreeFromTable(Order order)
+        private POSLayer.Models.Order MakeOrderFreeFromTable(POSLayer.Models.Order order)
         {
             order.TableIID = "";
             order.TableName = "";
@@ -1959,7 +1602,7 @@ namespace DTRMNS
             return order;
         }
 
-        private Order AttachOrderToTable(Order order, Table table)
+        private POSLayer.Models.Order AttachOrderToTable(POSLayer.Models.Order order, Table table)
         {
             order.TableIID = table.IID;
             order.TableName = table.TableName;
@@ -1973,23 +1616,6 @@ namespace DTRMNS
             table.CurrentOrderIID = "";
             table.LockedClientIP = "";
             return table;
-        }
-
-        private Table MakeTableFreeFromOrderAndParentTable(Table table)
-        {
-            table.ParentTableIID = "";
-            table.CurrentOrderIID = "";
-            table.LockedClientIP = "";
-            return table;
-        }
-
-        public List<string> GetSubTableIIDList(Table mainTable)
-        {
-            DataTable dt = db.GetDataTable("Select IID from Tables where ParentTableIID ='" + mainTable.IID + "'");
-            List<string> theList = new List<string>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-                theList.Add(dt.Rows[i]["IID"].ToString());
-            return theList;
         }
 
         public bool SetNewParentTableIIDForSubTables(string oldParentTableIID, string newParentTableIID)
@@ -2073,7 +1699,7 @@ namespace DTRMNS
             Table table = GetTable(TableIID);
             if (table != null)
             {
-                Order order = GetOrder(table.CurrentOrderIID);
+                POSLayer.Models.Order order = GetOrder(table.CurrentOrderIID);
                 if (order != null)
                 {
                     if (order.items.Count == 0)
@@ -2097,132 +1723,6 @@ namespace DTRMNS
             }
         }
 
-        public Table SetTableStatusAndGetTableIfRequiredM(string TableIID, bool blnBusy, string ClientIP)
-        {
-            if (TableIID == "0")
-            {
-                db.RunQuery("DisconnectClientFromTables", ClientIP);
-                return null;
-            } else
-            {
-                Table table = GetTable(TableIID);
-                if (table.IsBusy(ClientIP))
-                    return null;
-                else
-                {
-                    if (blnBusy)
-                    {
-                        table.LockedClientIP = ClientIP;
-                        SaveTable(table);
-                        if (table.CurrentOrderIID != "" && table.CurrentOrderIID != null)
-                        {
-                            Order order = GetOrder(table.CurrentOrderIID);
-                            if (order != null)
-                            {
-                                order.TableIID = table.IID;
-                                order.LockedClientIP = ClientIP;
-                                SaveOrder(order);
-                            }
-                        }
-                        return table;
-                    } else
-                    {
-                        table.LockedClientIP = "";
-                        SaveTable(table);
-                        if (table.CurrentOrderIID != "" && table.CurrentOrderIID != null)
-                        {
-                            Order order = GetOrder(table.CurrentOrderIID);
-                            if (order != null)
-                            {
-                                order.TableIID = "";
-                                order.LockedClientIP = "";
-                                SaveOrder(order);
-                            }
-                        }
-                        return null;
-                    }
-                }
-            }
-        }
-
-        public bool IsTableNameExist(string TableName)
-        {
-            return db.GetDataTable("GetTableByItsName", TableName).Rows.Count > 0 ? true : false;
-        }
-
-        public bool IsTableExist(string TableIID)
-        {
-            try
-            {
-                return (db.GetDataTable("GetTable", TableIID).Rows.Count > 0);
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public void CreateDummyTablesAndGroups()
-        {
-            TableGroup group1 = CreateDummyTableGroup("First Floor");
-            if (group1 != null)
-            {
-                Table tb = new Table("Sample Table 1", 2);
-                tb.TableType = TableTypes.StaticTable;
-                tb.TableCovers = 4;
-                tb.XLocation = 30;
-                tb.YLocation = 30;
-                tb.Width = 200;
-                tb.Height = 90;
-                tb.Shape = ButtonShapeTypes.Circle;
-                tb.GroupIID = group1.IID;
-                SaveTable(tb);
-
-                tb = new Table("Sample Table 2", 3);
-                tb.TableType = TableTypes.StaticTable;
-                tb.TableCovers = 3;
-                tb.XLocation = 160;
-                tb.YLocation = 160;
-                tb.Width = 100;
-                tb.Height = 50;
-                tb.Shape = ButtonShapeTypes.Rectangle;
-                tb.GroupIID = group1.IID;
-                SaveTable(tb);
-            }
-            TableGroup group2 = CreateDummyTableGroup("Second Floor");
-            if (group2 != null)
-            {
-                Table tb = new Table("A", 4);
-                tb.TableType = TableTypes.StaticTable;
-                tb.TableCovers = 4;
-                tb.XLocation = 21;
-                tb.YLocation = 10;
-                tb.Width = 130;
-                tb.Height = 50;
-                tb.Shape = ButtonShapeTypes.Rectangle;
-                tb.GroupIID = group2.IID;
-                SaveTable(tb);
-
-                tb = new Table("B", 6);
-                tb.TableType = TableTypes.StaticTable;
-                tb.TableCovers = 6;
-                tb.XLocation = 60;
-                tb.YLocation = 120;
-                tb.Width = 180;
-                tb.Height = 140;
-                tb.Shape = ButtonShapeTypes.Rectangle;
-                tb.GroupIID = group2.IID;
-                SaveTable(tb);
-            }
-        }
-
-        public TableGroup CreateDummyTableGroup(string groupName)
-        {
-            TableGroup group = new TableGroup(groupName);
-            if (group.Save(db))
-                return group;
-            else
-                return null;
-        }
         #endregion
 
         #region "DISTRIBUTION FUNCTIONS"
@@ -2244,19 +1744,6 @@ namespace DTRMNS
                 DistributionList.Add(new Distribution(dt.Rows[i]));
             return DistributionList;
         }
-
-        public string GetDistributionPrinterNetworkName(string DistributionIID)
-        {
-            try
-            {
-                return
-                    db.GetDataTable("GetDistributionPrinterNetworkName", DistributionIID).Rows[0]["NetworkName"].ToString();
-            } catch
-            {
-                return "";
-            }
-        }
-
         public DataTable GetAllDistributions(string ActiveMenuIID)
         {
             return db.GetDataTable("GetDistributions", ActiveMenuIID);
@@ -2315,99 +1802,30 @@ namespace DTRMNS
                 return xorder;
             } else
                 return null;
-        }
-        public bool SaveXOrder(Order xorder)
-        {
-            CultureInfo ci = GetDBCulture();
-            try
-            {
-                if (
-                    db.RunQuery("SaveXOrder  '" + xorder.IID + "','" + xorder.TableIID + "'," +
-                                DRDateTime.DatetimeToMSSql(xorder.OrderDate) + "," +
-                                xorder.Covers + "," + (int)xorder.OrderType + "," + (int)xorder.Payment + ",'" +
-                                xorder.CustomerIID + "','" + xorder.SessionIID + "'," + (int)xorder.Status + ",'" +
-                                xorder.LockedClientIP + "','" + xorder.Instruction + "'," + xorder.MoneyPaid.ToString(ci) +
-                                ",'" +
-                                xorder.PaymentFlag + "','" +
-                                xorder.TableName + "','" + xorder.CName + "','" + xorder.PostCode + "','" + xorder.Address +
-                                "','" + xorder.Buzzer + "','" +
-                                xorder.Town + "','" + xorder.Tel + "','" + xorder.Mobile + "','" + xorder.Email + "','" +
-                                xorder.UserName + "','" + xorder.Reference + "'"))
-                {
-
-                    for (int i = 0; i < xorder.items.Count; i++)
-                        SaveXOrderItem(xorder.items[i]);
-
-                    return true;
-                } else
-                    return false;
-            } catch
-            {
-                return false;
-            }
-
-        }
-        private void SaveXOrderItem(OrderItem oi)
-        {
-            try
-            {
-                CultureInfo ci = GetDBCulture();
-                if (db.RunQuery("SaveXOrderItem '" +
-                                oi.IID + "','" + oi.EntityIID + "','" + oi.OrderItemText + "'," + oi.Quantity + ",'" +
-                                oi.Price.ToString(ci) + "','" + oi.OrderGroupIID + "','" + oi.EntityButtonIID + "','" +
-                                oi.DistributionIID + "','" + oi.ParentOrderIID + "'," + (int)oi.ItemType + "," +
-                                oi.dorder + ",'" +
-                                oi.EntityName + "'," + oi.EntityDisplayOrder + ",'" +
-                                oi.TaxPercent.ToString(ci) + "'," + oi.CompletedQuantity))
-                {
-
-                }
-            } catch
-            {
-            }
-        }
-
-
-
-
+        }            
 
         public List<Order> GetOrderList()
         {
-            List<Order> OrderList = new List<Order>();
+            List<POSLayer.Models.Order> OrderList = new List<POSLayer.Models.Order>();
             DataTable dt = db.GetDataTable("GetSessionOrders", luv.CurrentSessionIID);
             for (int i = 0; i < dt.Rows.Count; i++)
                 OrderList.Add(GetOrder(dt.Rows[i]["IID"].ToString()));
             return OrderList;
         }
 
-        public DataTable GetOrders()
-        {
-            return db.GetDataTable("GetSessionOrders", luv.CurrentSessionIID);
-        }
-
         public DataTable GetSessionOrdersByStatus(StatusFlags InclusiveStatus)
         {
-            return
-                db.GetDataTable("GetSessionOrdersByStatus '" + luv.CurrentSessionIID + "'," +
+            return GetDataTable("GetSessionOrdersByStatus '" + luv.CurrentSessionIID + "'," +
                                 (int)InclusiveStatus);
         }
 
-        public DataTable GetSessionOrdersByType(string SessionIID, OrderTypes OrderType1, OrderTypes OrderType2,
-            OrderTypes OrderType3)
-        {
-            return
-                db.GetDataTable("GetSessionOrdersByType '" + SessionIID + "'," + (int)OrderType1 + "," +
-                                (int)OrderType2 +
-                                "," + (int)OrderType3);
-        }
-
-        public Order GetOrder(string IID)
+        public POSLayer.Models.Order GetOrder(string IID)
         {
             DataTable dt = db.GetDataTable("GetOrder", IID);
             if (dt.Rows.Count > 0)
             {
                 //create order
-                Order order = new Order(dt);
+                POSLayer.Models.Order order = new POSLayer.Models.Order(dt);
                 //add order items
                 DataTable dtItems = this.GetAllOrderItems(order.IID);
 
@@ -2416,28 +1834,6 @@ namespace DTRMNS
                 return order;
             } else
                 return null;
-        }
-
-        public Order GetLastOrder()
-        {
-            DataTable dt = db.GetDataTable("GetLastOrder");
-            if (dt.Rows.Count > 0)
-            {
-                //create order
-                Order order = new Order(dt);
-                //add order items
-                DataTable dtItems = this.GetAllOrderItems(order.IID);
-
-                for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
-                    order.items.Add(this.GetOrderItem(dtItems.Rows[i]["IID"].ToString()));
-                return order;
-            } else
-                return null;
-        }
-
-        public StatusFlags GetOrderStatus(string OrderIID)
-        {
-            return GetOrder(OrderIID).Status;
         }
         public bool isOrderPaid(string OrderIID)
         {
@@ -2452,23 +1848,7 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public DataTable GetPrintableOrders()
-        {
-            return db.GetDataTable("GetPrintableOrders");
-        }
-
-        public DataTable GetPrintableInternetOrders()
-        {
-            return db.GetDataTable("GetPrintableInternetOrders");
-        }
-
-        public DataTable GetPrintableStoreList()
-        {
-            return db.GetDataTable("GetAllUnPrintedStoreList");
-        }
-
-        public bool SaveOrder(Order order)
+        public bool SaveOrder(POSLayer.Models.Order order)
         {
             CultureInfo ci = GetDBCulture();
             try
@@ -2485,20 +1865,20 @@ namespace DTRMNS
                                 order.LockedClientIP + "','" + order.Instruction + "'," + order.MoneyPaid.ToString(ci) +
                                 ",'" +
                                 order.PaymentFlag + "','" +
-                                order.TableName + "','" + order.CName + "','" + order.PostCode + "','" + order.Address +
+                                order.TableName + "','" + order.CName + "','" + order.Postcode + "','" + order.Address +
                                 "','" + order.Buzzer + "','" +
                                 order.Town + "','" + order.Tel + "','" + order.Mobile + "','" + order.Email + "','" +
                                 order.UserName + "','" + order.Reference + "','" + order.ServiceChargeRate + "','" + order.ServiceChargeTaxRate + "'"))
                 {
 
                     for (int i = 0; i < order.items.Count; i++)
-                        SaveOrderItem((OrderItem)order.items[i]);
+                        SaveOrderItem((POSLayer.Models.OrderItem)order.items[i]);
 
                     DataTable dtItems = this.GetAllOrderItems(order.IID);
 
                     for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
                     {
-                        OrderItem oi = order.GetOrderItem(dtItems.Rows[i]["IID"].ToString());
+                        POSLayer.Models.OrderItem oi = order.GetOrderItem(dtItems.Rows[i]["IID"].ToString());
                         if (oi == null)
                             db.RunQuery("DeleteOrderItem", dtItems.Rows[i]["IID"].ToString());
 
@@ -2521,7 +1901,7 @@ namespace DTRMNS
         //This only deletes the order , most likely called from a function which checked the inhouse, 
         //TakeAwayB, delivery possibilities
         //and deleted the table already if any or freed it.
-        public void DeleteOrderOnly(Order order)
+        public void DeleteOrderOnly(POSLayer.Models.Order order)
         {
             if (order != null)
             {
@@ -2542,24 +1922,16 @@ namespace DTRMNS
             }
         }
 
-        public OrderItem GetOrderItem(string IID)
+        public POSLayer.Models.OrderItem GetOrderItem(string IID)
         {
+
             DataTable dt = db.GetDataTable("GetOrderItem", IID);
             if (dt == null)
                 return null;
 
-            return new OrderItem(dt.Rows[0]);
+            return new POSLayer.Models.OrderItem(dt.Rows[0]);
         }
-
-        public DataTable GetOrderItemsForOrder(string OrderIID)
-        {
-            return
-                db.GetDataTable(
-                    "Select *, (Quantity * CalculationRatio * Price) as Total from OrderItem where ParentOrderIID = '" +
-                    OrderIID + "' order by DisplayOrder, OrderGroupIID");
-        }
-
-        public void SaveOrderItem(OrderItem oi)
+        public void SaveOrderItem(POSLayer.Models.OrderItem oi)
         {
             try
             {
@@ -2569,7 +1941,7 @@ namespace DTRMNS
                                 oi.IID + "','" + oi.EntityIID + "','" + oi.OrderItemText + "'," + oi.Quantity + ",'" +
                                 oi.Price.ToString(ci) + "','" + oi.OrderGroupIID + "','" + oi.EntityButtonIID + "','" +
                                 oi.DistributionIID + "','" + oi.ParentOrderIID + "'," + (int)oi.ItemType + "," +
-                                oi.dorder + ",'" +
+                                oi.DisplayOrder + ",'" +
                                 oi.EntityName + "'," + oi.EntityDisplayOrder + ",'" +
                                 oi.TaxPercent.ToString(ci) + "'," + oi.CompletedQuantity))
                 {
@@ -2579,9 +1951,6 @@ namespace DTRMNS
             {
             }
         }
-
-
-
 
         public void SaveLogItem(LogItem log)
         {
@@ -2628,14 +1997,12 @@ namespace DTRMNS
 
 
 
-        public void ReturnOrder(Order order)
+        public void ReturnOrder(POSLayer.Models.Order order)
         {
-            if (order.OrderType == OrderTypes.InHouse)
+            if (order.OrderType == POSLayer.Library.OrderTypes.InHouse)
                 this.ReturnTable(order);
             else
             {
-                //bool blnDeleteErrorOrders = false;
-                //if (config.Erroneous_Orders_Should_Be_Deleted) {
                 if (order.items.Count > 0)
                 {
                     order.LockedClientIP = "";
@@ -2643,18 +2010,12 @@ namespace DTRMNS
                     SaveOrder(order);
                 } else
                     DeleteOrder(order.IID);
-                //}
-                //else {
-                //    order.LockedClientIP = "";
-                //    order.TableIID = "";
-                //    SaveOrder(order);
-                //}
             }
         }
 
-        public Order BarrowOrder(string OrderIID, string ClientIP)
+        public POSLayer.Models.Order BarrowOrder(string OrderIID, string ClientIP)
         {
-            Order order = GetOrder(OrderIID);
+            POSLayer.Models.Order order = GetOrder(OrderIID);
             if (order.IsBusy(ClientIP))
                 return null;
             else
@@ -2671,22 +2032,13 @@ namespace DTRMNS
         }
 
 
-        public List<Order> GetOrderListForSession(string SessionIID)
+        public List<POSLayer.Models.Order> GetOrderListForSession(string SessionIID)
         {
-            List<Order> OrderList = new List<Order>();
+            List<POSLayer.Models.Order> OrderList = new List<POSLayer.Models.Order>();
             DataTable dt = db.GetDataTable("GetSessionOrders", SessionIID);
             for (int i = 0; i < dt.Rows.Count; i++)
                 OrderList.Add(GetOrder(dt.Rows[i]["IID"].ToString()));
             return OrderList;
-        }
-
-        #endregion
-
-        #region "LOCK FUNCTIONS"
-
-        public bool LockOT(string OrderIID, string TableIID, bool blnLockFlag)
-        {
-            return true;
         }
 
         #endregion
@@ -2699,27 +2051,6 @@ namespace DTRMNS
             {
                 return ync.ShowDialog();
             }
-
-
-        }
-
-        public bool SendNotificationEmail(string subject, string body, Attachment attachment)
-        {
-
-            if (luv == null)
-            {
-                //MessageBox.Show("Mail Settings cannot be obtained, aborting...");
-                return false;
-            }
-
-            MailMessage msg = new MailMessage(luv.SmtpEmailAddress,
-                luv.NotificationEmail,
-                subject, body);
-            if (attachment != null)
-                msg.Attachments.Add(attachment);
-            SmtpClient smtp = DRSmtp.GetSmtp(luv.SmtpServer, luv.SmtpEmailAddress, luv.SmtpPassword);
-            DRSmtp.SendEmail(smtp, msg);
-            return true;
         }
 
         public bool SendEmailToCustomRecepient(string ToEmail, string subject, string body, Attachment attachment)
@@ -2739,35 +2070,9 @@ namespace DTRMNS
             DRSmtp.SendEmail(smtp, msg);
             return true;
         }
-
-        public bool SendEmailToCustomRecepientManyAttachment(string ToEmail, string subject, string body,
-            List<Attachment> attachmentList)
-        {
-            if (luv == null)
-            {
-                return false;
-            }
-
-            MailMessage msg = new MailMessage(luv.SmtpEmailAddress,
-                ToEmail, subject, body);
-            if (attachmentList != null)
-            {
-                for (int i = 0; i < attachmentList.Count; i++)
-                    msg.Attachments.Add(attachmentList[i]);
-            }
-
-            SmtpClient smtp = DRSmtp.GetSmtp(luv.SmtpServer, luv.SmtpEmailAddress, luv.SmtpPassword);
-            DRSmtp.SendEmail(smtp, msg);
-            return true;
-        }
-
         #endregion
 
         #region "INSTRUCTION FUNCTIONS"
-        public Debug GetDebug(string DebugNo)
-        {
-            return GetDebug(int.Parse(DebugNo));
-        }
         public Debug GetDebug(int DebugNo)
         {
             try
@@ -2779,93 +2084,31 @@ namespace DTRMNS
             }
 
         }
-        public DataTable GetAllDebug(OrderByTypes orderby)
-        {
-            switch (orderby)
-            {
-                case OrderByTypes.None:
-                    return db.GetDataTable("Select * from Debug");
-                case OrderByTypes.Ascending:
-                    return db.GetDataTable("Select * from Debug order by EventDateTime asc");
-                case OrderByTypes.Descending:
-                    return db.GetDataTable("Select * from Debug order by EventDateTime desc");
-            }
-            return null;
 
-        }
+        //}
         public bool SaveDebug(string data)
         {
             return db.RunQuery("Insert into Debug (Data) values ('" + data.Replace("'", "''") + "')");
         }
-        public bool SaveDebug(Debug debug)
-        {
-            return db.RunQuery("Insert into Debug (EventDateTime, Data) values ('" + db.DatetimeToMSSqlDatetime(debug.EventDateTime) + "','" + debug.Data.Replace("'", "''") + "')");
-        }
-        public bool DeleteDebug(int debugNumber)
-        {
-            return db.RunQuery("Delete from Debug where DebugNo =" + debugNumber);
-        }
-        public bool DeleteDebug(string debugNumber)
-        {
-            return db.RunQuery("Delete from Debug where DebugNo =" + debugNumber);
-        }
-        public bool ClearAllDebugInfo()
-        {
-            return db.RunQuery("Delete from Debug");
-        }
-        //public string[] GetInstructionListAsArray() {
-        //    DataTable dt = db.GetDataTable("GetAllInstructions");
-        //    string[] insList = new string[dt.Rows.Count];
-        //    for (int i = 0; i < dt.Rows.Count; i++)
-        //        insList[i] = dt.Rows[i]["Instruction"].ToString();
-        //    return insList;
-        //}
-
-        //public DataTable GetInstructionList() {
-        //    return db.GetDataTable("GetAllInstructions");
-        //}
-
-        //public void SaveInstruction(Instruct ins) {
-        //    db.RunQuery("SaveInstruction '" + ins.IID + "','" + ins.Instruction.Replace("'", "''") + "'");
-        //}
-
-        //public void DeleteInstruction(string IID) {
-        //    db.RunQuery("DeleteInstruction", IID);
-        //}
-
+       
         #endregion
 
         #region "SERVER PRINTER FUNCTIONS"
 
-        public List<ApplicationPrinter> GetAllPrinters()
+        public async Task<List<POSLayer.Models.ApplicationPrinter>> GetAllPrinters()
         {
-            List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            DataTable dt = db.GetDataTable("Select * from PrinterView");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            return PrinterList;
-        }
-        public List<ApplicationPrinter> GetPrinterList()
-        {
-            List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            DataTable dt = db.GetDataTable("GetPrinterList", config.Terminal_Name);
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            return PrinterList;
+            return await repoAppPrinter.GetAllAsync();
+
+            //List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
+            //DataTable dt = db.GetDataTable("Select * from PrinterView");
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //    PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
+            //return PrinterList;
         }
 
         public DataTable GetPrinterListDB()
         {
             return db.GetDataTable("GetPrinterList", config.Terminal_Name);
-        }
-
-        public List<ApplicationPrinter> GetSystemPrinterList()
-        {
-            List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            DataTable dt = db.GetDataTable("GetSystemPrinterList");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            return PrinterList;
         }
 
         public DataTable GetSystemPrinterListDB()
@@ -2879,7 +2122,7 @@ namespace DTRMNS
                                    config.Terminal_Name + "'," + db.BoolToInt(LoggedUser.IsManagerOrMore()));
         }
 
-        public ApplicationPrinter GetPrinterForClient(string PrinterIID)
+        public POSLayer.Models.ApplicationPrinter GetPrinterForClient(string PrinterIID)
         {
             DataTable dt = db.GetDataTable("GetPrinterForClient '" + PrinterIID + "','" + config.Terminal_Name + "'");
             if (dt.Rows.Count > 0)
@@ -2887,24 +2130,16 @@ namespace DTRMNS
             else
                 return null;
         }
-        public ApplicationPrinter GetPrinter(string PrinterIID)
+        public POSLayer.Models.ApplicationPrinter GetPrinter(string PrinterIID)
         {
             DataTable dt = db.GetDataTable("GetPrinter '" + PrinterIID + "'");
             if (dt.Rows.Count > 0)
-                return new ApplicationPrinter(dt.Rows[0]);
-            else
-                return null;
-        }
-        public ApplicationPrinter GetSystemPrinter(string PrinterIID)
-        {
-            DataTable dt = db.GetDataTable("GetSystemPrinter", PrinterIID);
-            if (dt.Rows.Count > 0)
-                return new ApplicationPrinter(dt.Rows[0]);
+                return new POSLayer.Models.ApplicationPrinter(dt.Rows[0]);
             else
                 return null;
         }
 
-        public ApplicationPrinter GetDefaultReceiptPrinter()
+        public POSLayer.Models.ApplicationPrinter GetDefaultReceiptPrinter()
         {
             if (config.DTClientLocalReceiptPrinterIID != null && config.DTClientLocalReceiptPrinterIID != "")
                 return GetPrinterForClient(config.DTClientLocalReceiptPrinterIID);
@@ -2913,34 +2148,21 @@ namespace DTRMNS
 
         }
 
-        public ApplicationPrinter GetPrinterForOrderType(OrderTypes orderType)
+        public POSLayer.Models.ApplicationPrinter GetPrinterForOrderType(OrderTypes orderType)
         {
             string IID = GetPrinterIIDForOrderType(orderType);
             if (IID == "")
                 return null;
             else
                 return GetPrinterForClient(IID);
-
         }
-
-        public ApplicationPrinter GetPrinterForDistribution(string distributionIID)
-        {
-            try
-            {
-                return GetPrinterForClient(GetDistribution(distributionIID).PrinterIID);
-            } catch
-            {
-                return null;
-            }
-        }
-
         public List<Distribution> GetDistributionListForPrinter(string ApplicationPrinterIID)
         {
             DataTable dt = db.GetDataTable("Select * from Distribution where PrinterIID = '" + ApplicationPrinterIID + "'");
-            List<Distribution> theList = new List<Distribution>();
+            List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                theList.Add(new Distribution(dt.Rows[i]));
+                theList.Add(new POSLayer.Models.Distribution(dt.Rows[i]));
             }
             return theList;
         }
@@ -2988,27 +2210,6 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public bool SaveUniquePrinter(ApplicationPrinter AppPrinter, OrderTypes orderType)
-        {
-            try
-            {
-                switch (orderType)
-                {
-                    case OrderTypes.Delivery:
-                        db.RunQuery("SaveDeliveryPrinter '" + AppPrinter.IID + "','" + config.Terminal_Name + "'");
-                        break;
-                    case OrderTypes.TakeAwayB:
-                        db.RunQuery("SaveTakeAwayPrinter '" + AppPrinter.IID + "','" + config.Terminal_Name + "'");
-                        break;
-                }
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
-
         public bool SaveUniquePrinter(string PrinterIID, OrderTypes orderType)
         {
             try
@@ -3041,27 +2242,6 @@ namespace DTRMNS
             for (int i = 0; i < dt.Rows.Count; i++)
                 PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
             dt = GetPrintersByPrinterType(PrinterTypes.Mutant);
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            return PrinterList;
-        }
-
-        public List<ApplicationPrinter> GetKitchenPrinterList()
-        {
-            List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            DataTable dt = GetPrintersByPrinterType(PrinterTypes.Kitchen);
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            dt = GetPrintersByPrinterType(PrinterTypes.Mutant);
-            for (int i = 0; i < dt.Rows.Count; i++)
-                PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            return PrinterList;
-        }
-
-        public List<ApplicationPrinter> GetOnlyKitchenPrinterList()
-        {
-            List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            DataTable dt = GetPrintersByPrinterType(PrinterTypes.Kitchen);
             for (int i = 0; i < dt.Rows.Count; i++)
                 PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
             return PrinterList;
@@ -3124,22 +2304,17 @@ namespace DTRMNS
                 if (ap == null)
                     return false;
                 DRShell.SendOpenCashDrawerToUSBPrinter(ap.NetworkName);
-                //MessageBox.Show("OpenLocalUSBPrinterCashDrawer " + ap.NetworkName);
                 return true;
             } catch
             {
-                // MessageBox.Show("Failed OpenLocalUSBPrinterCashDrawer");
                 return false;
             }
         }
-        //public string CurrentSessionIID { get; set; }
         public void EnsureSessionData()
         {
-            //CurrentSessionIID = GetCurrentSessionIID();
             string SessionIID = GetCurrentSessionIID();
             if (SessionIID == "" || !IsSessionExist(SessionIID))
                 StartNewSession();
-
         }
 
         public bool IsSessionExist(string SessionIID)
@@ -3164,44 +2339,18 @@ namespace DTRMNS
             return GetSessionDataDynamic(luv.CurrentSessionIID);
         }
 
-        public bool IsLatestAndCurrentSession(string IID)
-        {
-            return luv.CurrentSessionIID == IID;
-        }
-
         #endregion
 
         #region "PRINT FUNCTIONS"
-
-        //public bool PrintForKitchen(Order order, bool blnUnprinted, bool blnSetPrintFlags,
-        //    bool blnIncrementRequestNumber, bool blnSave) {
-
-        //    try {
-        //        //so kitchen printer will have everything categorised in display order
-        //        ReOrderItems(order);
-        //        this.SaveOrder(order);
-
-        //        //Print without printserver
-        //        List<ApplicationPrinter> KitchenPrinters = this.GetKitchenPrinterList();
-
-        //        for (int z = 0; z < KitchenPrinters.Count; z++) {
-        //            PrintForKitchen(order.IID, KitchenPrinters[z]);
-        //        }
-        //        //MarkOrderAllItemsPrinted(order.IID);
-        //        return true;
-        //    } catch {
-        //        return false;
-        //    }
-        //}
 
         public bool PrintForKitchen(string orderIID)
         {
             try
             {
-                KitchenOrder korder = GetKitchenOrderForOrder(orderIID);
+                POSLayer.Models.KitchenOrder korder = GetKitchenOrderForOrder(orderIID);
                 if (korder != null)
                 {
-                    List<ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
+                    List<POSLayer.Models.ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
                         new ReportGenerator(this, printerList[i], 2).PrintKitchen(korder);
@@ -3213,23 +2362,13 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public bool PrintForKitchen(string orderIID, ApplicationPrinter ap)
-        {
-            KitchenOrder korder = GetKitchenOrderForOrder(orderIID);
-            if (korder != null && korder.items.Count > 0)
-                return new ReportGenerator(this, ap, 2).PrintKitchen(korder);
-            else
-                return false;
-        }
-
-        public bool PrintForKitchen(KitchenOrder korder)
+        public bool PrintForKitchen(POSLayer.Models.KitchenOrder korder)
         {
             try
             {
                 if (korder != null)
                 {
-                    List<ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
+                    List<POSLayer.Models.ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
                         new ReportGenerator(this, printerList[i], 2).PrintKitchen(korder);
@@ -3242,7 +2381,7 @@ namespace DTRMNS
             }
         }
 
-        public bool PrintForKitchen(KitchenOrder korder, ApplicationPrinter ap, bool blnWithDetail = false)
+        public bool PrintForKitchen(POSLayer.Models.KitchenOrder korder, POSLayer.Models.ApplicationPrinter ap, bool blnWithDetail = false)
         {
             try
             {
@@ -3252,36 +2391,6 @@ namespace DTRMNS
                 return false;
             }
         }
-
-
-
-
-
-        //public bool CreateKitchenOrderForAttachedInHouseOrder() {
-        //    if (AttachedOrder != null) {
-        //        Order DummyOrder = AttachedOrder.GetOrderWithKitchenableItems();
-
-        //        if (DummyOrder.items.Count > 0) {
-
-        //            //Now Create Kitchen Order To Display
-        //            KitchenOrder korder = ConvertOrderToKitchenOrder(DummyOrder);
-        //            korder.OrderType = OrderTypes.InHouse;
-        //            korder.Reference = AttachedOrder.TableName;
-
-        //            //PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Cancel;
-        //            frmPrep frm = new frmPrep(this, korder);
-
-        //            //The point to return 
-        //            if (frm.ShowDialog() == DialogResult.Cancel)
-        //                return false;
-
-        //            SaveKitchenOrder(korder);
-
-        //            onKitchenRequestOccured(this.GetKitchenOrder(korder.IID));
-        //        } 
-        //    }
-        //    return true;
-        //}
 
         /// <summary>
         /// Checks if order has a waiting or completed and related KitchenOrder in the database
@@ -3299,18 +2408,18 @@ namespace DTRMNS
         /// </summary>
         /// <param name="korder"></param>
         /// <returns></returns>
-        public bool HasAnyNonCompleteItems(KitchenOrder korder)
+        public bool HasAnyNonCompleteItems(POSLayer.Models.KitchenOrder korder)
         {
-            foreach (KitchenOrderItem item in korder.items)
+            foreach (POSLayer.Models.KitchenOrderItem item in korder.items)
             {
-                if (item.Status != KitchenOrderStatusTypes.Completed)
+                if (item.Status != POSLayer.Library.KitchenOrderStatusTypes.Completed)
                     return true;
             }
             return false;
         }
 
 
-        public PrepDialogReturnTypes CreateKitchenOrderForOrder(Order order, out KitchenOrder korder)
+        public PrepDialogReturnTypes CreateKitchenOrderForOrder(POSLayer.Models.Order order, out POSLayer.Models.KitchenOrder korder)
         {
             korder = null;
             PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Cancel;
@@ -3321,7 +2430,7 @@ namespace DTRMNS
                 //Now Create Kitchen Order To Display
                 korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
-                if (order.OrderType == OrderTypes.InHouse)
+                if (order.OrderType == POSLayer.Library.OrderTypes.InHouse)
                     korder.Reference = order.TableName;
 
 
@@ -3368,11 +2477,11 @@ namespace DTRMNS
                     {
                         switch (order.OrderType)
                         {
-                            case OrderTypes.DirectSale:
-                                if ((order.Status == StatusFlags.NEW || order.Status == StatusFlags.PENDING) && config.Hold_Order_Print_in_Kitchen)
+                            case POSLayer.Library.OrderTypes.DirectSale:
+                                if ((order.Status == POSLayer.Library.StatusFlags.NEW || order.Status == POSLayer.Library.StatusFlags.PENDING) && config.Hold_Order_Print_in_Kitchen)
                                     PrintForKitchen(korder);
                                 break;
-                            case OrderTypes.InHouse:
+                            case POSLayer.Library.OrderTypes.InHouse:
                                 if (config.Table_Orders_Kitchen_Receipt_Count > 0)
                                     PrintForKitchen(korder);
                                 break;
@@ -3404,7 +2513,7 @@ namespace DTRMNS
         {
             try
             {
-                OrderItem oi = AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                POSLayer.Models.OrderItem oi = AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                 oi.CompletedQuantity += koi.Quantity;
                 //oi.OrderItemText = koi.ItemText;
                 SaveOrderItem(oi);
@@ -3414,24 +2523,6 @@ namespace DTRMNS
                 return false;
             }
         }
-
-
-        //public KitchenOrder GetKitchenOrderByOrderNumber(int OrderNumber, KitchenOrderStatusTypes status= KitchenOrderStatusTypes.Waiting) {
-        //    DataTable dt = db.GetDataTable("Select IID from KitchenOrders where OrderNo =" + OrderNumber + " and status = " + (int)status);
-        //    if (dt.Rows.Count > 0) {
-        //        string IID = dt.Rows[0]["IID"].ToString();
-        //        return GetKitchenOrder(IID);
-        //    } else
-        //        return null;
-        //}
-        //public KitchenOrder GetKitchenOrderForOrder(string orderIID, KitchenOrderStatusTypes status = KitchenOrderStatusTypes.Waiting) {
-        //    DataTable dt = db.GetDataTable("Select IID from KitchenOrders where OrderIID ='" + orderIID + "' and status = " + (int)status);
-        //    if (dt.Rows.Count > 0) 
-        //        return GetKitchenOrder(dt.Rows[0]["IID"].ToString());
-        //    else 
-        //        return null;            
-        //}
-
         public KitchenOrder GetKitchenOrderForOrder(string orderIID)
         {
             DataTable dt = db.GetDataTable("Select IID from KitchenOrders where OrderIID ='" + orderIID + "'");
@@ -3447,13 +2538,7 @@ namespace DTRMNS
         {
             db.RunQuery("DeleteKitchenOrdersForOrder", orderIID);
         }
-
-        public bool DeleteAllKitchenOrders()
-        {
-            return db.RunQuery("DeleteAllKitchenOrders");
-        }
-
-        public bool ModifyOldKitchenOrder(KitchenOrder newKOrder)
+        public bool ModifyOldKitchenOrder(POSLayer.Models.KitchenOrder newKOrder)
         {
             KitchenOrder oldKitchenOrder = GetKitchenOrderForOrder(newKOrder.OrderIID);
             if (oldKitchenOrder != null)
@@ -3472,12 +2557,12 @@ namespace DTRMNS
                 return false;
         }
 
-        public bool CreateKitchenOrderForTakeAwayAndDeliveryOrder(Order order)
+        public bool CreateKitchenOrderForTakeAwayAndDeliveryOrder(POSLayer.Models.Order order)
         {
             if (order != null)
             {
                 //Now Create Kitchen Order To Display
-                KitchenOrder korder = ConvertOrderToKitchenOrder(order);
+                POSLayer.Models.KitchenOrder korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
                 korder.Reference = order.OrderType.ToString() + "  " + order.CName;
                 SaveKitchenOrder(korder);
@@ -3486,11 +2571,9 @@ namespace DTRMNS
             return true;
         }
 
-
-
-        public List<Distribution> GetDistributionList(KitchenOrder korder)
+        public List<POSLayer.Models.Distribution> GetDistributionList(POSLayer.Models.KitchenOrder korder)
         {
-            List<Distribution> theList = new List<Distribution>();
+            List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
             for (int i = 0; i < korder.items.Count; i++)
             {
                 if (theList.Find(x => x.IID == korder.items[i].DistributionIID) == null)
@@ -3498,9 +2581,9 @@ namespace DTRMNS
             }
             return theList;
         }
-        public string GetDistributionListAsCommaSeperatedSqlString(KitchenOrder korder)
+        public string GetDistributionListAsCommaSeperatedSqlString(POSLayer.Models.KitchenOrder korder)
         {
-            List<Distribution> theList = GetDistributionList(korder);
+            List<POSLayer.Models.Distribution> theList = GetDistributionList(korder);
             string str = "";
             for (int i = 0; i < theList.Count; i++)
             {
@@ -3510,56 +2593,31 @@ namespace DTRMNS
                 str = str.Substring(0, str.Length - 1);
             return str;
         }
-        public List<ApplicationPrinter> GetApplicationPrinterList()
+        public List<POSLayer.Models.ApplicationPrinter> GetApplicationPrinterList()
         {
             string sql = "select* from printerview";
             DataTable dt = db.GetDataTable(sql);
-            List<ApplicationPrinter> theList = new List<ApplicationPrinter>();
+            List<POSLayer.Models.ApplicationPrinter> theList = new List<POSLayer.Models.ApplicationPrinter>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                theList.Add(new ApplicationPrinter(dt.Rows[i]));
+                theList.Add(new POSLayer.Models.ApplicationPrinter(dt.Rows[i]));
             }
             return theList;
         }
 
-        public List<ApplicationPrinter> GetApplicationPrinterList(KitchenOrder korder)
+        public List<POSLayer.Models.ApplicationPrinter> GetApplicationPrinterList(POSLayer.Models.KitchenOrder korder)
         {
             string sql = "select * from printerview where ClientIID = '" + config.Terminal_Name + "' and IID in (select distinct PrinterIID from distribution where IID in (" + GetDistributionListAsCommaSeperatedSqlString(korder) + "))";
             DataTable dt = db.GetDataTable(sql);
-            List<ApplicationPrinter> theList = new List<ApplicationPrinter>();
+            List<POSLayer.Models.ApplicationPrinter> theList = new List<POSLayer.Models.ApplicationPrinter>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                theList.Add(new ApplicationPrinter(dt.Rows[i]));
+                theList.Add(new POSLayer.Models.ApplicationPrinter(dt.Rows[i]));
             }
             return theList;
         }
 
-
-
-        public bool PrintFormatTest(string format, string line)
-        {
-            ApplicationPrinter ap = GetDefaultReceiptPrinter();
-            if (ap != null)
-            {
-                ReportGenerator generator = new ReportGenerator(this, ap, 2);
-                return generator.PrintFormatTest(format, line);
-            }
-            return false;
-        }
-
-
-        private void PrintKassaReport(string SelectedPrinterIID)
-        {
-            try
-            {
-
-            } catch
-            {
-
-            }
-        }
-
-        public bool PrintEntireOrder(Order order, bool blnOrderly, bool blnSetPrintFlags, int NumberOfCopy, string SelectedPrinterIID)
+        public bool PrintEntireOrder(POSLayer.Models.Order order, bool blnOrderly, bool blnSetPrintFlags, int NumberOfCopy, string SelectedPrinterIID)
         {
 
             try
@@ -3576,14 +2634,14 @@ namespace DTRMNS
         }
 
         /// NEW PRINT RECEIPT FUNCTIONS /////
-        public int PrintReceipt(string orderiid, ApplicationPrinter ap, int NumberOfCopy)
+        public int PrintReceipt(string orderiid, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
         {
             ReportGenerator generator = new ReportGenerator(this, ap, 2);
             generator.PrintReceipt(orderiid);
             return generator.FinalLength;
         }
 
-        public int PrintKassaReport(List<string> report, ApplicationPrinter ap, int NumberOfCopy)
+        public int PrintKassaReport(List<string> report, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
         {
             ReportGenerator generator = new ReportGenerator(this, ap, 2);
             generator.PrintKassaReport(report);
@@ -3591,40 +2649,11 @@ namespace DTRMNS
         }
 
 
-        public int ViewReceipt(Graphics g, string orderiid, ApplicationPrinter ap, int NumberOfCopy)
+        public int ViewReceipt(Graphics g, string orderiid, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
         {
             ReportGenerator generator = new ReportGenerator(g, this, ap, 2);
             generator.PrintReceipt(orderiid);
             return generator.FinalLength;
-        }
-
-        private void ReOrderItems(Order order)
-        {
-            try
-            {
-                List<OrderItem> OrderedOrderItems = new List<OrderItem>();
-                DataTable dt = GetActiveEntityList();
-                string EIID = "";
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    EIID = dt.Rows[i]["IID"].ToString();
-                    for (int x = 0; x < order.items.Count; x++)
-                    {
-                        OrderItem ooi = (OrderItem)order.items[x];
-                        if (ooi.EntityIID == EIID)
-                            OrderedOrderItems.Add(ooi);
-                    }
-                }
-                for (int x = 0; x < order.items.Count; x++)
-                {
-                    OrderItem ooi = (OrderItem)order.items[x];
-                    if (ooi.EntityIID == null || ooi.EntityIID == "" || ooi.EntityIID == "0")
-                        OrderedOrderItems.Add(ooi);
-                }
-                order.items = OrderedOrderItems;
-            } catch
-            {
-            }
         }
 
         #endregion
@@ -3639,63 +2668,9 @@ namespace DTRMNS
         {
             return db.GetDataTable("GetReportEntityTotals '" + SessionIID + "'");
         }
-
-        public DataTable GetReportDistributionTotals(string SessionIID)
-        {
-            return db.GetDataTable("GetReportDistributionTotals '" + SessionIID + "'");
-        }
-
-        public DataTable GetReportOrderTypeTotals(string SessionIID)
-        {
-            return db.GetDataTable("GetReportOrderTypeTotals '" + SessionIID + "'");
-        }
-
         public DataTable GetReportPaymentTypeTotals(string SessionIID)
         {
             return db.GetDataTable("GetReportPaymentTypeTotals '" + SessionIID + "'");
-        }
-
-        public DataTable GetReportTableGroupSales(string SessionIID)
-        {
-            return db.GetDataTable("GetReportTableGroupSales '" + SessionIID + "'");
-        }
-
-
-        public bool IsReportLockOn()
-        {
-            return this.blnReportLockOn;
-        }
-
-        public void ChangeReportLockStatus(bool blnLockNow, string ClientIP)
-        {
-            if (blnLockNow)
-            {
-                this.blnReportLockOn = true;
-                this.ReportLockClientIP = ClientIP;
-            } else
-            {
-                this.blnReportLockOn = false;
-                this.ReportLockClientIP = "";
-            }
-        }
-
-        public string GetReportLockClientIP()
-        {
-            return this.ReportLockClientIP;
-        }
-
-        public bool PrintReport(string SessionDirectory, ReportFormatTypes reportFormat, string SessionIID,
-            string PrinterIID, bool LatePrinting)
-        {
-            ReportGenerator generator = new ReportGenerator(this, GetPrinterForClient(PrinterIID), 2);
-            if (LatePrinting)
-                return generator.PrintLateSessionReport(SessionDirectory, SessionIID, reportFormat);
-            else
-            {
-                bool blnResult = generator.PrintSessionReport(SessionDirectory, SessionIID, reportFormat);
-                imgReportSnapShot = generator.imgSnapShot;
-                return blnResult;
-            }
         }
 
         public bool PrintReport(ReportFormatTypes reportFormat, string SessionIID, string PrinterIID, bool LatePrinting)
@@ -3709,31 +2684,17 @@ namespace DTRMNS
                 imgReportSnapShot = generator.imgSnapShot;
                 return blnresult;
             }
-
         }
-
 
         public void PrintPriceList(string catalogIID, string PrinterIID)
         {
             try
             {
-                //ReportDocument report = GetPriceListReport(GetPrinter(PrinterIID));
-                //report.PrintToPrinter(1, false, 0, 0);
-
                 ReportGenerator generator = new ReportGenerator(this, GetPrinterForClient(PrinterIID), 2);
                 generator.PrintPriceList(catalogIID);
             } catch
             {
             }
-        }
-
-        public bool HasActiveOrders()
-        {
-            DataTable dt = GetSessionOrdersByStatus(StatusFlags.DONE);
-            if (dt == null)
-                return false;
-            else
-                return dt.Rows.Count > 0;
         }
 
         public bool RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
@@ -3797,15 +2758,6 @@ namespace DTRMNS
             return report;
         }
 
-
-        private string TwoDigit(int num)
-        {
-            if (num.ToString().Length == 1)
-                return "0" + num.ToString();
-            else
-                return num.ToString();
-        }
-
         #endregion
 
         #region "SESSION FUNCTIONS"
@@ -3815,20 +2767,10 @@ namespace DTRMNS
             return db.GetDataTable("GetSessionList");
         }
 
-        public bool DeleteSession(string SessionIID)
-        {
-            return db.RunQuery("DeleteSession", SessionIID);
-        }
-
         public SessionData GetSessionDataDynamic(string SessionIID)
         {
             return new SessionData(db.GetDataTable("GetSessionDynamic", SessionIID));
         }
-
-        //public SessionData GetSessionDataStatic(string SessionIID) {
-        //    return new SessionData(db.GetDataTable("Select * from Sessions where IID ='" + SessionIID + "'"));
-        //}
-
         public bool SaveSessionData(string SessionIID)
         {
             return SaveSessionData(GetSessionDataDynamic(SessionIID));
@@ -3920,13 +2862,6 @@ namespace DTRMNS
             else
                 return false;
         }
-
-        public int GetArchiveProgress()
-        {
-            return ArchiveProgress;
-        }
-
-
         public bool RefreshDatabase()
         {
             try
@@ -3938,38 +2873,6 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public bool ArchiveSessionListToDirectory(List<string> sessionIIDList)
-        {
-            try
-            {
-                bool blnSuccess = false;
-                ArchiveProgress = 100;
-                int step = ArchiveProgress / sessionIIDList.Count;
-                for (int i = 0; i < sessionIIDList.Count; i++)
-                {
-                    if (ArchiveSessionToDirectory(sessionIIDList[i]))
-                    {
-                        ArchiveProgress -= step;
-                        blnSuccess = true;
-                    } else
-                    {
-                        //Problem happenned
-                        ArchiveProgress = 0;
-                        blnSuccess = false;
-                        break;
-                    }
-                }
-                ArchiveProgress = 0;
-                return blnSuccess;
-            } catch
-            {
-                ArchiveProgress = 0;
-                return false;
-            }
-        }
-
-
         public bool ArchiveSessionToDirectory(string SessionIID)
         {
             try
@@ -4041,129 +2944,7 @@ namespace DTRMNS
             }
         }
 
-        public bool ArchiveSessionToDirectoryAsJson(string directoryPath, string SessionIID, bool blnDeleteSessionFromDatabase)
-        {
-            try
-            {
-                SessionFamily sf = new SessionFamily
-                {
-                    sessionData = GetSessionDataDynamic(SessionIID)
-                };
-
-                string sessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
-                    sf.sessionData.SessionEndDateTime, "json");
-                string fullPath = Path.Combine(directoryPath, sessionFileName);
-
-                if (File.Exists(fullPath))
-                    return false;
-
-
-                if (sf.sessionData.SessionEndDateTime == sf.sessionData.SessionStartDateTime)
-                {
-                    sf.sessionData.SessionEndDateTime = DateTime.Now;
-                }
-
-                SaveSessionData(sf.sessionData);
-                sf.Orders = GetOrderListForSession(SessionIID);
-
-                // Serialize to JSON string and write to file
-                string jsonString = JsonSerializer.Serialize(sf, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(fullPath, jsonString);
-
-                //This deletes the session from database all together
-                if (blnDeleteSessionFromDatabase)
-                    db.RunQuery("DeleteSession", SessionIID);
-
-                return true;
-            } catch (Exception ex)
-            {
-                string str = ex.Message;
-                return false;
-            }
-        }
-
-
-
-        /// <summary>
-        /// copies the given session file to backup directory using startdate and enddate structure for the file name
-        /// backup directory is  \\backups which is taken from UF.BackupDirectory
-        /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <returns></returns>
-        public bool CopySessionFileToBackupDirectory(DateTime startDate, DateTime endDate)
-        {
-            try
-            {
-                string SessionFileName = DRFile.GenerateFileName(startDate, endDate, "xml");
-                File.Copy(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName,
-                    DRFile.GetApplicationPath() + UF.BackupDirName + "\\" + SessionFileName, true);
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Copies the given session file to session directory using startdate and enddate structure for the file name
-        /// bakcup directory is \\backups which is taken from UF.BackupDirectory
-        /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        /// <returns></returns>
-        public bool RestoreSessionFileFromBackupDirectory(DateTime startDate, DateTime endDate)
-        {
-            try
-            {
-                string SessionFileName = DRFile.GenerateFileName(startDate, endDate, "xml");
-                File.Copy(DRFile.GetApplicationPath() + UF.BackupDirName + "\\" + SessionFileName,
-                    DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName, true);
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
-
-
-        public int GetSessionLoadProgress()
-        {
-            return SessionLoadProgress;
-        }
-
-        public bool ReloadSessionListFromDirectory(List<SessionDataShort> theList)
-        {
-            try
-            {
-                bool blnSuccess = false;
-                SessionLoadProgress = 100;
-                int step = SessionLoadProgress / theList.Count;
-                for (int i = 0; i < theList.Count; i++)
-                {
-                    SessionDataShort session = theList[i];
-                    if (ReloadSessionFromDirectory(session.StartDate, session.EndDate))
-                    {
-                        SessionLoadProgress -= step;
-                        blnSuccess = true;
-                    } else
-                    {
-                        //There is an error
-                        SessionLoadProgress = 0;
-                        blnSuccess = false;
-                        break;
-                    }
-
-                }
-                SessionLoadProgress = 0;
-                return blnSuccess;
-            } catch
-            {
-                SessionLoadProgress = 0;
-                return false;
-            }
-        }
-
+       
         public bool ReloadSessionFromDirectory(DateTime startDate, DateTime endDate)
         {
             try
@@ -4232,12 +3013,6 @@ namespace DTRMNS
             } else
                 return null;
         }
-
-        public DataTable GetAllOrdersForSession(string SessionIID)
-        {
-            return db.GetDataTable("GetAllOrdersForSession", SessionIID);
-        }
-
         public DataTable GetAllOrdersForSessionDateOrderly(string SessionIID, OrderByTypes orderDirection)
         {
             string orderdir = "Asc";
@@ -4256,17 +3031,6 @@ namespace DTRMNS
 
         }
 
-
-        /// <summary>
-        /// Returns the sum of orders in current session which are not completed or archived
-        /// </summary>
-        /// <returns></returns>
-        public float GetUncompletedOrdersTotalForCurrentSession()
-        {
-            DataTable dt = db.GetDataTable("Select isnull(Sum(CalculatedValue),0) as SumCalVal from ordersview where SessionIID = '" + luv.CurrentSessionIID + "' and status != 3 and status != 4");
-            return float.Parse(dt.Rows[0]["SumCalVal"].ToString());
-        }
-
         public bool IsSessionOrdersExistInDatabase(string SessionIID)
         {
             DataTable dt = db.GetDataTable("Select * from Orders where SessionIID = '" + SessionIID + "'");
@@ -4276,112 +3040,6 @@ namespace DTRMNS
                 return false;
         }
 
-        public bool EnsureSessionOrdersLoadedInDatabase(SessionData session)
-        {
-            if (!IsSessionOrdersExistInDatabase(session.SessionIID))
-            {
-                if (
-                    MessageBox.Show(
-                        "Session Orders doesn't exist in database!\nDo you want to load orders from session archive?",
-                        "SESSION ORDERS MISSING", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                {
-
-                    if (!ReloadSessionFromDirectory(session.SessionStartDateTime, session.SessionEndDateTime))
-                    {
-                    RecheckSessionOrders:
-                        if (DTRMSimpleBusiness.MessageBoxDT("Session orders cannot be load into database!\n" +
-                                                            "Either Session has no orders or Session Backup File cannot be found.\n" +
-                                                            "Would you like to locate another backup directory??",
-                                "RESTORING SESSION ORDERS", DialogTypes.YesNoCancel) == DialogResult.Yes)
-                        {
-
-                            using (FolderBrowserDialog fbdlg = new FolderBrowserDialog
-                            {
-                                Description = "Select backup directory for sessions",
-                                SelectedPath = DRFile.GetApplicationPath() + UF.SessionDirName
-                            })
-                            {
-                                if (fbdlg.ShowDialog() == DialogResult.OK)
-                                {
-                                    if (
-                                        !ReloadSessionFromCustomDirectory(fbdlg.SelectedPath, session.SessionStartDateTime,
-                                            session.SessionEndDateTime))
-                                        goto RecheckSessionOrders;
-                                    else
-                                        return true;
-                                } else
-                                    return false;
-                            }
-                        }
-                        //Cannot locate session backup
-                        else
-                        {
-                            MessageBox.Show("Session orders cannot be load into database!\n" +
-                                            "Either Session has no orders or Session Backup File cannot be found.\n" +
-                                            "You cannot edit this session.\n" +
-                                            "Closing Editor", "RESTORING ORDER ERROR");
-                            return false;
-                        }
-                    } else
-                        return true;
-                } else
-                    return false;
-            } else
-                return true;
-        }
-
-        /// <summary>
-        /// Returns List of SessionDataShort
-        /// </summary>
-        /// <returns></returns>
-        public List<SessionDataShort> GetArchivedSessionDataList()
-        {
-            List<SessionDataShort> theList = new List<SessionDataShort>();
-
-            System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-GB");
-
-            string[] files = Directory.GetFiles(DRFile.GetApplicationPath() + UF.SessionDirName);
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                SessionDataShort session = new SessionDataShort();
-                XmlTextReader myReader = new XmlTextReader(files[i]);
-
-                bool blnContinue = true;
-                while (myReader.Read() && blnContinue)
-                {
-                    if (myReader.NodeType == XmlNodeType.Element && myReader.LocalName.Equals("sessionData"))
-                    {
-                        while (myReader.Read())
-                        {
-                            if (myReader.LocalName.Equals("SessionIID"))
-                                session.IID = myReader.ReadString();
-                            else if (myReader.LocalName.Equals("SessionStartDateTime"))
-                                session.StartDate = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("SessionEndDateTime"))
-                                session.EndDate = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("GrossSessionTotal"))
-                                session.GrossSessionTotal = float.Parse(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X1Total"))
-                                session.X1Total = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X2Total"))
-                                session.X2Total = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X3Total"))
-                                session.X3Total = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("Orders"))
-                            {
-                                blnContinue = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                myReader.Close();
-                theList.Add(session);
-
-            }
-            return theList;
-        }
 
         /// <summary>
         /// Returns DataTable of SessionDataShort
@@ -4391,9 +3049,6 @@ namespace DTRMNS
         {
             DataTable dt = GetSessionList();
             dt.Clear();
-
-
-
 
             System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-GB");
 
@@ -4441,18 +3096,14 @@ namespace DTRMNS
 
         }
 
-        public bool StartNewSession()
+        public async Task<bool> StartNewSession()
         {
             try
             {
 
                 //with Z report applied , a new session started
                 SessionData TempSession = new SessionData();
-                //try {
-                //    TempSession.StartMoney = this.config.Default_Float_In_Cash_Drawer;
-                //} catch {
-                //    TempSession.StartMoney = 0f;
-                //}
+
                 SaveSessionData(TempSession);
                 ActivateSession(TempSession);
 
@@ -4460,7 +3111,7 @@ namespace DTRMNS
                 //Also update order session numbers
                 //DO NOT MAKE THIS SINGLE DATABASE CALL
                 db.RunQuery("UpdateSessionIIDForOrders '" + TempSession.SessionIID + "'," + (int)StatusFlags.COMPLETED);
-                luv = GetLuv();
+                luv =await GetLuv();
                 return true;
             } catch
             {
@@ -4565,138 +3216,18 @@ namespace DTRMNS
             }
         }
 
-
-
-        /// <summary>
-        /// Returns a DataTable loaded ShortSessionDatas from XML Session files from Sessions directory
-        /// </summary>
-        /// <returns></returns>
-        public DataTable GetXMLSessionsDataTable()
-        {
-            DataTable dt = GetSessionList();
-            dt.Clear();
-
-            //en-GB
-            //nl-NL
-            System.Globalization.CultureInfo culture =
-                new System.Globalization.CultureInfo(config.Database_Currency_Culture);
-
-            string[] files = Directory.GetFiles(DRFile.GetApplicationPath() + UF.SessionDirName);
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                DataRow dr = dt.NewRow();
-                XmlTextReader myReader = new XmlTextReader(files[i]);
-
-                bool blnContinue = true;
-                while (myReader.Read() && blnContinue)
-                {
-                    if (myReader.NodeType == XmlNodeType.Element && myReader.LocalName.Equals("sessionData"))
-                    {
-                        while (myReader.Read())
-                        {
-                            if (myReader.LocalName.Equals("SessionIID"))
-                                dr["IID"] = myReader.ReadString();
-                            else if (myReader.LocalName.Equals("SessionStartDateTime"))
-                                dr["StartDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("SessionEndDateTime"))
-                                dr["EndDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("GrossSessionTotal"))
-                                dr["GrossSessionTotal"] = float.Parse(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("NetSessionTotal"))
-                                dr["NetSessionTotal"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("ItemSum"))
-                                dr["ItemSum"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("ExtraSum"))
-                                dr["ExtraSum"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("DiscountSum"))
-                                dr["DiscountSum"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("RefundSum"))
-                                dr["RefundSum"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X1Total"))
-                                dr["X1Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X2Total"))
-                                dr["X2Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X3Total"))
-                                dr["X3Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("Orders"))
-                            {
-                                blnContinue = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                myReader.Close();
-                dt.Rows.Add(dr);
-            }
-            return dt;
-        }
-
-
         #endregion
 
 
-
-
-        public bool AddSimpleTopOrderItemToAttachedOrder(string EntityButtonIID, bool blnIncrementIfPossible)
+        public POSLayer.Models.OrderItem DirectCreateTopOrderItemForOrder(POSLayer.Models.Order order, string EntityButtonIID, bool blnSaveOrder = false)
         {
-            if (AttachedOrder == null)
-                return false;
-            bool blnDone = false;
-            EntityButton eb = GetJustEntityButton(EntityButtonIID);
-            Entity entity = GetEntityDB(eb.PEIID);
-            OrderItem oi = new OrderItem(AttachedOrder.IID, entity.IID, "", 1,
-                UF.GetRelatedPrice(null, entity, eb, AttachedOrder),
-                EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
-                entity.EntityName, entity.DisplayOrder, GetEBTaxPercent(eb));
-            if (blnIncrementIfPossible)
-            {
-                foreach (OrderItem item in AttachedOrder.items)
-                {
-                    if (item.EntityButtonIID == eb.IID && item.DistributionIID == entity.DistributionIID)
-                    {
-                        item.Increment();
-                        blnDone = true;
-                        break;
-                    }
-                }
-            }
-            if (!blnDone)
-            {
-                AttachedOrder.AddOrderItem(oi);
-                blnDone = true;
-            }
-            return blnDone;
-        }
-
-        public OrderItem DirectCreateTopOrderItemForOrder(Order order, string EntityButtonIID, bool blnSaveOrder = false)
-        {
-            EntityButton eb = GetJustEntityButton(EntityButtonIID);
-            Entity entity = GetEntityDB(eb.PEIID);
-            OrderItem oi = new OrderItem(order.IID, entity.IID, ShortGuid.NewGuid().ToString(), 1,
+            POSLayer.Models.EntityButton eb = GetJustEntityButton(EntityButtonIID);
+            POSLayer.Models.Entity entity = GetEntityDB(eb.PEIID);
+            POSLayer.Models.OrderItem oi = new POSLayer.Models.OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
-                EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
+                EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, POSLayer.Library.OrderItemTypes.NormalOrderItem, 0,
                 entity.EntityName, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
-            OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
-            if (thesameitem != null)
-                thesameitem.Increment();
-            else
-                order.AddIncrementOrderItem(oi);
-            if (blnSaveOrder)
-                SaveOrder(order);
-            return oi;
-        }
-        public OrderItem DirectCreateTopOrderItemForOrder(string orderIID, string EntityButtonIID, bool blnSaveOrder = false)
-        {
-            EntityButton eb = GetJustEntityButton(EntityButtonIID);
-            Entity entity = GetEntityDB(eb.PEIID);
-            Order order = GetOrder(orderIID);
-            OrderItem oi = new OrderItem(orderIID, entity.IID, ShortGuid.NewGuid().ToString(), 1,
-                UF.GetRelatedPrice(null, entity, eb, order),
-                EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
-                entity.EntityName, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
-            OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
+            POSLayer.Models.OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
             if (thesameitem != null)
                 thesameitem.Increment();
             else
@@ -4725,41 +3256,6 @@ namespace DTRMNS
                 orderIID + "'").Rows[0]["Total"].ToString());
         }
 
-        public DataTable GetWebDisplayTableForOrder()
-        {
-            DataTable dt = CreateWebDisplayTableForOrder();
-            foreach (OrderItem oi in AttachedOrder.items)
-            {
-                DataRow row = dt.NewRow();
-                row["IID"] = oi.IID;
-                row["Quantity"] = oi.Quantity;
-                row["OrderItemText"] = oi.OrderItemText;
-                row["CalculatedValue"] = (oi.Quantity * oi.Price).ToString("c2");
-                dt.Rows.Add(row);
-            }
-            return dt;
-        }
-
-        private DataTable CreateWebDisplayTableForOrder()
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add(CreateDataTableColumn("IID", System.Type.GetType("System.String")));
-            dt.Columns.Add(CreateDataTableColumn("Quantity", System.Type.GetType("System.String")));
-            dt.Columns.Add(CreateDataTableColumn("OrderItemText", System.Type.GetType("System.String")));
-            dt.Columns.Add(CreateDataTableColumn("CalculatedValue", System.Type.GetType("System.String")));
-
-            return dt;
-        }
-
-        private DataColumn CreateDataTableColumn(string ColumnName, Type dataType)
-        {
-            return new DataColumn(ColumnName, dataType);
-        }
-
-
-
-
-
         public bool HasPadItems()
         {
             try
@@ -4774,23 +3270,6 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public int GetHoldingOrderCount()
-        {
-            DataTable dt =
-                db.GetDataTable("select count(IID) as totalordercount from OrdersView Where payment = 0 and Status = " +
-                                (int)StatusFlags.PENDING + " and SessionIID = '" + GetCurrentSessionIID() + "'");
-            return int.Parse(dt.Rows[0]["totalordercount"].ToString());
-        }
-
-        public bool CurrentSessionHasXOrders()
-        {
-            DataTable dt =
-                db.GetDataTable("Select Count(IID) as xordercount from XOrders where SessionIID ='" +
-                                GetCurrentSessionIID() + "'");
-            return int.Parse(dt.Rows[0]["xordercount"].ToString()) > 0;
-        }
-
         public float GetCurrentSessionXSum()
         {
             DataTable dt =
@@ -4833,49 +3312,6 @@ namespace DTRMNS
             }
         }
 
-        #region VersionData
-
-        public int GetDbVersion()
-        {
-            try
-            {
-                DataTable dt = db.GetDataTable("Select MdfFileVersion from Luv");
-                return int.Parse(dt.Rows[0]["MdfFileVersion"].ToString());
-
-            } catch
-            {
-                return 1000;
-            }
-        }
-
-        public bool SaveDbVersion(int DbVersion)
-        {
-            try
-            {
-                return db.RunQuery("Update Luv set MdfFileVersion = " + DbVersion);
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public bool RunFileSql(ref int errorcount, string sql)
-        {
-
-            //split the script on "GO" commands
-            string[] splitter = new string[] { "\r\nGO\r\n" };
-            string[] sqlScriptList = sql.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-            foreach (string singlesql in sqlScriptList)
-            {
-                //execute commandText
-                if (!RunQuery(singlesql))
-                    errorcount++;
-            }
-            return errorcount == 0;
-        }
-
-        #endregion
-
         #region KITCHEN ORDERS
         public List<Distribution> GetFirstDisplayTypeList()
         {
@@ -4883,6 +3319,8 @@ namespace DTRMNS
             try
             {
                 DataTable dt = db.GetDataTable("Select * from Distribution where IID in (" + config.Default_Distribution_Terminal_Type_List + ")");
+                if (dt == null)
+                    return theList;
                 for (int i = 0; i < dt.Rows.Count; i++)
                     theList.Add(new Distribution(dt.Rows[i]));
                 return theList;
@@ -4891,21 +3329,23 @@ namespace DTRMNS
                 return theList;
             }
         }
-        public List<Distribution> GetSecondDisplayTypeList()
+        public List<POSLayer.Models.Distribution> GetSecondDisplayTypeList()
         {
-            List<Distribution> theList = new List<Distribution>();
+            List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
             try
             {
                 DataTable dt = db.GetDataTable("Select * from Distribution where IID in (" + config.Secondary_Distribution_Terminal_Type_List + ")");
+                if (dt == null)
+                    return theList;
                 for (int i = 0; i < dt.Rows.Count; i++)
-                    theList.Add(new Distribution(dt.Rows[i]));
+                    theList.Add(new POSLayer.Models.Distribution(dt.Rows[i]));
                 return theList;
             } catch
             {
                 return theList;
             }
         }
-        public bool SaveKitchenOrder(KitchenOrder order)
+        public bool SaveKitchenOrder(POSLayer.Models.KitchenOrder order)
         {
             if (db.RunQuery("SaveKitchenOrder '" + order.IID + "','" + order.Reference + "'," +
                 DRDateTime.DatetimeToMSSql(order.CreatedDateTime) + ",'" + order.OrderIID + "'," +
@@ -4914,7 +3354,7 @@ namespace DTRMNS
                 bool test = true;
                 for (int i = 0; i < order.items.Count; i++)
                 {
-                    KitchenOrderItem koi = order.items[i];
+                    POSLayer.Models.KitchenOrderItem koi = order.items[i];
                     test = test && db.RunQuery("SaveKitchenOrderItem '" + koi.IID + "'," + koi.Quantity + ",'" +
                         koi.ItemText + "','" + koi.KitchenOrderIID + "','" + koi.DistributionIID + "','" +
                         koi.EntityButtonIID + "'," + (int)koi.Status);
@@ -4960,17 +3400,6 @@ namespace DTRMNS
             {
                 return false;
             }
-        }
-        public bool MarkKitchenOrderItemsCompleted(string korderIID, string DistributionIID)
-        {
-            return db.RunQuery("update kitchenOrderItem set Status =" + (int)KitchenOrderStatusTypes.Completed +
-                " where KitchenOrderIID ='" + korderIID + "' and DistributionIID = '" + DistributionIID + "'");
-        }
-        public bool MarkKitchenOrderItemsCompleted(string korderIID, List<Distribution> theDistributionList)
-        {
-            return db.RunQuery("update kitchenOrderItem set Status =" + (int)KitchenOrderStatusTypes.Completed +
-                " where KitchenOrderIID ='" + korderIID + "' and DistributionIID in (" +
-                GetCommaSeperatedDistributionIIDListForDatabase(theDistributionList) + ")");
         }
 
         /// <summary>
@@ -5028,7 +3457,7 @@ namespace DTRMNS
         /// </summary>
         /// <param name="theList"></param>
         /// <returns></returns>
-        public string GetCommaSeperatedDistributionIIDListForDatabase(List<Distribution> theList)
+        public string GetCommaSeperatedDistributionIIDListForDatabase(List<POSLayer.Models.Distribution> theList)
         {
             string str = "";
             for (int i = 0; i < theList.Count; i++)
@@ -5040,17 +3469,9 @@ namespace DTRMNS
 
             return str;
         }
-
-
-
-        public bool MarkKitchenOrderCompletedOn(string korderIID)
+        public List<POSLayer.Models.KitchenOrder> GetKitchenOrderList()
         {
-            return db.RunQuery("Update KitchenOrders set CompletedDateTime = getDate() where IID ='" + korderIID + "'");
-        }
-
-        public List<KitchenOrder> GetKitchenOrderList()
-        {
-            List<KitchenOrder> korderList = new List<KitchenOrder>();
+            List<POSLayer.Models.KitchenOrder> korderList = new List<POSLayer.Models.KitchenOrder>();
             DataTable dtKorder = db.GetDataTable("Select IID from KitchenOrders order by OrderNo");
 
             for (int i = 0; i < dtKorder.Rows.Count; i++)
@@ -5059,12 +3480,12 @@ namespace DTRMNS
             return korderList;
         }
 
-        public KitchenOrder GetKitchenOrder(string IID)
+        public POSLayer.Models.KitchenOrder GetKitchenOrder(string IID)
         {
             DataTable dt = db.GetDataTable("Select * from KitchenOrders Where IID ='" + IID + "'");
             try
             {
-                KitchenOrder korder = new KitchenOrder(dt);
+                POSLayer.Models.KitchenOrder korder = new POSLayer.Models.KitchenOrder(dt);
                 dt = db.GetDataTable("Select * from KitchenOrderItem where KitchenOrderIID = '" + IID + "'");
                 for (int i = 0; i < dt.Rows.Count; i++)
                     korder.items.Add(new KitchenOrderItem(dt.Rows[i]));
@@ -5073,45 +3494,6 @@ namespace DTRMNS
             {
                 return null;
             }
-        }
-
-        public DataTable GetAllKitchenOrders()
-        {
-            return db.GetDataTable("Select * from KitchenOrders order By OrderNo");
-        }
-        public DataTable GetKitchenOrderItems(string korderIID)
-        {
-            return db.GetDataTable("Select * from KItchenOrderItem where KitchenOrderIID ='" + korderIID + "'");
-        }
-
-        public KitchenOrder GetRelatedKitchenOrder(string RealOrderIID)
-        {
-            DataTable dt = db.GetDataTable("Select * from KitchenOrders where OrderIID = '" + RealOrderIID + "'");
-            if (dt.Rows.Count > 0)
-                return new KitchenOrder(dt);
-            else
-                return null;
-        }
-        public KitchenOrder GetRelatedKitchenOrderWithItems(string RealOrderIID)
-        {
-            DataTable dt = db.GetDataTable("Select * from KitchenOrders where OrderIID = '" + RealOrderIID + "'");
-            if (dt.Rows.Count > 0)
-            {
-                KitchenOrder korder = new KitchenOrder(dt);
-                if (korder == null)
-                    return null;
-                else
-                {
-                    //Load items
-                    DataTable dtItems = db.GetDataTable("Select * from KitchenOrderItem Where KitchenOrderIID ='" + korder.IID + "'");
-                    for (int i = 0; i < dtItems.Rows.Count; i++)
-                    {
-                        korder.items.Add(new KitchenOrderItem(dtItems.Rows[i]));
-                    }
-                    return korder;
-                }
-            } else
-                return null;
         }
         public List<KitchenOrder> GetKitchenOrdersByStatus(KitchenOrderStatusTypes status, bool blnAscending, List<Distribution> distributionList)
         {
@@ -5150,15 +3532,13 @@ namespace DTRMNS
             {
                 theList.Add(GetKitchenOrder(dt.Rows[i]["IID"].ToString()));
             }
-            //if (theList.Count > 0 && theList[0].OrderNo > config.Kitchen_Order_Reseed_Limit)
-            //    ResetKitchenOrderIdentitySeed();
 
             return theList;
         }
 
-        public KitchenOrder ConvertOrderToKitchenOrder(Order order)
+        public POSLayer.Models.KitchenOrder ConvertOrderToKitchenOrder(POSLayer.Models.Order order)
         {
-            KitchenOrder korder = new KitchenOrder
+            POSLayer.Models.KitchenOrder korder = new POSLayer.Models.KitchenOrder
             {
                 Reference = order.Reference,
                 CreatedDateTime = DateTime.Now,
@@ -5167,7 +3547,7 @@ namespace DTRMNS
 
             for (int i = 0; i < order.items.Count; i++)
             {
-                KitchenOrderItem korderitem = new KitchenOrderItem
+                POSLayer.Models.KitchenOrderItem korderitem = new POSLayer.Models.KitchenOrderItem
                 {
                     EntityButtonIID = order.items[i].EntityButtonIID,
                     Quantity = (int)order.items[i].Quantity,
@@ -5180,46 +3560,13 @@ namespace DTRMNS
             return korder;
         }
 
-
-        /// <summary>
-        /// This is to use the old kitchen order to mark new kitchen order's item's status as accordingly
-        /// </summary>
-        /// <param name="korder1">previous kitchen order</param>
-        /// <param name="korder2">augmented kitchen order</param>
-        /// <returns></returns>
-        public KitchenOrder MarkCompletedItemsInKorder2UsingKorder1(KitchenOrder korder1, KitchenOrder korder2)
-        {
-            if (korder1 == null)
-                return korder2;
-
-            for (int i = 0; i < korder1.items.Count; i++)
-            {
-                KitchenOrderItem kitem1 = korder1.items[i];
-                KitchenOrderItem kitem2 = korder2.items.Find(x => x.EntityButtonIID == kitem1.EntityButtonIID);
-                //No item found in the new order so pass
-                if (kitem2 == null)
-                    continue;
-                //New item found but it has more quantity and the old one so pass again (reason to flash)
-                if (kitem2.Quantity > kitem1.Quantity)
-                    continue;
-
-                //New item found and has less or equal quantity than the old item so mark its status whatever it was in old item
-                if (kitem2.Quantity <= kitem1.Quantity)
-                    kitem2.Status = kitem1.Status;
-            }
-
-            //When you got here all the existing items mark accordingly in the new order there is nothing left so return
-            return korder2;
-        }
-
-
         public void SetKitchenOrderModifiedStateForAttachedOrder(bool blnBeingModified)
         {
             try
             {
-                if (((AttachedOrder.Status == StatusFlags.DONE || AttachedOrder.Status == StatusFlags.PENDING) &&
+                if (((AttachedOrder.Status == POSLayer.Library.StatusFlags.DONE || AttachedOrder.Status == POSLayer.Library.StatusFlags.PENDING) &&
                         (config.Table_Orders_Display_Kitchen_Orders || config.Hold_Order_Display_in_Kitchen)) ||
-                        (!blnBeingModified && AttachedOrder.Status == StatusFlags.COMPLETED))
+                        (!blnBeingModified && AttachedOrder.Status == POSLayer.Library.StatusFlags.COMPLETED))
                 {
                     db.RunQuery("Update KitchenOrders set BeingModified = " + db.BoolToInt(blnBeingModified) + " where OrderIID ='" + AttachedOrder.IID + "'");
                     SetKitchenModified();
@@ -5229,23 +3576,15 @@ namespace DTRMNS
                 SaveDebug("157 : " + ex.Message);
             }
         }
-
-        /// <summary>
-        /// This function restarts the orderno in kitchenorders table from 1 again so the number doesn't get to ridiculious numbers
-        /// </summary>
-        //public void ResetKitchenOrderIdentitySeed() {
-        //    db.RunQuery("DBCC CHECKIDENT ('[KitchenOrders]', RESEED, 0)");
-        //}
-
         public bool ShrinkKitchenOrderList()
         {
-            DataTable dt = db.GetDataTable("Select IID from KitchenOrders where Status = " + (int)KitchenOrderStatusTypes.Completed);
+            DataTable dt = db.GetDataTable("Select IID from KitchenOrders where Status = " + (int)POSLayer.Library.KitchenOrderStatusTypes.Completed);
             if (dt.Rows.Count <= config.Kitchen_Max_Completed_Order_Count)
                 return false;
 
             int topCount = dt.Rows.Count - config.Kitchen_Max_Completed_Order_Count;
             dt = db.GetDataTable("Select Top " + topCount + " IID from KitchenOrders where Status = " +
-                (int)KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
+                (int)POSLayer.Library.KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
             for (int i = 0; i < dt.Rows.Count; i++)
                 DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), false);
 
@@ -5378,11 +3717,6 @@ namespace DTRMNS
         {
             return db.RunQuery("update stockItem set UsedQuantity = " + Quantity + " where IID = '" + stockItemIID + "'");
         }
-
-        //public bool UpdateStockItemUsedQuantityNotConverted(string StockItemIID, int quantity) {
-        //    eturn db.RunQuery("update stockItem set UsedQuantity = UsedQuantity + " + quantity + " where IID = '" + StockItemIID + "'");
-        //}
-
         public DataTable GetAllStockItems()
         {
             return db.GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
@@ -5409,39 +3743,15 @@ namespace DTRMNS
         {
             return db.GetDataTable("Select IID,StockName from StockItem order by StockName asc");
         }
-        public DataTable GetAllStockItemsShortForEB(string EntityButtonIID)
-        {
-            return db.GetDataTable("Select IID,StockName from StockItem where IID not in (Select StockItemIID from EntityButtonStockItemLookUp where EntityButtonIID = '" + EntityButtonIID +
-                "') order by StockName asc");
-        }
         public DataTable GetStockItemsForSupplier(string SupplierIID)
         {
             return db.GetDataTable("Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '" + SupplierIID + "'");
-            //return db.GetDataTable("Select StockItem.*, SupplierName from StokItem where SupplierIID = '" + SupplierIID + "' Order by StockName asc");
-            //return db.GetDataTable("Select * from StokItem where IID in (Select StockItemIID from Supplier where SupplierIID ='" + SupplierIID + "')");
-        }
-        public List<string> GetStockItemNamesForSupplier(string SupplierIID)
-        {
-            DataTable dt = db.GetDataTable("Select StockName from StockItem where SupplierIID ='" + SupplierIID + "'");
-            List<string> theList = new List<string>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-                theList.Add(dt.Rows[i]["StockName"].ToString());
-            return theList;
-        }
+          }
+       
         #endregion
 
         #region EB  STOCKITEM FUNCTIONS
 
-        //public List<StockManager> GetAllStockManager() {
-        //    DataTable dt = db.GetDataTable("GetMenuList");
-        //    List<StockManager> stockManagerList = new List<StockManager>();
-        //    for (int i = 0; i < dt.Rows.Count; i++) {
-        //        string menuIID = dt.Rows[i]["IID"].ToString();
-        //        stockManagerList.Add(GetStockManager(menuIID));
-        //    }
-        //    return stockManagerList;
-        //}
-        //GenericProgressFunction progress, int startfrom
 
         public StockManager GetStockManager(GenericProgressFunction progress = null, int startfrom = 0)
         {
@@ -5471,13 +3781,6 @@ namespace DTRMNS
                 progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
             }
 
-            ////Load GenericImages
-            //DataTable dtGenericImages = db.GetDataTable("select * from Images");
-            //for (int i = 0; i < dtGenericImages.Rows.Count; i++) {
-            //    sm.GenericImages.Add(new GenericImage(dtGenericImages.Rows[i], true));
-            //    progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
-            //}
-
             return sm;
         }
 
@@ -5494,11 +3797,6 @@ namespace DTRMNS
             {
                 SaveStockItem(sm.StockItems[i]);
             }
-
-            ////Save Generic Images
-            //for (int i = 0; i < sm.GenericImages.Count; i++) {
-            //    SaveGenericImage(sm.GenericImages[i]);
-            //}
 
             //Save EntityButtonStockItemLookUps
             for (int i = 0; i < sm.EBStockItemLookups.Count; i++)
@@ -5551,43 +3849,19 @@ namespace DTRMNS
             return db.GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
         }
 
-        /// <summary>
-        /// DataTable with Columns EntityButtonIID, EntityButtonName
-        /// </summary>
-        /// <param name="StockItemIID"></param>
-        /// <returns></returns>
-        public DataTable GetEBListForStockItem(string StockItemIID)
-        {
-            return db.GetDataTable("SELECT EntityButtonIID, EntityButtonName FROM EntityButtonStockItemLookUp left join EntityButton on EntityButtonIID = EntityButton.IID where StockItemIID = '" + StockItemIID + "'");
-        }
-
         public EntityButtonStockItemLookUp GetEntityButtonStockItemLookUp(string IID)
         {
             return new EntityButtonStockItemLookUp(db.GetDataTable("Select * from EntityButtonStockItemLookUp where IID = '" + IID + "'"));
         }
-        //public EntityButtonStockItemLookUp GetEntityButtonStockItemLookUp(string EntityButtonIID, string StockItemIID) {
-        //    return new EntityButtonStockItemLookUp(db.GetDataTable("Select * from EntityButtonStockItemLookUp where EntityButtonIID = '" +
-        //        EntityButtonIID + "' and StockItemIID = '" + StockItemIID + "'"));
-        //}
         public bool UpdateStockItemLookUpDisplayOrder(string IID, int newdisplayOrder)
         {
             return db.RunQuery("Update EntityButtonStockItemLookUp set DisplayOrder =" + newdisplayOrder + " where  IID ='" + IID + "'");
         }
 
-        //public bool DeleteEntityButtonStockItemLookUp(EntityButtonStockItemLookUp lookup)
-        //{
-        //    return db.RunQuery("Delete from EntityButtonStockItemLookUp where IID ='" + lookup.IID + "'");
-        //}
         public bool DeleteEntityButtonStockItemLookUp(string IID)
         {
             return db.RunQuery("Delete from EntityButtonStockItemLookUp where IID ='" + IID + "'");
         }
-        //public bool DeleteEntityButtonStockItemLookUp(string EBIID, string StockItemIID) {
-        //    return db.RunQuery("Delete from EntityButtonStockItemLookUp where EntityButtonIID ='"+ EBIID + "' and StockItemIID = '" + StockItemIID + "'");
-        //}
-        //public bool SaveEntityButtonStockItemLookUp(string EBIID, string StockItemIID, QuantityTypes qType, int quantity) {
-        //    return db.RunQuery("SaveEntityButtonStockItemLookUp '" + EBIID + "','" + StockItemIID + "'," + (int)qType + "," + quantity);
-        //}
         public bool SaveEntityButtonStockItemLookUp(EntityButtonStockItemLookUp lookup)
         {
             return db.RunQuery("SaveEntityButtonStockItemLookUp '" + lookup.IID + "','" + lookup.EntityButtonIID + "','" + lookup.StockItemIID + "'," +
@@ -5627,12 +3901,6 @@ namespace DTRMNS
                 return db.GetDataTable("Select * from StockItemUsage order by SupplierName asc");
             }
         }
-
-        public DataTable GetSupplierListWhichHasOrderableStockItem()
-        {
-            return db.GetDataTable("select * from supplier where IID in (select SupplierIID from stockitemusage where orderablequantity > 0)");
-        }
-
         public List<string> GetSupplierIIDListWhichHasOrderableStockItems()
         {
             List<string> theList = new List<string>();
@@ -5693,59 +3961,20 @@ namespace DTRMNS
                 return db.RunQuery("Update StockItem set UsedQuantity =0");
         }
 
-        public bool PrintStockUsage(ApplicationPrinter ap)
+        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap)
         {
             return new ReportGenerator(this, ap, 2).PrintStockUsage(GetStockItemUsage(true), null);
         }
-        //public bool PrintStockUsage(string printerNetworkName) {
-        //    return new ReportGenerator(this, printerNetworkName, 2).PrintStockUsage(GetStockItemUsage(true), null);
-        //}
-        public bool PrintStockUsage(ApplicationPrinter ap, DataTable dtStockUsage, string SupplierName)
+        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap, DataTable dtStockUsage, string SupplierName)
         {
             return new ReportGenerator(this, ap, 2).PrintStockUsage(dtStockUsage, SupplierName);
-        }
-
-
-        public DataTable GetEntityButtonStockItemRecipeFromEntityButton(string EntityButtonIID)
-        {
-            return db.GetDataTable("Select * from EntityButtonStockItemRecipe where EntityButtonIID ='" + EntityButtonIID + "'");
         }
 
         public DataTable GetEntityButtonStockItemRecipeFromStockItem(string StockItemIID)
         {
             return db.GetDataTable("Select * from EntityButtonStockItemRecipe where StockItemIID ='" + StockItemIID + "'");
         }
-        //public bool PrintStockUsage(DataTable dtStockUsage, string SupplierName) {
-        //    ApplicationPrinter ap = GetDefaultReceiptPrinter();
-        //    if (ap != null) {
-        //        ReportGenerator generator = new ReportGenerator(this, ap.NetworkName, config.ReportFontName,
-        //            config.ReportFontSize, Color.Black, 2, 1, 10);
-        //        return generator.PrintStockUsage(dtStockUsage, SupplierName);
-        //    }
-        //    return false;
-        //}
-
-        //public bool PrintStockUsage(string printerIID, DataTable dtStockUsage) {
-        //    ApplicationPrinter ap = GetPrinter(printerIID);
-        //    if (ap != null) {
-        //        ReportGenerator generator = new ReportGenerator(this, ap.NetworkName, config.ReportFontName,
-        //            config.ReportFontSize, Color.Black, 2, 1, 10);
-        //        return generator.PrintStockUsage(dtStockUsage,null);
-        //    }
-        //    return false;
-        //}
-
-        public bool PrintDataTable(string printerIID, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
-        {
-            ApplicationPrinter ap = GetPrinterForClient(printerIID);
-            if (ap != null)
-            {
-                return new ReportGenerator(this, ap, 2).PrintDataTable(dt, CustomReportName, columnSize, blnIncludeHeaders);
-            }
-
-            return false;
-        }
-        public bool PrintDataTable(ApplicationPrinter ap, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
+        public bool PrintDataTable(POSLayer.Models.ApplicationPrinter ap, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
         {
 
             if (ap != null)
@@ -5794,26 +4023,8 @@ namespace DTRMNS
         {
             return GenerateCsvTextFromDataTable(GetOrderableStockUsage());
         }
-        public string SaveStockItemUsageFile()
-        {
-            string filename = "Usage\\StockItemUsage_" + DateTime.Now.ToString("dd MMM yyyy HHmm") + ".csv";
-            if (DataGridViewCsvExporter.Export(filename, GetOrderableStockItemUsageAsCsvText()))
-                return filename;
-            else
-                return "";
-        }
-        //public string SaveStockItemUsageFile(string SupplierName, DataTable dt) {
-        //    string filename = "Usage\\StockItemUsage_" + DateTime.Now.ToString("dd MMM yyyy HHmm") + "_" + SupplierName + ".csv";
-        //    if (DataGridViewCsvExporter.Export(filename, GetOrderableStockItemUsageAsCsvText()))
-        //        return filename;
-        //    else
-        //        return "";
-        //}
 
         #endregion
-
-
-
 
 
         #region DiSPLAY IMAGE FUNCTIONS
@@ -5838,7 +4049,7 @@ namespace DTRMNS
         public string GetEntityButtonStockItemText(string EntityButtonIID)
         {
             DataTable dt = GetStockItemsForEB(EntityButtonIID);
-            //StockItemLookup , stockName
+
             string str = "";
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -5849,10 +4060,6 @@ namespace DTRMNS
                     str += "\r\n";
                 } else
                 {
-                    //str += dt.Rows[i]["Quantity"].ToString() + "  ";
-                    //str += ((QuantityTypes)int.Parse(dt.Rows[i]["QuantityType"].ToString())).ToString() + "  ";
-
-
                     str += dt.Rows[i]["Comment"].ToString() + "  ";
                     if (dt.Rows[i]["StockName"] != null)
                         str += dt.Rows[i]["StockName"].ToString();
@@ -5903,7 +4110,6 @@ namespace DTRMNS
         }
         public bool SaveGenericImage(GenericImage gim)
         {
-            //return db.RunQuery("SaveGenericeImage '" + gim.ReferenceIID + "',")
             try
             {
                 SqlConnection con = new SqlConnection(db.ConnectionString);
@@ -6019,7 +4225,7 @@ namespace DTRMNS
 
                 //Load Luv
                 if (options.blnLuv)
-                    backup.luv = GetLuv();
+                    backup.luv =GetLuv().Result;
 
                 //Load Current Session
                 if (options.blnCurrentSession)
@@ -6046,7 +4252,7 @@ namespace DTRMNS
 
                 //Load All the Menus
                 if (options.blnMenus)
-                    backup.menuList = GetAllMenuList();
+                    backup.menuList = null;  //sonra   GetAllMenuList();
 
                 //Load Stock Manager
                 if (options.blnStock)
@@ -6078,27 +4284,9 @@ namespace DTRMNS
                 return false;
             }
         }
-
-        public bool ShringIID(string TableName)
-        {
-            try
-            {
-                DataTable dt = db.GetDataTable("Select IID from " + TableName);
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    string oldIID = dt.Rows[i]["IID"].ToString();
-                    string newIID = ShortGuid.NewGuid().ToString();
-                    db.RunQuery("Update " + TableName + " set IID = '" + newIID + "' where IID = '" + oldIID + "'");
-                }
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
         public bool ShrinkCustomer(string customerIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             return db.RunQuery("Update Customer set IID = '" + newIID + "' where IID = '" + customerIID + "'");
         }
         public bool ShrinkAllCustomers()
@@ -6116,7 +4304,7 @@ namespace DTRMNS
         }
         public bool ShrinkUser(string userIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             return db.RunQuery("Update Users set IID = '" + newIID + "' where IID = '" + userIID + "'");
         }
         public bool ShrinkAllUsers()
@@ -6134,7 +4322,7 @@ namespace DTRMNS
         }
         public bool ShrinkApplicationPrinter(string printerIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             return db.RunQuery("Update ApplicationPrinter set IID = '" + newIID + "' where IID = '" + printerIID + "'") &&
                     db.RunQuery("Update PrinterLookup set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'") &&
                     db.RunQuery("Update Distribution set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'");
@@ -6154,7 +4342,7 @@ namespace DTRMNS
         }
         public bool ShrinkTable(string TableIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             return db.RunQuery("Update Tables set IID = '" + newIID + "' where IID = '" + TableIID + "'");
         }
         public bool ShrinkAllTables()
@@ -6174,7 +4362,7 @@ namespace DTRMNS
         {
             try
             {
-                string newIID = ShortGuid.NewGuid().ToString();
+                string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
                 //Update TableGroup IID
                 db.RunQuery("Update TableGroup set IID = '" + newIID + "' where IID = '" + tableGroupIID + "'");
                 //Update GroupIID in Tables
@@ -6213,7 +4401,7 @@ namespace DTRMNS
 
         public bool ShrinkDistribution(string DistributionIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the distribution 
             return db.RunQuery("Update Distribution set IID = '" + newIID + "' where IID = '" + DistributionIID + "'") &&
             //Update DistributionIID of the EntityButtons
@@ -6224,7 +4412,7 @@ namespace DTRMNS
 
         public bool ShrinkEntityButton(string ebIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Entity Button 
             return db.RunQuery("Update EntityButton set IID = '" + newIID + "' where IID = '" + ebIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this entity button
@@ -6235,7 +4423,7 @@ namespace DTRMNS
 
         public bool ShrinkEntity(string eIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Entity 
             return db.RunQuery("Update Entity set IID = '" + newIID + "' where IID = '" + eIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this entity
@@ -6247,7 +4435,7 @@ namespace DTRMNS
 
         public bool ShrinkMenu(string menuIID)
         {
-            string newMenuIID = ShortGuid.NewGuid().ToString();
+            string newMenuIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Menu 
             if (db.RunQuery("Update Menu set IID = '" + newMenuIID + "' where IID = '" + menuIID + "'") &&
                 //Update ParentMenuIID in Entity
@@ -6324,7 +4512,7 @@ namespace DTRMNS
 
         public bool ShrinkStockItem(string itemIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the StockItem 
             return db.RunQuery("Update StockItem set IID = '" + newIID + "' where IID = '" + itemIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this stockItem
@@ -6349,7 +4537,7 @@ namespace DTRMNS
 
         public bool ShrinkSupplier(string suppIID)
         {
-            string newIID = ShortGuid.NewGuid().ToString();
+            string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the StockItem 
             return db.RunQuery("Update Supplier set IID = '" + newIID + "' where IID = '" + suppIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this stockItem
@@ -6381,65 +4569,6 @@ namespace DTRMNS
             }
         }
 
-        public bool ShrinkDatabase()
-        {
-            try
-            {
-                return ShrinkAllCustomers() && ShrinkAllUsers() && ShrinkAllApplicationPrinters() &&
-                ShrinkAllTableGroups() && ShrinkAllTables() && ShrinkAllMenus() && ShrinkStockManager();
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public bool MoveStockItemToAnotherSupplier(string StockItemIID, string NewSupplierIID)
-        {
-            StockItem sitem = GetStockItem(StockItemIID);
-            Supplier supplier = GetSupplier(NewSupplierIID);
-
-            if (sitem != null && supplier != null && sitem.SupplierIID != supplier.IID)
-            {
-                sitem.SupplierIID = supplier.IID;
-                return SaveStockItem(sitem);
-            }
-            return false;
-        }
-
-        public bool MoveEntityButtonToAnotherEntity(string EntityButtonIID, string newEntityIID)
-        {
-            EntityButton eb = GetJustEntityButton(EntityButtonIID);
-            Entity en = GetEntityDB(newEntityIID);
-            if (en != null && eb != null && en.ParentMenuIID == eb.ParentMenuIID && eb.PEIID != en.IID)
-            {
-                eb.PEIID = newEntityIID;
-                return SaveJustEntityButton(eb, en.ParentMenuIID);
-            }
-            return false;
-        }
-
-        public bool MoveTableToAnotherTableGroup(string TableIID, string newTableGroupIID)
-        {
-            Table table = GetTable(TableIID);
-            TableGroup tableGroup = GetTableGroup(newTableGroupIID);
-            if (table != null && tableGroup != null && table.GroupIID != tableGroup.IID)
-            {
-                table.GroupIID = tableGroup.IID;
-                return SaveTable(table);
-            }
-            return false;
-        }
-        #endregion
-
-        #region COUNTERS         
-        public int GetTableRowCount(string TableName, string FieldToCount)
-        {
-            return int.Parse(db.GetDataTable("Select count(" + FieldToCount + ") as total from " + TableName).Rows[0]["total"].ToString());
-        }
-        public int GetIIDCount(string TableName)
-        {
-            return int.Parse(db.GetDataTable("Select count(IID) as total from " + TableName).Rows[0]["total"].ToString());
-        }
         #endregion
 
         #region BONUS FUNCTIONS
@@ -6556,14 +4685,6 @@ namespace DTRMNS
 
         #endregion
 
-        public List<OrdersView> GetIrrelevantUnpaidOrders()
-        {
-            List<OrdersView> theList = new List<OrdersView>();
-            DataTable dt = GetIrrelevantUnpaidOrdersDB();
-            for (int i = 0; i < dt.Rows.Count; i++)
-                theList.Add(new OrdersView(dt.Rows[i]));
-            return theList;
-        }
         public DataTable GetIrrelevantUnpaidOrdersDB()
         {
             return db.GetDataTable("Select * from OrdersView where Payment =0 and Status = 5 and SessionIID != '" + luv.CurrentSessionIID + "'");
@@ -6574,7 +4695,7 @@ namespace DTRMNS
         }
         public bool CreateDemoMenu(string menuName)
         {
-            FMenu fmenu = new FMenu(menuName);
+            Menu fmenu = new Menu(menuName);
 
             //Create Distributions
             Distribution dist1 = new Distribution("Hot Drinks", "");

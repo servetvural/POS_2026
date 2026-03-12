@@ -22,35 +22,39 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKitchenSingleDisplay));
-            this.ctlKitchen = new DTRMNS.ctlKitchenDisplay();
-            this.SuspendLayout();
+            ctlKitchen = new ctlKitchenDisplay();
+            SuspendLayout();
             // 
             // ctlKitchen
             // 
-            this.ctlKitchen.ChangeDistributionVisible = true;
-            this.ctlKitchen.DisplayClock = true;
-            this.ctlKitchen.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ctlKitchen.Location = new System.Drawing.Point(0, 0);
-            this.ctlKitchen.Name = "ctlKitchen";
-            this.ctlKitchen.Size = new System.Drawing.Size(945, 649);
-            this.ctlKitchen.TabIndex = 0;
+            ctlKitchen.ChangeDistributionVisible = true;
+            ctlKitchen.DisplayClock = true;
+            ctlKitchen.Dock = System.Windows.Forms.DockStyle.Fill;
+            ctlKitchen.Location = new System.Drawing.Point(0, 0);
+            ctlKitchen.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
+            ctlKitchen.Name = "ctlKitchen";
+            ctlKitchen.Size = new System.Drawing.Size(1102, 749);
+            ctlKitchen.TabIndex = 0;
+            ctlKitchen.Load += ctlKitchen_Load;
             // 
             // frmKitchenSingleDisplay
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(945, 649);
-            this.Controls.Add(this.ctlKitchen);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmKitchenSingleDisplay";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "SINGLE DISPLAY";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.frmKitchenDisplay_Load);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1102, 749);
+            Controls.Add(ctlKitchen);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmKitchenSingleDisplay";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "SINGLE DISPLAY";
+            WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            Load += frmKitchenDisplay_Load;
+            ResumeLayout(false);
 
         }
 

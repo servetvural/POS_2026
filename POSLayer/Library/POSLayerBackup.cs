@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using POSLayer.Models;
 
-namespace DTRMNS;
+namespace POSLayer.Library;
 
-public class DTRMBackup
+public class POSLayerBackup
 {
     public List<Menu> menus { get; set; } = new List<Menu>();
     public List<ApplicationPrinter> printers { get; set; } = new List<ApplicationPrinter>();

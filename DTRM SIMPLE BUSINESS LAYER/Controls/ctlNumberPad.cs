@@ -804,11 +804,11 @@ namespace DTRMNS {
         private void ctlNumberPad_Load(object sender, EventArgs e) {
             LoadEntities();
             switch (bslayer.config.OrderPad_Orientation) {
-                case OrientationTypes.Landscape:
+                case POSLayer.Library.OrientationTypes.Landscape:
                     pnlCalculator.Dock = DockStyle.Left;
                     pnlCalculator.Width = 416;
                     break;
-                case OrientationTypes.Portrait:
+                case POSLayer.Library.OrientationTypes.Portrait:
                     pnlCalculator.Dock = DockStyle.Top;
                     pnlCalculator.Height = 593;
                     break;
