@@ -11,13 +11,14 @@ namespace POSLayer.Models;
 
 public partial class Order  : BaseClass
 {
+    public List<OrderItem> items { get; set; } = new();
     public string? TableIID { get; set; }   = string.Empty; 
 
     public string? TableName { get; set; }      = string.Empty;
 
     public DateTime OrderDate { get; set; } = DateTime.Now;
 
-    public int? Covers { get; set; } = 1;
+    public int Covers { get; set; } = 1;
 
     public OrderTypes OrderType { get; set; } = OrderTypes.InHouse;
 
@@ -61,7 +62,7 @@ public partial class Order  : BaseClass
 
     public double ServiceChargeTaxRate { get; set; }
 
-    public List<OrderItem> items { get; set; } = new();
+    
 
 
     [NotMapped]
@@ -665,7 +666,7 @@ public partial class Order  : BaseClass
                 lines.Add(new List<string>(new string[] { "Customer : " + CName }));
                 lines.Add(new List<string>(new string[] { "Address : " + Address }));
                 lines.Add(new List<string>(new string[] { "Buzzer : " + Buzzer }));
-                lines.Add(new List<string>(new string[] { "Postcode : " + PostCode }));
+                lines.Add(new List<string>(new string[] { "Postcode : " + Postcode }));
                 lines.Add(new List<string>(new string[] { "Tel : " + Tel }));
                 lines.Add(new List<string>(new string[] { "Mobile : " + Mobile }));
                 lines.Add(new List<string>(new string[] { "Town : " + Town }));

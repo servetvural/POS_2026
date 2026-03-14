@@ -13,6 +13,8 @@ using POSLayer.Library;
 using PosLibrary;
 using PosLibrary.DBSpace;
 
+using POSWinFormLayer;
+
 
 namespace DTRMSimpleBackOffice
 {
@@ -20,11 +22,11 @@ namespace DTRMSimpleBackOffice
     public partial class frmOffice : Form
     {
 
-        private DTRMNS.ConnectionStatus conStatus;
+        private ConnectionStatus conStatus;
         private DTRMSimpleBusiness bslayer;
         private ViewModes viewMode = ViewModes.User;
 
-        public frmOffice(DTRMSimpleBusiness _bslayer)
+        public frmOffice(DTRMSimpleBusiness _bslayer, IFormFactory formFactory)
         {
             InitializeComponent();
             bslayer = _bslayer;
@@ -46,11 +48,11 @@ namespace DTRMSimpleBackOffice
             bool blnLocalDatabase = false;
             switch (conStatus)
             {
-                case DTRMNS.ConnectionStatus.Disconnected:
+                case ConnectionStatus.Disconnected:
                 TryAgainLocally:
                     if (POSLayer.Library.UF.IsConfigFileExist())
                     {
-                        DTRMConfig config = DTRMNS.UF.GetConfig();
+                        PosConfig config = DTRMNS.UF.GetConfig();
                         if (config.Database_Instance == null |
                             config.Database_User_Name == null || config.Database_Password == null)
                         {
@@ -66,7 +68,7 @@ namespace DTRMSimpleBackOffice
                                 Application.Exit();
                             return;
                         }
-                        if (await bslayer.DoStartThings())
+                        if (bslayer.DoStartThings().Result)
                         {
                             blnLocalDatabase = (DRUF.IsLocalIpAddress(config.Database_Instance) || config.Database_Instance == ".");
                             bslayer.EnsureRequiredUsers();
@@ -75,7 +77,7 @@ namespace DTRMSimpleBackOffice
                                 "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                             if (frmpswd.ShowDialog() == DialogResult.OK)
                             {
-                                if (bslayer.IsAdmin(frmpswd.Password))
+                                if (bslayer.IsAdmin(frmpswd.Password).Result)
                                 {
 
                                     ConnectActions(true);
@@ -143,13 +145,13 @@ namespace DTRMSimpleBackOffice
         {
             switch (conStatus)
             {
-                case DTRMNS.ConnectionStatus.ConnectedLocally:
-                case DTRMNS.ConnectionStatus.ConnectedRemotely:
+                case ConnectionStatus.ConnectedLocally:
+                case ConnectionStatus.ConnectedRemotely:
 
-                    conStatus = DTRMNS.ConnectionStatus.Disconnected;
+                    conStatus = ConnectionStatus.Disconnected;
                     try
                     {
-                        bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.Disconnected;
+                        bslayer.OfficeConnectionStatus = ConnectionStatus.Disconnected;
                     } catch { }
                     ConnectActions(false);
 
@@ -406,11 +408,11 @@ namespace DTRMSimpleBackOffice
         private void btnDatabaseBackup_Click(object sender, EventArgs e)
         {
             DatabaseBackup backup = new DatabaseBackup();
-            DatabaseBackupOptions options = new DatabaseBackupOptions();
-            options.blnCustomers = options.blnImages = options.blnPrinters = options.blnStock =
-                options.blnTables = options.blnUsers = true;
+            DatabaseBackupOptions backupOptions = new DatabaseBackupOptions();
+            backupOptions.blnCustomers = backupOptions.blnImages = backupOptions.blnPrinters = backupOptions.blnStock =
+                backupOptions.blnTables = backupOptions.blnUsers = true;
 
-            if (bslayer.GetDatabaseBackup(ref backup, options))
+            if (bslayer.GetDatabaseBackup(options))
             {
                 DRFile.XmlSerialize(Path.Combine("DatabaseBackup\\", "Database Backup on " +
                     DateTime.Now.ToString("dd MMM yyyy HH mm") + ".xml"), backup, typeof(DatabaseBackup), true);

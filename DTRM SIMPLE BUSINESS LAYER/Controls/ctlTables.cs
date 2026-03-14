@@ -5,6 +5,9 @@ using System.Data;
 using System.Windows.Forms;
 using PosLibrary;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 
 namespace DTRMNS {
     public partial class ctlTables : UserControl{

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
 
     /// <summary>

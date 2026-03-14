@@ -35,7 +35,7 @@ public partial class EntityButton : BaseClass
     public string FFamily { get; set; } = "Arial";
     public double FSize { get; set; } = 10;
     public string FStyle { get; set; } = "Regular";
-    public int WithImage { get; set; }
+    public bool WithImage { get; set; }
 
 
 

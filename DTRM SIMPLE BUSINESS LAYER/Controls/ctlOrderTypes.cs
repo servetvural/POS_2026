@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for frmOrderTypes.

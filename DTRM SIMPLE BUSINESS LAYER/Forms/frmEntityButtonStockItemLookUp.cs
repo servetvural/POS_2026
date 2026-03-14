@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmEntityButtonStockItemLookUp : Form {
         private DTRMSimpleBusiness bslayer;
@@ -25,7 +27,7 @@ namespace DTRMNS {
             InitializeComponent();
             this.bslayer = bslayer;
             this.lookup = lookup;
-            this.entityButton = bslayer.GetJustEntityButton(lookup.EntityButtonIID);
+            this.entityButton = bslayer.GetJustEntityButton(lookup.EntityButtonIID).Result;
         }
         private void frmEntityButtonStockItemLookUp_Load(object sender, EventArgs e) {
             blnLoading = true;

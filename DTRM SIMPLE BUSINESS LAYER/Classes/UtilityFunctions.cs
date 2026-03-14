@@ -54,7 +54,7 @@ namespace DTRMNS {
             }
             catch (Exception ex) {
                 string str = ex.Message;
-                return new DTRMConfig();
+                return new PosConfig();
             }
         }
 
@@ -145,7 +145,7 @@ namespace DTRMNS {
       
 
 
-        public static float GetRelatedPrice(POSLayer.Models.OrderItem oi, POSLayer.Models.Entity en, POSLayer.Models.EntityButton eb, POSLayer.Models.Order order) {
+        public static double GetRelatedPrice(POSLayer.Models.OrderItem oi, POSLayer.Models.Entity en, POSLayer.Models.EntityButton eb, POSLayer.Models.Order order) {
             return eb.GetPrice(order.OrderType);
         }
         public static WeekDays GetTodaysDTRMWeekDay() {

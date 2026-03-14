@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+using POSLayer.Views;
+
 namespace POSLayer.Models;
 
 public partial class PosDbContext : DbContext
@@ -37,7 +39,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<EntityButtonStockItemRecipe> EntityButtonStockItemRecipes { get; set; }
 
-    public virtual DbSet<Image> Images { get; set; }
+    public virtual DbSet<BImage> Images { get; set; }
 
     public virtual DbSet<KitchenOrder> KitchenOrders { get; set; }
 
@@ -47,7 +49,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<Luv> Luvs { get; set; }
 
-    public virtual DbSet<Menu> Menus { get; set; }
+    public virtual DbSet<FoodMenu> Menus { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
@@ -148,14 +150,14 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Buzzer)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Cname)
+            entity.Property(e => e.CName)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CName");
             entity.Property(e => e.CompanyName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Cpassword)
+            entity.Property(e => e.CPassword)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("CPassword");
@@ -387,7 +389,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Image>(entity =>
+        modelBuilder.Entity<BImage>(entity =>
         {
             entity.HasNoKey();
 
@@ -547,7 +549,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Menu>(entity =>
+        modelBuilder.Entity<FoodMenu>(entity =>
         {
             entity.HasKey(e => e.IID).HasName("PK_FoodMenu");
 
@@ -1357,6 +1359,44 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
+
+
+        #region VIEW SECTION
+        //modelBuilder.Entity<PrinterView>()
+        //    .HasNoKey()
+        //    .ToInMemoryQuery(() =>
+        //     ApplicationPrinters
+        //         .GroupJoin(
+        //             PrinterLookups,
+        //             ap => ap.IID,
+        //             pl => pl.PrinterIID,
+        //             (ap, plGroup) => new { ap, plGroup }
+        //         )
+        //         .SelectMany(
+        //             x => x.plGroup.DefaultIfEmpty(),
+        //             (x, pl) => new PrinterView
+        //             {
+        //                 IID = x.ap.IID,
+        //                 ApplicationName = x.ap.ApplicationName,
+        //                 PrinterType = x.ap.PrinterType,
+        //                 // ISNULL(ClientIID, '') logic
+        //                 ClientIID = pl.ClientIID ?? string.Empty,
+        //                 // ISNULL(NetworkName, '') logic
+        //                 NetworkName = pl.NetworkName ?? string.Empty,
+        //                 // ISNULL(DeliveryPrinter, 0) logic
+        //                 DeliveryPrinter = (int?)pl.DeliveryPrinter ?? 0,
+        //                 // ISNULL(TakeAwayPrinter, 0) logic
+        //                 TakeAwayPrinter = (int?)pl.TakeAwayPrinter ?? 0,
+        //                 AdminOnly = x.ap.AdminOnly
+        //             }
+        //         )
+        //    );
+
+        //modelBuilder.Entity<PrinterView>()
+        //    .HasNoKey()
+        //    .ToTable(null); // Tells EF this isn't a physical table
+
+        #endregion
 
         OnModelCreatingPartial(modelBuilder);
     }

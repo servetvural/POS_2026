@@ -1,5 +1,7 @@
 ﻿
+using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Views;
 
 namespace POSLayer.Repository.IRepository;
 
@@ -9,8 +11,8 @@ public interface IRepository<T> where T : BaseClass
     Task<bool> IsDatabaseExist();
    // Task<T> Get(int Id, string includeItems = "");
     Task<T> Get(string IID, string includeItems = "");
-    Task<T> GetByField(string fieldName, object value, string includeItems = "");
-    Task<IQueryable<T>> GetListByField(string fieldName, object value, string includeItems = "");
+    Task<T> GetByField(string fieldName, object value, string includeItems = "");       
+    Task<List<T>> GetListByField(string fieldName, object value, string includeItems = "", string OrderByField = "");
     //Task<T> GetFirst(string includeItems = "");
     Task<List<T>> GetAllAsync(string includeItems = "");
     Task<T> Save(T obj);
@@ -19,4 +21,9 @@ public interface IRepository<T> where T : BaseClass
     Task<int> DeleteAll();
     Task<int> DeleteByField(string fieldName, object value);
     //Task EnsureDisplayOrder();
+
+
+
+    //Task<List<PrinterView>> GetPrinterView();
+    Task<List<SessionData>> GetSessionSum();
 }

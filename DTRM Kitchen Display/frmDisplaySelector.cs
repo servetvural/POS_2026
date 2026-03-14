@@ -33,13 +33,13 @@ namespace DTRM_Kitchen_Display {
                 bslayer.CustomInitialize( UF.GetConfig());
                 if (bslayer != null) {
                     switch (bslayer.config.Kitchen_Monitor_Auto_Display_Type) {
-                        case KitchenDisplayTypes.None:
+                        case POSLayer.Library.KitchenDisplayTypes.None:
                             break;
-                        case KitchenDisplayTypes.Single_Display:
+                        case POSLayer.Library.KitchenDisplayTypes.Single_Display:
                             btnSingle_Click(null, null);
                             break;
-                        case KitchenDisplayTypes.Double_Display:
-                        case KitchenDisplayTypes.Triple_Display:
+                        case POSLayer.Library.KitchenDisplayTypes.Double_Display:
+                        case POSLayer.Library.KitchenDisplayTypes.Triple_Display:
                             btnDouble_Click(null, null);
                             break;
                         default:

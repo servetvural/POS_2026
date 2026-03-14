@@ -3,17 +3,18 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
+[System.Serializable]
 public partial class Supplier   : BaseClass
 {
-    public string SupplierName { get; set; } = null!;
+    public string SupplierName { get; set; } = string.Empty;
 
-    public string Tel { get; set; } = null!;
+    public string Tel { get; set; } = string.Empty;
 
-    public string Address { get; set; } = null!;
+    public string Address { get; set; } = string.Empty;
 
-    public string Email1 { get; set; } = null!;
+    public string Email1 { get; set; } = string.Empty;
 
-    public string Email2 { get; set; } = null!;
+    public string Email2 { get; set; } = string.Empty;
 
-    public string Whatsup { get; set; } = null!;
+    public string Whatsup { get; set; } = string.Empty;
 }

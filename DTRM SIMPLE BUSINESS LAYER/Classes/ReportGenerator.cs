@@ -5,6 +5,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections.Generic;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public class ReportGenerator {
         private DTRMSimpleBusiness bslayer;
@@ -479,7 +482,7 @@ namespace DTRMNS {
            
             DrawLine();
 
-            SortedDictionary<float, float> taxlist = new SortedDictionary<float, float>();
+            SortedDictionary<double, double> taxlist = new SortedDictionary<double, double>();
             //float ServiceChargeTaxTotal = 0;
 
             foreach (OrderItem item in order.items) {

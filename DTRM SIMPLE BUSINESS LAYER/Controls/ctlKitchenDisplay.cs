@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using PosLibrary;
 using DTRMNS.Controls;
 using System.ComponentModel;
+using POSLayer.Models;
+using POSLayer.Library;
 
 namespace DTRMNS {
     public partial class ctlKitchenDisplay : UserControl {

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using PosLibrary;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for ctlCustomer.
@@ -445,7 +447,7 @@ namespace DTRMNS {
             // 
             // customerBindingSource
             // 
-            this.customerBindingSource.DataSource = typeof(DTRMNS.Customer);
+            this.customerBindingSource.DataSource = typeof(POSLayer.Models.Customer);
             // 
             // btnSelect
             // 
@@ -660,7 +662,7 @@ namespace DTRMNS {
                 txtName.Text = bslayer.AttachedOrder.CName;
                 txtBuzzer.Text = bslayer.AttachedOrder.Buzzer;
                 try {
-                    string[] parr = bslayer.AttachedOrder.PostCode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] parr = bslayer.AttachedOrder.Postcode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     if (parr.Length > 0)
                         txtPostCode1.Text = parr[0];
                     if (parr.Length > 1)

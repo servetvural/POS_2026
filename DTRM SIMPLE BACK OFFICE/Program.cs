@@ -16,6 +16,8 @@ using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
+using POSWinFormLayer;
+
 namespace DTRMSimpleBackOffice
 {
     static class Program
@@ -94,6 +96,8 @@ namespace DTRMSimpleBackOffice
 
                   // 2. Register Generic Repository
                   services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+                  services.AddSingleton<IFormFactory, FormFactory>();
 
                   // 3. Register Forms (Forms must be in DI to receive injections)
                   services.AddTransient<frmConfig>();

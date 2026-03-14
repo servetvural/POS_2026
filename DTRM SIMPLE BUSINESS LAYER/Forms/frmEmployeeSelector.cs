@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTRMNS;
 
+using POSLayer.Models;
+
 namespace DTRMNS.Forms {
     public partial class frmEmployeeSelector : Form {
 

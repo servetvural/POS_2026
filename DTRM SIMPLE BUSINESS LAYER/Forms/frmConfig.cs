@@ -1,11 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Windows.Forms;
-using PosLibrary;
-using PosLibrary.DBSpace;
 using System.Globalization;
 using System.Linq;
+using System.Windows.Forms;
+
 using POSLayer.Library;
+using POSLayer.Models;
+
+using PosLibrary;
+using PosLibrary.DBSpace;
 
 namespace DTRMNS
 {
@@ -73,7 +76,7 @@ namespace DTRMNS
                 blnEmpty = true;
                 config = UF.GetConfig();
                 if (config == null)
-                    config = new DTRMConfig();
+                    config = new PosConfig();
 
             } else
             {
@@ -81,7 +84,7 @@ namespace DTRMNS
                 if (config == null)
                     config = bslayer.config = UF.GetConfig();
                 if (config == null)
-                    config = bslayer.config = new DTRMConfig();
+                    config = bslayer.config = new PosConfig();
 
             }
             InitializeComponent();
@@ -763,10 +766,10 @@ namespace DTRMNS
                 ofd.ShowDialog();
                 if (ofd.FileName != "")
                 {
-                    Menu fm = null;
+                    FoodMenu fm = null;
                     try
                     {
-                        fm = (Menu)DRFile.XmlDeSerialize(ofd.FileName, typeof(Menu), false);
+                        fm = (FoodMenu)DRFile.XmlDeSerialize(ofd.FileName, typeof(FoodMenu), false);
                     } catch
                     {
                         MessageBox.Show("Menu cannot be imported");
@@ -834,7 +837,7 @@ namespace DTRMNS
             {
                 DB db = frm.SelectedDB;
                 if (config == null)
-                    config = new DTRMConfig();                 
+                    config = new PosConfig();                 
                 config.Database_Instance = db.ServerIP;
                 config.Database_Name = db.DatabaseName;
                 config.Database_User_Name = db.UserName;

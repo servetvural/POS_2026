@@ -39,7 +39,7 @@ namespace DTRMSimpleBackOffice {
         #region MENU FUNCTIONS
         private async void LoadMenuList() {
             UnloadMenuList();
-            var bindingList = new BindingList<POSLayer.Models.Menu>( await bslayer.GetMenuList());
+            var bindingList = new BindingList<POSLayer.Models.FoodMenu>( await bslayer.GetMenuList());
             dgvMenu.DataSource = bindingList;
           //If there is menu enable entity section
           barEntity.Enabled = barEntityButton.Enabled = barStockUsage.Enabled = barSearchCategoryItems.Enabled = dgvMenu.SelectedRows.Count > 0;
@@ -79,7 +79,7 @@ namespace DTRMSimpleBackOffice {
         private void BtnAddMenu_Click(object sender, EventArgs e) {
             using (frmInputForm frm = new frmInputForm("New Menu")) {
                 if (frm.ShowDialog() == DialogResult.OK) {
-                    POSLayer.Models.Menu menu = new POSLayer.Models.Menu()
+                    POSLayer.Models.FoodMenu menu = new POSLayer.Models.FoodMenu()
                     {
                         MenuName = frm.InputValue
                     };
@@ -90,7 +90,7 @@ namespace DTRMSimpleBackOffice {
         }
         private void BtnEditMenu_Click(object sender, EventArgs e) {
             if (dgvMenu.SelectedRows.Count > 0) {
-                POSLayer.Models.Menu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                POSLayer.Models.FoodMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
 
                 using (frmInputForm frm = new frmInputForm(menu.MenuName)) {
                     if (frm.ShowDialog() == DialogResult.OK) {
@@ -112,7 +112,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private async Task BtnBackupMenu_Click(object sender, EventArgs e) {
+        private async void BtnBackupMenu_Click(object sender, EventArgs e) {
             //if (dgvMenu.SelectedRows.Count > 0) {
             //    FMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             //    using (SaveFileDialog sfd = new SaveFileDialog()) {
@@ -137,26 +137,27 @@ namespace DTRMSimpleBackOffice {
             POSLayerBackup backup = new POSLayerBackup();
 
             //Get menus
-            if (dgvMenu.Rows.Count > 0)
-            {
-                for (int i = 0; i < dgvMenu.Rows.Count; i++)
-                {
-                    backup.menus.Add(bslayer.GetMenuDB(dgvMenu.Rows[0].Cells["colMenuIID"].Value.ToString()));
-                }
-            }
+            backup.menus =await bslayer.GetAllMenuList();
+            //if (dgvMenu.Rows.Count > 0)
+            //{
+            //    for (int i = 0; i < dgvMenu.Rows.Count; i++)
+            //    {
+            //        backup.menus.Add(bslayer.GetMenuDB(dgvMenu.Rows[0].Cells["colMenuIID"].Value.ToString()));
+            //    }
+            //}
 
             //Get printers
             backup.printers = await bslayer.GetAllPrinters();
             //Get employees
-            backup.employees = bslayer.GetAllEmployeeList();
+            backup.employees = await bslayer.GetAllEmployeeList();
             //Get suppliers
-            backup.suppliers = bslayer.GetAllSuppliersAsList();
+            backup.suppliers = await bslayer.GetAllSuppliersAsList();
             //Get stock items
-            backup.stockItems = bslayer.GetAllStockItemsList();
+            backup.stockItems = await bslayer.GetAllStockItemsList();
             //Get stock item lookups
-            backup.stockItemLookups = bslayer.GetAllEntityButtonStockItemLookUps();
+            backup.stockItemLookups = await bslayer.GetAllEntityButtonStockItemLookUps();
             //Get bonus items
-            backup.bonuslist = bslayer.GetAllBonusList();
+            backup.bonuslist = await bslayer.GetAllBonusList();
             //Get Generic Images 
            // backup.genericImages = bslayer.GetImageLibraryList();
 
@@ -210,10 +211,10 @@ namespace DTRMSimpleBackOffice {
                         string content = POSLayer.Library.UF.GetTextFile(sfd.FileName);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            DTRMBackup backup = JsonConvert.DeserializeObject<DTRMBackup>(content);
+                            POSLayer.Library.DTRMBackup backup = JsonConvert.DeserializeObject<POSLayer.Library.DTRMBackup>(content);
 
                             //Save menus
-                            foreach (DTRMNS.Menu menu in backup.menus)
+                            foreach (POSLayer.Models.FoodMenu menu in backup.menus)
                             {
                                 bslayer.SaveMenuDB(menu);
                                 statusMessage += menu.MenuName + " Saved " + Environment.NewLine;

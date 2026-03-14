@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
+using POSLayer.Library;
+using POSLayer.Models;
+
 using PosLibrary;
 
 namespace DTRMNS {

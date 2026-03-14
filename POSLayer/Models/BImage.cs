@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace POSLayer.Models;
 
-public partial class Image     : BaseClass  
+public partial class BImage     : BaseClass  
 {
     public string ReferenceIID { get; set; } = null!;
 

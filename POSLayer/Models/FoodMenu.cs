@@ -5,7 +5,7 @@ using POSLayer.Library;
 
 namespace POSLayer.Models;
 
-public partial class Menu  : BaseClass
+public partial class FoodMenu  : BaseClass
 {
     public string? MenuName { get; set; }
 
@@ -18,7 +18,7 @@ public partial class Menu  : BaseClass
     {
         return IID + ".xml";
     }
-    public float GetItemPrice(string EntityIID, string ItemIID, OrderTypes orderType)
+    public double GetItemPrice(string EntityIID, string ItemIID, OrderTypes orderType)
     {
         Entity en;
         for (int i = 0; i < this.items.Count; i++)
@@ -29,7 +29,7 @@ public partial class Menu  : BaseClass
         }
         return 0f;
     }
-    public float GetItemTaxRate(string EntityIID, string ItemIID, OrderTypes orderType)
+    public double GetItemTaxRate(string EntityIID, string ItemIID, OrderTypes orderType)
     {
         Entity en;
         for (int i = 0; i < this.items.Count; i++)

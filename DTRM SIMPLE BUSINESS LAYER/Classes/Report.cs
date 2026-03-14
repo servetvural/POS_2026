@@ -1,5 +1,7 @@
 ﻿
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public class Report {
         

@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using POSLayer.Views;
+using POSLayer.Library;
 
 namespace PosLayer.Repository;
 
@@ -104,7 +106,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
-    public async Task<IQueryable<T>> GetListByField(string fieldName, object value, string includeItems = "")
+    public async Task<List<T>> GetListByField(string fieldName, object value, string includeItems = "", string OrderByField = "")
     {
         using var _db = GetDBContext();
         try
@@ -128,16 +130,24 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                     query = query.Include(include.Trim());
                 }
             }
-            return query;
+            // 3. Setup OrderBy (Dynamic Expression Tree)
+            if (!string.IsNullOrEmpty(OrderByField))
+            {
+                var orderParam = Expression.Parameter(typeof(T), "p");
+                var orderProp = Expression.Property(orderParam, OrderByField);
+                var orderLambda = Expression.Lambda(orderProp, orderParam);
 
-            //if (string.IsNullOrEmpty(includeItems))
-            //{
-            //    return await _dbSet.Where(lambda).ToListAsync();
-            //}
-            //else
-            //{
-            //    return await _dbSet.Where(lambda).Include(includeItems).ToListAsync();
-            //}
+                // Use reflection to call OrderBy because we don't know the property type at compile time
+                var methodName = "OrderBy";
+                var method = typeof(Queryable).GetMethods()
+                    .First(m => m.Name == methodName && m.GetParameters().Length == 2)
+                    .MakeGenericMethod(typeof(T), orderProp.Type);
+
+                query = (IQueryable<T>)method.Invoke(null, new object[] { query, orderLambda });
+            }
+
+
+            return await query.ToListAsync();
         } catch (Exception ex)
         {
             return null;
@@ -345,5 +355,48 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     //    }
     //}
+    #endregion
+
+
+    #region VIEW FUNCTIONS
+    //public async Task<List<PrinterView>> GetPrinterView()
+    //{
+    //    var sql = @"
+    //                SELECT  ap.IID, ap.ApplicationName, ap.PrinterType, 
+    //                        ISNULL(pl.ClientIID, '') AS ClientIID, 
+    //                        ISNULL(pl.NetworkName, '') AS NetworkName, 
+    //                        ISNULL(pl.DeliveryPrinter, 0) AS DeliveryPrinter, 
+    //                        ISNULL(pl.TakeAwayPrinter, 0) AS TakeAwayPrinter, 
+    //                        ap.AdminOnly
+    //                FROM    dbo.ApplicationPrinter ap 
+    //                LEFT OUTER JOIN dbo.PrinterLookup pl ON ap.IID = pl.PrinterIID";
+
+    //    var results = await GetDBContext().Set<PrinterView>()
+    //        .FromSqlRaw(sql)
+    //        .ToListAsync();
+
+    //    return results;
+    //}
+
+
+    public async Task<List<SessionData>> GetSessionSum()
+    {
+        var sql = @"
+                SELECT        TOP (100) PERCENT dbo.Sessions.IID, dbo.Sessions.StartDate, dbo.Sessions.EndDate, COUNT(OrdersView.IID) AS OrderCount, SUM(ISNULL(OrdersView.CalculatedValue, 0)) AS GrossSessionTotal, dbo.Sessions.X1Total, 
+                         dbo.Sessions.X2Total, dbo.Sessions.X3Total, dbo.Sessions.peny1, dbo.Sessions.peny2, dbo.Sessions.peny5, dbo.Sessions.peny10, dbo.Sessions.peny20, dbo.Sessions.peny50, dbo.Sessions.pound1, dbo.Sessions.pound2, 
+                         dbo.Sessions.pound5, dbo.Sessions.pound10, dbo.Sessions.pound20, dbo.Sessions.pound50, dbo.Sessions.pound100, dbo.Sessions.pound200, dbo.Sessions.pound500, dbo.Sessions.pound1000, dbo.Sessions.CashTotal, 
+                         dbo.Sessions.CardTotal, dbo.Sessions.OnlineTotal, ISNULL(dbo.UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0) AS GrossSessionTotalUncompleted
+FROM            dbo.Sessions LEFT OUTER JOIN
+                         dbo.UncompletedOrdersSessionSum ON dbo.Sessions.IID = dbo.UncompletedOrdersSessionSum.SessionIID LEFT OUTER JOIN
+                         dbo.OrdersView AS OrdersView ON dbo.Sessions.IID = OrdersView.SessionIID
+GROUP BY dbo.Sessions.IID, dbo.Sessions.StartDate, dbo.Sessions.EndDate, dbo.Sessions.peny1, dbo.Sessions.peny5, dbo.Sessions.peny10, dbo.Sessions.peny20, dbo.Sessions.peny50, dbo.Sessions.pound1, dbo.Sessions.pound5, 
+                         dbo.Sessions.pound10, dbo.Sessions.pound20, dbo.Sessions.pound50, dbo.Sessions.pound100, dbo.Sessions.pound200, dbo.Sessions.pound500, dbo.Sessions.pound1000, dbo.Sessions.CardTotal, 
+                         dbo.Sessions.OnlineTotal, dbo.Sessions.CashTotal, dbo.Sessions.pound2, dbo.Sessions.peny2, dbo.Sessions.X1Total, dbo.Sessions.X2Total, dbo.Sessions.X3Total, 
+                         ISNULL(dbo.UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0)
+                ";
+        var results = await GetDBContext().Set<SessionData>().FromSqlRaw(sql).ToListAsync();
+        return results;
+    }
+
     #endregion
 }

@@ -162,6 +162,27 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup Label="Compile items now included by globbing that were not in the original project file">
+    <Compile Remove="Classes\ApplicationPrinter.cs" />
+    <Compile Remove="Classes\Backup Classes.cs" />
+    <Compile Remove="Classes\Bonus.cs" />
+    <Compile Remove="Classes\Customer.cs" />
+    <Compile Remove="Classes\Distribution.cs" />
+    <Compile Remove="Classes\DTRMBackup.cs" />
+    <Compile Remove="Classes\DTRMConfig.cs" />
+    <Compile Remove="Classes\Employee.cs" />
+    <Compile Remove="Classes\Entity.cs" />
+    <Compile Remove="Classes\EntityButton.cs" />
+    <Compile Remove="Classes\EntityButtonStockItemLookUp.cs" />
+    <Compile Remove="Classes\EntityButtonStockItemRecipe.cs" />
+    <Compile Remove="Classes\KitchenOrder Classes.cs" />
+    <Compile Remove="Classes\Menu.cs" />
+    <Compile Remove="Classes\Order.cs" />
+    <Compile Remove="Classes\OrderItem.cs" />
+    <Compile Remove="Classes\SessionData.cs" />
+    <Compile Remove="Classes\StockItem.cs" />
+    <Compile Remove="Classes\StockManager.cs" />
+    <Compile Remove="Classes\Supplier.cs" />
+    <Compile Remove="Classes\Table.cs" />
     <Compile Remove="Reports\{3A97FFAD-EA71-493F-A3FE-A9C7A0BAE99A}.cs" />
     <Compile Remove="Reports\UserSalesList.cs" />
     <Compile Remove="Reports\TaxSummary.cs" />

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
 
     public enum BonusTypes {NoTip, Half_Tip, Full_Tip }

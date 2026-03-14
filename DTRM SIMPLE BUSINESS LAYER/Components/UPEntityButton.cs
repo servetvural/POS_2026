@@ -3,6 +3,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using PosLibrary;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for EntityTemplateItem.

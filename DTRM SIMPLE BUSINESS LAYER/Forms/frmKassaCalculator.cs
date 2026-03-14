@@ -11,6 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmKassaCalculator : Form {
         private DTRMSimpleBusiness bslayer;
@@ -40,7 +43,7 @@ namespace DTRMNS {
 
             frmPassword frmpswd = new frmPassword(bslayer,"");
             if (frmpswd.ShowDialog() == DialogResult.OK) {
-                if (!bslayer.IsLoginSuccess(frmpswd.Password))
+                if (!bslayer.IsLoginSuccess(frmpswd.Password).Result)
                     blnTerminate = true;
             } else {
                 blnTerminate = true; }

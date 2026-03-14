@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class frmTableSplitter : Form {
         private DTRMSimpleBusiness bslayer;

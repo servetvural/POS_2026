@@ -58,7 +58,7 @@ public enum OrderDisplayHeightTypes { Narrow = 16, Middle = 32, Large = 62 }
 public enum BarcodeScannerConnectorTypes { Keyboard, COM1, COM2, COM3, COM4 }
 public enum SerialPortTypes { NONE, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, COM10, COM11, COM12 }
 
-//public enum QuantityTypes { One, All }
+
 public enum SplitDirections { SourceToTarget, TargetToSource }
 
 public enum BSLayerErrors
@@ -72,8 +72,6 @@ public enum SizeBarButtonType { Cancel, Complete }
 public enum LocationTypes { DockLeft, DockRight, DockTop, DockBottom }
 public enum ButtonTypes { System, Application }
 public enum ProcessTypes { SingleProcess, MultiProcess }
-// Summary:
-//     Indicates the type of the progress bar.
 public enum ProgressTypes { Standard, Marquee }
 
 public enum SelectionTypes { None, Selected, All }

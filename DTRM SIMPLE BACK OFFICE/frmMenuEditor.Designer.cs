@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class FrmMenuEditor {
         /// <summary>
         /// Required designer variable.
@@ -365,7 +367,7 @@
             // 
             // catalogBindingSource
             // 
-            this.catalogBindingSource.DataSource = typeof(DTRMNS.Menu);
+            this.catalogBindingSource.DataSource = typeof(FoodMenu);
             // 
             // popEntityButton
             // 
@@ -609,7 +611,7 @@
             // 
             // entityButtonSearchResultBindingSource
             // 
-            this.entityButtonSearchResultBindingSource.DataSource = typeof(DTRMNS.EntityButtonSearchResult);
+            this.entityButtonSearchResultBindingSource.DataSource = typeof(EntityButtonSearchResult);
             // 
             // pnlSearchImagePanel
             // 
@@ -1710,7 +1712,7 @@
             // 
             // entityBindingSource
             // 
-            this.entityBindingSource.DataSource = typeof(DTRMNS.Entity);
+            this.entityBindingSource.DataSource = typeof(Entity);
             // 
             // barEntity
             // 
@@ -2532,7 +2534,7 @@
             // 
             // entityButtonBindingSource
             // 
-            this.entityButtonBindingSource.DataSource = typeof(DTRMNS.EntityButton);
+            this.entityButtonBindingSource.DataSource = typeof(EntityButton);
             // 
             // FrmMenuEditor
             // 

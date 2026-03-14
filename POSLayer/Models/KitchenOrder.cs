@@ -19,7 +19,7 @@ public partial class KitchenOrder : BaseClass
 
     public int OrderNo { get; set; }
 
-    public int BeingModified { get; set; }
+    public bool BeingModified { get; set; }
 
     public OrderTypes OrderType { get; set; }
 

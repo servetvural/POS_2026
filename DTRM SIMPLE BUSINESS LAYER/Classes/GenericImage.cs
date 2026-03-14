@@ -44,15 +44,10 @@ namespace DTRMNS {
             }
         }
 
-
         public GenericImage() {
 
         }
-        //public GenericImage(string ReferenceIID, Image DisplayImage, string ExtraText) {
-        //    this.ReferenceIID = ReferenceIID;
-        //    this.DisplayImage = DisplayImage;
-        //    this.ExtraText = ExtraText;
-        //}
+
         public GenericImage(string ReferenceID, FileInfo finfo) {
             this.ReferenceIID = ReferenceIID;
             this.DisplayImage = UF.LoadBitmapNolock(finfo.FullName);
@@ -71,7 +66,6 @@ namespace DTRMNS {
                 ReferenceIID = dt.Rows[0]["ReferenceIID"].ToString();
                 if (dt.Rows[0]["DisplayImage"] != null)
                     ImageSizeinKB = ((byte[])dt.Rows[0]["DisplayImage"]).Length / 1024;
-                    //ImageAsByte = (byte[])dt.Rows[0]["DisplayImage"];
                 DisplayImage = DRUF.byteArrayToImage((byte[])dt.Rows[0]["DisplayImage"]);
                 ExtraText = dt.Rows[0]["ExtraText"].ToString();
                 ImageFileName = dt.Rows[0]["ImageFileName"].ToString();
@@ -96,10 +90,7 @@ namespace DTRMNS {
                 if ((byte[])dr["DisplayImage"] != null)
                     ImageSizeinKB = ((byte[])dr["DisplayImage"]).Length / 1024;
 
-                // DisplayImage = DRUF.byteArrayToImage((byte[])dr["DisplayImage"]);
                 DisplayImage = UF.ReSizeImageTo(UF.ByteArrayToImage((byte[])dr["DisplayImage"]),width,height, keepRatio);
-
-
 
                 ExtraText = dr["ExtraText"].ToString();
                 ImageFileName = dr["ImageFileName"].ToString();
@@ -135,21 +126,5 @@ namespace DTRMNS {
                 DisplayImage = DRUF.byteArrayToImage(imageFile);
             } catch { }
         }
-
-//        public float GetImageSize()
-//        {
-//            if (DisplayImage != null)
-//            {
-//                System.Drawing.Imaging.PixelFormat pf = DisplayImage.PixelFormat;
-//                pf == System.Drawing.Imaging.PixelFormat.
-//               return DisplayImage.Width * DisplayImage.Height * DisplayImage.VerticalResolution;
-////                width in pixels × height in pixels × colour depth
-////SizeInKb = ___________________________________________________
-
-////                        8 × 1024
-//            }
-//            return 0;
-//        }
-
     }
 }
