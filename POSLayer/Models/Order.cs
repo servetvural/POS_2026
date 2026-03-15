@@ -34,7 +34,7 @@ public partial class Order  : BaseClass
 
     public string Instruction { get; set; } = string.Empty;
 
-    public decimal MoneyPaid { get; set; }
+    public double MoneyPaid { get; set; }
 
     public string? PaymentFlag { get; set; }   = string.Empty;
 

@@ -3,6 +3,9 @@ using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
 
     /// <summary>
@@ -832,12 +835,10 @@ namespace DTRMNS {
         }
         private void LoadEntities() {
             pnlDistributions.Controls.Clear();
-            //DataTable dt = bslayer.GetActiveNormalEntityList();
+
             DataTable dt = bslayer.GetDataTable("SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN " +
                       " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '" + bslayer.config.ActiveMenuIID + "' Order by Entitybutton.EntityButtonName");
-            
-           // PrintableTypeList = new Dictionary<string, string>();
-            
+                        
             for (int i = 0; i < dt.Rows.Count; i++) {
                 EntityButton entitybutton = new EntityButton(dt.Rows[i]);
                 EntityButtonSpecial btn = new EntityButtonSpecial();

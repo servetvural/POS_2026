@@ -4,6 +4,7 @@ using System.Drawing;
 using PosLibrary;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
 namespace DTRMNS {
     /// <summary>
@@ -195,7 +196,7 @@ namespace DTRMNS {
             bslayer.OnDisplayOrder();
         }
 
-        private float GetEBRelatedPrice(DTRMSimpleBusiness bslayer, UPEntityButton geb)
+        private double GetEBRelatedPrice(DTRMSimpleBusiness bslayer, UPEntityButton geb)
         {
             return geb.entitybutton.GetPrice(bslayer.AttachedOrder.OrderType);
 
@@ -211,7 +212,7 @@ namespace DTRMNS {
                 TrmGetValue fgv = null;
 
                 //Extra and discount management
-                float exprice = 0f;
+                double exprice = 0f;
 
                 switch (geb.ButtonType)
                 {

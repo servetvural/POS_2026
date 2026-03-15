@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using POSLayer.Library;
+using POSLayer.Models;
+
 using PosLibrary;
 
 namespace DTRMNS {
@@ -27,7 +32,7 @@ namespace DTRMNS {
         }
 
         private void LoadTables() {
-            tablelist = bslayer.GetTableAndSubTables(rootTableIID);
+            tablelist = bslayer.GetTableAndSubTables(rootTableIID).Result;
 
             pnlTables.Controls.Clear();
 
@@ -75,10 +80,10 @@ namespace DTRMNS {
                 this.Close();
         }
 
-        private void Btn_MouseDown(object sender, MouseEventArgs e) {
+        private async void Btn_MouseDown(object sender, MouseEventArgs e) {
             if (e.Button == MouseButtons.Right) {
                 TableButton tableButton = (TableButton)sender;
-                Table table = bslayer.GetTable(tableButton.IID);
+                Table table =await bslayer.GetTable(tableButton.IID);
                 if (string.IsNullOrEmpty(table.ParentTableIID))
                     return;
                 else {
@@ -94,7 +99,7 @@ namespace DTRMNS {
 
         }
 
-        private void SubButtonClickHandler(object sender, EventArgs e) {
+        private async void SubButtonClickHandler(object sender, EventArgs e) {
             if (chkJoin2Table.Checked) {
                 if (sourceMergeTable == null) {
                     //Identify Source Table
@@ -118,7 +123,7 @@ namespace DTRMNS {
                     if (frm.ShowDialog() == DialogResult.OK) {
                         bool blnLeaveSubTables = false;
                         if (SourceTable.IsPrimary) {
-                            if (bslayer.HasSubTables(SourceTable.IID)) {
+                            if (bslayer.HasSubTables(SourceTable.IID).Result) {
                                 blnLeaveSubTables = MessageBox.Show("Do you want to move sub tables as well?",
                                                         "Move ALL",
                                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -138,7 +143,7 @@ namespace DTRMNS {
 
             if (chkPrintTableOrder.Checked) {
                 TableButton tableButton = (TableButton)sender;
-                Table table = bslayer.BarrowTable(tableButton.IID);
+                Table table =await bslayer.BarrowTable(tableButton.IID);
                 if (table.AttachedOrder != null && string.IsNullOrEmpty(bslayer.config.DTClientLocalReceiptPrinterIID)) { 
                         bslayer.PrintEntireOrder(table.AttachedOrder, true, false, 1,
                             bslayer.config.DTClientLocalReceiptPrinterIID);
@@ -151,7 +156,7 @@ namespace DTRMNS {
 
             if (chkChangeTableName.Checked) {
                 TableButton tableButton = (TableButton) sender;
-                Table table = bslayer.GetTable(tableButton.IID);
+                Table table = await bslayer.GetTable(tableButton.IID);
                 //if (string.IsNullOrEmpty(table.ParentTableIID))
                 //    return;
                 //else {
@@ -176,7 +181,7 @@ namespace DTRMNS {
         }
 
         private void btnAddSubTable_Click(object sender, EventArgs e) {
-            if (bslayer.AddSubTableWithTest(rootTableIID))
+            if (bslayer.AddSubTableWithTest(rootTableIID).Result)
                 LoadTables();
         }
 
@@ -192,8 +197,8 @@ namespace DTRMNS {
             }
         }
 
-        private void btnJoinAllTables_Click(object sender, EventArgs e) {
-            Table primaryTable = bslayer.BarrowTable(rootTableIID);
+        private async Task btnJoinAllTables_Click(object sender, EventArgs e) {
+            Table primaryTable =await bslayer.BarrowTable(rootTableIID);
             for (int i = 0; i < tablelist.Count; i++) {
                 if (tablelist[i].IID != rootTableIID)
                     bslayer.MergeTable(tablelist[i].IID, rootTableIID);

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Newtonsoft.Json;
+
+using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmSupplierList : Form {
@@ -21,7 +24,7 @@ namespace DTRMNS {
         }
 
         private void LoadSuppliers() {
-            dgv.DataSource = bslayer.GetAllSuppliers();
+            dgv.DataSource = bslayer.GetAllSuppliersAsList();
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
@@ -30,9 +33,9 @@ namespace DTRMNS {
                 LoadSuppliers();
         }
 
-        private void btnEdit_Click(object sender, EventArgs e) {
+        private async Task btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Supplier supplier = bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                Supplier supplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 frmSupplier frm = new frmSupplier(bslayer, supplier);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadSuppliers();
@@ -61,9 +64,9 @@ namespace DTRMNS {
 
         }
 
-        private void btnSelect_Click(object sender, EventArgs e) {
+        private async Task btnSelect_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                selectedSupplier = bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                selectedSupplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 this.DialogResult = DialogResult.OK;
                 Close();
             }
@@ -73,9 +76,9 @@ namespace DTRMNS {
             LoadSuppliers();
         }
 
-        private void btnExportAsJson_Click(object sender, EventArgs e)
+        private async Task btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Supplier> itemList = bslayer.GetAllSuppliersAsList();
+            List<Supplier> itemList =await bslayer.GetAllSuppliersAsList();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";

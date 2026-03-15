@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmPrep : Form {
         private DTRMSimpleBusiness bslayer;

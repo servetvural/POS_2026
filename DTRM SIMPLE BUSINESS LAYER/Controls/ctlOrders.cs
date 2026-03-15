@@ -5,6 +5,11 @@ using System.Data;
 
 using System.Collections.Generic;
 
+using POSLayer.Library;
+using POSLayer.Models;
+using System.Threading.Tasks;
+using POSWinFormLayer;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for frmOrders.
@@ -49,11 +54,6 @@ namespace DTRMNS {
             InitializeComponent();
         }
 
-        //public ctlOrders(DTRMNS.DTRMSimpleBusiness bs/*, frmMain MainForm*/) {
-        //    InitializeComponent();
-        //    bslayer = bs;
-        //    //this.MainForm = MainForm;
-        //}
         public ctlOrders(DTRMSimpleBusiness bs, GenericFunctionCall UnloadOrder,
             GenericFunctionCall LoadAttachedOrder,
             GenericFunctionCall DetachPanel,
@@ -67,12 +67,6 @@ namespace DTRMNS {
             DetachPanelEvent = DetachPanel;
             PassControlEvent = AttachPanel;
             CompleteAttachedOrderEvent = CompleteAttachedOrder;
-
-            //fo.UnloadOrderEvent = new GenericFunctionCall(UnloadOrder);
-            //    fo.LoadAttachedOrderEvent = new GenericFunctionCall(LoadAttachedOrder);
-            //    fo.DetachPanelEvent = new GenericFunctionCall(DetachPanel);
-            //    fo.PassControlEvent = new PassControl(AttachPanel);
-            //    fo.CompleteAttachedOrderEvent = new RemoteCompleteAttachedOrder(CompleteAttachedOrder);
 
         }
         /// <summary>
@@ -470,7 +464,7 @@ namespace DTRMNS {
             LoadOrders(true);
         }
 
-        private void LoadOrders(bool blnViewAllOrders) {
+        private async Task LoadOrders(bool blnViewAllOrders) {
             try {
                 DataTable dt = bslayer.GetAllOrdersForSessionDateOrderly(bslayer.luv.CurrentSessionIID, OrderByTypes.Descending);
                 //Add columns here
@@ -488,7 +482,7 @@ namespace DTRMNS {
                 int maxdetailed = dt.Rows.Count > bslayer.config.Order_List_Detailed_Orders_Max_Counter ? bslayer.config.Order_List_Detailed_Orders_Max_Counter : dt.Rows.Count;
                 rowheights = new List<int>();
                 for (int i=0; i < maxdetailed;i++) {
-                    Order order = bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
+                    Order order =await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
                     dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
                     rowheights.Add(order.items.Count * 15 + 7);
                 }
@@ -524,26 +518,30 @@ namespace DTRMNS {
             LoadSelectedOrder();
         }
 
-        private void LoadSelectedOrder() {
+        private async void LoadSelectedOrder() {
             string SelectedIID = "";
             Table table = null;
             if (dgv.SelectedRows.Count > 0) {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = bslayer.GetOrder(SelectedIID);
+                Order order =await bslayer.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse) {
                     if (order.Status == StatusFlags.COMPLETED) {
-                        table = new Table("Temp" + order.IID, order.Covers);
+                        table = new Table()
+                        {
+                            TableName = "Temp" + order.IID,
+                            TableCovers = order.Covers
+                        };
                         order.TableIID = table.IID;
-                        bslayer.SaveOrder(order);
+                        await bslayer.SaveOrder(order);
                         table.LockedClientIP = bslayer.config.Terminal_Name;
                         table.AttachOrder(order);
                         table.CurrentOrderIID = order.IID;
 
                         bslayer.SaveTable(table);
-                        bslayer.BarrowTable(table.IID);
+                        await bslayer.BarrowTable(table.IID);
                     }
                     else {
-                        table = bslayer.BarrowTable(order.TableIID);
+                        table =await bslayer.BarrowTable(order.TableIID);
                     }
                     if (table == null) {
                         MessageBox.Show("Order cannot be openned");
@@ -556,7 +554,7 @@ namespace DTRMNS {
                     }
                 }
                 else {
-                    order = bslayer.BarrowOrder(order.IID, bslayer.config.Terminal_Name);
+                    order =await bslayer.BarrowOrder(order.IID, bslayer.config.Terminal_Name);
                     bslayer.AttachedOrder = order;
                     LoadAttachedOrderEvent();
                     DetachPanelEvent();
@@ -581,11 +579,11 @@ namespace DTRMNS {
 
 
 
-        private void btnUnsetPaymentMethod_Click(object sender, EventArgs e) {
+        private async void btnUnsetPaymentMethod_Click(object sender, EventArgs e) {
             string SelectedIID = "";
             if (dgv.SelectedRows.Count > 0) {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order = bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
+                POSLayer.Models.Order order = await bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
 
                 if (order != null) {
                     order.Payment = POSLayer.Library.PaymentMethods.Unknown;
@@ -604,10 +602,10 @@ namespace DTRMNS {
             LoadSelectedOrder();
         }
 
-        private void btnPrintReceipt_Click(object sender, EventArgs e) {
+        private async void btnPrintReceipt_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                POSLayer.Models.Order order = bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
-                ApplicationPrinter ap = bslayer.GetPrinterForOrderType(order.OrderType);
+                POSLayer.Models.Order order =await bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                ApplicationPrinter ap =await bslayer.GetPrinterForOrderType(order.OrderType);
                 if (ap != null)
                     bslayer.PrintReceipt(order.IID, ap, 1);
                 else {
@@ -640,16 +638,16 @@ namespace DTRMNS {
             vScroll.Value = e.NewValue;
         }
 
-        private void btnChangePaymentMethod_Click(object sender, EventArgs e) {
+        private async void btnChangePaymentMethod_Click(object sender, EventArgs e) {
             string SelectedIID = "";
             if (dgv.SelectedRows.Count > 0) {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order = bslayer.GetOrder(SelectedIID);
+                POSLayer.Models.Order order =await bslayer.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse) {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
                 }
-                bslayer.AttachedOrder = bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
+                bslayer.AttachedOrder =await bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
 
                 if (bslayer.AttachedOrder != null) {
                     if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED)) {
@@ -664,7 +662,7 @@ namespace DTRMNS {
                         bslayer.SaveOrder(bslayer.AttachedOrder);
                         UnloadOrderEvent();
                         PassControlEvent(this);
-                        LoadOrders(true);
+                        await LoadOrders(true);
                     }
                 }
             }

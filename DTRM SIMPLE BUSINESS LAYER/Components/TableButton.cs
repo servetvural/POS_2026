@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
+using POSLayer.Library;
+
 namespace DTRMNS{
     public class TableButton : System.Windows.Forms.Button{
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]

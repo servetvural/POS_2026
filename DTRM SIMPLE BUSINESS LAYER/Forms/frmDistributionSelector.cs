@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmDistributionSelector : Form {
         private DTRMSimpleBusiness bslayer;
@@ -46,7 +48,7 @@ namespace DTRMNS {
             selectedDistributions.Clear();
             for(int i=0; i < dgv.SelectedRows.Count; i++) {
                 string IID = dgv.SelectedRows[i].Cells["colIID"].Value.ToString();
-                selectedDistributions.Add(bslayer.GetDistribution(IID));
+                selectedDistributions.Add(bslayer.GetDistribution(IID).Result);
             }
             this.DialogResult = DialogResult.OK;
             Close();

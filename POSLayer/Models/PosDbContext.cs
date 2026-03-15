@@ -93,9 +93,9 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<UserSale> UserSales { get; set; }
 
-    public virtual DbSet<Xorder> Xorders { get; set; }
+    public virtual DbSet<XOrder> Xorders { get; set; }
 
-    public virtual DbSet<XorderItem> XorderItems { get; set; }
+    public virtual DbSet<XOrderItem> XorderItems { get; set; }
 
     public virtual DbSet<XordersView> XordersViews { get; set; }
 
@@ -947,7 +947,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.SupplierName)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.XsessionQuantity).HasColumnName("XSessionQuantity");
+            entity.Property(e => e.XSessionQuantity).HasColumnName("XSessionQuantity");
         });
 
         modelBuilder.Entity<Supplier>(entity =>
@@ -998,7 +998,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("GroupIID");
             entity.Property(e => e.Height).HasColumnName("height");
-            entity.Property(e => e.LockedClientIp)
+            entity.Property(e => e.LockedClientIP)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("LockedClientIP");
@@ -1010,8 +1010,8 @@ public partial class PosDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.Width).HasColumnName("width");
-            entity.Property(e => e.Xlocation).HasColumnName("xlocation");
-            entity.Property(e => e.Ylocation).HasColumnName("ylocation");
+            entity.Property(e => e.XLocation).HasColumnName("xlocation");
+            entity.Property(e => e.YLocation).HasColumnName("ylocation");
         });
 
         modelBuilder.Entity<TableGroup>(entity =>
@@ -1178,7 +1178,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<Xorder>(entity =>
+        modelBuilder.Entity<XOrder>(entity =>
         {
             entity.HasKey(e => e.IID);
 
@@ -1194,7 +1194,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Buzzer)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.Cname)
+            entity.Property(e => e.CName)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CName");
@@ -1208,7 +1208,7 @@ public partial class PosDbContext : DbContext
             entity.Property(e => e.Instruction)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.LockedClientIp)
+            entity.Property(e => e.LockedClientIP)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("LockedClientIP");
@@ -1248,7 +1248,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<XorderItem>(entity =>
+        modelBuilder.Entity<XOrderItem>(entity =>
         {
             entity.HasKey(e => e.IID);
 

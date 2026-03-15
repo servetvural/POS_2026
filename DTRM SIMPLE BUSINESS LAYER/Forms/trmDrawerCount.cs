@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class TrmDrawerCount : Form {
         private DTRMSimpleBusiness bslayer;
@@ -10,7 +12,7 @@ namespace DTRMNS {
         public TrmDrawerCount(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             this.bslayer = bslayer;
-            this.session = bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID); 
+            this.session = bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID).Result; 
         }
         public TrmDrawerCount(DTRMSimpleBusiness bslayer, bool OpenAsTool) {
             InitializeComponent();
@@ -53,7 +55,7 @@ namespace DTRMNS {
 
         private void CalculateTotals() {
             //calculate cash totals
-            float total = 0f;
+            double total = 0f;
             foreach (object obj in this.Controls) {
                 if (obj.GetType() == typeof(ctlBozukPara)) {
                     ctlBozukPara ctl = (ctlBozukPara)obj;
@@ -64,15 +66,15 @@ namespace DTRMNS {
             btnCashTotal.Text = total.ToString("f");
        
 
-            total += float.Parse(btnDebitCardTotal.Tag.ToString());
-            total += float.Parse(btnCreditCardTotal.Tag.ToString());
-            total += float.Parse(btnChequeTotal.Tag.ToString());
-            total += float.Parse(btnOthersTotal.Tag.ToString());
+            total += double.Parse(btnDebitCardTotal.Tag.ToString());
+            total += double.Parse(btnCreditCardTotal.Tag.ToString());
+            total += double.Parse(btnChequeTotal.Tag.ToString());
+            total += double.Parse(btnOthersTotal.Tag.ToString());
 
             btnTotal.Tag = total;
             btnTotal.Text = total.ToString("f");
 
-            total += float.Parse(btnDebitCardTotal.Tag.ToString());
+            total += double.Parse(btnDebitCardTotal.Tag.ToString());
         }
 
         private void BtnClose_Click(object sender, EventArgs e) {

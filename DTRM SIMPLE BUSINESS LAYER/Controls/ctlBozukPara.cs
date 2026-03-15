@@ -2,12 +2,14 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class ctlBozukPara : UserControl {
         public event GenericEventHandler ValueChanged;
-        private float _Kurus;
-        private float _Tane;
-        private float _Value;
+        private double _Kurus;
+        private double _Tane;
+        private double _Value;
         public ctlBozukPara() {
             InitializeComponent();
         }
@@ -20,7 +22,7 @@ namespace DTRMNS {
             Calculate();
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public float Kurus {
+        public double Kurus {
             get { return _Kurus; }
             set {
                 _Kurus = value;
@@ -28,7 +30,7 @@ namespace DTRMNS {
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public float Tane {
+        public double Tane {
             get { return _Tane; }
             set {
                 _Tane = value;
@@ -36,7 +38,7 @@ namespace DTRMNS {
             }
         }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public float Value {
+        public double Value {
             get { return _Value; }
             set {
                 _Value = value;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
    public partial class trmYnc : Form {
       public DialogTypes DialogType;

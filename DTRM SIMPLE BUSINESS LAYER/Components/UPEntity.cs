@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for UPEntity.

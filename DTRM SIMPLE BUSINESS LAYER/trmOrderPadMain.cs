@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using PosLibrary;
 using System.IO;
 using DTRMNS.Forms;
+using POSLayer.Library;
+using System.Threading.Tasks;
+using POSLayer.Models;
+using POSWinFormLayer;
 
 
 //using System.ServiceModel;
@@ -399,9 +403,9 @@ namespace DTRMNS
             //RefreshUserInterface();
         }
 
-        private void LoadViewBars()
+        private async void LoadViewBars()
         {
-            List<Distribution> theList = bslayer.GetDistributionList(bslayer.config.ActiveMenuIID);
+            List<Distribution> theList = await bslayer.GetDistributionList(bslayer.config.ActiveMenuIID);
             foreach (Distribution gt in theList)
             {
                 ToolStripMenuItem btn = new ToolStripMenuItem();
@@ -422,10 +426,10 @@ namespace DTRMNS
 
         }
 
-        private void LoadBonusSchemes()
+        private async void LoadBonusSchemes()
         {
             pnlBonus.Activate(bslayer);
-            List<Bonus> theList = bslayer.GetAllBonusList();
+            List<Bonus> theList =await bslayer.GetAllBonusList();
             mnuSelectBonusPlan.DropDownItems.Clear();
             foreach (Bonus bon in theList)
             {
@@ -442,12 +446,12 @@ namespace DTRMNS
                 mnuSelectBonusPlan.Text = bslayer.currentBonusScheme.PlanName + " (or Change)";
 
         }
-        private void BonusScheme_Click(object sender, EventArgs e)
+        private async void BonusScheme_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem btn = (ToolStripMenuItem)sender;
             string bonusIID = btn.Tag.ToString();
 
-            bslayer.currentBonusScheme = bslayer.GetBonus(bonusIID);
+            bslayer.currentBonusScheme = await bslayer.GetBonus(bonusIID);
             mnuSelectBonusPlan.Text = bslayer.currentBonusScheme.PlanName + " (or Change)";
             pnlBonus.UpdateBonusDisplay();
 
@@ -459,8 +463,6 @@ namespace DTRMNS
             {
                 this.Hide();
                 this.Enabled = false;
-                //if (bslayer.config.Customer_Display_Type != CustomerDisplayTypes.NONE)
-                //    bslayer.CDSendMessage("SYSTEM LOCKED", CDAreas.All);
                 DetachPanel();  //To prevent any admin panel visibility
                 Locker.Show();
             }
@@ -2354,7 +2356,7 @@ namespace DTRMNS
 
                     try
                     {
-                        btn.Font = new Font(upe.entity.FFamily, upe.entity.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), upe.entity.FStyle));
+                        btn.Font = new Font(upe.entity.FFamily, (float)upe.entity.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), upe.entity.FStyle));
                     } catch
                     {
                         btn.Font = new Font("Arial", 9, FontStyle.Bold);
@@ -2369,7 +2371,7 @@ namespace DTRMNS
 
                     pnlOrderPad.Controls.Add(btn);
 
-                    if (((Entity)bslayer.ActiveMenu.items[i]).entityType == EntityTypes.SpecialEntity)
+                    if (((Entity)bslayer.ActiveMenu.items[i]).EntityType == EntityTypes.SpecialEntity)
                         pnlSpecial = upe;
                 }
             }
@@ -2466,11 +2468,11 @@ namespace DTRMNS
 
             if (bslayer.AttachedOrder.Status == StatusFlags.DONE ||
                 (bslayer.AttachedOrder.OrderType == OrderTypes.DirectSale)) // && bslayer.config.Hold_Orders_New_Items_Add_Seperately))
-                bslayer.StepableOrderItemGroupIID = ShortGuid.NewDateBasedGuid2(); // ShortGuid.NewGuid().ToString();
+                bslayer.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2(); // ShortGuid.NewGuid().ToString();
             else
             {
                 if (bslayer.AttachedOrder.Status == StatusFlags.NEW && bslayer.AttachedOrder.OrderType == OrderTypes.InHouse)
-                    bslayer.StepableOrderItemGroupIID = ShortGuid.NewDateBasedGuid2();
+                    bslayer.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2();
                 else
                     bslayer.StepableOrderItemGroupIID = bslayer.AttachedOrder.IID;
             }
@@ -2630,7 +2632,7 @@ namespace DTRMNS
                         bslayer.DeleteKitchenOrdersForOrder(bslayer.AttachedOrder.IID);
                     else
                     {
-                        prepResult = bslayer.CreateKitchenOrderForOrder(order, out korder);
+                        prepResult = bslayer.CreateKitchenOrderForOrder(order, korder).Result;
                         if (prepResult == PrepDialogReturnTypes.Cancel)
                             return false;
                     }
@@ -2827,7 +2829,7 @@ namespace DTRMNS
                     {
                         try
                         {
-                            SelectedPrinterIID = bslayer.GetPrinterForOrderType(OrderTypes.TakeAwayB).IID;
+                            SelectedPrinterIID = bslayer.GetPrinterForOrderType(OrderTypes.TakeAwayB).Result.IID;
                         } catch
                         {
                         }
@@ -2838,7 +2840,7 @@ namespace DTRMNS
                     {
                         try
                         {
-                            SelectedPrinterIID = bslayer.GetPrinterForOrderType(OrderTypes.Delivery).IID;
+                            SelectedPrinterIID = bslayer.GetPrinterForOrderType(OrderTypes.Delivery).Result.IID;
                         } catch
                         {
                         }
@@ -2846,7 +2848,7 @@ namespace DTRMNS
 
                     if (SelectedPrinterIID == null || SelectedPrinterIID == "")
                     {
-                        List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList();
+                        List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList().Result;
                         if (PrinterList.Count == 0)
                         {
                             MessageBox.Show("There is no receipt printer in the system, please assign a receipt printer");
@@ -2877,9 +2879,9 @@ namespace DTRMNS
                 if (NumberOfCopy > 0)
                 {
                     bslayer.AttachedOrder.blnPrinted = bslayer.PrintEntireOrder(bslayer.AttachedOrder, true, true,
-                        NumberOfCopy, SelectedPrinterIID);
+                        NumberOfCopy, SelectedPrinterIID).Result;
                     if (bslayer.config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter(bslayer.GetPrinterForClient(SelectedPrinterIID).NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(bslayer.GetPrinterForClient(SelectedPrinterIID).Result.NetworkName);
 
                 }
 
@@ -2906,9 +2908,9 @@ namespace DTRMNS
                 {
                     if (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse)
                     {
-                        if (bslayer.IsPrimaryTable(bslayer.AttachedOrder.TableIID))
+                        if (bslayer.IsPrimaryTable(bslayer.AttachedOrder.TableIID).Result)
                         {
-                            if (bslayer.HasSubTables(bslayer.AttachedOrder.TableIID))
+                            if (bslayer.HasSubTables(bslayer.AttachedOrder.TableIID).Result)
                             {
                                 blnTableTransferRequired = true;
                                 targetTableIID = bslayer.AttachedOrder.TableIID;
@@ -2957,8 +2959,6 @@ namespace DTRMNS
                     return false;
                 if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, false))
                 {
-                    //if (bslayer.config.Customer_Display_Type != CustomerDisplayTypes.NONE)
-                    //    bslayer.CDSendMessage("KITCHEN REQUEST SENT", CDAreas.All);
                     return true;
                 } else
                     return false;
@@ -2966,29 +2966,18 @@ namespace DTRMNS
             return false;
         }
 
-
-
-
-
-
         private void PrintFinalPayment(PaymentMethods paymentMethod, bool withReceipt)
         {
 
             if (bslayer.AttachedOrder != null)
             {
-                float total = bslayer.AttachedOrder.GetFullTotal();
+                double total = bslayer.AttachedOrder.GetFullTotal();
                 if (total == 0)
                     return;
                 if (total > 0 && (bslayer.AttachedOrder.OrderType != OrderTypes.Delivery))
                     bslayer.OpenCashDrawer(false);
 
-                //if (bslayer.AttachedOrder.MoneyPaid > 0)
-                //    bslayer.CDPaymentTotalWithChange();
-                //else
-                //    bslayer.CDPaymentTotal();
-
                 bslayer.AttachedOrder.Payment = paymentMethod;
-
 
                 switch (bslayer.AttachedOrder.OrderType)
                 {
@@ -3036,7 +3025,7 @@ namespace DTRMNS
 
         private void btnTableButton_Click(object sender, EventArgs e)
         {
-            if (bslayer.HasSubTables(((TableButton)sender).IID))
+            if (bslayer.HasSubTables(((TableButton)sender).IID).Result)
             {
                 //Display SubTables selection panel
                 frmSubTableSelector frm = new frmSubTableSelector(bslayer, ((TableButton)sender).IID,
@@ -3049,10 +3038,10 @@ namespace DTRMNS
             }
         }
 
-        private void btnActualTableButton_Click(object sender, EventArgs e)
+        private async void btnActualTableButton_Click(object sender, EventArgs e)
         {
 
-            Table table = bslayer.BarrowTable(((TableButton)sender).IID);
+            Table table = await bslayer.BarrowTable(((TableButton)sender).IID);
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -3064,10 +3053,10 @@ namespace DTRMNS
             }
         }
 
-        private void btnDirectTable_Click(object tableIID, EventArgs e)
+        private async void btnDirectTable_Click(object tableIID, EventArgs e)
         {
 
-            Table table = bslayer.BarrowTable(tableIID.ToString());
+            Table table =await bslayer.BarrowTable(tableIID.ToString());
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -3121,19 +3110,6 @@ namespace DTRMNS
                 AttachPanel(OUI.SelectedPanel);
         }
         #endregion
-
-
-
-
-
-        //private void pnlUser_ExpandedChanging(object sender, ExpandedChangeEventArgs e) {
-        //    if (bslayer.AttachedOrder == null || bslayer.AttachedOrder.OrderType == OrderTypes.DirectSale ||
-        //        bslayer.AttachedOrder.OrderType == OrderTypes.InHouse)
-        //        e.Cancel = true;
-        //}
-
-
-
 
 
         private POSLayer.Library.ViewTypes OrderTypeToViewType(POSLayer.Library.OrderTypes otype)
@@ -3550,7 +3526,7 @@ namespace DTRMNS
             }
         }
 
-        private void cmdCancel_Click(object sender, EventArgs e)
+        private async void cmdCancel_Click(object sender, EventArgs e)
         {
             if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                 OrderScreen.AbortSplit();
@@ -3576,7 +3552,7 @@ namespace DTRMNS
                         string tableIID = bslayer.AttachedOrder.TableIID;
                         bslayer.AttachedOrder = null;
                         UnloadOrder();
-                        Table table = bslayer.GetTable(tableIID);
+                        Table table =await bslayer.GetTable(tableIID);
                         if (table != null)
                         {
                             table.LockedClientIP = "";
@@ -3593,18 +3569,6 @@ namespace DTRMNS
                 }
             }
         }
-
-        ////private void cmdExit_Click(object sender, EventArgs e) {
-        ////    try {
-        ////        if (bslayer.LoggedUser.AccessLevel == AccessLevels.User)
-        ////            return;
-
-        ////        this.Close();
-        ////        Application.Exit();
-        ////    } catch { }
-        ////}
-
-
 
         #endregion
 
@@ -3647,7 +3611,7 @@ namespace DTRMNS
             }
         }
 
-        private void cmdReports_Click(object sender, EventArgs e)
+        private async void cmdReports_Click(object sender, EventArgs e)
         {
 
             if (!bslayer.HasCurrentSessionCompletedOrders())
@@ -3685,7 +3649,7 @@ namespace DTRMNS
                 return;
             }
 
-            bool blnZReport = bslayer.WillReportEndUpAs_Z_Report(bslayer.GetCurrentSession());
+            bool blnZReport = bslayer.WillReportEndUpAs_Z_Report(await bslayer.GetCurrentSession());
             if (blnZReport && (blnHasActiveHoldOrders || blnHasActiveTableOrders))
             {
                 MessageBox.Show("Printing report will auto produce Z report, YOU MUST CASHOUT ALL ORDERS before proceed!!!!");
@@ -3711,8 +3675,6 @@ namespace DTRMNS
                 }
                 if (blnPrint)
                 {
-                    // SessionData sd = bslayer.GetCurrentSession();
-
                     frmPinZWarning frm = new frmPinZWarning(bslayer, bslayer.GetOrdersTotalForPaymentMethod(bslayer.GetCurrentSessionIID(), PaymentMethods.Card));
                     if (frm.ShowDialog() == DialogResult.Cancel)
                     {
@@ -3729,9 +3691,6 @@ namespace DTRMNS
             DetachPanel();
 
             Report report = bslayer.GetReport(ReportFormatTypes.XReport);
-
-
-
 
             trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
             if (fsp.ShowDialog() == DialogResult.OK)
@@ -3750,12 +3709,12 @@ namespace DTRMNS
                 }
 
                 //"Courier New"
-                bslayer.PrintReport(ReportFormatTypes.XReport, bslayer.GetCurrentSessionIID(), fsp.ReturnValue, false);
+                await bslayer.PrintReport(ReportFormatTypes.XReport, bslayer.GetCurrentSessionIID(), fsp.ReturnValue, false);
 
-                bslayer.OpenCashDrawer(false);
+               await bslayer.OpenCashDrawer(false);
             bypass:
                 if (bslayer.config.Force_Receipt_Printer_To_Cut)
-                    DRShell.SendCutCommandToUSBPrinter(bslayer.GetPrinterForClient(fsp.ReturnValue).NetworkName);
+                    DRShell.SendCutCommandToUSBPrinter(bslayer.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
 
             } else
                 return;
@@ -3776,7 +3735,7 @@ namespace DTRMNS
                 trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    bslayer.PrintImage(bslayer.imgReportSnapShot, bslayer.GetPrinterForClient(fsp.ReturnValue).NetworkName);
+                    bslayer.PrintImage(bslayer.imgReportSnapShot, bslayer.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
                 }
             }
         }
@@ -3789,19 +3748,11 @@ namespace DTRMNS
         #endregion
 
         #region SMILEY MENU
-        private void tsPrintForKitchen_Click(object sender, EventArgs e)
+        private async void tsPrintForKitchen_Click(object sender, EventArgs e)
         {
             if (bslayer.AttachedOrder != null)
             {
-
-                //if (bslayer.AttachedOrder.Status == StatusFlags.NEW ||
-                //   bslayer.AttachedOrder.Status == StatusFlags.UNKNOWN) {
-                //    MessageBox.Show("You must save this order first to print in the kitchen");
-                //    return;
-                //}
-                bslayer.PrintForKitchen(bslayer.AttachedOrder.IID);
-                //bslayer.PrintForKitchen(bslayer.AttachedOrder, false, false, false, false);
-
+               await bslayer.PrintForKitchen(bslayer.AttachedOrder.IID);
             }
         }
         private void btnPrintAsInvoice_Click(object sender, System.EventArgs e)
@@ -3941,8 +3892,6 @@ namespace DTRMNS
 
         private void btnOptions_Click(object sender, EventArgs e)
         {
-            //AttachPanel(new ctlConfig(bslayer, new GenericFunctionCall(LoadUserInterface), new GenericFunctionCall(DetachPanel)));
-
             frmConfig frm = new frmConfig(null);
             if (frm.ShowDialog() == DialogResult.OK)
             {
@@ -3968,8 +3917,6 @@ namespace DTRMNS
                     return;
                 else
                 {
-                    //if (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse)
-                    //    bslayer.AttachedOrder.ShrinkOrder();
                     if (DoneEventHandlerFunction())
                         ResetScreenLock();
                     else
@@ -3982,23 +3929,18 @@ namespace DTRMNS
             if (bslayer.config.Cash_Drawer_Void_Open_Allowed)
                 bslayer.OpenCashDrawer(true);
         }
-        //private void btnSubTotal_Click(object sender, System.EventArgs e) {
-        //    if (bslayer.AttachedOrder != null) {
-        //        lblOrderTotal.Text = bslayer.AttachedOrder.GetFullTotal().ToString("c");
-        //        ArrangeSubTotalPanel(true);
-        //    }
-        //}
-        private void btnPrint_Click(object sender, EventArgs e)
+
+        private async void btnPrint_Click(object sender, EventArgs e)
         {
             if (bslayer.AttachedOrder != null && !string.IsNullOrEmpty(bslayer.config.DTClientLocalReceiptPrinterIID))
             {
                 if (bslayer.AttachedOrder != null)
                 {
-                    bslayer.PrintEntireOrder(bslayer.AttachedOrder, true, false, 1,
+                    await bslayer.PrintEntireOrder(bslayer.AttachedOrder, true, false, 1,
                         bslayer.config.DTClientLocalReceiptPrinterIID);
                     if (bslayer.config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).NetworkName);
+                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }
@@ -4058,16 +4000,7 @@ namespace DTRMNS
             {
                 return;
             }
-
             PrintFinalPayment(PaymentMethods.Cash, false);
-
-
-            //if (EnsureSubTotalValuesCorrect()) {
-            //    ArrangeSubTotalPanel(false);
-            //    PrintFinalPayment(PaymentMethods.Cash, false);
-            //}
-
-
         }
         private void btnPrintCashFinalPaymentWithReceipt_Click(object sender, System.EventArgs e)
         {
@@ -4078,8 +4011,6 @@ namespace DTRMNS
             {
                 return;
             }
-
-
             PrintFinalPayment(PaymentMethods.Cash, true);
         }
         private void btnPrintCardFinalPaymentNoReceipt_Click(object sender, System.EventArgs e)
@@ -4351,7 +4282,7 @@ namespace DTRMNS
         #endregion
 
         #region PENDING PANEL HANDLERS
-        private void LoadPendingOrders()
+        private async void LoadPendingOrders()
         {
             if (blnLoadingHoldingOrders || bslayer.AttachedOrder != null)
                 return;
@@ -4366,7 +4297,7 @@ namespace DTRMNS
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
-                Order order = bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
+                Order order =await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
                 ctlHoldButtonExtendable btn;
                 if (Hold_Order_Display_Summary)
                 {
@@ -4383,14 +4314,9 @@ namespace DTRMNS
                 btn.Tag = order;
 
 
-                //btn.ItemsCount = order.items.Count;
-
-
-                float OrderFullTotal = order.GetFullTotal();
-                btn.Text = OrderFullTotal.ToString("n2"); // + "\n" + dt.Rows[i]["KitchenOrderNo"].ToString();
+                double OrderFullTotal = order.GetFullTotal();
+                btn.Text = OrderFullTotal.ToString("n2"); 
                 btn.PriceText = OrderFullTotal.ToString("n2");
-                //btn.OrderNumber = dt.Rows[i]["KitchenOrderNo"].ToString();
-                //btn.TickVisible = !(btn.OrderNumber.Length > 0);
 
 
                 try
@@ -4423,15 +4349,9 @@ namespace DTRMNS
                     bslayer.SaveDebug("LoadingPendingOrders " + ex.Message);
                 }
 
-
-                //btn.Size = new Size(bslayer.config.Hold_Button_Maximum_Width, bslayer.config.Hold_Button_Maximum_Height);
-
-
-
                 btn.PriceTextFont = btnPriceFont;
                 btn.BackgroundImage = Properties.Resources.shadow;
                 btn.BackgroundImageLayout = ImageLayout.Stretch;
-
 
                 if (order.Buzzer == "buzz")
                 {
@@ -4444,35 +4364,14 @@ namespace DTRMNS
                     //btn.BackColor = Color.Cyan;
                 }
 
-
-
                 btn.ButtonClick += new EventHandler(pendingOrder_Click);
                 pnlPendingOrders.Controls.Add(btn);
-                //}
-
-
-
-
-                //    if (order.Buzzer == "buzz")
-                //        btn.BackColor = Color.Magenta;
-                //    else if (order.Buzzer == "fuzz")
-                //        btn.BackColor = Color.Yellow;
-                //    else
-                //        btn.BackColor = Color.Cyan;
-
-                //    btn.ButtonClick += new EventHandler(pendingOrder_Click);
-                //    pnlPendingOrders.Controls.Add(btn);
-                //}
             }
-            //if (dt.Rows.Count > 0)
-            //    pnlPendingOrders.MinimumSize = new Size(0,60);
-            //else
-            //    pnlPendingOrders.MinimumSize = new Size(0, 0);
 
             blnLoadingHoldingOrders = false;
         }
 
-        private void pendingOrder_Click(object sender, EventArgs e)
+        private async void pendingOrder_Click(object sender, EventArgs e)
         {
             if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
                 return;
@@ -4480,7 +4379,7 @@ namespace DTRMNS
 
             Order order;
             ctlHoldButtonExtendable btn = (sender as ctlHoldButtonExtendable);
-            order = bslayer.GetOrder((btn.Tag as Order).IID);
+            order =await bslayer.GetOrder((btn.Tag as Order).IID);
             btn.Tag = order;
 
 
@@ -4540,7 +4439,7 @@ namespace DTRMNS
             }
         }
 
-        private void DoHolding(string ColorName, bool blnPrint)
+        private async void DoHolding(string ColorName, bool blnPrint)
         {
             if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
             {
@@ -4548,7 +4447,7 @@ namespace DTRMNS
                     bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED)
                 {
                     if (blnPrint)
-                        bslayer.PrintReceipt(bslayer.AttachedOrder.IID, bslayer.GetDefaultReceiptPrinter(), 1);
+                        bslayer.PrintReceipt(bslayer.AttachedOrder.IID, await bslayer.GetDefaultReceiptPrinter(), 1);
                     UnloadOrder();
                     return;
                 }
@@ -4566,7 +4465,7 @@ namespace DTRMNS
                         //This is where we create kitchen order
                         if ((bslayer.config.Hold_Order_Display_in_Kitchen || bslayer.config.Hold_Order_Print_in_Kitchen) && (OrderScreen.SplitStatus != SplittingStatus.Splitting))
                         {
-                            prepDialogResult = HandleKitchenOrderForDirectSale();
+                            prepDialogResult = await HandleKitchenOrderForDirectSale();
                             if (prepDialogResult == PrepDialogReturnTypes.Cancel)
                                 return;
                         }
@@ -4627,7 +4526,7 @@ namespace DTRMNS
         }
 
 
-        private PrepDialogReturnTypes HandleKitchenOrderForDirectSale()
+        private async Task<PrepDialogReturnTypes> HandleKitchenOrderForDirectSale()
         {
             PrepDialogReturnTypes prepResult = PrepDialogReturnTypes.Hold;
 
@@ -4637,7 +4536,7 @@ namespace DTRMNS
             else
             {
                 KitchenOrder korder = null;
-                prepResult = bslayer.CreateKitchenOrderForOrder(order, out korder);
+                prepResult = await bslayer.CreateKitchenOrderForOrder(order, korder);
                 if (prepResult == PrepDialogReturnTypes.Cancel)
                     return PrepDialogReturnTypes.Cancel;
             }
@@ -4656,12 +4555,12 @@ namespace DTRMNS
             mnuLock.Visible = mnuOptions.Visible = false;
         }
 
-        private void btnPrintStockUsageReport_Click(object sender, EventArgs e)
+        private async void btnPrintStockUsageReport_Click(object sender, EventArgs e)
         {
             trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
             if (fsp.ShowDialog() == DialogResult.OK)
             {
-                bslayer.PrintStockUsage(bslayer.GetPrinterForClient(fsp.ReturnValue));
+                bslayer.PrintStockUsage(await bslayer.GetPrinterForClient(fsp.ReturnValue));
             }
         }
 
@@ -4672,11 +4571,6 @@ namespace DTRMNS
             {
                 if (this.ParentForm.ActiveMdiChild == this)
                 {
-                    //if (Form.ActiveForm != null)
-                    //{
-                    //    screenLockCounter = 0;
-                    //    return;
-                    //}
 
                 } else
                 {
@@ -4794,32 +4688,30 @@ namespace DTRMNS
             }
         }
 
-        private void LoadSupplierList()
+        private async Task LoadSupplierList()
         {
             mnuSupplierPurchaseList.DropDownItems.Clear();
-            DataTable dt = bslayer.GetAllSuppliers();
-            for (int i = 0; i < dt.Rows.Count; i++)
+            List<Supplier> suppliers = await bslayer.GetAllSuppliersAsList();
+            foreach (var supp in suppliers)
             {
-                Supplier supp = new Supplier(dt.Rows[i]);
                 ToolStripMenuItem btn = new ToolStripMenuItem();
                 btn.Text = supp.SupplierName;
                 btn.Tag = supp.IID;
                 //btn.Image = global::DTRMNS.Properties.Resources.trolly48;
                 btn.Click += btnSupplier_Click;
 
-
                 mnuSupplierPurchaseList.DropDownItems.Add(btn);
             }
         }
 
-        private void btnSupplier_Click(object sender, EventArgs e)
+        private async void btnSupplier_Click(object sender, EventArgs e)
         {
             trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
             if (fsp.ShowDialog() == DialogResult.OK)
             {
                 ToolStripMenuItem btn = ((ToolStripMenuItem)sender);
                 string supplierIID = btn.Tag.ToString();
-                bslayer.PrintStockUsage(bslayer.GetPrinterForClient(fsp.ReturnValue), bslayer.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
+                bslayer.PrintStockUsage(await bslayer.GetPrinterForClient(fsp.ReturnValue), bslayer.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
             }
 
         }

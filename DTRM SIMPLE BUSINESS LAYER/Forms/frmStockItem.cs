@@ -3,6 +3,9 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 
+using POSLayer.Models;
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class frmStockItem : Form {
         private DTRMSimpleBusiness bslayer;
@@ -28,7 +31,7 @@ namespace DTRMNS {
 
         }
         private void LoadSuppliers() {
-            cmbSupplier.DataSource = bslayer.GetAllSuppliers();
+            cmbSupplier.DataSource = bslayer.GetAllSuppliersAsList();
             cmbOrderType.Items.Clear();
             cmbQuantityType.Items.Clear();
             for (int i = 0; i < 25; i++) {

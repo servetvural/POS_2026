@@ -60,7 +60,7 @@ namespace DTRMNS {
         }
 
         private void LoadSuppliers() {
-            cmbSuppliers.DataSource = bslayer.GetAllSuppliers();
+            cmbSuppliers.DataSource = bslayer.GetAllSuppliersAsList();
         }
 
 

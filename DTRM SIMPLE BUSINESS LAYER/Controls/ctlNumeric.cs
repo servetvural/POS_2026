@@ -1,4 +1,6 @@
-﻿using PosLibrary;
+﻿using POSLayer.Library;
+
+using PosLibrary;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

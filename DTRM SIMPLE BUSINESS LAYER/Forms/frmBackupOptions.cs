@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class frmBackupOptions : Form {
         public DatabaseBackupOptions options;
@@ -19,20 +21,20 @@ namespace DTRMNS {
         }
 
         private void btnSave_Click(object sender, EventArgs e) {
-            options.blnCustomers = chkCustomers.Checked;
-            options.blnUsers = chkUsers.Checked;
-            options.blnPrinters = chkPrinters.Checked;
-            options.blnTables = chkTables.Checked;
-            options.blnMenus = chkMenus.Checked;
-            options.blnStock = chkStock.Checked;
+            options.includeCustomers = chkCustomers.Checked;
+            options.includeUsers = chkUsers.Checked;
+            options.includePrinters = chkPrinters.Checked;
+            options.includeTables = chkTables.Checked;
+            options.includeMenus = chkMenus.Checked;
+            options.includeStock = chkStock.Checked;
 
-            options.blnLuv = chkLuv.Checked;
-            options.blnCurrentSession = chkCurrentSession.Checked;
-            options.blnOrders = chkOrders.Checked;
-            options.blnXOrders = chkXOrders.Checked;
-            options.blnKitchenOrders = chkKitchenOrders.Checked;
-            options.blnDebugInformation = chkXOrders.Checked;
-            options.blnImages = chkImages.Checked;
+            options.includeLuv = chkLuv.Checked;
+            options.includeCurrentSession = chkCurrentSession.Checked;
+            options.includeOrders = chkOrders.Checked;
+            options.includeXOrders = chkXOrders.Checked;
+            options.includeKitchenOrders = chkKitchenOrders.Checked;
+            options.includeDebugInformation = chkXOrders.Checked;
+            options.includeImages = chkImages.Checked;
 
             this.DialogResult = DialogResult.OK;
             Close();

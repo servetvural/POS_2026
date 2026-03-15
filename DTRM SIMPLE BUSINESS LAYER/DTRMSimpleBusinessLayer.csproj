@@ -166,23 +166,31 @@
     <Compile Remove="Classes\Backup Classes.cs" />
     <Compile Remove="Classes\Bonus.cs" />
     <Compile Remove="Classes\Customer.cs" />
+    <Compile Remove="Classes\CustomReportPrintJob.cs" />
+    <Compile Remove="Classes\Declarations.cs" />
     <Compile Remove="Classes\Distribution.cs" />
     <Compile Remove="Classes\DTRMBackup.cs" />
     <Compile Remove="Classes\DTRMConfig.cs" />
     <Compile Remove="Classes\Employee.cs" />
     <Compile Remove="Classes\Entity.cs" />
     <Compile Remove="Classes\EntityButton.cs" />
+    <Compile Remove="Classes\EntityButtonExtended.cs" />
     <Compile Remove="Classes\EntityButtonStockItemLookUp.cs" />
     <Compile Remove="Classes\EntityButtonStockItemRecipe.cs" />
+    <Compile Remove="Classes\EntityView.cs" />
+    <Compile Remove="Classes\Expense.cs" />
     <Compile Remove="Classes\KitchenOrder Classes.cs" />
+    <Compile Remove="Classes\LogItem.cs" />
     <Compile Remove="Classes\Menu.cs" />
     <Compile Remove="Classes\Order.cs" />
     <Compile Remove="Classes\OrderItem.cs" />
     <Compile Remove="Classes\SessionData.cs" />
     <Compile Remove="Classes\StockItem.cs" />
+    <Compile Remove="Classes\StockItemUsage.cs" />
     <Compile Remove="Classes\StockManager.cs" />
     <Compile Remove="Classes\Supplier.cs" />
     <Compile Remove="Classes\Table.cs" />
+    <Compile Remove="Classes\User.cs" />
     <Compile Remove="Reports\{3A97FFAD-EA71-493F-A3FE-A9C7A0BAE99A}.cs" />
     <Compile Remove="Reports\UserSalesList.cs" />
     <Compile Remove="Reports\TaxSummary.cs" />
@@ -301,6 +309,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\POSWinFormLayer\POSWinFormLayer.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

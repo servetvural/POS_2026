@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmVariables : Form {
         private DTRMSimpleBusiness bslayer;

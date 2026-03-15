@@ -9,7 +9,7 @@ public partial class LogItem : BaseClass
 
     public double Quantity { get; set; }
 
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     public string? Reason { get; set; }
 
@@ -20,4 +20,7 @@ public partial class LogItem : BaseClass
     public string? OrderContent { get; set; }
 
     public string? Reference { get; set; }
+
+
+    public double Total { get { return Price * Quantity; } }
 }

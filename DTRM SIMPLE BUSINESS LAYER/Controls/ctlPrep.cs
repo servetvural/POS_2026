@@ -1,5 +1,8 @@
 ﻿using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class ctlPrep : UserControl {
         DTRMSimpleBusiness bslayer;
@@ -102,7 +105,7 @@ namespace DTRMNS {
                     break;
                 case 8:
                     //Cancel
-                    koi.ItemText = bslayer.GetJustEntityButton(koi.EntityButtonIID).EntityButtonName;
+                    koi.ItemText = bslayer.GetJustEntityButton(koi.EntityButtonIID).Result.EntityButtonName;
                     koi.Modified = ModificationFlag.None;
                     koi.ModifiedQuantity = 0;
                     dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText;

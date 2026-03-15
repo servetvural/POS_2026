@@ -422,4 +422,9 @@ public class UF
         return h + mnt + (seconds < 10 ? "0" : "") + seconds.ToString() + "s";
     }
 
+    public static string DatetimeToMSSqlDatetime(DateTime datetime)
+    {
+        return datetime.Year + "/" + datetime.Month + "/" + datetime.Day + " " + datetime.Hour + ":" + datetime.Minute + ":" + datetime.Second;
+    }
+
 }

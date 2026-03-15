@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class ctlKitchenOrderItem : UserControl {
         public DTRMSimpleBusiness bslayer;

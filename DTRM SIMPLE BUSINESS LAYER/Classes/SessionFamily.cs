@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMNS {
     [System.Xml.Serialization.XmlInclude(typeof(SessionData))]
     [System.Xml.Serialization.XmlInclude(typeof(OrderItem))]

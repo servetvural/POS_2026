@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
-namespace DTRMNS {
-    public partial class frmTableSplitter : Form {
+namespace DTRMNS
+{
+    public partial class frmTableSplitter : Form
+    {
         private DTRMSimpleBusiness bslayer;
 
         private Table rootTable;
         private Table SourceTable;
         private Table TargetTable;
 
-        public frmTableSplitter(DTRMSimpleBusiness bslayer, Table SourceTable) {
+        public frmTableSplitter(DTRMSimpleBusiness bslayer, Table SourceTable)
+        {
             InitializeComponent();
             this.bslayer = bslayer;
             odSourceTable.AttachBusinessLayer(bslayer);
@@ -22,30 +27,35 @@ namespace DTRMNS {
             rootTable = SourceTable;
 
             //If there is no subtable for this sourcetable create the first subtable and load it eventually
-            if (!bslayer.HasSubTables(SourceTable.IID))
+            if (!bslayer.HasSubTables(SourceTable.IID).Result)
                 btnAddTargetTable_Click(null, null);
-            else {
+            else
+            {
                 //Load first subtable
-                TargetTable = bslayer.GetFirstSubTable(rootTable.IID,true);
+                TargetTable = bslayer.GetFirstSubTable(rootTable.IID, true).Result;
 
             }
         }
 
-        private void frmTableSplitter_Load(object sender, EventArgs e) {
+        private void frmTableSplitter_Load(object sender, EventArgs e)
+        {
             LoadSourceTable();
             LoadSourcePanel();
             LoadTargetTable();
             LoadTargetPanel();
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
-            if (SourceTable != null) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            if (SourceTable != null)
+            {
                 if (SourceTable.AttachedOrder != null && SourceTable.AttachedOrder.Status < StatusFlags.DONE)
                     SourceTable.AttachedOrder.Status = StatusFlags.DONE;
                 bslayer.ReturnTable(SourceTable);
             }
 
-            if (TargetTable != null) {
+            if (TargetTable != null)
+            {
                 if (TargetTable.AttachedOrder != null && TargetTable.AttachedOrder.Status < StatusFlags.DONE)
                     TargetTable.AttachedOrder.Status = StatusFlags.DONE;
                 bslayer.ReturnTable(TargetTable);
@@ -58,10 +68,11 @@ namespace DTRMNS {
 
 
 
-        
 
-        private void LoadSourcePanel() {
-            List<Table> tablelist = bslayer.GetTableAndSubTables(rootTable.IID);
+
+        private async Task LoadSourcePanel()
+        {
+            List<Table> tablelist = await bslayer.GetTableAndSubTables(rootTable.IID);
 
             pnlSourceTables.Controls.Clear();
 
@@ -75,9 +86,11 @@ namespace DTRMNS {
             if (TargetTable != null)
                 targetTableIID = TargetTable.IID;
 
-            for (int i = 0; i < tablelist.Count; i++) {
+            for (int i = 0; i < tablelist.Count; i++)
+            {
                 table = tablelist[i];
-                if (table.IID != sourceTableIID /*&& table.IID != targetTableIID*/) {
+                if (table.IID != sourceTableIID /*&& table.IID != targetTableIID*/)
+                {
 
                     if (table.LockedClientIP != null && table.LockedClientIP != "")
                         locker = table.LockedClientIP;
@@ -86,30 +99,32 @@ namespace DTRMNS {
                     btn.Text = table.TableName;
                     btn.IID = table.IID;
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
-                    if (locker.Length > 0) {
+                    if (locker.Length > 0)
+                    {
                         btn.BackColor = Color.DarkBlue; //bslayer.config.Table_Busy_Back_Color;  // Color.DarkBlue;
                         btn.ForeColor = Color.White; // bslayer.config.Table_Busy_Text_Color;
-                    }
-                    else {
-                        if (table.HasActiveOrder()) {
+                    } else
+                    {
+                        if (table.HasActiveOrder())
+                        {
                             btn.BackColor = Color.DarkRed; // bslayer.config.Table_Full_Back_Color; //  Color.DarkRed;
                             btn.ForeColor = Color.White; // bslayer.config.Table_Full_Text_Color;
-                        }
-                        else {
+                        } else
+                        {
                             btn.BackColor = Color.DarkGreen;
                             // bslayer.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
                             btn.ForeColor = Color.White; // bslayer.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
-                    btn.Size = new Size(108,70);
+                    btn.Size = new Size(108, 70);
                     btn.ForeColor = Color.White;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderSize = 0;
                     btn.Shape = table.Shape;
                     btn.BackgroundImage = Properties.Resources.shadow;
                     btn.BackgroundImageLayout = ImageLayout.Stretch;
-                    
+
                     btn.Click += new System.EventHandler(this.btnSourceTableButton_Click);
                     pnlSourceTables.Controls.Add(btn);
                     locker = "";
@@ -117,37 +132,44 @@ namespace DTRMNS {
             }
         }
 
-        private void btnSourceTableButton_Click(object sender, EventArgs e) {
+        private async void btnSourceTableButton_Click(object sender, EventArgs e)
+        {
             //SourceTable = bslayer.GetTable(((TableButton)sender).IID);
 
 
-            SourceTable = bslayer.BarrowTable(((TableButton)sender).IID);
-            if (SourceTable == null) {
+            SourceTable = await bslayer.BarrowTable(((TableButton)sender).IID);
+            if (SourceTable == null)
+            {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
-            } 
-            
-            if (TargetTable != null) {
-                if (TargetTable.IID == SourceTable.IID) {
+            }
+
+            if (TargetTable != null)
+            {
+                if (TargetTable.IID == SourceTable.IID)
+                {
                     //Unload target table
                     UnloadTargetTable();
                 }
             }
             LoadSourceTable();
-            LoadSourcePanel();
-            LoadTargetPanel();
+            await LoadSourcePanel();
+            await LoadTargetPanel();
         }
 
-        private void LoadSourceTable() {
+        private void LoadSourceTable()
+        {
             odSourceTable.OrderToDisplay = SourceTable.AttachedOrder;
             odSourceTable.Display();
             lblSourceTableName.Text = SourceTable.TableName;
         }
 
-        private void UnloadSourceTable() {
-            if (odSourceTable.OrderToDisplay != null) {
+        private async void UnloadSourceTable()
+        {
+            if (odSourceTable.OrderToDisplay != null)
+            {
                 odSourceTable.OrderToDisplay.LockedClientIP = "";
-                bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
             }
             odSourceTable.OrderToDisplay = null;
             odSourceTable.Display();
@@ -156,56 +178,67 @@ namespace DTRMNS {
             SourceTable = null;
         }
 
-        private void btnChangeTableSource_Click(object sender, EventArgs e) {
+        private async void btnChangeTableSource_Click(object sender, EventArgs e)
+        {
             frmTableSelector frm = new frmTableSelector(bslayer);
-            if (frm.ShowDialog() == DialogResult.OK) {
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
                 if (SourceTable != null)
                     UnloadSourceTable();
-                SourceTable = bslayer.BarrowTable(frm.SelectedTableButton.IID);
-                if (SourceTable == null) {
+                SourceTable = await bslayer.BarrowTable(frm.SelectedTableButton.IID);
+                if (SourceTable == null)
+                {
                     MessageBox.Show("Table Currently Busy, cannot be allocated");
                     return;
                 }
-                if (TargetTable != null) {
-                    if (TargetTable.IID == SourceTable.IID) {
+                if (TargetTable != null)
+                {
+                    if (TargetTable.IID == SourceTable.IID)
+                    {
                         //Unload target table
                         UnloadTargetTable();
                     }
                 }
 
                 LoadSourceTable();
-                LoadSourcePanel();
-                LoadTargetPanel();
+                await LoadSourcePanel();
+                await LoadTargetPanel();
             }
         }
 
-        private void btnChangeTableTarget_Click(object sender, EventArgs e) {
+        private async void btnChangeTableTarget_Click(object sender, EventArgs e)
+        {
             frmTableSelector frm = new frmTableSelector(bslayer);
-            if (frm.ShowDialog() == DialogResult.OK) {
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
                 if (TargetTable != null)
                     UnloadTargetTable();
-                TargetTable = bslayer.BarrowTable(frm.SelectedTableButton.IID);
+                TargetTable = await bslayer.BarrowTable(frm.SelectedTableButton.IID);
 
-                if (TargetTable == null) {
+                if (TargetTable == null)
+                {
                     MessageBox.Show("Table Currently Busy, cannot be allocated");
                     return;
                 }
 
-                if (SourceTable != null) {
-                    if (TargetTable.IID == SourceTable.IID) {
+                if (SourceTable != null)
+                {
+                    if (TargetTable.IID == SourceTable.IID)
+                    {
                         //Unload source table
                         UnloadSourceTable();
                     }
                 }
 
                 LoadTargetTable();
-                LoadTargetPanel();
-                LoadSourcePanel();
+                await LoadTargetPanel();
+                await LoadSourcePanel();
             }
         }
 
-        private void LoadTargetPanel() {
-            List<Table> tablelist = bslayer.GetTableAndSubTables(rootTable.IID);
+        private async Task LoadTargetPanel()
+        {
+            List<Table> tablelist = await bslayer.GetTableAndSubTables(rootTable.IID);
 
             pnlTargetTables.Controls.Clear();
 
@@ -219,9 +252,11 @@ namespace DTRMNS {
             if (TargetTable != null)
                 targetTableIID = TargetTable.IID;
 
-            for (int i = 0; i < tablelist.Count; i++) {
+            for (int i = 0; i < tablelist.Count; i++)
+            {
                 table = tablelist[i];
-                if (/*table.IID != sourceTableIID &&*/ table.IID != targetTableIID  ) {
+                if (/*table.IID != sourceTableIID &&*/ table.IID != targetTableIID)
+                {
 
                     if (table.LockedClientIP != null && table.LockedClientIP != "")
                         locker = table.LockedClientIP;
@@ -230,28 +265,32 @@ namespace DTRMNS {
                     btn.Text = table.TableName;
                     btn.IID = table.IID;
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
-                    if (locker.Length > 0) {
+                    if (locker.Length > 0)
+                    {
                         btn.BackColor = Color.DarkBlue; //bslayer.config.Table_Busy_Back_Color;  // Color.DarkBlue;
                         btn.ForeColor = Color.White; // bslayer.config.Table_Busy_Text_Color;
-                    } else {
-                        if (table.HasActiveOrder()) {
+                    } else
+                    {
+                        if (table.HasActiveOrder())
+                        {
                             btn.BackColor = Color.DarkRed; // bslayer.config.Table_Full_Back_Color; //  Color.DarkRed;
                             btn.ForeColor = Color.White; // bslayer.config.Table_Full_Text_Color;
-                        } else {
+                        } else
+                        {
                             btn.BackColor = Color.DarkGreen;
                             // bslayer.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
                             btn.ForeColor = Color.White; // bslayer.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
-                    btn.Size = new Size(108,70);
+                    btn.Size = new Size(108, 70);
                     btn.ForeColor = Color.White;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderSize = 0;
                     btn.Shape = table.Shape;
                     btn.BackgroundImage = Properties.Resources.shadow;
                     btn.BackgroundImageLayout = ImageLayout.Stretch;
-                   
+
                     btn.Click += new System.EventHandler(this.btnTargetTableButton_Click);
                     pnlTargetTables.Controls.Add(btn);
                     locker = "";
@@ -259,37 +298,44 @@ namespace DTRMNS {
             }
         }
 
-        private void btnTargetTableButton_Click(object sender, EventArgs e) {
+        private async void btnTargetTableButton_Click(object sender, EventArgs e)
+        {
             //TargetTable = bslayer.GetTable(((TableButton) sender).IID);
 
-            TargetTable = bslayer.BarrowTable(((TableButton)sender).IID);
-            if (TargetTable == null) {
+            TargetTable = await bslayer.BarrowTable(((TableButton)sender).IID);
+            if (TargetTable == null)
+            {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
             }
-            
-            if (SourceTable != null) {
-                if (TargetTable.IID == SourceTable.IID) {
+
+            if (SourceTable != null)
+            {
+                if (TargetTable.IID == SourceTable.IID)
+                {
                     //Unload source table
                     UnloadSourceTable();
 
                 }
             }
             LoadTargetTable();
-            LoadTargetPanel();
-            LoadSourcePanel();
+            await LoadTargetPanel();
+            await LoadSourcePanel();
         }
 
-        private void LoadTargetTable() {
+        private void LoadTargetTable()
+        {
             odTargetTable.OrderToDisplay = TargetTable.AttachedOrder;
             odTargetTable.Display();
             lblTargetTableName.Text = TargetTable.TableName;
         }
 
-        private void UnloadTargetTable() {
-            if (odTargetTable.OrderToDisplay != null) {
+        private async Task UnloadTargetTable()
+        {
+            if (odTargetTable.OrderToDisplay != null)
+            {
                 odTargetTable.OrderToDisplay.LockedClientIP = "";
-                bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
             }
 
             odTargetTable.OrderToDisplay = null;
@@ -299,31 +345,36 @@ namespace DTRMNS {
             TargetTable = null;
         }
 
-        private void btnAddTargetTable_Click(object sender, EventArgs e) {
-            if (SourceTable != null) {
-                Table mainTable = bslayer.GetParentTable(SourceTable.IID);
+        private async void btnAddTargetTable_Click(object sender, EventArgs e)
+        {
+            if (SourceTable != null)
+            {
+                Table mainTable = await bslayer.GetParentTable(SourceTable.IID);
                 TargetTable = mainTable.CreateSubTable();
-                TargetTable.TableName = bslayer.GenerateSubTableName(mainTable);
+                TargetTable.TableName = await bslayer.GenerateSubTableName(mainTable);
                 bslayer.SaveTable(TargetTable);
                 //This is required to ensure new order attach to TargetTable
-                TargetTable = bslayer.BarrowTable(TargetTable.IID);
+                TargetTable = await bslayer.BarrowTable(TargetTable.IID);
                 LoadTargetTable();
-                LoadSourcePanel();
-                LoadTargetPanel();
+                await LoadSourcePanel();
+                await LoadTargetPanel();
             }
         }
 
-       
 
 
 
-        private void btnSourceToTarget_1_Click(object sender, EventArgs e) {
+
+        private async Task btnSourceToTarget_1_Click(object sender, EventArgs e)
+        {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
                 return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -337,11 +388,11 @@ namespace DTRMNS {
                     //Drop 1 from ordertosplit and save
                     if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement())
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -349,12 +400,15 @@ namespace DTRMNS {
             }
         }
 
-        private void btnSourceToTarget_X_Click(object sender, EventArgs e) {
+        private async Task btnSourceToTarget_X_Click(object sender, EventArgs e)
+        {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
                 return;
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -362,17 +416,18 @@ namespace DTRMNS {
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
                     POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
-                    if (oiNew.Quantity > 1) {
+                    if (oiNew.Quantity > 1)
+                    {
                         frmNumericInput frm = new frmNumericInput();
-                        if (frm.ShowDialog() == DialogResult.OK) {
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
                             if (frm.SelectedValue > oiNew.Quantity)
                                 return;
                             else
                                 oiNew.Quantity = frm.SelectedValue;
-                        }
-                        else
+                        } else
                             return;
-                    } else 
+                    } else
                         oiNew.Quantity = 1;
 
                     oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
@@ -382,20 +437,21 @@ namespace DTRMNS {
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
-                    try {
+                    try
+                    {
                         POSLayer.Models.OrderItem testItem = odSourceTable.OrderToDisplay.GetOrderItem(IID);
-                        if (testItem != null) {
+                        if (testItem != null)
+                        {
                             if (testItem.Quantity == 0)
                                 odSourceTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
                         }
-                    }
-                    catch {}
+                    } catch { }
 
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -403,13 +459,16 @@ namespace DTRMNS {
             }
         }
 
-        private void btnSourceToTarget_ALL_Click(object sender, EventArgs e) {
+        private async Task btnSourceToTarget_ALL_Click(object sender, EventArgs e)
+        {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
                 return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -425,26 +484,29 @@ namespace DTRMNS {
                     odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
                     //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
                     //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
                 }
             }
         }
-    
 
-        private void btnTargetToSource_1_Click(object sender, EventArgs e) {
+
+        private async Task btnTargetToSource_1_Click(object sender, EventArgs e)
+        {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                 TargetTable.AttachedOrder.items.Count == 1)
                 return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -458,11 +520,11 @@ namespace DTRMNS {
                     //Drop 1 from ordertosplit and save
                     if (!odTargetTable.OrderToDisplay.GetOrderItem(IID).Decrement())
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -474,13 +536,16 @@ namespace DTRMNS {
 
         }
 
-        private void btnTargetToSource_X_Click(object sender, EventArgs e) {
+        private async Task btnTargetToSource_X_Click(object sender, EventArgs e)
+        {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.items.Count == 1)
                 return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -488,9 +553,11 @@ namespace DTRMNS {
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
                     POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
-                    if (oiNew.Quantity > 1) {
+                    if (oiNew.Quantity > 1)
+                    {
                         frmNumericInput frm = new frmNumericInput();
-                        if (frm.ShowDialog() == DialogResult.OK) {
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
                             if (frm.SelectedValue > oiNew.Quantity)
                                 return;
                             else
@@ -507,20 +574,22 @@ namespace DTRMNS {
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
-                    try {
+                    try
+                    {
                         POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.GetOrderItem(IID);
-                        if (testItem != null) {
+                        if (testItem != null)
+                        {
                             if (testItem.Quantity == 0)
                                 odTargetTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
                         }
                     } catch { }
 
 
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -528,13 +597,16 @@ namespace DTRMNS {
             }
         }
 
-        private void btnTargetToSource_ALL_Click(object sender, EventArgs e) {
+        private async Task btnTargetToSource_ALL_Click(object sender, EventArgs e)
+        {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.items.Count == 1)
                 return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null) {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID)) {
+            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            {
+                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+                {
                     //SplitOrder  to  DisplayOrder
 
                     //Get Select listview item
@@ -550,11 +622,11 @@ namespace DTRMNS {
                     odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
                     //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
                     //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -562,19 +634,22 @@ namespace DTRMNS {
             }
         }
 
-        private void btnChangeTargetTableName_Click(object sender, EventArgs e) {
-            if (odTargetTable.OrderToDisplay != null) {
+        private async Task btnChangeTargetTableName_Click(object sender, EventArgs e)
+        {
+            if (odTargetTable.OrderToDisplay != null)
+            {
 
                 trmInput frm = new trmInput(TargetTable.TableName);
-                if (frm.ShowDialog() == DialogResult.OK) {
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
                     TargetTable.TableName = frm.input;
                     if (TargetTable.AttachedOrder != null)
                         TargetTable.AttachedOrder.TableName = TargetTable.TableName;
                     bslayer.SaveTable(TargetTable);
-                    
+
                     LoadTargetTable();
-                    LoadTargetPanel();
-                    LoadSourcePanel();
+                    await LoadTargetPanel();
+                    await LoadSourcePanel();
                 }
 
             }

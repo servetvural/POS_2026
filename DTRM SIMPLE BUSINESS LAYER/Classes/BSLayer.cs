@@ -130,6 +130,7 @@ namespace DTRMNS
         IRepository<POSLayer.Models.Supplier> repoSupplier;
         IRepository<POSLayer.Models.EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
         IRepository<POSLayer.Models.StockItem> repoStockItem;
+        IRepository<POSLayer.Models.StockItemUsage> repoStockItemUsage;
         IRepository<POSLayer.Models.ApplicationPrinter> repoApplicationPrinter;
 
 
@@ -145,7 +146,8 @@ namespace DTRMNS
                IRepository<POSLayer.Models.Table> _repoTable, IRepository<POSLayer.Models.TableGroup> _repoTableGroup,
                IRepository<POSLayer.Models.XOrder> _repoXOrder, IRepository<POSLayer.Models.XOrderItem> _repoXOrderItem,
                IRepository<POSLayer.Models.Supplier> _repoSupplier, IRepository<POSLayer.Models.EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
-               IRepository<POSLayer.Models.StockItem> _repoStockItem, IRepository<ApplicationPrinter> _repoApplicationPrinter)
+               IRepository<POSLayer.Models.StockItem> _repoStockItem, IRepository<POSLayer.Models.StockItemUsage> _repoStockItemUsage,
+               IRepository<ApplicationPrinter> _repoApplicationPrinter)
         {
             repoSession = _repoSession;
             repoEmployee = _repoEmployee;
@@ -170,6 +172,7 @@ namespace DTRMNS
             repoSupplier = _repoSupplier;
             repoEntityButtonStockItemLookUp = _repoEntityButtonStockItemLookUp;
             repoStockItem = _repoStockItem;
+            repoStockItemUsage = _repoStockItemUsage;
 
             EstablishDatabaseConnection();
             this.repoApplicationPrinter = _repoApplicationPrinter;
@@ -293,11 +296,11 @@ namespace DTRMNS
                 // db = new DB("data source=SERVET2022\\SQLEXPRESS;initial catalog=DTRM;Integrated Security=false;User ID=sa;Password=servetvural;Connection Timeout=3;Encrypt=False;");
 
 
-                if (config != null)
-                    DebugMode = config.DebugMode;
-                string localerrormessage;
-                DBConnectionSuccessful = CheckDatabaseConnection(out localerrormessage);
-                DBConnectionError = localerrormessage;
+                //if (config != null)
+                //    DebugMode = config.DebugMode;
+                //string localerrormessage;
+                //DBConnectionSuccessful = CheckDatabaseConnection(out localerrormessage);
+                //DBConnectionError = localerrormessage;
 
             } catch (Exception ex)
             {
@@ -905,7 +908,7 @@ namespace DTRMNS
                 case POSLayer.Library.OrderTypes.InHouse:
                     return eb.InHouseTaxPercent;
                 case POSLayer.Library.OrderTypes.TakeAwayB:
-                case POSLayer.Library.OrderTypes.InternetTakeAway:
+                case POSLayer.Library.OrderTypes.InternetTakeAway:      
                     return eb.TakeAwayTaxPercent;
                 case POSLayer.Library.OrderTypes.Delivery:
                 case POSLayer.Library.OrderTypes.InternetDelivery:
@@ -1066,30 +1069,35 @@ namespace DTRMNS
             // RunQuery("DeleteCustomer", IID);
         }
 
-        //public DataTable SearchCustomersByName(string CName)
-        //{
-        //    return GetDataTable("SearchCustomersByName", CName);
-        //}
+        public async Task<List<Customer>> SearchCustomersByName(string CName)
+        {
+            return await repoCustomer.GetDBContext().Database.SqlQuery<Customer>($"SELECT * from Customer where CName like '%{CName}%'").ToListAsync();
+            //return GetDataTable("SearchCustomersByName", CName);
+        }
 
-        //public DataTable SearchCustomersByAddress(string CAddress)
-        //{
-        //    return GetDataTable("SearchCustomersByAddress", CAddress);
-        //}
+        public async Task<List<Customer>> SearchCustomersByAddress(string CAddress)
+        {
+            return await repoCustomer.GetDBContext().Database.SqlQuery<Customer>($"SELECT * from Customer where Address like '%{CAddress}%'").ToListAsync();
+            //return GetDataTable("SearchCustomersByAddress", CAddress);
+        }
 
-        //public DataTable SearchCustomersByTel(string CTelNumber)
-        //{
-        //    return GetDataTable("SearchCustomersByTel", CTelNumber);
-        //}
+        public async Task<List<Customer>> SearchCustomersByTel(string CTelNumber)
+        {
+            return await repoCustomer.GetDBContext().Database.SqlQuery<Customer>($"SELECT * from Customer where Tel like '%{CTelNumber}%'   or Mobile like '%{CTelNumber}%'  or Email like '%{CTelNumber}%'").ToListAsync();
+            //return GetDataTable("SearchCustomersByTel", CTelNumber);
+        }
 
-        //public DataTable SearchCustomersByPostCode(string CPostCode)
-        //{
-        //    return GetDataTable("SearchCustomersByPostCode", CPostCode);
-        //}
+        public async Task<List<Customer>> SearchCustomersByPostCode(string CPostcode)
+        {
+            return await repoCustomer.GetDBContext().Database.SqlQuery<Customer>($"SELECT * from Customer where Postcode like '%{CPostcode}%'").ToListAsync();
+            //return GetDataTable("SearchCustomersByPostCode", CPostCode);
+        }
 
-        //public DataTable SearchCustomersByEmail(string Email)
-        //{
-        //    return GetDataTable("SearchCustomersByEmail", Email);
-        //}
+        public async Task<List<Customer>> SearchCustomersByEmail(string Email)
+        {
+            return await repoCustomer.GetDBContext().Database.SqlQuery<Customer>($"SELECT * from Customer where Email like '%{Email}%'").ToListAsync();
+            //return GetDataTable("SearchCustomersByEmail", Email);
+        }
         #endregion
 
         #region "TABLE FUNCTIONS"
@@ -1104,13 +1112,14 @@ namespace DTRMNS
             return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
         }
 
-        public List<Table> GetTableList(string GroupIID)
+        public async Task<List<Table>> GetTableList(string GroupIID)
         {
-            List<Table> TableList = new List<Table>();
-            DataTable dt = GetDataTable("GetTablesByGroup '" + GroupIID + "'");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                TableList.Add(new Table(dt.Rows[i]));
-            return TableList;
+            return await repoTable.GetListByField("GroupIID",GroupIID);
+            //List<Table> TableList = new List<Table>();
+            //DataTable dt = GetDataTable("GetTablesByGroup '" + GroupIID + "'");
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //    TableList.Add(new Table(dt.Rows[i]));
+            //return TableList;
         }
 
         public async Task<bool> IsPrimaryTable(string TableIID)
@@ -1798,10 +1807,10 @@ namespace DTRMNS
             //    DistributionList.Add(new Distribution(dt.Rows[i]));
             //return DistributionList;
         }
-        //public DataTable GetAllDistributions(string ActiveMenuIID)
-        //{
-        //    return GetDataTable("GetDistributions", ActiveMenuIID);
-        //}
+        public DataTable GetAllDistributions(string ActiveMenuIID)
+        {
+            return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
+        }
 
         public async Task<Distribution> GetDistribution(string DistributionIID)
         {
@@ -2364,9 +2373,9 @@ namespace DTRMNS
             return "";
         }
 
-        public SessionData GetCurrentSession()
+        public async Task<SessionData> GetCurrentSession()
         {
-            return GetSessionDataDynamic(luv.CurrentSessionIID);
+            return await GetSessionDataDynamic(luv.CurrentSessionIID);
         }
 
         #endregion
@@ -2449,7 +2458,7 @@ namespace DTRMNS
         }
 
 
-        public async Task<PrepDialogReturnTypes> CreateKitchenOrderForOrder(POSLayer.Models.Order order, out POSLayer.Models.KitchenOrder korder)
+        public async Task<PrepDialogReturnTypes> CreateKitchenOrderForOrder(POSLayer.Models.Order order, POSLayer.Models.KitchenOrder korder)
         {
             korder = null;
             PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Cancel;
@@ -2731,30 +2740,31 @@ namespace DTRMNS
             }
         }
 
-        public bool RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
+        public async  Task<bool> RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
         {
             SessionData SessionToArchive;
             try
             {
-                SessionToArchive = GetSessionDataDynamic(luv.CurrentSessionIID);
+                SessionToArchive = await GetSessionDataDynamic(luv.CurrentSessionIID);
 
                 //This is a second before where the current session to be archived
 
-                if (RunQuery("ArchiveSessionOrders", SessionToArchive.SessionIID))
+
+                if (RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.SessionIID}' And Status = 3"))
                 {
 
                     //Handle start new session things
-                    SessionData sd = GetLatestSession();
+                    SessionData sd = await GetLatestSession();
                     if (sd == null)
                     {
-                        StartNewSession();
+                        await StartNewSession();
                     } else
                     {
                         if (SessionToArchive.SessionIID == sd.SessionIID)
                         {
                             SessionToArchive.SessionEndDateTime = DateTime.Now;
                             SaveSessionData(SessionToArchive);
-                            StartNewSession();
+                            await StartNewSession();
                         }
                     }
                     return true;
@@ -2806,9 +2816,9 @@ namespace DTRMNS
             return (await repoSession.GetSessionSum()).Where(x => x.SessionIID == SessionIID).FirstOrDefault();
             //return new SessionData(GetDataTable("GetSessionDynamic", SessionIID));
         }
-        public bool SaveSessionData(string SessionIID)
+        public async Task<bool> SaveSessionData(string SessionIID)
         {
-            return SaveSessionData(GetSessionDataDynamic(SessionIID));
+            return SaveSessionData(await GetSessionDataDynamic(SessionIID));
         }
 
         public bool SaveSessionData(SessionData ses)
@@ -2914,11 +2924,11 @@ namespace DTRMNS
             {
                 SessionFamily sf = new SessionFamily
                 {
-                    sessionData = GetSessionDataDynamic(SessionIID)
+                    sessionData =await GetSessionDataDynamic(SessionIID)
                 };
 
                 string SessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
-                    sf.sessionData.SessionEndDateTime, "xml");
+                    sf.sessionData.SessionEndDateTime.Value, "xml");
                 if (File.Exists(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName))
                     return false;
 
@@ -2950,11 +2960,11 @@ namespace DTRMNS
             {
                 SessionFamily sf = new SessionFamily
                 {
-                    sessionData = GetSessionDataDynamic(SessionIID)
+                    sessionData = await GetSessionDataDynamic(SessionIID)
                 };
 
                 string SessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
-                    sf.sessionData.SessionEndDateTime, "xml");
+                    sf.sessionData.SessionEndDateTime.Value, "xml");
                 if (File.Exists(directoryPath + "\\" + SessionFileName))
                     return false;
 
@@ -3041,16 +3051,19 @@ namespace DTRMNS
 
 
 
-        public SessionData GetLatestSession()
+        public async Task<SessionData> GetLatestSession()
         {
-            DataTable dt = GetDataTable("GetLatestSession");
-            if (dt.Rows.Count > 0)
-            {
-                string LatestSessionIID = dt.Rows[0]["IID"].ToString();
+            Session latestSession = await repoSession.GetDBContext().Database.SqlQuery<Session>($"select * from sessions where startdate in ( SELECT  Max(sessions.StartDate) AS Startdate FROM sessions)").FirstOrDefaultAsync();
+            return await GetSessionDataDynamic(latestSession.IID);
 
-                return GetSessionDataDynamic(LatestSessionIID);
-            } else
-                return null;
+            //DataTable dt = GetDataTable("GetLatestSession");
+            //if (dt.Rows.Count > 0)
+            //{
+            //    string LatestSessionIID = dt.Rows[0]["IID"].ToString();
+
+            //    return GetSessionDataDynamic(LatestSessionIID);
+            //} else
+            //    return null;
         }
         public DataTable GetAllOrdersForSessionDateOrderly(string SessionIID, OrderByTypes orderDirection)
         {
@@ -3202,24 +3215,24 @@ namespace DTRMNS
 
             string dailysql =
                 "select StartDate, EndDate, TaxPercent, TotalNoTax, NetTaxValue, GrossTotal from TaxSummary  Where startdate >= '" +
-                DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                DatetimeToMSSqlDatetime(LastEndDate) + "' order by startdate asc, TaxPercent asc";
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "' order by startdate asc, TaxPercent asc";
             DataTable dtdailysql = GetDataTable(dailysql);
             dtdailysql.TableName = "Daily";
             ds.Tables.Add(dtdailysql);
 
             string percentsumsql =
                 "select '', 'Sum of %', TaxPercent, sum(totalnotax) as TotalNoTax,  sum(nettaxvalue) as NetTaxValue,Payment, sum(grosstotal) as GrossTotal  from TaxSummary  Where startdate >= '" +
-                DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                DatetimeToMSSqlDatetime(LastEndDate) + "' group by taxpercent,payment order by taxpercent, payment";
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "' group by taxpercent,payment order by taxpercent, payment";
             DataTable dtpercentsum = GetDataTable(percentsumsql);
             dtpercentsum.TableName = "Percent";
             ds.Tables.Add(dtpercentsum);
 
             string sumsql =
                 "select '', 'Total','', sum(totalnotax) as TotalNoTax ,sum(nettaxvalue) as NetTaxValue,Payment, sum(grosstotal) as GrossTotal  from TaxSummary   Where startdate >= '" +
-                DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                DatetimeToMSSqlDatetime(LastEndDate) + "'  group by payment  order by  payment";
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "'  group by payment  order by  payment";
             DataTable dtsum = GetDataTable(sumsql);
             dtsum.TableName = "Sum";
             ds.Tables.Add(dtsum);
@@ -3352,57 +3365,61 @@ namespace DTRMNS
         }
 
         #region KITCHEN ORDERS
-        public List<Distribution> GetFirstDisplayTypeList()
+        public async Task<List<Distribution>> GetFirstDisplayTypeList()
         {
-            List<Distribution> theList = new List<Distribution>();
-            try
-            {
-                DataTable dt = GetDataTable("Select * from Distribution where IID in (" + config.Default_Distribution_Terminal_Type_List + ")");
-                if (dt == null)
-                    return theList;
-                for (int i = 0; i < dt.Rows.Count; i++)
-                    theList.Add(new Distribution(dt.Rows[i]));
-                return theList;
-            } catch
-            {
-                return theList;
-            }
+            return await repoDistribution.GetDBContext().Database.SqlQuery<Distribution>($"Select * from Distribution where IID in ({config.Default_Distribution_Terminal_Type_List})").ToListAsync();
+            //List<Distribution> theList = new List<Distribution>();
+            //try
+            //{
+            //    DataTable dt = GetDataTable("Select * from Distribution where IID in (" + config.Default_Distribution_Terminal_Type_List + ")");
+            //    if (dt == null)
+            //        return theList;
+            //    for (int i = 0; i < dt.Rows.Count; i++)
+            //        theList.Add(new Distribution(dt.Rows[i]));
+            //    return theList;
+            //} catch
+            //{
+            //    return theList;
+            //}
         }
-        public List<POSLayer.Models.Distribution> GetSecondDisplayTypeList()
+        public async Task<List<POSLayer.Models.Distribution>> GetSecondDisplayTypeList()
         {
-            List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
-            try
-            {
-                DataTable dt = GetDataTable("Select * from Distribution where IID in (" + config.Secondary_Distribution_Terminal_Type_List + ")");
-                if (dt == null)
-                    return theList;
-                for (int i = 0; i < dt.Rows.Count; i++)
-                    theList.Add(new POSLayer.Models.Distribution(dt.Rows[i]));
-                return theList;
-            } catch
-            {
-                return theList;
-            }
+            return await repoDistribution.GetDBContext().Database.SqlQuery<Distribution>($"Select * from Distribution where IID in ({config.Secondary_Distribution_Terminal_Type_List})").ToListAsync();
+            //List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
+            //try
+            //{                   
+            //    DataTable dt = GetDataTable("Select * from Distribution where IID in (" + config.Secondary_Distribution_Terminal_Type_List + ")");
+            //    if (dt == null)
+            //        return theList;
+            //    for (int i = 0; i < dt.Rows.Count; i++)
+            //        theList.Add(new POSLayer.Models.Distribution(dt.Rows[i]));
+            //    return theList;
+            //} catch
+            //{
+            //    return theList;
+            //}
         }
         public bool SaveKitchenOrder(POSLayer.Models.KitchenOrder order)
         {
-            if (RunQuery("SaveKitchenOrder '" + order.IID + "','" + order.Reference + "'," +
-                DRDateTime.DatetimeToMSSql(order.CreatedDateTime) + ",'" + order.OrderIID + "'," +
-                DRDateTime.DatetimeToMSSql(order.CompletedDateTime) + "," + (int)order.GetStatus() + "," + BoolToInt(order.BeingModified) + "," + (int)order.OrderType))
-            {
-                bool test = true;
-                for (int i = 0; i < order.items.Count; i++)
-                {
-                    POSLayer.Models.KitchenOrderItem koi = order.items[i];
-                    test = test && RunQuery("SaveKitchenOrderItem '" + koi.IID + "'," + koi.Quantity + ",'" +
-                        koi.ItemText + "','" + koi.KitchenOrderIID + "','" + koi.DistributionIID + "','" +
-                        koi.EntityButtonIID + "'," + (int)koi.Status);
-                    if (!test)
-                        return false;
-                }
-                return test;
-            } else
-                return false;
+            return repoKitchenOrder.Save(order) != null;
+
+            //if (RunQuery("SaveKitchenOrder '" + order.IID + "','" + order.Reference + "'," +
+            //    DRDateTime.DatetimeToMSSql(order.CreatedDateTime) + ",'" + order.OrderIID + "'," +
+            //    DRDateTime.DatetimeToMSSql(order.CompletedDateTime) + "," + (int)order.GetStatus() + "," + BoolToInt(order.BeingModified) + "," + (int)order.OrderType))
+            //{
+            //    bool test = true;
+            //    for (int i = 0; i < order.items.Count; i++)
+            //    {
+            //        POSLayer.Models.KitchenOrderItem koi = order.items[i];
+            //        test = test && RunQuery("SaveKitchenOrderItem '" + koi.IID + "'," + koi.Quantity + ",'" +
+            //            koi.ItemText + "','" + koi.KitchenOrderIID + "','" + koi.DistributionIID + "','" +
+            //            koi.EntityButtonIID + "'," + (int)koi.Status);
+            //        if (!test)
+            //            return false;
+            //    }
+            //    return test;
+            //} else
+            //    return false;
         }
         public bool DeleteKitchenOrder(string IID, bool blnForce)
         {
@@ -3602,7 +3619,7 @@ namespace DTRMNS
             return korder;
         }
 
-        public void SetKitchenOrderModifiedStateForAttachedOrder(bool blnBeingModified)
+        public async void SetKitchenOrderModifiedStateForAttachedOrder(bool blnBeingModified)
         {
             try
             {
@@ -3610,7 +3627,8 @@ namespace DTRMNS
                         (config.Table_Orders_Display_Kitchen_Orders || config.Hold_Order_Display_in_Kitchen)) ||
                         (!blnBeingModified && AttachedOrder.Status == POSLayer.Library.StatusFlags.COMPLETED))
                 {
-                    RunQuery("Update KitchenOrders set BeingModified = " + BoolToInt(blnBeingModified) + " where OrderIID ='" + AttachedOrder.IID + "'");
+                    await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == AttachedOrder.IID).ForEachAsync(x => x.BeingModified =  blnBeingModified);
+                    //RunQuery("Update KitchenOrders set BeingModified = " + BoolToInt(blnBeingModified) + " where OrderIID ='" + AttachedOrder.IID + "'");
                     SetKitchenModified();
                 }
             } catch (Exception ex)
@@ -3654,23 +3672,26 @@ namespace DTRMNS
         #endregion
 
         #region SUPPLIER
-        public Supplier GetSupplier(string IID)
+        public async Task<Supplier> GetSupplier(string IID)
         {
-            return new Supplier(GetDataTable("Select * from Supplier where IID ='" + IID + "'"));
+            return await repoSupplier.Get(IID);
+            //return new Supplier(GetDataTable("Select * from Supplier where IID ='" + IID + "'"));
         }
         //public DataTable GetAllSuppliers()
         //{
         //    return GetDataTable("Select * from Supplier");
         //}
-        public List<Supplier> GetAllSuppliersAsList()
+        public async Task<List<Supplier>> GetAllSuppliersAsList()
         {
-            DataTable dt = GetDataTable("Select * from Supplier");
-            List<Supplier> theList = new List<Supplier>();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(new Supplier(dt.Rows[i]));
-            }
-            return theList;
+            return await repoSupplier.GetAllAsync();
+
+            //DataTable dt = GetDataTable("Select * from Supplier");
+            //List<Supplier> theList = new List<Supplier>();
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    theList.Add(new Supplier(dt.Rows[i]));
+            //}
+            //return theList;
         }
         /// <summary>
         /// 
@@ -3764,31 +3785,36 @@ namespace DTRMNS
         {
             return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
         }
-        public List<StockItem> GetAllStockItemsList()
+        public async Task<List<StockItem>> GetAllStockItemsList()
         {
-            DataTable dtStockItems = GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
-            List<StockItem> stockItems = new List<StockItem>();
-            foreach (DataRow dr in dtStockItems.Rows)
-            {
-                stockItems.Add(new StockItem(dr));
-            }
-            return stockItems;
+            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName").ToListAsync();
+            //DataTable dtStockItems = GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
+            //List<StockItem> stockItems = new List<StockItem>();
+            //foreach (DataRow dr in dtStockItems.Rows)
+            //{
+            //    stockItems.Add(new StockItem(dr));
+            //}
+            //return stockItems;
         }
-        public DataTable SearchStockItems(string searchText)
+        public async Task<List<StockItem>> SearchStockItems(string searchText)
         {
-            return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' order by StockName");
+            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%{searchText}%' order by StockName").ToListAsync();
+            //return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' order by StockName");
         }
-        public DataTable SearchStockItems(string searchText, string SupplierIID)
+        public async Task<List<StockItem>> SearchStockItems(string searchText, string SupplierIID)
         {
-            return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' and SupplierIID ='" + SupplierIID + "' order by StockName");
+            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%{searchText}%' and SupplierIID ='{SupplierIID}' order by StockName").ToListAsync();
+           // return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' and SupplierIID ='" + SupplierIID + "' order by StockName");
         }
-        public DataTable GetAllStockItemsShort()
+        public async Task<List<StockItem>> GetAllStockItemsShort()
         {
-            return GetDataTable("Select IID,StockName from StockItem order by StockName asc");
+            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select IID,StockName from StockItem order by StockName asc").ToListAsync();
+            //return GetDataTable("Select IID,StockName from StockItem order by StockName asc");
         }
-        public DataTable GetStockItemsForSupplier(string SupplierIID)
+        public async Task<List<StockItem>> GetStockItemsForSupplier(string SupplierIID)
         {
-            return GetDataTable("Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '" + SupplierIID + "'");
+            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '{SupplierIID}'").ToListAsync();
+            //return GetDataTable("Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '" + SupplierIID + "'");
         }
 
         #endregion
@@ -3851,10 +3877,10 @@ namespace DTRMNS
         /// </summary>
         /// <param name="EBIID"></param>
         /// <returns></returns>
-        //public DataTable GetStockItemsForEB(string EBIID)
-        //{
-        //    return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
-        //}
+        public DataTable GetStockItemsForEB(string EBIID)
+        {
+            return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
+        }
 
         public async Task<EntityButtonStockItemLookUp> GetEntityButtonStockItemLookUp(string IID)
         {
@@ -3890,13 +3916,14 @@ namespace DTRMNS
         }
 
 
-        public StockItemUsage GetSingleStockItemUsageAsObject(string StockItemIID)
+        public async Task<StockItemUsage> GetSingleStockItemUsageAsObject(string StockItemIID)
         {
-            DataTable dt = GetDataTable("Select * from StockItemUsage where StockItemIID = '" + StockItemIID + "'");
-            if (dt.Rows.Count > 0)
-                return new StockItemUsage(dt);
-            else
-                return null;
+            return await repoStockItemUsage.GetDBContext().Database.SqlQuery<StockItemUsage>($"Select * from StockItemUsage where StockItemIID = '{StockItemIID}'").FirstOrDefaultAsync();
+            //DataTable dt = GetDataTable("Select * from StockItemUsage where StockItemIID = '" + StockItemIID + "'");
+            //if (dt.Rows.Count > 0)
+            //    return new StockItemUsage(dt);
+            //else
+            //    return null;
         }
 
         public DataTable GetStockItemUsage(bool OrderableOnly)
@@ -4118,40 +4145,43 @@ namespace DTRMNS
         }
         public bool SaveGenericImage(GenericImage gim)
         {
-            try
-            {
-                SqlConnection con = new SqlConnection(ConnectionString);
+            return false;  
+            // bu onemli
 
-                using (SqlCommand comm = new SqlCommand("SaveGenericImage", con)
-                {
-                    CommandType = CommandType.StoredProcedure
-                })
-                {
+            //try
+            //{
+            //    SqlConnection con = new SqlConnection(ConnectionString);
 
-                    SqlParameter ReferenceIID = new SqlParameter("ReferenceIID", gim.ReferenceIID);
-                    byte[] imgbuf = DRUF.imageToByteArray(gim.DisplayImage);
-                    SqlParameter DisplayImage = new SqlParameter("DisplayImage", SqlDbType.VarBinary, imgbuf.Length)
-                    {
-                        Value = imgbuf
-                    };
+            //    using (SqlCommand comm = new SqlCommand("SaveGenericImage", con)
+            //    {
+            //        CommandType = CommandType.StoredProcedure
+            //    })
+            //    {
 
-                    SqlParameter ExtraText = new SqlParameter("ExtraText", gim.ExtraText);
-                    SqlParameter ImageFileName = new SqlParameter("ImageFileName", gim.ImageFileName);
+            //        SqlParameter ReferenceIID = new SqlParameter("ReferenceIID", gim.ReferenceIID);
+            //        byte[] imgbuf = DRUF.imageToByteArray(gim.DisplayImage);
+            //        SqlParameter DisplayImage = new SqlParameter("DisplayImage", SqlDbType.VarBinary, imgbuf.Length)
+            //        {
+            //            Value = imgbuf
+            //        };
 
-                    comm.Parameters.Add(ReferenceIID);
-                    comm.Parameters.Add(DisplayImage);
-                    comm.Parameters.Add(ExtraText);
-                    comm.Parameters.Add(ImageFileName);
-                    con.Open();
-                    int i = comm.ExecuteNonQuery();
-                    con.Close();
-                    return i > 0;
-                }
+            //        SqlParameter ExtraText = new SqlParameter("ExtraText", gim.ExtraText);
+            //        SqlParameter ImageFileName = new SqlParameter("ImageFileName", gim.ImageFileName);
 
-            } catch
-            {
-                return false;
-            }
+            //        comm.Parameters.Add(ReferenceIID);
+            //        comm.Parameters.Add(DisplayImage);
+            //        comm.Parameters.Add(ExtraText);
+            //        comm.Parameters.Add(ImageFileName);
+            //        con.Open();
+            //        int i = comm.ExecuteNonQuery();
+            //        con.Close();
+            //        return i > 0;
+            //    }
+
+            //} catch
+            //{
+            //    return false;
+            //}
         }
 
         /// <summary>
@@ -4262,8 +4292,8 @@ namespace DTRMNS
                     backup.debugList = await GetDebugList();
 
                 //Load Image Library
-                if (options.includeImages)
-                    backup.imageList = await GetImageLibraryList();
+                //if (options.includeImages)
+                //    backup.imageList = await GetImageLibraryList();
 
                 return backup;
             } catch

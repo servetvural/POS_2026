@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using POSLayer.Library;
+using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmPurchase : Form {
@@ -21,8 +25,8 @@ namespace DTRMNS {
             LoadStockItemUsage();
         }
 
-        private void LoadStockItemUsage() {
-            stockItem = bslayer.GetStockItem(stockItemUsage.StockItemIID);
+        private async Task LoadStockItemUsage() {
+            stockItem =await bslayer.GetStockItem(stockItemUsage.StockItemIID);
             txtStockItemName.Text = stockItemUsage.StockName;
             txtQuantity.Value = (int)stockItemUsage.OrderableQuantity;
             txtConversion.Text = stockItem.Conversion.ToString();

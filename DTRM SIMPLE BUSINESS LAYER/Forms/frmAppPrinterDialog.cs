@@ -4,6 +4,8 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmAppPrinterDialog : Form {
         private DTRMSimpleBusiness bslayer;
@@ -25,7 +27,7 @@ namespace DTRMNS {
 
 
         private void LoadPrinters() {
-            List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList();
+            List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList().Result;
 
             ListViewItem lvi;
             ApplicationPrinter ap;
@@ -42,11 +44,11 @@ namespace DTRMNS {
             Close();
         }
 
-        private void btnOK_Click(object sender, EventArgs e) {
+        private async void btnOK_Click(object sender, EventArgs e) {
             if (lvwPrinters.SelectedIndices.Count > 0) {
                 ListViewItem lvi = lvwPrinters.SelectedItems[0];
                 this.SelectedPrinterIID = lvi.SubItems[1].Text;
-                this.SelectedApplicationPrinter = bslayer.GetPrinterForClient(SelectedPrinterIID);
+                this.SelectedApplicationPrinter =await bslayer.GetPrinterForClient(SelectedPrinterIID);
                 this.SelectedPrinterNetworkName = SelectedApplicationPrinter.NetworkName;
                 this.DialogResult = DialogResult.OK;
                 this.Close();

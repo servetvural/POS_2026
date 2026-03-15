@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
    partial class trmDistributionSelector : Form {
       private DTRMSimpleBusiness bslayer;
@@ -21,7 +23,7 @@ namespace DTRMNS {
       }
       private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
       {
-         SelectedDistribution = bslayer.GetDistribution(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+         SelectedDistribution = bslayer.GetDistribution(dgv.Rows[e.RowIndex].Cells[0].Value.ToString()).Result;
          //this.DialogResult = DialogResult.OK;
          //this.Close();
       }

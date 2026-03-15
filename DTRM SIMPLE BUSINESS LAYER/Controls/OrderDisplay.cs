@@ -1,14 +1,20 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
 
-namespace DTRMNS {
+
+namespace DTRMNS
+{
     /// <summary>
     /// Summary description for OrderDisplay.
     /// </summary>
-    public class OrderDisplay : System.Windows.Forms.UserControl {
+    public class OrderDisplay : System.Windows.Forms.UserControl
+    {
         public DTRMNS.DTRMSimpleBusiness bslayer;
         private System.Windows.Forms.ColumnHeader IID;
         private System.Windows.Forms.ColumnHeader OrderItemText;
@@ -48,7 +54,7 @@ namespace DTRMNS {
 
         public bool blnShrinkOrder;
 
-        
+
 
         private POSLayer.Models.Order _OrderToDisplay;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -64,37 +70,43 @@ namespace DTRMNS {
         public SplittingStatus SplitStatus = SplittingStatus.Normal;
 
         public event GenericFunctionCall DisplayOccured;
-        public void OnDisplayOccured() {
+        public void OnDisplayOccured()
+        {
             if (DisplayOccured != null)
                 DisplayOccured();
         }
 
         public event GenericFunctionCall TopItemDeleted;
-        public void OnTopItemDeleted() {
+        public void OnTopItemDeleted()
+        {
             if (TopItemDeleted != null)
                 TopItemDeleted();
         }
 
         public event GenericFunctionCall SplitStarting;
-        public void OnSplitStarting() {
+        public void OnSplitStarting()
+        {
             if (SplitStarting != null)
                 SplitStarting();
         }
 
         public event GenericFunctionCall SplitContinuing;
-        public void OnSplitContinuing() {
+        public void OnSplitContinuing()
+        {
             if (SplitContinuing != null)
                 SplitContinuing();
         }
 
         public event GenericFunctionCall SplitEnding;
-        public void OnSplitEnding() {
+        public void OnSplitEnding()
+        {
             if (SplitEnding != null)
                 SplitEnding();
         }
 
         public event GenericFunctionCall ZeroItemsLeft;
-        public void OnZeroItemsLeft() {
+        public void OnZeroItemsLeft()
+        {
             if (ZeroItemsLeft != null)
                 ZeroItemsLeft();
         }
@@ -102,30 +114,39 @@ namespace DTRMNS {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SplitDisplayHeight { get { return pnlSplit.Height; } set { pnlSplit.Height = value; } }
 
-        public OrderDisplay() {
+        public OrderDisplay()
+        {
             InitializeComponent();
 
         }
 
-        public void AttachBusinessLayer(DTRMNS.DTRMSimpleBusiness bs) {
+        public void AttachBusinessLayer(DTRMNS.DTRMSimpleBusiness bs)
+        {
             bslayer = bs;
-            try {
-                if (bslayer != null) {
-                    if (bslayer.config != null) {
+            try
+            {
+                if (bslayer != null)
+                {
+                    if (bslayer.config != null)
+                    {
                         ilSmall.ImageSize = new Size((int)bslayer.config.Order_Item_Display_Height, (int)bslayer.config.Order_Item_Display_Height);
                         bslayer.DisplayOrder += new GenericFunctionCall(Display);
                     }
                 }
-            } catch {
+            } catch
+            {
                 ilSmall.ImageSize = new Size(16, 16);
             }
         }
         /// <summary> 
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
                     components.Dispose();
                 }
             }
@@ -137,7 +158,8 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.IID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colQuantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -545,24 +567,28 @@ namespace DTRMNS {
         }
         #endregion
 
-        private void DisplaySplittingOrder() {
+        private void DisplaySplittingOrder()
+        {
             if (OrderToSplit == null)
                 return;
             lvwSplittingOrder.Items.Clear();
-            foreach (POSLayer.Models.OrderItem oi in OrderToSplit.items) {
-                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.Total.ToString("N2")}));
+            foreach (POSLayer.Models.OrderItem oi in OrderToSplit.items)
+            {
+                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.Total.ToString("N2") }));
             }
         }
 
 
-        public void Display() {
-             
+        public void Display()
+        {
+
             Color GroupBackColor = Color.LightGray;
             string GroupIID = "";
 
             btnSplit.Visible = false;
 
-            if (bslayer.AttachedOrder != null) {
+            if (bslayer.AttachedOrder != null)
+            {
                 btnViewKitchen.Visible = bslayer.config.Display_Kitchen_Chef_on_Display &&
                     ((bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.DirectSale && bslayer.config.Hold_Order_Available && bslayer.config.Hold_Order_Display_in_Kitchen) ||
                     (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.config.Table_Orders_Allowed && bslayer.config.Table_Orders_Display_Kitchen_Orders));
@@ -574,9 +600,9 @@ namespace DTRMNS {
             string[] arr = null;
             ListViewItem lvi;
             OrderItem oi;
-            float SingleTotal = 0f;
-            float SubTotal = 0f;
-            float OrderTotal = 0f;
+            double SingleTotal = 0f;
+            double SubTotal = 0f;
+            double OrderTotal = 0f;
             bool blnHasSubItems = false;
 
             Clear(false);
@@ -586,22 +612,25 @@ namespace DTRMNS {
             if (OrderToDisplay == null && OrderToSplit == null)
                 btnSplit.Visible = false;
 
-            if (OrderToDisplay == null && OrderToSplit != null && OrderToSplit.items.Count == 0) {
+            if (OrderToDisplay == null && OrderToSplit != null && OrderToSplit.items.Count == 0)
+            {
                 //Now Ordertosplit must be deleted
                 bslayer.DeleteOrder(OrderToSplit.IID);
                 OrderToSplit = null;
                 SplitStatus = SplittingStatus.Normal;
-                btnSplit.Visible = false;                          
+                btnSplit.Visible = false;
                 pnlSplit.Visible = false;
             }
 
-            if (OrderToDisplay == null)                
+            if (OrderToDisplay == null)
                 return;
 
 
-            switch (OrderToDisplay.Status) {
+            switch (OrderToDisplay.Status)
+            {
                 case POSLayer.Library.StatusFlags.NEW:
-                    switch (SplitStatus) {
+                    switch (SplitStatus)
+                    {
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
                             btnSplit.Visible = false; // OrderToDisplay.items.Count > 0;                            
@@ -617,7 +646,8 @@ namespace DTRMNS {
                     break;
                 case POSLayer.Library.StatusFlags.PENDING:
                 case POSLayer.Library.StatusFlags.DONE:
-                    switch (SplitStatus) {
+                    switch (SplitStatus)
+                    {
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
 
@@ -639,7 +669,8 @@ namespace DTRMNS {
 
 
             string strCompletedQuantity = "";
-            for (int i = 0; i < OrderToDisplay.items.Count; i++) {
+            for (int i = 0; i < OrderToDisplay.items.Count; i++)
+            {
 
                 //Display Top Item
                 blnHasSubItems = false;
@@ -649,33 +680,39 @@ namespace DTRMNS {
 
                 if ((bslayer.config.Table_Orders_Display_Kitchen_Orders || bslayer.config.Table_Orders_Kitchen_Receipt_Count > 0 || bslayer.config.Hold_Order_Display_in_Kitchen || bslayer.config.Hold_Order_Print_in_Kitchen) &&
                     (OrderToDisplay.OrderType == OrderTypes.DirectSale || OrderToDisplay.OrderType == OrderTypes.InHouse) &&
-                    OrderToSplit == null && (OrderToDisplay.Status == StatusFlags.NEW || OrderToDisplay.Status == StatusFlags.DONE || OrderToDisplay.Status == StatusFlags.PENDING)) {
-                    if (bslayer.config.Display_Kitchen_Orders_As_Reminders) {
-                        strCompletedQuantity = (oi.Quantity - oi.CompletedQuantity<0?0:oi.Quantity - oi.CompletedQuantity).ToString("f0");
+                    OrderToSplit == null && (OrderToDisplay.Status == StatusFlags.NEW || OrderToDisplay.Status == StatusFlags.DONE || OrderToDisplay.Status == StatusFlags.PENDING))
+                {
+                    if (bslayer.config.Display_Kitchen_Orders_As_Reminders)
+                    {
+                        strCompletedQuantity = (oi.Quantity - oi.CompletedQuantity < 0 ? 0 : oi.Quantity - oi.CompletedQuantity).ToString("f0");
                         if (strCompletedQuantity == "0")
                             strCompletedQuantity = "";
                     } else
                         strCompletedQuantity = oi.CompletedQuantity.ToString("f0");
                 }
-                
-                
+
+
 
                 arr = new String[5]{oi.IID, oi.Quantity.ToString("f0"),
-                                        oi.OrderItemText + " (" + bslayer.GetDistribution(oi.DistributionIID).ShortName + ")" , 
+                                        oi.OrderItemText + " (" + bslayer.GetDistribution(oi.DistributionIID).ShortName + ")" ,
                                          oi.Total.ToString("c"),strCompletedQuantity};
-                
+
                 ListViewItem toplvi = new ListViewItem(arr);
-                
-                if (OrderToSplit == null) {
-                    if (OrderToDisplay.OrderType == OrderTypes.InHouse && !bslayer.config.Table_Orders_Always_Shrinked) {
-                        if (GroupIID != oi.OrderGroupIID) {
+
+                if (OrderToSplit == null)
+                {
+                    if (OrderToDisplay.OrderType == OrderTypes.InHouse && !bslayer.config.Table_Orders_Always_Shrinked)
+                    {
+                        if (GroupIID != oi.OrderGroupIID)
+                        {
                             //Need to change item backcolor
                             GroupIID = oi.OrderGroupIID;
                             GroupBackColor = (GroupBackColor == Color.LightGray) ? Color.DarkGray : Color.LightGray;
                         }
-                            
+
                         toplvi.BackColor = GroupBackColor;
-                    } else {
+                    } else
+                    {
                         if (oi.OrderGroupIID != OrderToDisplay.IID)
                             toplvi.BackColor = Color.DarkGray;
                     }
@@ -688,18 +725,21 @@ namespace DTRMNS {
 
                 lvwOrder.Items.Add(toplvi);
 
-                
+
 
                 SubTotal = SingleTotal * oi.Quantity;
-                if (blnHasSubItems) {
+                if (blnHasSubItems)
+                {
                     toplvi.SubItems[2].Text += " (" + oi.Price.ToString("c") + ")";
                     toplvi.SubItems[3].Text = SingleTotal.ToString("c");
                 }
 
             }
-            if (lvwOrder.Items.Count > 0) {
+            if (lvwOrder.Items.Count > 0)
+            {
                 //Add Order's main instruction if  any
-                if (OrderToDisplay.Instruction.Trim().Length > 0) {
+                if (OrderToDisplay.Instruction.Trim().Length > 0)
+                {
                     arr = new string[4] { "", "", OrderToDisplay.Instruction, "" };
                     lvi = new ListViewItem(arr);
                     lvwOrder.Items.Add(lvi);
@@ -717,27 +757,31 @@ namespace DTRMNS {
             else
                 pnlDown.Height = 42;
 
-            if (bslayer.luv.ServiceChargeRate > 0 && bslayer.AttachedOrder != null) {
+            if (bslayer.luv.ServiceChargeRate > 0 && bslayer.AttachedOrder != null)
+            {
                 lblScrollDown.Text = "";
                 if (bslayer.config.Order_Screen_Display_Service_Charge)
                     lblScrollDown.Text = "Service Charge " + bslayer.AttachedOrder.GetServiceCharge().ToString("c") + " " + Environment.NewLine;
-                
+
                 lblScrollDown.Text += "Total " + (OrderTotal).ToString("c") + " ";
-            } else 
+            } else
                 lblScrollDown.Text = OrderTotal.ToString("c") + " ";
 
-            if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED)) {
+            if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
+            {
                 pnlCommand.Visible = btnSplit.Visible = false;
             }
 
         }
 
-        public void DisplayChangeGiven() {
-            if (OrderToDisplay.MoneyPaid > 0) {
-                float fullTotal = bslayer.AttachedOrder.GetFullTotal();
-                float servicecharge = bslayer.AttachedOrder.GetServiceCharge();
+        public async void DisplayChangeGiven()
+        {
+            if (OrderToDisplay.MoneyPaid > 0)
+            {
+                double fullTotal = bslayer.AttachedOrder.GetFullTotal();
+                double servicecharge = bslayer.AttachedOrder.GetServiceCharge();
 
-                float paraustu = OrderToDisplay.MoneyPaid - fullTotal;
+                double paraustu = OrderToDisplay.MoneyPaid - fullTotal;
                 pnlDown.Height = 80;
                 if (servicecharge > 0 && bslayer.config.Order_Screen_Display_Service_Charge)
                     pnlDown.Height = 100;
@@ -753,23 +797,28 @@ namespace DTRMNS {
             }
         }
 
-        public bool HasSelection() {
+        public bool HasSelection()
+        {
             return (SelectedItemIID != null && SelectedItemIID != "");
         }
 
-        public void Clear() {
+        public void Clear()
+        {
             Clear(false);
 
         }
-        private void Clear(bool RaiseEvent) {
+        private void Clear(bool RaiseEvent)
+        {
             tmrSaat.Enabled = true;
             lvwOrder.Items.Clear();
 
             if (RaiseEvent)
                 OnDisplayOccured();
         }
-        public bool IsSelectedOrderItemSubItem() {
-            if (lvwOrder.SelectedItems.Count > 0) {
+        public bool IsSelectedOrderItemSubItem()
+        {
+            if (lvwOrder.SelectedItems.Count > 0)
+            {
                 if (lvwOrder.SelectedItems[0].SubItems[3].Text.ToUpper() == "FALSE")
                     return true;
                 else
@@ -778,14 +827,18 @@ namespace DTRMNS {
             return false;
         }
 
-        private void lvwOrder_Click(object sender, System.EventArgs e) {
+        private void lvwOrder_Click(object sender, System.EventArgs e)
+        {
             this.OnClick(e);
         }
 
-        public bool SelectTopItem(string OrderItemIID) {
+        public bool SelectTopItem(string OrderItemIID)
+        {
             lvwOrder.SelectedItems.Clear();
-            for (int i = 0; i < this.lvwOrder.Items.Count; i++) {
-                if (lvwOrder.Items[i].Text == OrderItemIID) {
+            for (int i = 0; i < this.lvwOrder.Items.Count; i++)
+            {
+                if (lvwOrder.Items[i].Text == OrderItemIID)
+                {
                     lvwOrder.Items[i].Selected = true;
                     return true;
                 }
@@ -793,38 +846,45 @@ namespace DTRMNS {
             return false;
         }
 
-        private void lvwOrder_SelectedIndexChanged(object sender, EventArgs e) {
+        private void lvwOrder_SelectedIndexChanged(object sender, EventArgs e)
+        {
             if (lvwOrder.SelectedItems.Count > 0)
                 bslayer.SelectedOrderItemIID = SelectedItemIID = lvwOrder.SelectedItems[0].Text;
             else
                 bslayer.SelectedOrderItemIID = SelectedItemIID = null;
         }
 
-       
 
-        private void btnDeleteItem_Click(object sender, EventArgs e) {
+
+        private async Task btnDeleteItem_Click(object sender, EventArgs e)
+        {
             if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
                 return;
 
             //DELETE SUB ROUTINE
-            if (OrderToDisplay != null) {
-                if (HasSelection()) {
-                    if (OrderToDisplay.Status !=  StatusFlags.NEW && bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User) {
+            if (OrderToDisplay != null)
+            {
+                if (HasSelection())
+                {
+                    if (OrderToDisplay.Status != StatusFlags.NEW && bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                    {
                         if (!bslayer.ConfirmForSupervision())
                             return;
                     }
 
                     bool blnTopItem = false;
                     //Gets the top item
-                    OrderItem oi = OrderToDisplay.items.Find(delegate(OrderItem param) { return param.IID == SelectedItemIID; });
+                    OrderItem oi = OrderToDisplay.items.Find(delegate (OrderItem param)
+                    { return param.IID == SelectedItemIID; });
                     if (oi != null && oi.ItemType != OrderItemTypes.NormalOrderItem)
                         blnTopItem = true;
 
-                    if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted) {
+                    if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
+                    {
                         //check is deletable than delete else return directly
                         if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(oi))
                             return;
-                    } 
+                    }
 
                     OrderToDisplay.DeleteOrderItem(SelectedItemIID);
 
@@ -833,8 +893,9 @@ namespace DTRMNS {
                     {
                         try
                         {
-                            Order oldOrder = bslayer.GetOrder(bslayer.AttachedOrder.IID);
-                            if (oldOrder != null) {
+                            Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
+                            if (oldOrder != null)
+                            {
                                 bslayer.SaveLogItem(new LogItem(oi, oi.Quantity, oldOrder.ToSimpleString(), "Deleted", bslayer.config.Terminal_Name, bslayer.AttachedOrder.Reference));
                             }
                         } catch (Exception ex)
@@ -842,7 +903,7 @@ namespace DTRMNS {
                             string str = ex.Message;
                         }
                     }
-                    
+
 
                     if (OrderToDisplay.items.Count == 0)
                         OnZeroItemsLeft();
@@ -855,26 +916,32 @@ namespace DTRMNS {
             }
         }
 
-        private void btnMinusOne_Click(object sender, EventArgs e) {
-            try {
+        private async Task btnMinusOne_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
                     return;
-                if (HasSelection()) {
-                    if (OrderToDisplay != null) {
+                if (HasSelection())
+                {
+                    if (OrderToDisplay != null)
+                    {
 
-                        if (bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User) {
+                        if (bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                        {
                             if (!bslayer.ConfirmForSupervision())
                                 return;
                         }
 
-                        if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted) {
+                        if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
+                        {
                             //check is deletable than delete else return directly
                             if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.GetOrderItem(SelectedItemIID)))
                                 return;
                         }
 
                         //XXX logdelete
-                        
+
                         if (bslayer.AttachedOrder.Status != StatusFlags.NEW && bslayer.config.Log_Deleted_Order_Items)
                         {
                             try
@@ -882,13 +949,22 @@ namespace DTRMNS {
                                 OrderItem oi = OrderToDisplay.GetOrderItem(SelectedItemIID);
                                 if (oi != null)
                                 {
-                                    Order oldOrder = bslayer.GetOrder(bslayer.AttachedOrder.IID);
+                                    Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
                                     if (oldOrder != null)
                                     {
-                                        bslayer.SaveLogItem(new LogItem(oi, 1, oldOrder.ToSimpleString(), "Decremented", bslayer.config.Terminal_Name, bslayer.AttachedOrder.Reference));
+                                        bslayer.SaveLogItem(new LogItem()
+                                        {
+                                            OrderItemText = oi.OrderItemText,
+                                            Quantity = 1,
+                                            OrderContent = oldOrder.ToSimpleString(),
+                                            Reason = "Decremented",
+                                            ComputerName = bslayer.config.Terminal_Name,
+                                            Reference = bslayer.AttachedOrder.Reference
+                                        });
                                     }
                                 }
-                            } catch (Exception ex) { 
+                            } catch (Exception ex)
+                            {
                                 string str = ex.Message;
                             }
                         }
@@ -896,57 +972,70 @@ namespace DTRMNS {
                         OrderToDisplay.DecrementOrderItem(SelectedItemIID);
                         Display();
                         if (OrderToDisplay.items.Count == 0)
-                            OnZeroItemsLeft();                          
+                            OnZeroItemsLeft();
                     }
                 }
-            } catch {
+            } catch
+            {
             }
         }
 
-        private void btnPlus1_Click(object sender, EventArgs e) {
-            try {
+        private void btnPlus1_Click(object sender, EventArgs e)
+        {
+            try
+            {
                 if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
                     return;
 
-                if (OrderToDisplay != null && HasSelection()) {
+                if (OrderToDisplay != null && HasSelection())
+                {
                     OrderToDisplay.IncrementOrderItem(SelectedItemIID);
                     Display();
                 }
-            } catch {
+            } catch
+            {
             }
         }
 
-       
 
-        private void tmrSaat_Tick(object sender, EventArgs e) {
+
+        private void tmrSaat_Tick(object sender, EventArgs e)
+        {
             UpdateClock();
         }
-        private void UpdateClock() {
+        private void UpdateClock()
+        {
             if (bslayer != null && OrderToDisplay == null)
                 lblScrollUp.Text = DateTime.Now.ToLongTimeString() + " | " + bslayer.LoggedUser.UserName;
         }
 
-        private void btnSplit_Click(object sender, EventArgs e) {
-            if (SplitStatus == SplittingStatus.Normal) {
+        private void btnSplit_Click(object sender, EventArgs e)
+        {
+            if (SplitStatus == SplittingStatus.Normal)
+            {
                 SplitStatus = SplittingStatus.Splitting;
                 DoSplit();
-            } else {
+            } else
+            {
                 SplitStatus = SplittingStatus.Normal;
-                EndSplit(false,false);
-                
+                EndSplit(false, false);
+
             }
             Display();
         }
 
-        private void DoSplit() {
+        private void DoSplit()
+        {
             bslayer.SaveOrder(bslayer.AttachedOrder);
             OrderToSplit = bslayer.AttachedOrder;
             OnSplitStarting();
-            
+
         }
 
-        private void EndSplit(bool blnMerge,bool blnSplitAndHold) {
-            if (OrderToDisplay != null) {
+        private void EndSplit(bool blnMerge, bool blnSplitAndHold)
+        {
+            if (OrderToDisplay != null)
+            {
                 if (blnMerge)
                     OrderToSplit.MergeOrder(OrderToDisplay);
                 OrderToDisplay.ShrinkOrder();
@@ -959,7 +1048,8 @@ namespace DTRMNS {
             OrderToSplit = null;
 
 
-            if (OrderToSplit == null) {
+            if (OrderToSplit == null)
+            {
                 btnSplit.Image = Properties.Resources.Split32Down;
                 btnSplit.Visible = true;
                 pnlSplit.Visible = false;
@@ -967,11 +1057,14 @@ namespace DTRMNS {
             if (OrderToDisplay == null)
                 return;
 
-            if (OrderToDisplay.Status == StatusFlags.NEW) {
-                if (blnSplitAndHold) {
+            if (OrderToDisplay.Status == StatusFlags.NEW)
+            {
+                if (blnSplitAndHold)
+                {
                     //This is where you create new order from splitted items and save as holded order
 
-                } else {
+                } else
+                {
                     //this is where you just waist the ordertodisplay 
                     bslayer.DeleteOrder(OrderToDisplay.IID);
                     bslayer.AttachedOrder = null;
@@ -983,29 +1076,33 @@ namespace DTRMNS {
             SplitStatus = SplittingStatus.Normal;
         }
 
-        public void AbortSplit() {
-            EndSplit(true,false);
+        public void AbortSplit()
+        {
+            EndSplit(true, false);
         }
 
 
         /// <summary>
         /// This function is called when split completed, just tidy up the view
         /// </summary>
-        public void FinaliseSplit() {
-            EndSplit(false,false);
+        public void FinaliseSplit()
+        {
+            EndSplit(false, false);
         }
-        private void btnSplitOneDown_Click(object sender, EventArgs e) {
+        private void btnSplitOneDown_Click(object sender, EventArgs e)
+        {
             if (OrderToSplit != null && OrderToSplit.items.Count == 1 && OrderToSplit.items[0].Quantity == 1)
                 return;
             OnSplitContinuing();
-            if (lvwSplittingOrder.SelectedItems.Count > 0) {    
+            if (lvwSplittingOrder.SelectedItems.Count > 0)
+            {
                 //SplitOrder  to  DisplayOrder
 
                 //Get Select listview item
                 string IID = lvwSplittingOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                POSLayer.Models.OrderItem  oiNew =  OrderToSplit.GetOrderItem(IID).Clone(false);
+                POSLayer.Models.OrderItem oiNew = OrderToSplit.GetOrderItem(IID).Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToDisplay.IID;
 
@@ -1023,9 +1120,11 @@ namespace DTRMNS {
             OnSplitContinuing();
         }
 
-        private void btnSplitOneUp_Click(object sender, EventArgs e) {
+        private void btnSplitOneUp_Click(object sender, EventArgs e)
+        {
             OnSplitContinuing();
-            if (lvwOrder.SelectedItems.Count > 0) {
+            if (lvwOrder.SelectedItems.Count > 0)
+            {
                 //DisplayOrder  to  SplitOrder
 
                 //Get Select listview item
@@ -1035,16 +1134,16 @@ namespace DTRMNS {
                 POSLayer.Models.OrderItem oiNew = OrderToDisplay.GetOrderItem(IID).Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToSplit.IID;
-                
 
-                
+
+
                 //Drop 1 from ordertodisplay and save
                 if (!OrderToDisplay.GetOrderItem(IID).Decrement())
                     OrderToDisplay.DeleteOrderItem(IID);
                 bslayer.SaveOrder(OrderToDisplay);
 
                 //Add new item to ordertosplit and save
-                POSLayer.Models.OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID,oiNew.OrderGroupIID);
+                POSLayer.Models.OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
                 if (oiToIncrement == null)
                     OrderToSplit.AddOrderItem(oiNew);
                 else
@@ -1056,11 +1155,13 @@ namespace DTRMNS {
             OnSplitContinuing();
         }
 
-        private void btnSplitAllDown_Click(object sender, EventArgs e) {
-            if (OrderToSplit != null && OrderToSplit.items.Count == 1 )
+        private void btnSplitAllDown_Click(object sender, EventArgs e)
+        {
+            if (OrderToSplit != null && OrderToSplit.items.Count == 1)
                 return;
             OnSplitContinuing();
-            if (lvwSplittingOrder.SelectedItems.Count > 0) {
+            if (lvwSplittingOrder.SelectedItems.Count > 0)
+            {
                 ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
                 POSLayer.Models.OrderItem oi = OrderToSplit.GetOrderItem(lvi.Text);
                 oi.ParentOrderIID = OrderToDisplay.IID;
@@ -1074,9 +1175,11 @@ namespace DTRMNS {
             OnSplitContinuing();
         }
 
-        private void btnSplitAllUp_Click(object sender, EventArgs e) {
+        private void btnSplitAllUp_Click(object sender, EventArgs e)
+        {
             OnSplitContinuing();
-            if (lvwOrder.SelectedItems.Count > 0) {
+            if (lvwOrder.SelectedItems.Count > 0)
+            {
                 ListViewItem lvi = lvwOrder.SelectedItems[0];
                 POSLayer.Models.OrderItem oi = OrderToDisplay.GetOrderItem(lvi.Text);
                 oi.ParentOrderIID = oi.OrderGroupIID = OrderToSplit.IID;
@@ -1088,10 +1191,11 @@ namespace DTRMNS {
                 Display();
             }
             OnSplitContinuing();
-           
+
         }
 
-        private void btnViewKitchen_Click(object sender, EventArgs e) {
+        private void btnViewKitchen_Click(object sender, EventArgs e)
+        {
             if (colCompletedQuantity.Width > 0)
                 colCompletedQuantity.Width = 0;
             else

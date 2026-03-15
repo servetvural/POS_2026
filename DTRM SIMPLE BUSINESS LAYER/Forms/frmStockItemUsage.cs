@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
+
+using POSLayer.Library;
+
 using PosLibrary;
 
 namespace DTRMNS {
@@ -48,7 +51,7 @@ namespace DTRMNS {
         }
 
         private void LoadSuppliers() {
-            cmbSuppliers.DataSource = bslayer.GetAllSuppliers();
+            cmbSuppliers.DataSource = bslayer.GetAllSuppliersAsList();
         }
 
         private void btnPrint_Click(object sender, EventArgs e) {

@@ -13,7 +13,7 @@ public partial class EntityButton : BaseClass
     public int ButtonColor { get; set; } = SystemColors.Control.ToArgb();
     public int ForeColor { get; set; } = Color.Black.ToArgb();
     public EntityButtonTypes ButtonType { get; set; } = EntityButtonTypes.SimpleItem;
-    public int? AvailableFor { get; set; } = (int)AvailabilityTypes.All;
+    public int AvailableFor { get; set; } = (int)AvailabilityTypes.All;
     public string ParentEntityIID { get; set; } = string.Empty;
     public string ParentMenuIID { get; set; } = string.Empty;
     public int Compulsary { get; set; }
@@ -140,7 +140,7 @@ public class EntityButtonSearchResult
     public string IID { get; set; }
     public string EntityButtonName { get; set; }
     public string EntityName { get; set; }
-    public Image DisplayImage { get; set; }
+    public BImage DisplayImage { get; set; }
 
     public EntityButtonSearchResult()
     {

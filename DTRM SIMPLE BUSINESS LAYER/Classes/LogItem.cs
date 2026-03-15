@@ -65,7 +65,7 @@ namespace DTRMNS
             this.EventDateTime = DateTime.Now;
             this.ComputerName = ComputerName;
             this.OrderContent = OrderContent;
-            this.Reference = Reference;
+            this.Reference = Reference;                                                                     
         }
 
         public override string ToString()
