@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using POSLayer.Models;
 
 namespace DTRMNS{
     public partial class frmTableSelector : Form{
@@ -75,8 +78,8 @@ namespace DTRMNS{
                 rb.FlatAppearance.BorderSize = 0;
         }
 
-        private void LoadTables() {
-            List<Table> tablelist = bslayer.GetTableList(SelectedGroup);
+        private async void LoadTables() {
+            List<Table> tablelist =await bslayer.GetTableList(SelectedGroup);
 
             pnlTables.Controls.Clear();
 

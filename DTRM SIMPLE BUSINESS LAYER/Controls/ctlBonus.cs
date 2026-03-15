@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 
 namespace DTRMNS.Controls {
     public partial class ctlBonus : UserControl {

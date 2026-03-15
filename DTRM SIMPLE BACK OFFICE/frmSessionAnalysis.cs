@@ -11,6 +11,9 @@ using DTRMNS;
 using PosLibrary;
 using PosLibrary.Forms;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionAnalysis : Form {
         private DTRMSimpleBusiness bslayer;
@@ -107,16 +110,14 @@ namespace DTRMSimpleBackOffice {
 
         private void LoadOrderItemsAndStockUsage() {
             if (dgvOrders.SelectedRows.Count > 0) {
-                //string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
                 string OrderIIDList = GetSelectedOrderIIDListSQL();
                 dgvOrderItems.DataSource = GetOrderItemsForSelectedOrders(OrderIIDList);
 
 
                 DataTable dt = GetStockUsageForSelectedOrders(OrderIIDList);
-                dt = UF.StringifyEnumInDataTable(dt, "OrderableType", "OrderableTypeAsString", typeof(QuantityTypes));
-                dt = UF.StringifyEnumInDataTable(dt, "QuantityType", "QuantityTypeAsString", typeof(QuantityTypes));
+                dt = POSLayer.Library.UF.StringifyEnumInDataTable(dt, "OrderableType", "OrderableTypeAsString", typeof(QuantityTypes));
+                dt = POSLayer.Library.UF.StringifyEnumInDataTable(dt, "QuantityType", "QuantityTypeAsString", typeof(QuantityTypes));
                 dgvStockItems.DataSource = dt;
-               // PopulateRowsForUsageTypes();
             } 
         }
 
@@ -216,7 +217,7 @@ namespace DTRMSimpleBackOffice {
             cmbSuppliers.ComboBox.DisplayMember = "SupplierName";
             //cmbSuppliers.ComboBox.ValueMember = 
 
-            cmbSuppliers.Items.AddRange(bslayer.GetAllSuppliersAsList().ToArray());
+            cmbSuppliers.Items.AddRange(bslayer.GetAllSuppliersAsList().Result.ToArray());
         }
 
         

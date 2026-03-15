@@ -25,5 +25,8 @@ public interface IRepository<T> where T : BaseClass
 
 
     //Task<List<PrinterView>> GetPrinterView();
-    Task<List<SessionData>> GetSessionSum();
+    Task<IEnumerable<SessionData>> GetSessionSumView();
+    Task<IEnumerable<StockItemUsage>> GetStockItemUsageView();
+
+    Task<IEnumerable<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView();
 }

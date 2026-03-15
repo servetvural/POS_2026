@@ -4,8 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTRMNS;
+
+using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmDistribution : Form {
@@ -26,9 +29,9 @@ namespace DTRMSimpleBackOffice {
             LoadPrinterCombos();
         }
 
-        private void LoadPrinterCombos() {
+        private async void LoadPrinterCombos() {
             try {
-                cmbPrimaryPrinter.DataSource = bslayer.GetPrinterListDB();
+                cmbPrimaryPrinter.DataSource =await bslayer.GetAllPrinters();
                 cmbPrimaryPrinter.SelectedValue = distributionType.PrinterIID;
             } catch { }
             

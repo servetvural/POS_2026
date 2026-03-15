@@ -149,7 +149,7 @@ namespace DTRMNS {
                             bslayer.config.DTClientLocalReceiptPrinterIID);
                         if (bslayer.config.Force_Receipt_Printer_To_Cut)
                             DRShell.SendCutCommandToUSBPrinter(
-                                bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).NetworkName);
+                                bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                     
                 }
             }
@@ -192,12 +192,12 @@ namespace DTRMNS {
                         bslayer.config.DTClientLocalReceiptPrinterIID);
                     if (bslayer.config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).NetworkName);
+                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }
 
-        private async Task btnJoinAllTables_Click(object sender, EventArgs e) {
+        private async void btnJoinAllTables_Click(object sender, EventArgs e) {
             Table primaryTable =await bslayer.BarrowTable(rootTableIID);
             for (int i = 0; i < tablelist.Count; i++) {
                 if (tablelist[i].IID != rootTableIID)

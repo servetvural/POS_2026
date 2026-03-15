@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Views;
 
 using PosLibrary;
 
@@ -30,7 +33,7 @@ namespace DTRMNS {
                 if (blnUseSearch)
                     dgv.DataSource = bslayer.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
                 else
-                    dgv.DataSource = bslayer.GetStockItemUsage(chkOrderableOnly.Checked);
+                    dgv.DataSource = bslayer.GetStockItemUsages(chkOrderableOnly.Checked);
             } else {
                 if (blnUseSearch)
                     dgv.DataSource = bslayer.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
@@ -141,10 +144,10 @@ namespace DTRMNS {
         }
 
 
-        private void btnEdit_Click(object sender, EventArgs e) {
+        private async void btnEdit_Click(object sender, EventArgs e) {
            if (dgv.SelectedRows.Count > 0) {
                 string StockItemIID = dgv.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
-                frmStockItem frm = new frmStockItem(bslayer, bslayer.GetStockItem(StockItemIID));
+                frmStockItem frm = new frmStockItem(bslayer, await bslayer.GetStockItem(StockItemIID));
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadUsage();
             }
@@ -155,10 +158,10 @@ namespace DTRMNS {
                 PurchaseClicked();
         }
 
-        private void PurchaseClicked() { 
+        private async void PurchaseClicked() { 
             if (dgv.SelectedRows.Count > 0) {
                 string StockItemIID = dgv.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
-                StockItemUsage stockitemusage = bslayer.GetSingleStockItemUsageAsObject(StockItemIID);
+                StockItemUsage stockitemusage =await bslayer.GetSingleStockItemUsageAsObject(StockItemIID);
                 if (stockitemusage != null) {
                     frmPurchase frm = new frmPurchase(bslayer, stockitemusage);
                     if (frm.ShowDialog() == DialogResult.OK) {

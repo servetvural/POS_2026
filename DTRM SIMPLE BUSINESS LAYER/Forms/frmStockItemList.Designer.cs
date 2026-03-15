@@ -1,4 +1,7 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+using POSLayer.Views;
+
+namespace DTRMNS {
     partial class frmStockItemList {
         /// <summary>
         /// Required designer variable.
@@ -176,11 +179,11 @@
             // 
             // stockItemBindingSource
             // 
-            this.stockItemBindingSource.DataSource = typeof(DTRMNS.StockItem);
+            this.stockItemBindingSource.DataSource = typeof(StockItem);
             // 
             // supplierBindingSource
             // 
-            this.supplierBindingSource.DataSource = typeof(DTRMNS.Supplier);
+            this.supplierBindingSource.DataSource = typeof(Supplier);
             // 
             // cmbSuppliers
             // 
@@ -389,7 +392,7 @@
             // 
             // entityButtonStockItemRecipeBindingSource
             // 
-            this.entityButtonStockItemRecipeBindingSource.DataSource = typeof(DTRMNS.EntityButtonStockItemRecipe);
+            this.entityButtonStockItemRecipeBindingSource.DataSource = typeof(EntityButtonStockItemRecipe);
             // 
             // splitContainer1
             // 

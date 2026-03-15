@@ -14,9 +14,12 @@ using DTRMNS;
 using Newtonsoft.Json;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
 using PosLibrary;
 using PosLibrary.Forms;
+
+using POSWinFormLayer;
 
 
 namespace DTRMSimpleBackOffice {
@@ -88,9 +91,9 @@ namespace DTRMSimpleBackOffice {
                 }
             }
         }
-        private void BtnEditMenu_Click(object sender, EventArgs e) {
+        private async void BtnEditMenu_Click(object sender, EventArgs e) {
             if (dgvMenu.SelectedRows.Count > 0) {
-                POSLayer.Models.FoodMenu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                POSLayer.Models.FoodMenu menu = await bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
 
                 using (frmInputForm frm = new frmInputForm(menu.MenuName)) {
                     if (frm.ShowDialog() == DialogResult.OK) {
@@ -102,11 +105,11 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnDeleteMenu_Click(object sender, EventArgs e) {
+        private async void BtnDeleteMenu_Click(object sender, EventArgs e) {
             MessageBox.Show("This will delete the menu: NOT RECOMMENDED");
             if (SelectedMenuIID != "") {
                 if (MessageBox.Show("This will delete the selected Menu (" + dgvMenu.SelectedRows[0].Cells["colMenuName"].Value.ToString() + "\nAre you sure you want to DELETE???\nYou can only recover this Menu if you backed it up!!!", "MENU DELETION", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
-                    bslayer.DeleteMenuDB(SelectedMenuIID);
+                   await bslayer.DeleteMenuDB(SelectedMenuIID);
                     LoadMenuList();
                 }
             }
@@ -314,12 +317,12 @@ namespace DTRMSimpleBackOffice {
                 dgvEntity.Columns["colELWidth"].Visible =
                 dgvEntity.Columns["colELDistributionName"].Visible =
                 dgvEntity.Columns["colELFont"].Visible =
-                dgvEntity.Columns["colELDisplayOrder"].Visible = chkIncludeCategoryDetails.Checked;
+                dgvEntity.Columns["colELDisplayOrder"].Visible = true;
             
-            if (chkIncludeCategoryDetails.Checked)
-                dgvEntity.DataSource = bslayer.GetEntitiesForMenuDB(SelectedMenuIID);
-            else
-                dgvEntity.DataSource = bslayer.GetDataTable("SELECT IID, EntityName FROM Entity WHERE ParentMenuIID = '" + SelectedMenuIID + "' Order By DisplayOrder");
+            //if (chkIncludeCategoryDetails.Checked)
+                dgvEntity.DataSource = bslayer.GetAllEntities(SelectedMenuIID);
+            //else
+            //    dgvEntity.DataSource = bslayer.GetDataTable("SELECT IID, EntityName FROM Entity WHERE ParentMenuIID = '" + SelectedMenuIID + "' Order By DisplayOrder");
 
             //If there is entity so enable entity buttons
             //barEntityButton.Enabled = barStockUsage.Enabled = dgvSearchResults.Enabled = dgvEntity.SelectedRows.Count > 0;
@@ -346,32 +349,31 @@ namespace DTRMSimpleBackOffice {
                 }
             }
         }
-        private void DisplayEntityButton() {
+        private async void DisplayEntityButton() {
             if (dgvEntity.SelectedRows.Count > 0) {
-                Entity entity = bslayer.GetEntityDB(dgvEntity.SelectedRows[0].Cells["colEntityIID"].Value.ToString());
+                Entity entity = await bslayer.GetEntity(dgvEntity.SelectedRows[0].Cells["colEntityIID"].Value.ToString());
                 pnlEntitySample.Height = entity.ButtonHeight;
                 btnEntitySample.Height = entity.ButtonHeight;
                 btnEntitySample.Width = entity.ButtonWidth;
                 btnEntitySample.Text = entity.EntityName;
-                btnEntitySample.Font = new Font(entity.FFamily, entity.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entity.FStyle));
+                btnEntitySample.Font = new Font(entity.FFamily, (float)entity.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entity.FStyle));
                 btnEntitySample.BackColor = Color.FromArgb(entity.BackColour);
                 btnEntitySample.ForeColor = Color.FromArgb(entity.ForeColour);
 
             }
         }
 
-        private void BtnAddEntity_Click(object sender, EventArgs e) {
-            Entity en = new Entity(SelectedMenuIID);
-            using (frmEntityEditor frm = new frmEntityEditor(bslayer, en)) {
+        private void BtnAddEntity_Click(object sender, EventArgs e) {               
+            using (frmEntityEditor frm = new frmEntityEditor(bslayer, new Entity() { ParentMenuIID = SelectedMenuIID})) {
                 if (frm.ShowDialog() == DialogResult.OK) {
                     LoadEntityList();
                 }
             }
         }
 
-        private void BtnEditEntity_Click(object sender, EventArgs e) {
+        private async void BtnEditEntity_Click(object sender, EventArgs e) {
             try {
-                using (frmEntityEditor frm = new frmEntityEditor(bslayer, GetEntity())) {
+                using (frmEntityEditor frm = new frmEntityEditor(bslayer,await GetEntity())) {
                     if (frm.ShowDialog() == DialogResult.OK) {
                         LoadEntityList();
                     }
@@ -379,11 +381,11 @@ namespace DTRMSimpleBackOffice {
             } catch { }
         }
 
-        private void BtnDeleteEntity_Click(object sender, EventArgs e) {
+        private async void BtnDeleteEntity_Click(object sender, EventArgs e) {
             if (dgvEntity.SelectedRows.Count > 0) {
                 if (MessageBox.Show("This will delete the entity and all the associated buttons.\nDo you want to continue?", "Delete Entity", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
-                    Entity entity = GetEntity();
-                    bslayer.DeleteEntityDB(entity.IID);
+                    Entity entity =await GetEntity();
+                    await bslayer.DeleteEntityDB(entity.IID);
                     LoadEntityList();
                 }
             }
@@ -392,10 +394,10 @@ namespace DTRMSimpleBackOffice {
         private void DgvEntity_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
             BtnEditEntity_Click(null, null);
         }
-        private Entity GetEntity() {
+        private async Task<Entity> GetEntity() {
             try {
                 string entityIID = dgvEntity.SelectedRows[0].Cells["colEntityIID"].Value.ToString();
-                Entity entity = bslayer.GetEntityDB(entityIID);
+                Entity entity =await bslayer.GetEntity(entityIID);
                 return entity;
             } catch { }
 
@@ -457,10 +459,10 @@ namespace DTRMSimpleBackOffice {
             barEntityButton.Enabled = barStockUsage.Enabled = dgvSearchResults.Enabled = dgvEntity.SelectedRows.Count > 0;
         }
 
-        private void BtnAddEntityButton_Click(object sender, EventArgs e) {
+        private async void BtnAddEntityButton_Click(object sender, EventArgs e) {
             EntityButton ebNew = null;
             if (dgvEntityButton.Rows.Count > 0) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.Rows[0].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.Rows[0].Cells["colEntityButtonIID"].Value.ToString());
                 ebNew = eb.Duplicate();
                 ebNew.EntityButtonName = "";
                 ebNew.DirectSalePrice = 0;
@@ -472,12 +474,12 @@ namespace DTRMSimpleBackOffice {
 
 
             try {
-                Entity entity = GetEntity();
+                Entity entity =await GetEntity();
 
                 if (ebNew == null) {
                     ebNew = new EntityButton {
                         EntityButtonName = "New Button",
-                        PEIID = entity.IID
+                        ParentEntityIID = entity.IID
                     };
                 }
 
@@ -491,20 +493,20 @@ namespace DTRMSimpleBackOffice {
 
         }
 
-        private void BtnEditEntityButton_Click(object sender, EventArgs e) {
+        private async void BtnEditEntityButton_Click(object sender, EventArgs e) {
             try {
 
 
                 string entityButtonIID = dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
 
-                EntityButton entityButton = bslayer.GetJustEntityButton(entityButtonIID);
+                EntityButton entityButton =await bslayer.GetJustEntityButton(entityButtonIID);
                 using (FrmEntityButtonsEditor frm = new FrmEntityButtonsEditor(bslayer, entityButton)) {
 
                     if (frm.ShowDialog() == DialogResult.OK) {
                         int row = dgvEntityButton.SelectedRows[0].Index;
                         int disprow = dgvEntityButton.FirstDisplayedScrollingRowIndex;
 
-                        LoadEntityButtons(entityButton.PEIID);
+                        LoadEntityButtons(entityButton.ParentEntityIID);
 
                         dgvEntityButton.CurrentCell = dgvEntityButton.Rows[row].Cells[3];
                         dgvEntityButton.Rows[row].Selected = true;
@@ -514,23 +516,23 @@ namespace DTRMSimpleBackOffice {
             } catch { }
         }
 
-        private void BtnDeleteEntityButton_Click(object sender, EventArgs e) {
+        private async void BtnDeleteEntityButton_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
                 if (MessageBox.Show("This will Delete all sub entity buttons of this button.\nDo you want to continue?",
                     "Delete Entity Button", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
-                    EntityButton entityButton = GetEntityButton();
+                    EntityButton entityButton =await GetEntityButton();
                     bslayer.DeleteEntityButtonDB(entityButton.IID);
-                    LoadEntityButtons(GetEntity().IID);
+                    LoadEntityButtons(GetEntity().Result.IID);
                 }
             }
         }
         private void DgvEntityButton_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
             BtnEditEntityButton_Click(null, null);
         }
-        private EntityButton GetEntityButton() {
+        private async Task<EntityButton> GetEntityButton() {
             try {
                 string entityButtonIID = dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
-                return bslayer.GetJustEntityButton(entityButtonIID);
+                return await bslayer.GetJustEntityButton(entityButtonIID);
             } catch {
                 return null;
             }
@@ -539,16 +541,16 @@ namespace DTRMSimpleBackOffice {
         #endregion
 
 
-        private void BtnEBFontTo_Click(object sender, EventArgs e) {
+        private async void BtnEBFontTo_Click(object sender, EventArgs e) {
             using (FontDialog fd = new FontDialog()) {
                 fd.Font = new Font("Arial", 10, FontStyle.Bold);
                 if (fd.ShowDialog() == DialogResult.OK) {
                     for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                        EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                        EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                         eb.FFamily = fd.Font.FontFamily.Name;
                         eb.FSize = fd.Font.Size;
                         eb.FStyle = fd.Font.Style.ToString();
-                        bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                        await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                     }
                     DgvEntity_SelectionChanged(null, null);
                 }
@@ -556,15 +558,15 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private void BtnEBWidthTo_Click(object sender, EventArgs e) {
+        private async void BtnEBWidthTo_Click(object sender, EventArgs e) {
             using (frmInputForm frm = new frmInputForm("100")) {
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val)) {
                         for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                            EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                            EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                             eb.ButtonWidth = val;
-                            bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                            await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                         }
                         DgvEntity_SelectionChanged(null, null);
                     }
@@ -572,15 +574,15 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnEBHeightTo_Click(object sender, EventArgs e) {
+        private async void BtnEBHeightTo_Click(object sender, EventArgs e) {
             using (frmInputForm frm = new frmInputForm("100")) {
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val)) {
                         for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                            EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                            EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                             eb.ButtonHeight = val;
-                            bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                            await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                         }
                         DgvEntity_SelectionChanged(null, null);
                     }
@@ -588,20 +590,20 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnEBPriceTo_Click(object sender, EventArgs e) {
+        private async void BtnEBPriceTo_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
-                EntityButton firsteb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton firsteb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString());
                 using (frmInputForm frm = new frmInputForm(firsteb.DirectSalePrice.ToString())) {
                     if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                         float val = 0;
                         if (float.TryParse(frm.InputValue, out val)) {
                             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                                EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                                 eb.DirectSalePrice = val;
                                 eb.InHousePrice = val;
                                 eb.TakeAwayPrice = val;
                                 eb.DeliveryPrice = val;
-                                bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                                await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                             }
                             DgvEntity_SelectionChanged(null, null);
                         }
@@ -610,18 +612,18 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnEBTaxRateTo_Click(object sender, EventArgs e) {
+        private async void BtnEBTaxRateTo_Click(object sender, EventArgs e) {
             using (frmInputForm frm = new frmInputForm("100")) {
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     float val = 0;
                     if (float.TryParse(frm.InputValue, out val)) {
                         for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                            EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                            EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                             eb.DirectSaleTaxPercent = val;
                             eb.InHouseTaxPercent = val;
                             eb.TakeAwayTaxPercent = val;
                             eb.DeliveryTaxPercent = val;
-                            bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                            await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                         }
                         DgvEntity_SelectionChanged(null, null);
                     }
@@ -629,7 +631,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnMoveToEntity_Click(object sender, EventArgs e) {
+        private async void BtnMoveToEntity_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
                 using (frmEntitySelector frm = new frmEntitySelector(bslayer, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString())) {
                     if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
@@ -637,9 +639,9 @@ namespace DTRMSimpleBackOffice {
                         for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
                             // EntityButton entityButton = GetEntityButton();
                             string ebiid = dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString();
-                            EntityButton entityButton = bslayer.GetJustEntityButton(ebiid);
-                            entityButton.PEIID = frm.SelectedEntiyIID;
-                            bslayer.SaveJustEntityButton(entityButton, menuiid);
+                            EntityButton entityButton = await bslayer.GetJustEntityButton(ebiid);
+                            entityButton.ParentEntityIID = frm.SelectedEntiyIID;
+                            await bslayer.SaveJustEntityButton(entityButton, menuiid);
                         }
                         DgvEntity_SelectionChanged(null, null);
                     }
@@ -650,11 +652,11 @@ namespace DTRMSimpleBackOffice {
         private void BtnReOrder_Click(object sender, EventArgs e) {
             ReOrderEntityButtons();
         }
-        private void ReOrderEntityButtons() {
+        private async void ReOrderEntityButtons() {
             for (int i = 0; i < dgvEntityButton.Rows.Count; i++) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.Rows[i].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb = await bslayer.GetJustEntityButton(dgvEntityButton.Rows[i].Cells["colEntityButtonIID"].Value.ToString());
                 eb.DisplayOrder = i;
-                bslayer.SaveJustEntityButton(eb, dgvMenu.Rows[0].Cells["colMenuIID"].Value.ToString());
+                await bslayer.SaveJustEntityButton(eb, dgvMenu.Rows[0].Cells["colMenuIID"].Value.ToString());
             }
             DgvEntity_SelectionChanged(null, null);
         }
@@ -667,27 +669,33 @@ namespace DTRMSimpleBackOffice {
             LoadEntityList();
         }
 
-        private void BtnDuplicate_Click(object sender, EventArgs e) {
+        private async void BtnDuplicate_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
                 bool blnDuplicateStockItems = (MessageBox.Show("Do you want to duplicate stock items as well?",
                     "DUPLICATE STOCK ITEMS", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button1) == DialogResult.Yes);
                 for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
 
-                    EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                    EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                     EntityButton eb2 = eb.Duplicate();
 
                     eb2.EntityButtonName = "";
-                    if (bslayer.SaveJustEntityButton(eb2, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString())) {
+                    if (await bslayer.SaveJustEntityButton(eb2, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString())) {
                         if (blnDuplicateStockItems) {
-                            DataTable dt = bslayer.GetStockItemsForEB(eb.IID);
-                            for (int s = 0; s < dt.Rows.Count; s++) {
-                                EntityButtonStockItemLookUp lookup = new EntityButtonStockItemLookUp(dt.Rows[s]) {
-                                    EntityButtonIID = eb2.IID
-                                };
-                                
-                                bslayer.SaveEntityButtonStockItemLookUp(lookup.Duplicate(eb2.IID));
+                            List<EntityButtonStockItemLookUp> lookupList = await bslayer.GetStockItemsForEB(eb.IID);
+                            foreach (var lookup in lookupList)
+                            {
+                                EntityButtonStockItemLookUp newlookup = lookup.Duplicate(eb2.IID);
+                                await bslayer.SaveEntityButtonStockItemLookUp(newlookup);
                             }
+                            //DataTable dt = bslayer.GetStockItemsForEB(eb.IID);
+                            //for (int s = 0; s < dt.Rows.Count; s++) {
+                            //    EntityButtonStockItemLookUp lookup = new EntityButtonStockItemLookUp(dt.Rows[s]) {
+                            //        EntityButtonIID = eb2.IID
+                            //    };
+                                
+                            //    bslayer.SaveEntityButtonStockItemLookUp(lookup.Duplicate(eb2.IID));
+                            //}
                         }
                     }
                 }
@@ -697,13 +705,13 @@ namespace DTRMSimpleBackOffice {
 
        
 
-        private void LoadStockItems() {
+        private async void LoadStockItems() {
             if (dgvEntityButton.SelectedRows.Count > 0) {
                 string selEBIID = dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
-                EntityButton eb = bslayer.GetJustEntityButton(selEBIID);
+                EntityButton eb = await bslayer.GetJustEntityButton(selEBIID);
 
                 try {
-                    btnEBSample.Font = new Font(eb.FFamily, eb.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), eb.FStyle));
+                    btnEBSample.Font = new Font(eb.FFamily, (float)eb.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), eb.FStyle));
                     pnlEBPicture.Width = eb.ButtonWidth;
                     btnEBSample.Height = eb.ButtonHeight;
                     btnEBSample.BackColor = Color.FromArgb(eb.ButtonColor);
@@ -712,14 +720,14 @@ namespace DTRMSimpleBackOffice {
                 } catch {
                 }
 
-                GenericImage gim = bslayer.GetGenericImage(selEBIID);
+                GenericImage gim = await bslayer.GetGenericImage(selEBIID);
                 if (gim == null)
                     pboxEBPicture.Image = null;
                 else {
                     if (eb.WithImage)
                         pboxEBPicture.Image = null;
                     else {
-                        pboxEBPicture.Image = gim.DisplayImage;
+                        pboxEBPicture.Image =UFWin.ByteArrayToImage( gim.DisplayImage);
                         lblImageSize.Text = gim.ImageSizeinKB.ToString() + " KB";
                         // float sz = gim.GetImageSize();
                     }
@@ -727,7 +735,7 @@ namespace DTRMSimpleBackOffice {
                 if (eb.WithImage) {
 
                     if (gim != null && gim.DisplayImage != null) {
-                        btnEBSample.Image = gim.DisplayImage;
+                        btnEBSample.Image = UFWin.ByteArrayToImage( gim.DisplayImage);
                         btnEBSample.ImageAlign = ContentAlignment.TopCenter;
                         btnEBSample.TextAlign = ContentAlignment.BottomCenter;
                     }
@@ -736,42 +744,42 @@ namespace DTRMSimpleBackOffice {
                     btnEBSample.Image = null;
                 }
 
-                 DataTable dt = POSLayer.Library.UF.StringifyEnumInDataTable(bslayer.GetStockItemsForEB(selEBIID), "QuantityType", "QuantityTypeAsString", typeof(POSLayer.Library.QuantityTypes));
-                dgvStockItems.DataSource = dt;
+               //   DataTable dt = POSLayer.Library.UF.StringifyEnumInDataTable(await bslayer.GetStockItemsForEB(selEBIID), "QuantityType", "QuantityTypeAsString", typeof(POSLayer.Library.QuantityTypes));
+                dgvStockItems.DataSource = await bslayer.GetStockItemsForEB(selEBIID);
             }
         }
 
-        private void BtnAddStockItem_Click(object sender, EventArgs e) {
+        private async void BtnAddStockItem_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
-                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer, bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString()))) {
+                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer,await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString()))) {
                     if (frm.ShowDialog() == DialogResult.OK)
                         LoadStockItems();
                 }
             }
         }
 
-        private void BtnEditStockItem_Click(object sender, EventArgs e) {
+        private async void BtnEditStockItem_Click(object sender, EventArgs e) {
             if (dgvStockItems.SelectedRows.Count > 0) {
                 string IID = dgvStockItems.SelectedRows[0].Cells["colStockUsageIID"].Value.ToString();
 
-                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer, bslayer.GetEntityButtonStockItemLookUp(IID))) {
+                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer,await bslayer.GetEntityButtonStockItemLookUp(IID))) {
                     if (frm.ShowDialog() == DialogResult.OK)
                         LoadStockItems();
                 }
             }
         }
 
-        private void BtnDeleteStockItem_Click(object sender, EventArgs e) {
+        private async void BtnDeleteStockItem_Click(object sender, EventArgs e) {
             if (dgvStockItems.SelectedRows.Count > 0) {
                 for (int i = 0; i < dgvStockItems.SelectedRows.Count; i++) {
                     string IID = dgvStockItems.SelectedRows[0].Cells["colStockUsageIID"].Value.ToString();
-                    bslayer.DeleteEntityButtonStockItemLookUp(IID);
+                    await bslayer.DeleteEntityButtonStockItemLookUp(IID);
                 }
                 LoadStockItems();
             }
         }
         private void BtnZoomStockUsage_Click(object sender, EventArgs e) {
-            POSWinFormLayer.UFWin.ChangeDataGridViewZoom(dgvStockItems);
+             UFWin.ChangeDataGridViewZoom(dgvStockItems);
         }
         private void BtnReorderStockUsage_Click(object sender, EventArgs e) {
             if (dgvStockItems.Rows.Count > 0) {
@@ -842,11 +850,14 @@ namespace DTRMSimpleBackOffice {
             BtnEditStockItem_Click(null, null);
         }
 
-        private void BtnConvertToStockItem_Click(object sender, EventArgs e) {
+        private async void BtnConvertToStockItem_Click(object sender, EventArgs e) {
             if (dgvEntityButton.SelectedRows.Count > 0) {
                 for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                    EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                    StockItem si = new StockItem(eb.EntityButtonName);
+                    EntityButton eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                    StockItem si = new StockItem()
+                    {
+                        StockName = eb.EntityButtonName
+                    };
                     bslayer.SaveStockItem(si);
                 }
 
@@ -858,9 +869,9 @@ namespace DTRMSimpleBackOffice {
                 BtnAddStockItem_Click(null, null);
         }
 
-        private void BtnExportStockManager_Click(object sender, EventArgs e) {
+        private async void BtnExportStockManager_Click(object sender, EventArgs e) {
             if (dgvMenu.SelectedRows.Count > 0) {
-                StockManager sm = bslayer.GetStockManager();
+                StockManager sm = await bslayer.GetStockManager();
                 sm.Reference = "Stock Manager for " + bslayer.db.ConnectionName + "  " + DateTime.Now.ToString("dd MM yyyy");
                 using (SaveFileDialog sfd = new SaveFileDialog()) {
                     sfd.Filter = "DTRM files (*.xml)|";
@@ -876,7 +887,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnImportStockManager_Click(object sender, EventArgs e) {
+        private async void BtnImportStockManager_Click(object sender, EventArgs e) {
             using (OpenFileDialog ofd = new OpenFileDialog()) {
                 ofd.ShowDialog();
                 if (ofd.FileName != "") {
@@ -888,18 +899,18 @@ namespace DTRMSimpleBackOffice {
                         return;
                     }
 
-                    if (bslayer.SaveStockManager(sm))
+                    if (await bslayer.SaveStockManager(sm))
                         LoadMenuList();
                 }
             }
         }
 
-        private void BtnSaveDBImagesToFolder_Click(object sender, EventArgs e) {
+        private async void BtnSaveDBImagesToFolder_Click(object sender, EventArgs e) {
             using (FolderBrowserDialog dlg = new FolderBrowserDialog()) {
                 dlg.ShowNewFolderButton = true;
                 if (dlg.ShowDialog() == DialogResult.OK) {
                     DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
-                    if (bslayer.ExportDatabaseImagesIntoFolder(dinfo.FullName))
+                    if (await bslayer.ExportDatabaseImagesIntoFolder(dinfo.FullName))
                         MessageBox.Show("Completed");
                     else
                         MessageBox.Show("Completed with Errors");
@@ -907,9 +918,9 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void BtnSetUpperCase_Click(object sender, EventArgs e) {
+        private async void BtnSetUpperCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                 eb.EntityButtonName = eb.EntityButtonName.ToUpper();
                 bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             }
@@ -917,9 +928,9 @@ namespace DTRMSimpleBackOffice {
 
         }
 
-        private void BtnSetSentenceCase_Click(object sender, EventArgs e) {
+        private async void BtnSetSentenceCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                 eb.EntityButtonName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(eb.EntityButtonName);
                 bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             }
@@ -928,65 +939,65 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private void BtnSetToLowerCase_Click(object sender, EventArgs e) {
+        private async void BtnSetToLowerCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                 eb.EntityButtonName = eb.EntityButtonName.ToLower();
-                bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             }
             DgvEntity_SelectionChanged(null, null);
         }
 
-        private void BtnSetAllForeColourTo_Click(object sender, EventArgs e) {
+        private async void BtnSetAllForeColourTo_Click(object sender, EventArgs e) {
             using (ColorDialog cdlg = new ColorDialog()) {
                 if (cdlg.ShowDialog() == DialogResult.OK) {
                     int selectedColor = cdlg.Color.ToArgb();
 
                     for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                        EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                        EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                         eb.ForeColor = selectedColor;
-                        bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                       await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                     }
                     DgvEntity_SelectionChanged(null, null);
                 }
             }
         }
 
-        private void BtnSetAllBackColourTo_Click(object sender, EventArgs e) {
+        private async void BtnSetAllBackColourTo_Click(object sender, EventArgs e) {
             using (ColorDialog cdlg = new ColorDialog()) {
                 if (cdlg.ShowDialog() == DialogResult.OK) {
                     int selectedColor = cdlg.Color.ToArgb();
 
                     for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                        EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                        EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                         eb.ButtonColor = selectedColor;
-                        bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                       await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                     }
                     DgvEntity_SelectionChanged(null, null);
                 }
             }
         }
 
-        private void BtnSetAllBackColourToTransparent_Click(object sender, EventArgs e) {
+        private async void BtnSetAllBackColourToTransparent_Click(object sender, EventArgs e) {
             int selectedColor = Color.Transparent.ToArgb();
 
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                EntityButton eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                 eb.ButtonColor = selectedColor;
-                bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+               await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
             }
             DgvEntity_SelectionChanged(null, null);
         }
 
-        private void BtnChangeDistributionForEB_Click(object sender, EventArgs e) {
+        private async void BtnChangeDistributionForEB_Click(object sender, EventArgs e) {
             using (frmDistributionSelector frm = new frmDistributionSelector(bslayer, false, null)) {
                 if (frm.ShowDialog() == DialogResult.OK) {
                     List<Distribution> theList = frm.selectedDistributions;
                     if (theList.Count > 0) {
                         for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
-                            EntityButton eb = bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                            EntityButton eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                             eb.DistributionIID = theList[0].IID;
-                            bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                            await bslayer.SaveJustEntityButton(eb, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                         }
                         DgvEntity_SelectionChanged(null, null);
                     }
@@ -1292,13 +1303,13 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void DgvSearchResults_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+        private async void DgvSearchResults_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
             try {
 
 
                 string entityButtonIID = dgvSearchResults.SelectedRows[0].Cells["colIIDSearch"].Value.ToString();
 
-                EntityButton entityButton = bslayer.GetJustEntityButton(entityButtonIID);
+                EntityButton entityButton =await bslayer.GetJustEntityButton(entityButtonIID);
 
                 using (FrmEntityButtonsEditor frm = new FrmEntityButtonsEditor(bslayer, entityButton)) {
                     if (frm.ShowDialog() != DialogResult.OK) return;
@@ -1313,9 +1324,6 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-
-
-
         private void DgvSearchResults_SelectionChanged(object sender, EventArgs e) {
             try {
                 if (dgvSearchResults.Rows.Count > 0) {
@@ -1329,7 +1337,6 @@ namespace DTRMSimpleBackOffice {
                 }
             } catch { }
         }
-
 
         private void BtnLoadMenuList_Click(object sender, EventArgs e) {
             LoadMenuList();
@@ -1361,8 +1368,6 @@ namespace DTRMSimpleBackOffice {
             int rowheight = int.Parse(((ToolStripMenuItem)sender).Tag.ToString());
             dgvEntityButton.RowTemplate.Height = rowheight;
             DgvEntity_SelectionChanged(null, null);
-
-
         }
 
         private void chkShowHideEntityPreview_CheckedChanged(object sender, EventArgs e) {
@@ -1391,27 +1396,27 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void btnQuantityToComment_Click(object sender, EventArgs e) {
+        private async void btnQuantityToComment_Click(object sender, EventArgs e) {
             if (dgvStockItems.SelectedRows.Count > 0) {
                 for (int i = 0; i < dgvStockItems.SelectedRows.Count; i++) {
                     string IID = dgvStockItems.SelectedRows[i].Cells["colStockUsageIID"].Value.ToString();
 
-                    EntityButtonStockItemLookUp item = bslayer.GetEntityButtonStockItemLookUp(IID);
+                    EntityButtonStockItemLookUp item =await bslayer.GetEntityButtonStockItemLookUp(IID);
                     item.Comment = item.Quantity + " " + item.QuantityType + item.Comment;
 
-                    bslayer.SaveEntityButtonStockItemLookUp(item);
+                   await bslayer.SaveEntityButtonStockItemLookUp(item);
                     
                 }
                 LoadStockItems();
             }
         }
 
-        private void btnExportMenuAsJson_Click(object sender, EventArgs e)
+        private async void btnExportMenuAsJson_Click(object sender, EventArgs e)
         {
 
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                DTRMNS.Menu menu = bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                FoodMenu menu =await bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "JSON Files (*.json)|";
@@ -1428,28 +1433,22 @@ namespace DTRMSimpleBackOffice {
                     }
                 }
             }
-
-
-
-
         }
 
-        private void btnImportMenuFromJSON_Click(object sender, EventArgs e)
+        private async void btnImportMenuFromJSON_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
-                // sfd.FileName = "Printer List";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     if (sfd.FileName != null && sfd.FileName != "")
                     {
-
                         string content = POSLayer.Library.UF.GetTextFile(sfd.FileName);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            DTRMNS.Menu fm = JsonConvert.DeserializeObject<DTRMNS.Menu>(content);
-                            bslayer.SaveMenuDB(fm);
+                            FoodMenu fm = JsonConvert.DeserializeObject<FoodMenu>(content);
+                            await bslayer.SaveMenuDB(fm);
 
                             MessageBox.Show("Saved Printer List");
                         } else
@@ -1461,28 +1460,6 @@ namespace DTRMSimpleBackOffice {
                 }
             }
 
-
-
-            //using (OpenFileDialog ofd = new OpenFileDialog())
-            //{
-            //    ofd.ShowDialog();
-            //    if (ofd.FileName != "")
-            //    {
-            //        FMenu fm = null;
-            //        try
-            //        {
-            //            fm = (FMenu)DRFile.XmlDeSerialize(ofd.FileName, typeof(FMenu), false);
-            //        } catch
-            //        {
-            //            MessageBox.Show("Menu cannot be imported");
-            //            return;
-            //        }
-
-            //        bslayer.SaveMenuDB(fm);
-            //        bslayer.SaveMenuA(fm);
-            //        LoadMenuList();
-            //    }
-            //}
         }
     }
 }

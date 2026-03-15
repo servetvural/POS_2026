@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using POSLayer.Library;
+
 using PosLibrary;
 using PosLibrary.Forms;
 
@@ -103,7 +105,7 @@ namespace DTRMSimpleBackOffice
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else
             {
-                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
+                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
             }
         }
 
@@ -390,7 +392,7 @@ namespace DTRMSimpleBackOffice
         private void btnArchiveSessions_Click(object sender, EventArgs e)
         {
 
-            string directoryPath = DRFile.GetApplicationPath() + UF.SessionDirName;
+            string directoryPath = DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName;
 
             string[] SessionIIDList = new string[dgvDatabase.SelectedRows.Count];
             for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)

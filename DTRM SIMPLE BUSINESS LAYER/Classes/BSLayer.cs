@@ -20,6 +20,10 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using POSLayer.Library;
 using POSLayer.Models;
+using System.ComponentModel;
+using POSLayer.Views;
+using System.DirectoryServices;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DTRMNS
 {
@@ -128,11 +132,11 @@ namespace DTRMNS
         IRepository<POSLayer.Models.XOrder> repoXOrder;
         IRepository<POSLayer.Models.XOrderItem> repoXOrderItem;
         IRepository<POSLayer.Models.Supplier> repoSupplier;
-        IRepository<POSLayer.Models.EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
+        IRepository<EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
         IRepository<POSLayer.Models.StockItem> repoStockItem;
-        IRepository<POSLayer.Models.StockItemUsage> repoStockItemUsage;
+        IRepository<StockItemUsage> repoStockItemUsage;
         IRepository<POSLayer.Models.ApplicationPrinter> repoApplicationPrinter;
-
+        IRepository<POSLayer.Models.GenericImage> repoImage;
 
         public DTRMSimpleBusiness(IRepository<POSLayer.Models.Session> _repoSession,
             IRepository<POSLayer.Models.Employee> _repoEmployee,
@@ -145,9 +149,9 @@ namespace DTRMNS
               IRepository<POSLayer.Models.KitchenOrder> _repoKitchenOrder, IRepository<POSLayer.Models.KitchenOrderItem> _repoKitchenOrderItem,
                IRepository<POSLayer.Models.Table> _repoTable, IRepository<POSLayer.Models.TableGroup> _repoTableGroup,
                IRepository<POSLayer.Models.XOrder> _repoXOrder, IRepository<POSLayer.Models.XOrderItem> _repoXOrderItem,
-               IRepository<POSLayer.Models.Supplier> _repoSupplier, IRepository<POSLayer.Models.EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
-               IRepository<POSLayer.Models.StockItem> _repoStockItem, IRepository<POSLayer.Models.StockItemUsage> _repoStockItemUsage,
-               IRepository<ApplicationPrinter> _repoApplicationPrinter)
+               IRepository<POSLayer.Models.Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
+               IRepository<POSLayer.Models.StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
+               IRepository<ApplicationPrinter> _repoApplicationPrinter, IRepository<POSLayer.Models.GenericImage> _repoImage)
         {
             repoSession = _repoSession;
             repoEmployee = _repoEmployee;
@@ -174,14 +178,15 @@ namespace DTRMNS
             repoStockItem = _repoStockItem;
             repoStockItemUsage = _repoStockItemUsage;
 
-            EstablishDatabaseConnection();
-            this.repoApplicationPrinter = _repoApplicationPrinter;
+            // EstablishDatabaseConnection().Result;
+            repoApplicationPrinter = _repoApplicationPrinter;
+            repoImage = _repoImage;
         }
 
-        public void CustomInitialize(PosConfig config)
+        public async void CustomInitialize(PosConfig config)
         {
             this.config = config;
-            if (!EstablishDatabaseConnection())
+            if (await EstablishDatabaseConnection())
             {
                 Environment.Exit(0);
             }
@@ -266,7 +271,7 @@ namespace DTRMNS
         /// Currently during connection this is called for creating db connection
         /// </summary>
         /// <returns></returns>
-        public bool EstablishDatabaseConnection()
+        public async Task<bool> EstablishDatabaseConnection()
         {
             try
             {
@@ -285,7 +290,7 @@ namespace DTRMNS
                 //    ";Password=" + config.Database_Password +
                 //    ";Encrypt=True;TrustServerCertificate=True;";
 
-                db = new DB(connectionString);
+                // db = new DB(connectionString);
 
 
 
@@ -301,6 +306,9 @@ namespace DTRMNS
                 //string localerrormessage;
                 //DBConnectionSuccessful = CheckDatabaseConnection(out localerrormessage);
                 //DBConnectionError = localerrormessage;
+
+                 DBConnectionSuccessful =await repoMenu.IsDatabaseExist();
+    ;          // return DBConnectionSuccessful;
 
             } catch (Exception ex)
             {
@@ -800,21 +808,31 @@ namespace DTRMNS
             return await repoMenu.Delete(MenuIID) > 0;
             //return RunQuery("DeleteMenu", MenuIID);
         }
-        public async Task<Entity> GetEntityDB(string EntityIID, GenericProgressFunction progress = null, int startfrom = 0)
+
+        public async Task<Entity> GetEntity(string EntityIID)
         {
-            //DataRow dr = GetDataTable("GetEntity", EntityIID).Rows[0];
-            Entity entity = await repoEntity.Get(EntityIID);
-
-
-            DataTable dt = this.GetEntityButtonsForEntityDB(entity.IID);
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                EntityButton eb = this.GetJustEntityButton(dt.Rows[i]["IID"].ToString()).Result;
-                entity.Buttons.Add(eb);
-                progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
-            }
-            return entity;
+            return await repoEntity.Get(EntityIID);
         }
+
+        public async Task<List<Entity>> GetAllEntities(string MenuIID)
+        {
+            return await repoEntity.GetDBContext().Entities.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
+        }
+        //public async Task<Entity> GetEntity(string EntityIID)
+        //{
+        //    //DataRow dr = GetDataTable("GetEntity", EntityIID).Rows[0];
+        //    return await repoEntity.Get(EntityIID, "Buttons");
+
+
+        //    //DataTable dt = this.GetEntityButtonsForEntityDB(entity.IID);
+        //    //for (int i = 0; i < dt.Rows.Count; i++)
+        //    //{
+        //    //    EntityButton eb = this.GetJustEntityButton(dt.Rows[i]["IID"].ToString()).Result;
+        //    //    entity.Buttons.Add(eb);
+        //    //    //progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
+        //    //}
+        //    //return entity;
+        //}
 
         //public DataTable GetEntitiesForMenuDB(string ParentMenuIID)
         //{
@@ -935,6 +953,12 @@ namespace DTRMNS
         {
             return RunQuery("Update EntityButton set DisplayOrder = " + displayOrder + " where IID = '" + EBIID + "'");
         }
+
+        public async Task<List<EntityButton>> GetEntityButtonsForNumberPad()
+        {
+            return await repoEntityButton.GetDBContext().Database.SqlQuery<EntityButton>($"SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '{config.ActiveMenuIID}' Order by Entitybutton.EntityButtonName").ToListAsync();
+        }
+
 
         public async Task<bool> SaveJustEntityButton(EntityButton entityButton, string ParentMenuIID)
         {
@@ -2720,10 +2744,10 @@ namespace DTRMNS
         {
             ReportGenerator generator = new ReportGenerator(this, await GetPrinterForClient(PrinterIID), 2);
             if (LatePrinting)
-                return generator.PrintLateSessionReport(SessionIID, reportFormat);
+                return await generator.PrintLateSessionReport(SessionIID, reportFormat);
             else
             {
-                bool blnresult = generator.PrintSessionReport(SessionIID, reportFormat);
+                bool blnresult =await generator.PrintSessionReport(SessionIID, reportFormat);
                 imgReportSnapShot = generator.imgSnapShot;
                 return blnresult;
             }
@@ -2813,7 +2837,7 @@ namespace DTRMNS
 
         public async Task<SessionData> GetSessionDataDynamic(string SessionIID)
         {
-            return (await repoSession.GetSessionSum()).Where(x => x.SessionIID == SessionIID).FirstOrDefault();
+            return (await repoSession.GetSessionSumView()).Where(x => x.SessionIID == SessionIID).FirstOrDefault();
             //return new SessionData(GetDataTable("GetSessionDynamic", SessionIID));
         }
         public async Task<bool> SaveSessionData(string SessionIID)
@@ -3274,7 +3298,7 @@ namespace DTRMNS
         public async Task<POSLayer.Models.OrderItem> DirectCreateTopOrderItemForOrder(POSLayer.Models.Order order, string EntityButtonIID, bool blnSaveOrder = false)
         {
             POSLayer.Models.EntityButton eb = await GetJustEntityButton(EntityButtonIID);
-            POSLayer.Models.Entity entity = await GetEntityDB(eb.ParentEntityIID);
+            POSLayer.Models.Entity entity = await GetEntity(eb.ParentEntityIID);
             POSLayer.Models.OrderItem oi = new POSLayer.Models.OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
                 EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, POSLayer.Library.OrderItemTypes.NormalOrderItem, 0,
@@ -3285,7 +3309,7 @@ namespace DTRMNS
             else
                 order.AddIncrementOrderItem(oi);
             if (blnSaveOrder)
-                SaveOrder(order);
+               await SaveOrder(order);
             return oi;
         }
         public bool DirectDeleteOrderItem(string orderItemIID)
@@ -3877,9 +3901,10 @@ namespace DTRMNS
         /// </summary>
         /// <param name="EBIID"></param>
         /// <returns></returns>
-        public DataTable GetStockItemsForEB(string EBIID)
+        public async Task<List<EntityButtonStockItemLookUp>> GetStockItemsForEB(string EBIID)
         {
-            return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
+            return await repoMenu.GetDBContext().Database.SqlQuery<EntityButtonStockItemLookUp>($"SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '{EBIID}' order by DisplayOrder asc").ToListAsync();
+           // return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
         }
 
         public async Task<EntityButtonStockItemLookUp> GetEntityButtonStockItemLookUp(string IID)
@@ -3926,14 +3951,16 @@ namespace DTRMNS
             //    return null;
         }
 
-        public DataTable GetStockItemUsage(bool OrderableOnly)
+        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsages(bool OrderableOnly)
         {
+
             if (OrderableOnly)
-                return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName);
+                //return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
             else
             {
-                //return GetDataTable("Select * from StockItemUsage where TotalQuantity > 0 order by SupplierName asc");
-                return GetDataTable("Select * from StockItemUsage order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.OrderBy(x => x.SupplierName);
+                //return GetDataTable("Select * from StockItemUsage order by SupplierName asc");
             }
         }
         public List<string> GetSupplierIIDListWhichHasOrderableStockItems()
@@ -3956,29 +3983,32 @@ namespace DTRMNS
                 return GetDataTable("Select * from StockItemUsage  where StockName Like '%" + searchText + "%'  order by SupplierName asc");
             }
         }
-        public DataTable GetStockItemUsageBySupplier(string SupplierIID, bool OrderableOnly)
+        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplier(string SupplierIID, bool OrderableOnly)
         {
             if (OrderableOnly)
-                return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName).ToList();
+                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
             else
             {
-                // return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and TotalQuantity > 0 order by SupplierName asc");
-                return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID).OrderBy(x => x.SupplierName).ToList();
+                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' order by SupplierName asc");
             }
         }
-        public DataTable GetStockItemUsageBySupplierWithSearch(string SupplierIID, bool OrderableOnly, string searchText)
+        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplierWithSearch(string SupplierIID, bool OrderableOnly, string searchText)
         {
             if (OrderableOnly)
-                return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1 && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
+                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
             else
             {
-                // return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and TotalQuantity > 0 order by SupplierName asc");
-                return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "'  and StockName Like '%" + searchText + "%' order by SupplierName asc");
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID  && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
+                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "'  and StockName Like '%" + searchText + "%' order by SupplierName asc");
             }
         }
-        public DataTable GetOrderableStockUsage()
+        public async Task<IEnumerable<StockItemUsage>> GetOrderableStockUsage()
         {
-            return GetDataTable("Select OrderableQuantity as HowMany, OrderableType, StockName, SupplierName from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
+            return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName).ToList();
+            //return GetDataTable("Select OrderableQuantity as HowMany, OrderableType, StockName, SupplierName from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
         }
 
 
@@ -3996,13 +4026,13 @@ namespace DTRMNS
                 return RunQuery("Update StockItem set UsedQuantity =0");
         }
 
-        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap)
+        public async Task<bool> PrintStockUsage(POSLayer.Models.ApplicationPrinter ap)
         {
-            return new ReportGenerator(this, ap, 2).PrintStockUsage(GetStockItemUsage(true), null);
+            return new ReportGenerator(this, ap, 2).PrintStockUsage(await GetStockItemUsages(true), null);
         }
-        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap, DataTable dtStockUsage, string SupplierName)
+        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap,IEnumerable<StockItemUsage> stockUsages, string SupplierName)
         {
-            return new ReportGenerator(this, ap, 2).PrintStockUsage(dtStockUsage, SupplierName);
+            return new ReportGenerator(this, ap, 2).PrintStockUsage(stockUsages, SupplierName);
         }
 
         public DataTable GetEntityButtonStockItemRecipeFromStockItem(string StockItemIID)
@@ -4056,96 +4086,127 @@ namespace DTRMNS
 
         public string GetOrderableStockItemUsageAsCsvText()
         {
-            return GenerateCsvTextFromDataTable(GetOrderableStockUsage());
+            return "no need to implement";
+            //return GenerateCsvTextFromDataTable(GetOrderableStockUsage());
         }
 
         #endregion
 
 
         #region DiSPLAY IMAGE FUNCTIONS
-        public Image GetImageFromDatabase(string ReferenceIID)
+        //public async Task<GenericImage> GetImageFromDatabase(string ReferenceIID)
+        //{
+        //    return await repoImage.GetByField("ReferenceIID", ReferenceIID);
+        //    //DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
+        //    //if (dt.Rows.Count > 0)
+        //    //    return DRUF.byteArrayToImage((byte[])dt.Rows[0]["DisplayImage"]);
+        //    //else
+        //    //    return null;
+        //}
+
+        public async Task<GenericImage> GetGenericImage(string ReferenceIID)
         {
-            DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
-            if (dt.Rows.Count > 0)
-                return DRUF.byteArrayToImage((byte[])dt.Rows[0]["DisplayImage"]);
-            else
-                return null;
+            return await repoImage.GetByField("ReferenceIID", ReferenceIID);
+            // return await repoImage.GetDBContext().Images.Where(x => x.ReferenceIID == ReferenceIID).FirstOrDefaultAsync();
+            //DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
+            //if (dt.Rows.Count > 0)
+            //    return new GenericImage(dt);
+            //else
+            //    return null;
         }
 
-        public GenericImage GetEntityButtonPrepImage(string EntityButtonIID)
+        public async Task<GenericImage> GetEntityButtonPrepImage(string EntityButtonIID)
         {
-            GenericImage gim = GetGenericImage(EntityButtonIID);
+            GenericImage gim = await GetGenericImage(EntityButtonIID);
             if (gim == null)
                 return null;
 
             gim.ExtraText = GetEntityButtonStockItemText(EntityButtonIID) + gim.ExtraText;
             return gim;
         }
-        public string GetEntityButtonStockItemText(string EntityButtonIID)
+        public async Task<string> GetEntityButtonStockItemText(string EntityButtonIID)
         {
-            DataTable dt = GetStockItemsForEB(EntityButtonIID);
-
+            List<EntityButtonStockItemLookUp> lookupList = await GetStockItemsForEB(EntityButtonIID);
             string str = "";
-            for (int i = 0; i < dt.Rows.Count; i++)
+            foreach (var item in lookupList)
             {
-                float val = float.Parse(dt.Rows[i]["Quantity"].ToString());
-                if (val == 0)
+                
+                //double val = double.Parse(dt.Rows[i]["Quantity"].ToString());
+                if (item.Quantity == 0)
                 {
-                    str += dt.Rows[i]["Comment"].ToString();
+                    str += item.Comment; // dt.Rows[i]["Comment"].ToString();
                     str += "\r\n";
                 } else
                 {
-                    str += dt.Rows[i]["Comment"].ToString() + "  ";
-                    if (dt.Rows[i]["StockName"] != null)
-                        str += dt.Rows[i]["StockName"].ToString();
+                    str += item.Comment + " "; // dt.Rows[i]["Comment"].ToString() + "  ";
+                    str += item.StockName ?? "";
                     str += "\r\n";
                 }
             }
             return str;
+
+
+
+            //DataTable dt = GetStockItemsForEB(EntityButtonIID);
+
+            //string str = "";
+            //for (int i = 0; i < dt.Rows.Count; i++)
+            //{
+            //    float val = float.Parse(dt.Rows[i]["Quantity"].ToString());
+            //    if (val == 0)
+            //    {
+            //        str += dt.Rows[i]["Comment"].ToString();
+            //        str += "\r\n";
+            //    } else
+            //    {
+            //        str += dt.Rows[i]["Comment"].ToString() + "  ";
+            //        if (dt.Rows[i]["StockName"] != null)
+            //            str += dt.Rows[i]["StockName"].ToString();
+            //        str += "\r\n";
+            //    }
+            //}
+            //return str;
         }
 
-        public bool DeletePrepImage(string ReferenceIID)
+        //public async Task<bool> DeletePrepImage(string ReferenceIID)
+        //{
+        //    return await repoImage.DeleteByField("ReferenceIID", ReferenceIID) > 0;
+        //    //return RunQuery("Delete from Images where ReferenceIID ='" + ReferenceIID + "'");
+        //}
+       
+
+        //public DataTable GetAllImages()
+        //{
+        //    return GetDataTable("Select * from Images");
+        //}
+        public async Task<List<GenericImage>> GetAllImages()
         {
-            return RunQuery("Delete from Images where ReferenceIID ='" + ReferenceIID + "'");
-        }
-        public GenericImage GetGenericImage(string ReferenceIID)
-        {
-            DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
-            if (dt.Rows.Count > 0)
-                return new GenericImage(dt);
-            else
-                return null;
+            return await repoImage.GetAllAsync();
+            //List<GenericImage> imageList = new List<GenericImage>();
+            //try
+            //{
+            //    DataTable dt = GetDataTable("Select * from Images");
+            //    for (int i = 0; i < dt.Rows.Count; i++)
+            //    {
+            //        GenericImage gim = new GenericImage(dt.Rows[i], true);
+            //        imageList.Add(gim);
+            //    }
+            //    return imageList;
+            //} catch
+            //{
+            //    return imageList;
+            //}
         }
 
-        public DataTable GetAllImages()
+        public async Task<bool> DeleteGenericImage(string referenceIID)
         {
-            return GetDataTable("Select * from Images");
+            return await repoImage.DeleteByField("ReferenceIID", referenceIID) > 0;
+           // return RunQuery("Delete from Images where ReferenceIID = '" + referenceIID + "'");
         }
-        public async Task<List<GenericImage>> GetImageLibraryList()
+        public async Task<bool> SaveGenericImage(GenericImage gim)
         {
-            List<GenericImage> imageList = new List<GenericImage>();
-            try
-            {
-                DataTable dt = GetDataTable("Select * from Images");
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    GenericImage gim = new GenericImage(dt.Rows[i], true);
-                    imageList.Add(gim);
-                }
-                return imageList;
-            } catch
-            {
-                return imageList;
-            }
-        }
-
-        public bool DeleteGenericImage(string referenceIID)
-        {
-            return RunQuery("Delete from Images where ReferenceIID = '" + referenceIID + "'");
-        }
-        public bool SaveGenericImage(GenericImage gim)
-        {
-            return false;  
+            return await repoImage.Save(gim) != null;
+           // return false;  
             // bu onemli
 
             //try
@@ -4189,17 +4250,23 @@ namespace DTRMNS
         /// </summary>
         /// <param name="folderpath"></param>
         /// <returns></returns>
-        public bool ExportDatabaseImagesIntoFolder(string folderpath)
+        public async Task<bool> ExportDatabaseImagesIntoFolder(string folderpath)
         {
             try
             {
-                DataTable dt = GetDataTable("Select * from Images");
-                for (int i = 0; i < dt.Rows.Count; i++)
+                List<POSLayer.Models.GenericImage> images = await repoImage.GetAllAsync();
+                foreach (var item in images)
                 {
-                    GenericImage gim = new GenericImage(dt.Rows[i]);
-                    string filename = folderpath + "\\" + gim.ReferenceIID + ".png";
-                    gim.DisplayImage.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                    string filename = folderpath + "\\" + item.ReferenceIID + ".png";
+                    File.WriteAllBytes(filename, item.DisplayImage);
                 }
+                //DataTable dt = GetDataTable("Select * from Images");
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    GenericImage gim = new GenericImage(dt.Rows[i]);
+                //    string filename = folderpath + "\\" + gim.ReferenceIID + ".png";
+                //    gim.DisplayImage.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+                //}
                 return true;
             } catch
             {

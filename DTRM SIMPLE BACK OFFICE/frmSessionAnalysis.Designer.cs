@@ -1,4 +1,7 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+using POSLayer.Views;
+
+namespace DTRMSimpleBackOffice {
     partial class frmSessionAnalysis {
         /// <summary>
         /// Required designer variable.
@@ -828,11 +831,11 @@
             // 
             // orderItemBindingSource
             // 
-            this.orderItemBindingSource.DataSource = typeof(DTRMNS.OrderItem);
+            this.orderItemBindingSource.DataSource = typeof(OrderItem);
             // 
             // stockItemUsageBindingSource
             // 
-            this.stockItemUsageBindingSource.DataSource = typeof(DTRMNS.StockItemUsage);
+            this.stockItemUsageBindingSource.DataSource = typeof(StockItemUsage);
             // 
             // colXOrderIID
             // 
@@ -910,11 +913,11 @@
             // 
             // ordersViewBindingSource1
             // 
-            this.ordersViewBindingSource1.DataSource = typeof(DTRMNS.OrdersView);
+            this.ordersViewBindingSource1.DataSource = typeof(OrdersView);
             // 
             // stockItemBindingSource
             // 
-            this.stockItemBindingSource.DataSource = typeof(DTRMNS.StockItem);
+            this.stockItemBindingSource.DataSource = typeof(StockItem);
             // 
             // colStockItemIID
             // 

@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Views;
+
+namespace DTRMNS {
     partial class frmStockItemUsage {
         /// <summary>
         /// Required designer variable.
@@ -258,7 +260,7 @@
             // 
             // stockItemUsageBindingSource
             // 
-            this.stockItemUsageBindingSource.DataSource = typeof(DTRMNS.StockItemUsage);
+            this.stockItemUsageBindingSource.DataSource = typeof(StockItemUsage);
             // 
             // groupBox1
             // 

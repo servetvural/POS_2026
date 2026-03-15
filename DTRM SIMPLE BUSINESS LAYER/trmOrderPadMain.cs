@@ -4711,7 +4711,7 @@ namespace DTRMNS
             {
                 ToolStripMenuItem btn = ((ToolStripMenuItem)sender);
                 string supplierIID = btn.Tag.ToString();
-                bslayer.PrintStockUsage(await bslayer.GetPrinterForClient(fsp.ReturnValue), bslayer.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
+                bslayer.PrintStockUsage(await bslayer.GetPrinterForClient(fsp.ReturnValue),await bslayer.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
             }
 
         }

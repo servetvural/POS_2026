@@ -154,7 +154,7 @@ namespace DTRMNS
                 LoadStockItems();
         }
 
-        private async Task btnEdit_Click(object sender, EventArgs e)
+        private async void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
             {
@@ -193,7 +193,7 @@ namespace DTRMNS
 
         }
 
-        private async Task btnSelect_Click(object sender, EventArgs e)
+        private async void btnSelect_Click(object sender, EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
             {
@@ -238,7 +238,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task conversionToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void conversionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
             {
@@ -418,7 +418,7 @@ namespace DTRMNS
             PopulateUsageData();
         }
 
-        private async Task btnExportAsJson_Click(object sender, EventArgs e)
+        private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
             List<StockItem> itemList =await bslayer.GetAllStockItemsList();
             using (SaveFileDialog sfd = new SaveFileDialog())

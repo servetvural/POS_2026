@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using PosLibrary;
 using System.IO;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+using POSLayer.Models;
+using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class frmImageList : Form {
@@ -32,27 +35,34 @@ namespace DTRMNS {
             LoadImages();
         }
 
-        private void LoadImages() {
+        private async void LoadImages() {
             lvwImages.Items.Clear();
-            DataTable dt = bslayer.GetAllImages();
+           
             imgList.Images.Clear();
-            for (int i = 0; i < dt.Rows.Count; i++) {
-                GenericImage gim = new GenericImage(dt.Rows[i],imgList.ImageSize.Width, imgList.ImageSize.Height,true);
-                
+            List<GenericImage> allImages=await bslayer.GetAllImages();
+
+            foreach (var gim in allImages)
+            {
                 lvwImages.Items.Add(CreateListViewItem(gim));
             }
+            //for (int i = 0; i < dt.Rows.Count; i++) {
+            //    GenericImage gim = new GenericImage(dt.Rows[i],imgList.ImageSize.Width, imgList.ImageSize.Height,true);
+                
+            //    lvwImages.Items.Add(CreateListViewItem(gim));
+            //}
         }
 
         private ListViewItem CreateListViewItem(GenericImage gim) {
             imgList.Images.RemoveByKey(gim.ReferenceIID);
-            imgList.Images.Add(gim.ReferenceIID, gim.DisplayImage);
+            Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
+            imgList.Images.Add(gim.ReferenceIID,img);
             ListViewItem lvi = new ListViewItem(gim.ImageFileName);
             lvi.ImageKey = gim.ReferenceIID;
             lvi.SubItems.Add(gim.ImageFileName);
             lvi.SubItems.Add(gim.ExtraText);
-            lvi.SubItems.Add(gim.DisplayImage.PhysicalDimension.ToString());
-            lvi.SubItems.Add(gim.DisplayImage.PhysicalDimension.Width.ToString());
-            lvi.SubItems.Add(gim.DisplayImage.PhysicalDimension.Height.ToString());
+            lvi.SubItems.Add(img.PhysicalDimension.ToString());
+            lvi.SubItems.Add(img.PhysicalDimension.Width.ToString());
+            lvi.SubItems.Add(img.PhysicalDimension.Height.ToString());
             lvi.SubItems.Add(gim.ImageSizeinKB.ToString());
             return lvi;
         }
@@ -62,7 +72,7 @@ namespace DTRMNS {
             if (blnSelectEnabled) {
                 if (lvwImages.SelectedItems.Count > 0) {
                     SelectedImageReferenceIID = lvwImages.SelectedItems[0].ImageKey;
-                    SelectedImage = bslayer.GetGenericImage(SelectedImageReferenceIID).DisplayImage;
+                    SelectedImage =UFWin.ByteArrayToImage( bslayer.GetGenericImage(SelectedImageReferenceIID).Result.DisplayImage);
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -92,7 +102,7 @@ namespace DTRMNS {
             }
         }
 
-        private void btnExport_Click(object sender, EventArgs e) {
+        private async void btnExport_Click(object sender, EventArgs e) {
             try {
                 if (lvwImages.SelectedItems.Count > 0) {
                     FolderBrowserDialog dlg = new FolderBrowserDialog();
@@ -100,11 +110,12 @@ namespace DTRMNS {
                     if (dlg.ShowDialog() == DialogResult.OK) {
                         DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
                         for (int i = 0; i < lvwImages.SelectedItems.Count; i++) {
-                            GenericImage gim = bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                            GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
 
 
                             string filename = dinfo.FullName + "\\" + gim.ImageFileName;
-                            gim.DisplayImage.Save(filename);
+                            POSLayer.Library.UF.SaveByteArrayToFile(filename, gim.DisplayImage);
+                           // gim.DisplayImage.Save(filename);
                         }
                     }
                 }
@@ -116,7 +127,7 @@ namespace DTRMNS {
 
         private void btnZoom_Click(object sender, EventArgs e) {
             if (lvwImages.SelectedItems.Count > 0) {
-                SelectedImage = bslayer.GetGenericImage(lvwImages.SelectedItems[0].ImageKey).DisplayImage;
+                SelectedImage =UFWin.ByteArrayToImage( bslayer.GetGenericImage(lvwImages.SelectedItems[0].ImageKey).Result.DisplayImage);
                 frmImageDialog frm = new frmImageDialog(SelectedImage);
                 frm.ShowDialog();
             }
@@ -135,7 +146,13 @@ namespace DTRMNS {
                 Image img = Image.FromFile(dlg.FileName);
                 //pBox.BackgroundImage = img;
 
-                GenericImage gim = new GenericImage("", img, "", fileshortname);
+                GenericImage gim = new GenericImage()
+                {
+                    ReferenceIID = "",
+                    DisplayImage =img.ToByteArray(),
+                    ExtraText = "",
+                    ImageFileName = fileshortname
+                };
 
                 frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, gim);
                 if (frm.ShowDialog() == DialogResult.OK) {
@@ -144,11 +161,11 @@ namespace DTRMNS {
             }
         }
 
-        private void btnEdit_Click(object sender, EventArgs e) {
+        private async void btnEdit_Click(object sender, EventArgs e) {
             if (lvwImages.SelectedItems.Count > 0) {
                 ListViewItem lvi = lvwImages.SelectedItems[0];
                 
-                GenericImage gim = bslayer.GetGenericImage(lvi.ImageKey);
+                GenericImage gim =await bslayer.GetGenericImage(lvi.ImageKey);
 
                 frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, gim);
                 if (frm.ShowDialog() == DialogResult.OK) {
@@ -181,16 +198,18 @@ namespace DTRMNS {
             }
         }
 
-        private void btnExportAsXML_Click(object sender, EventArgs e) {
-            
-            List<GenericImage> imageList = new List<GenericImage>();
+        private async void btnExportAsXML_Click(object sender, EventArgs e) {
+
+            List<GenericImage> imageList = new();
 
             try {
-                DataTable dt = bslayer.db.GetDataTable("Select * from Images");
-                for (int i = 0; i < dt.Rows.Count; i++) {
-                    GenericImage gim = new GenericImage(dt.Rows[i], true);
-                    imageList.Add(gim);
-                }
+                imageList = await bslayer.GetAllImages();
+               
+                //DataTable dt = bslayer.db.GetDataTable("Select * from Images");
+                //for (int i = 0; i < dt.Rows.Count; i++) {
+                //    GenericImage gim = new GenericImage(dt.Rows[i], true);
+                //    imageList.Add(gim);
+                //}
             } catch {
                 MessageBox.Show("There are errors during list creation.");
                 return;
@@ -325,27 +344,31 @@ namespace DTRMNS {
             LoadImages();
         }
 
-        private void txtSetWidth_KeyDown(object sender, KeyEventArgs e) {
+        private async void txtSetWidth_KeyDown(object sender, KeyEventArgs e) {
             for (int i= 0; i < lvwImages.SelectedItems.Count; i++) {
-                GenericImage gim = bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
                 int width = int.Parse(txtSetWidth.Text);
-                gim.DisplayImage = UF.ReSizeImageTo(gim.DisplayImage, width, (int)(width*gim.RatioTimesWidthForHeight), true);
-                bslayer.SaveGenericImage(gim);
+                Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
+                double ratio = UFWin.RatioTimesWidthForHeight(img);
+                gim.DisplayImage =UF.ReSizeImageTo(img, width, (int)(width*ratio), true).ToByteArray();
+                await bslayer.SaveGenericImage(gim);
             }
         }
 
-        private void txtSetHeight_KeyDown(object sender, KeyEventArgs e) {
+        private async void txtSetHeight_KeyDown(object sender, KeyEventArgs e) {
             for (int i = 0; i < lvwImages.SelectedItems.Count; i++) {
-                GenericImage gim = bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
                 int height = int.Parse(txtSetHeight.Text);
-                gim.DisplayImage = UF.ReSizeImageTo(gim.DisplayImage, (int)(height * gim.RatioTimesHeightForWidth), height, true);
-                bslayer.SaveGenericImage(gim);
+                Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
+                double ratio = UFWin.RatioTimesHeightForWidth(img);
+                gim.DisplayImage =UF.ReSizeImageTo(img, (int)(height * ratio), height, true).ToByteArray();
+                await bslayer.SaveGenericImage(gim);
             }
         }
 
-        private void btnExportAsJson_Click(object sender, EventArgs e)
+        private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<GenericImage> itemList = bslayer.GetImageLibraryList();
+            List<GenericImage> itemList = await bslayer.GetAllImages(); // await bslayer.GetImageLibraryList();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -365,7 +388,7 @@ namespace DTRMNS {
             }
         }
 
-        private void btnImportFromJson_Click(object sender, EventArgs e)
+        private async void btnImportFromJson_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
@@ -382,7 +405,7 @@ namespace DTRMNS {
                             List<GenericImage> itemList = JsonConvert.DeserializeObject<List<GenericImage>>(content);
                             foreach (GenericImage item in itemList)
                             {
-                                bslayer.SaveGenericImage(item);
+                               await bslayer.SaveGenericImage(item);
                             }
                             MessageBox.Show("Saved Image List");
                             LoadImages();

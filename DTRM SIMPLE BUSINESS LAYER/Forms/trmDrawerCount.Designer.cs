@@ -1,4 +1,6 @@
 using DTRMNS;
+
+using POSLayer.Library;
 namespace DTRMNS {
     partial class TrmDrawerCount {
         /// <summary>
@@ -191,7 +193,7 @@ namespace DTRMNS {
             this.ctl1000.TabIndex = 68;
             this.ctl1000.Tane = 0F;
             this.ctl1000.Value = 0F;
-            this.ctl1000.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl1000.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl500
             // 
@@ -204,7 +206,7 @@ namespace DTRMNS {
             this.ctl500.TabIndex = 67;
             this.ctl500.Tane = 0F;
             this.ctl500.Value = 0F;
-            this.ctl500.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl500.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // btnCreditCardTotal
             // 
@@ -234,7 +236,7 @@ namespace DTRMNS {
             this.ctl200.TabIndex = 66;
             this.ctl200.Tane = 0F;
             this.ctl200.Value = 0F;
-            this.ctl200.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl200.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl100
             // 
@@ -247,7 +249,7 @@ namespace DTRMNS {
             this.ctl100.TabIndex = 65;
             this.ctl100.Tane = 0F;
             this.ctl100.Value = 0F;
-            this.ctl100.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl100.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl50
             // 
@@ -260,7 +262,7 @@ namespace DTRMNS {
             this.ctl50.TabIndex = 64;
             this.ctl50.Tane = 0F;
             this.ctl50.Value = 0F;
-            this.ctl50.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl50.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // btnTotal
             // 
@@ -290,7 +292,7 @@ namespace DTRMNS {
             this.ctl20.TabIndex = 63;
             this.ctl20.Tane = 0F;
             this.ctl20.Value = 0F;
-            this.ctl20.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl20.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // btnChequeTotal
             // 
@@ -320,7 +322,7 @@ namespace DTRMNS {
             this.ctl10.TabIndex = 62;
             this.ctl10.Tane = 0F;
             this.ctl10.Value = 0F;
-            this.ctl10.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl10.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl5
             // 
@@ -333,7 +335,7 @@ namespace DTRMNS {
             this.ctl5.TabIndex = 61;
             this.ctl5.Tane = 0F;
             this.ctl5.Value = 0F;
-            this.ctl5.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl5.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl2
             // 
@@ -346,7 +348,7 @@ namespace DTRMNS {
             this.ctl2.TabIndex = 60;
             this.ctl2.Tane = 0F;
             this.ctl2.Value = 0F;
-            this.ctl2.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl2.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // btnOthersTotal
             // 
@@ -376,7 +378,7 @@ namespace DTRMNS {
             this.ctl1.TabIndex = 59;
             this.ctl1.Tane = 0F;
             this.ctl1.Value = 0F;
-            this.ctl1.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl1.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl050
             // 
@@ -389,7 +391,7 @@ namespace DTRMNS {
             this.ctl050.TabIndex = 58;
             this.ctl050.Tane = 0F;
             this.ctl050.Value = 0F;
-            this.ctl050.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl050.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl020
             // 
@@ -402,7 +404,7 @@ namespace DTRMNS {
             this.ctl020.TabIndex = 57;
             this.ctl020.Tane = 0F;
             this.ctl020.Value = 0F;
-            this.ctl020.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl020.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl010
             // 
@@ -415,7 +417,7 @@ namespace DTRMNS {
             this.ctl010.TabIndex = 56;
             this.ctl010.Tane = 0F;
             this.ctl010.Value = 0F;
-            this.ctl010.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl010.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl005
             // 
@@ -428,7 +430,7 @@ namespace DTRMNS {
             this.ctl005.TabIndex = 55;
             this.ctl005.Tane = 0F;
             this.ctl005.Value = 0F;
-            this.ctl005.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl005.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl002
             // 
@@ -441,7 +443,7 @@ namespace DTRMNS {
             this.ctl002.TabIndex = 54;
             this.ctl002.Tane = 0F;
             this.ctl002.Value = 0F;
-            this.ctl002.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl002.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // ctl001
             // 
@@ -454,7 +456,7 @@ namespace DTRMNS {
             this.ctl001.TabIndex = 53;
             this.ctl001.Tane = 0F;
             this.ctl001.Value = 0F;
-            this.ctl001.ValueChanged += new DTRMNS.GenericEventHandler(this.CtlBozukPara_ValueChanged);
+            this.ctl001.ValueChanged += new GenericEventHandler(this.CtlBozukPara_ValueChanged);
             // 
             // btnSave
             // 

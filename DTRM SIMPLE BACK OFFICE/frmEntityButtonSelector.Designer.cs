@@ -1,4 +1,6 @@
 ﻿
+using POSLayer.Models;
+
 namespace DTRMSimpleBackOffice {
     partial class frmEntityButtonSelector {
         /// <summary>
@@ -118,7 +120,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityButtonBindingSource
             // 
-            this.entityButtonBindingSource.DataSource = typeof(DTRMNS.EntityButton);
+            this.entityButtonBindingSource.DataSource = typeof(EntityButton);
             // 
             // txtFilter
             // 

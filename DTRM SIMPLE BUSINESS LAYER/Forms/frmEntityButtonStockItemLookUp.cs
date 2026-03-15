@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {
@@ -21,7 +23,10 @@ namespace DTRMNS {
 
             //new lookup being created (need display order) or let system to it automatically in the database
 
-            this.lookup = new EntityButtonStockItemLookUp(entityButton.IID); 
+            this.lookup = new EntityButtonStockItemLookUp()
+            {
+                EntityButtonIID = entityButton.IID
+            }; 
         }
         public frmEntityButtonStockItemLookUp(DTRMSimpleBusiness bslayer, EntityButtonStockItemLookUp lookup) {
             InitializeComponent();
@@ -40,7 +45,7 @@ namespace DTRMNS {
             cmbStockItem.DataSource = bslayer.GetAllStockItemsShort(); //  bslayer.GetAllStockItemsShortForEB(entityButton.IID);
         }
 
-        private void LoadLookUp() {
+        private async Task LoadLookUp() {
             txtEntityButton.Text = entityButton.EntityButtonName;
             lblQuantityType.Text = lookup.QuantityType.ToString();
             incQuantity.Value = lookup.Quantity;
@@ -59,7 +64,7 @@ namespace DTRMNS {
                     if (lookup.StockItemIID != null && lookup.StockItemIID.Length > 0)
                     {
                         cmbStockItem.SelectedValue = lookup.StockItemIID;
-                        selectedStockItem = bslayer.GetStockItem(lookup.StockItemIID);
+                        selectedStockItem =await bslayer.GetStockItem(lookup.StockItemIID);
                     } else
                     {
                         //it is a free item
@@ -74,7 +79,7 @@ namespace DTRMNS {
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (cmbStockItem.SelectedIndex >= 0 || chkFreeItem.Checked ) {
                 lookup.EntityButtonIID = entityButton.IID;
                 if (chkFreeItem.Checked)
@@ -97,7 +102,7 @@ namespace DTRMNS {
                 
                 lookup.DisplayOrder = txtDisplayOrder.Value;
                 lookup.Comment = txtComment.Text;
-                if (bslayer.SaveEntityButtonStockItemLookUp(lookup)) {
+                if (await bslayer.SaveEntityButtonStockItemLookUp(lookup)) {
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -113,11 +118,11 @@ namespace DTRMNS {
             //} catch { }
         }
 
-        private void cmbStockItem_SelectedValueChanged(object sender, EventArgs e) {
+        private async void cmbStockItem_SelectedValueChanged(object sender, EventArgs e) {
             try {
                 if (!blnLoading) {
                     lookup.StockItemIID = cmbStockItem.SelectedValue.ToString();
-                    selectedStockItem = bslayer.GetStockItem(lookup.StockItemIID);
+                    selectedStockItem =await bslayer.GetStockItem(lookup.StockItemIID);
                     lblQuantityType.Text = selectedStockItem.QuantityType.ToString();
                 }
             } catch { }

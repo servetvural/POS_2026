@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmUserEditor {
         /// <summary>
         /// Required designer variable.
@@ -74,7 +76,7 @@
             // 
             // userBindingSource
             // 
-            userBindingSource.DataSource = typeof(DTRMNS.User);
+            userBindingSource.DataSource = typeof(User);
             // 
             // barMain
             // 

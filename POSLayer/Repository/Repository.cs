@@ -379,24 +379,45 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     //}
 
 
-    public async Task<List<SessionData>> GetSessionSum()
+    public async Task<IEnumerable<SessionData>> GetSessionSumView()
     {
         var sql = @"
-                SELECT        TOP (100) PERCENT dbo.Sessions.IID, dbo.Sessions.StartDate, dbo.Sessions.EndDate, COUNT(OrdersView.IID) AS OrderCount, SUM(ISNULL(OrdersView.CalculatedValue, 0)) AS GrossSessionTotal, dbo.Sessions.X1Total, 
-                         dbo.Sessions.X2Total, dbo.Sessions.X3Total, dbo.Sessions.peny1, dbo.Sessions.peny2, dbo.Sessions.peny5, dbo.Sessions.peny10, dbo.Sessions.peny20, dbo.Sessions.peny50, dbo.Sessions.pound1, dbo.Sessions.pound2, 
-                         dbo.Sessions.pound5, dbo.Sessions.pound10, dbo.Sessions.pound20, dbo.Sessions.pound50, dbo.Sessions.pound100, dbo.Sessions.pound200, dbo.Sessions.pound500, dbo.Sessions.pound1000, dbo.Sessions.CashTotal, 
-                         dbo.Sessions.CardTotal, dbo.Sessions.OnlineTotal, ISNULL(dbo.UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0) AS GrossSessionTotalUncompleted
-FROM            dbo.Sessions LEFT OUTER JOIN
-                         dbo.UncompletedOrdersSessionSum ON dbo.Sessions.IID = dbo.UncompletedOrdersSessionSum.SessionIID LEFT OUTER JOIN
-                         dbo.OrdersView AS OrdersView ON dbo.Sessions.IID = OrdersView.SessionIID
-GROUP BY dbo.Sessions.IID, dbo.Sessions.StartDate, dbo.Sessions.EndDate, dbo.Sessions.peny1, dbo.Sessions.peny5, dbo.Sessions.peny10, dbo.Sessions.peny20, dbo.Sessions.peny50, dbo.Sessions.pound1, dbo.Sessions.pound5, 
-                         dbo.Sessions.pound10, dbo.Sessions.pound20, dbo.Sessions.pound50, dbo.Sessions.pound100, dbo.Sessions.pound200, dbo.Sessions.pound500, dbo.Sessions.pound1000, dbo.Sessions.CardTotal, 
-                         dbo.Sessions.OnlineTotal, dbo.Sessions.CashTotal, dbo.Sessions.pound2, dbo.Sessions.peny2, dbo.Sessions.X1Total, dbo.Sessions.X2Total, dbo.Sessions.X3Total, 
-                         ISNULL(dbo.UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0)
+                SELECT        TOP (100) PERCENT Sessions.IID, Sessions.StartDate, Sessions.EndDate, COUNT(OrdersView.IID) AS OrderCount, SUM(ISNULL(OrdersView.CalculatedValue, 0)) AS GrossSessionTotal, Sessions.X1Total, 
+                         Sessions.X2Total, Sessions.X3Total, Sessions.peny1, Sessions.peny2, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound2, 
+                         Sessions.pound5, Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CashTotal, 
+                         Sessions.CardTotal, Sessions.OnlineTotal, ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0) AS GrossSessionTotalUncompleted
+                FROM            Sessions LEFT OUTER JOIN
+                         UncompletedOrdersSessionSum ON Sessions.IID = UncompletedOrdersSessionSum.SessionIID LEFT OUTER JOIN
+                         OrdersView AS OrdersView ON Sessions.IID = OrdersView.SessionIID
+                GROUP BY Sessions.IID, Sessions.StartDate, Sessions.EndDate, Sessions.peny1, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound5, 
+                         Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CardTotal, 
+                         Sessions.OnlineTotal, Sessions.CashTotal, Sessions.pound2, Sessions.peny2, Sessions.X1Total, Sessions.X2Total, Sessions.X3Total, 
+                         ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0)
                 ";
-        var results = await GetDBContext().Set<SessionData>().FromSqlRaw(sql).ToListAsync();
-        return results;
+        return await GetDBContext().Set<SessionData>().FromSqlRaw(sql).ToListAsync();
     }
 
+    public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageView()
+    {
+        var sql = @"   
+                SELECT  Distribution.IID, Distribution.DistributionName, Distribution.ShortName, Distribution.DisplayOrder, Distribution.ParentMenuIID, Menu.MenuName, Distribution.PrinterIID, 
+                         ApplicationPrinter.ApplicationName AS PrinterNetworkName
+                FROM            Distribution LEFT OUTER JOIN
+                         ApplicationPrinter ON Distribution.PrinterIID = ApplicationPrinter.IID LEFT OUTER JOIN
+                         Menu ON Distribution.ParentMenuIID = Menu.IID
+                ";
+        return await GetDBContext().Set<StockItemUsage>().FromSqlRaw(sql).ToListAsync();
+    }
+    public async Task<IEnumerable<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView()
+    {
+        var sql = @"
+                SELECT        StockItem.StockName, EntityButton.EntityButtonName, EntityButtonStockItemLookUp.EntityButtonIID, EntityButtonStockItemLookUp.StockItemIID, EntityButtonStockItemLookUp.QuantityType, 
+                         EntityButtonStockItemLookUp.Quantity, EntityButton.ParentMenuIID
+                FROM            EntityButtonStockItemLookUp LEFT OUTER JOIN
+                         EntityButton ON EntityButtonStockItemLookUp.EntityButtonIID = EntityButton.IID LEFT OUTER JOIN
+                         StockItem ON EntityButtonStockItemLookUp.StockItemIID = StockItem.IID
+                ";
+        return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();   
+    }
     #endregion
 }

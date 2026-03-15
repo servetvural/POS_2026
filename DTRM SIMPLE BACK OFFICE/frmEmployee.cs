@@ -19,15 +19,16 @@ using POSLayer.Models;
 using PosLibrary.DRSoftware;
 using PosLayer.Repository;
 using POSLayer.Repository.IRepository;
+using POSWinFormLayer;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmEmployee : Form {
         private DTRMSimpleBusiness bslayer;
-        public DTRMNS.Employee employee;
+        public Employee employee;
         private GenericImage gim;
        // PosDbContext dbContext;
         IRepository<POSLayer.Models.Employee> repoEmployee;
-        public frmEmployee(DTRMSimpleBusiness bslayer, DTRMNS.Employee employee) {
+        public frmEmployee(DTRMSimpleBusiness bslayer, Employee employee) {
             InitializeComponent();
             this.bslayer = bslayer;
             this.employee = employee;
@@ -47,14 +48,14 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void LoadGenericImage() {
+        private async void LoadGenericImage() {
             try {
-                gim = bslayer.GetGenericImage(employee.IID);
+                gim = await bslayer.GetGenericImage(employee.IID);
                 if (gim == null) {
                    // pBox.BackgroundImage = Properties.Resources.BlueMan32;
                 } else {
                     if (gim.DisplayImage != null)
-                        pBox.BackgroundImage = gim.DisplayImage;
+                        pBox.BackgroundImage = gim.DisplayImage.ToImage(); // Image.from gim.DisplayImage;
                     lblImageSize.Text = gim.ImageSizeinKB + " KB";
                 }
             } catch {
@@ -82,7 +83,7 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void btnLoadPrepImageFromDirectory_Click(object sender, EventArgs e) {
+        private async void btnLoadPrepImageFromDirectory_Click(object sender, EventArgs e) {
 
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Filter = "All Files | *.*|GIF Images |*.gif|JPG  Images|*.jpg|JPEG Images |*.jpeg|PNG Images|*.png";
@@ -96,13 +97,19 @@ namespace DTRMSimpleBackOffice {
                 System.Drawing.Image img = System.Drawing.Image.FromFile(dlg.FileName);
                 pBox.BackgroundImage = img;
 
-                gim = new GenericImage(employee.IID, img, "", finfo.Name);
-                bslayer.SaveGenericImage(gim);
+                gim = new GenericImage()
+                {
+                    ReferenceIID = employee.IID,
+                    DisplayImage = img.ToByteArray(),
+                    ExtraText = "",
+                    ImageFileName = finfo.Name
+                };
+                await bslayer.SaveGenericImage(gim);
             }
         }
 
-        private void btnDeletePrepImage_Click(object sender, EventArgs e) {
-            bslayer.DeletePrepImage(employee.IID);
+        private async void btnDeletePrepImage_Click(object sender, EventArgs e) {
+            await bslayer.DeleteGenericImage(employee.IID);
             pBox.BackgroundImage = null;
         }
     }

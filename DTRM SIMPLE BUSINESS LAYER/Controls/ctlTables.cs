@@ -7,6 +7,7 @@ using PosLibrary;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using System.Threading.Tasks;
 
 
 namespace DTRMNS {
@@ -53,8 +54,8 @@ namespace DTRMNS {
             CloseFunction();
         }
 
-        private void LoadTables() {
-            List<Table> tablelist = bslayer.GetTableList(SelectedGroup);
+        private async void LoadTables() {
+            List<Table> tablelist =await bslayer.GetTableList(SelectedGroup);
 
             pnlTables.Controls.Clear();
             //pnlTables.BackColor = Color.AliceBlue;
@@ -111,7 +112,7 @@ namespace DTRMNS {
             }
         }
 
-        private void btnQuickTableButton_Click(object sender, EventArgs e) {
+        private async void btnQuickTableButton_Click(object sender, EventArgs e) {
             if (chkChangeTable.Checked) {
                 if (SourceTable == null) {
                     //Identify Source Table
@@ -122,7 +123,7 @@ namespace DTRMNS {
                 else {
                     bool blnLeaveSubTables = false;
                     if (SourceTable.IsPrimary) {
-                        if (bslayer.HasSubTables(SourceTable.IID)) {
+                        if (await bslayer.HasSubTables(SourceTable.IID)) {
                             blnLeaveSubTables = MessageBox.Show("Do you want to move sub tables as well?",
                                                     "Move ALL",
                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -137,10 +138,10 @@ namespace DTRMNS {
                 }
             }
             if (chkAddSubTable.Checked) {
-                Table table = bslayer.GetTable(((TableButton) sender).IID);
+                Table table =await bslayer.GetTable(((TableButton) sender).IID);
                 Table subTable = null;
                 if (table.HasActiveOrder()) {
-                    subTable = bslayer.AddSubTable(table.IID);
+                    subTable =await bslayer.AddSubTable(table.IID);
                     DirectButtonClickHandler(subTable.IID, e);
                    
                 } else
@@ -154,33 +155,33 @@ namespace DTRMNS {
                 if (!string.IsNullOrEmpty(bslayer.config.DTClientLocalReceiptPrinterIID)) {
                     TableButton tableButton = (TableButton) sender;
                     bool blnPrinted = false;
-                    if (bslayer.HasSubTables(tableButton.IID)) {
-                        List<Table> tablelist = bslayer.GetTableAndSubTables(tableButton.IID);
+                    if (await bslayer.HasSubTables(tableButton.IID)) {
+                        List<Table> tablelist =await bslayer.GetTableAndSubTables(tableButton.IID);
                         for (int i = 0; i < tablelist.Count; i++) {
-                                blnPrinted = bslayer.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1,
+                                blnPrinted =await bslayer.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1,
                                     bslayer.config.DTClientLocalReceiptPrinterIID);
                         }
                     }
                     else {
-                        Table table = bslayer.BarrowTable(tableButton.IID);
+                        Table table =await bslayer.BarrowTable(tableButton.IID);
                         if (table.AttachedOrder != null) {
-                            blnPrinted = bslayer.PrintEntireOrder(table.AttachedOrder, true, false, 1,
+                            blnPrinted =await bslayer.PrintEntireOrder(table.AttachedOrder, true, false, 1,
                                 bslayer.config.DTClientLocalReceiptPrinterIID);
                         }
                     }
                     if (blnPrinted && bslayer.config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).NetworkName);
+                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                 }
             }
 
             if (blnChangeOrderType) {
-                Table table = bslayer.GetTable(((TableButton) sender).IID);
+                Table table =await bslayer.GetTable(((TableButton) sender).IID);
                 if (table.CurrentOrderIID != null && table.CurrentOrderIID != "")
                     MessageBox.Show("Table already has an order");
                 else {
                     //Delete the incoming new order with the newly allocated table
-                    bslayer.DeleteOrderOnly(table.AttachedOrder);
+                   await bslayer.DeleteOrderOnly(table.AttachedOrder);
                     //Dispatch this order to this table
                     table.AttachedOrder = bslayer.AttachedOrder;
                     table.CurrentOrderIID = bslayer.AttachedOrder.IID;
@@ -212,7 +213,7 @@ namespace DTRMNS {
             else if (chkSplitTable.Checked) {
                 SourceTable = (TableButton) sender;
 
-                Table STable = bslayer.GetTable(SourceTable.IID);
+                Table STable =await bslayer.GetTable(SourceTable.IID);
                 if (String.IsNullOrEmpty(STable.CurrentOrderIID)) {
 
                     //No Order on this table to split so abort process
@@ -221,7 +222,7 @@ namespace DTRMNS {
                 }
                 else {
                     //Now properly barrowtable for system lock, so no one can do any operation on it
-                    STable = bslayer.BarrowTable(SourceTable.IID);
+                    STable =await bslayer.BarrowTable(SourceTable.IID);
                     frmTableSplitter frm = new frmTableSplitter(bslayer, STable);
                     frm.ShowDialog();
 
@@ -271,40 +272,40 @@ namespace DTRMNS {
       }
   
 
-       private void RemoveOrderLockFromTable(string TableIID) {
-           DialogResult whattodo = MessageBox.Show(this, "You are about to REMOVE ORDER from the table.\n" +
-           "Are you sure you want to continue ?",
-           "TABLE ORDER REMOVE WARNING", MessageBoxButtons.YesNo);
-           switch (whattodo) {
-               case DialogResult.Yes:
-                   Table table = bslayer.GetTable(TableIID);
-                   if (table != null) {
-                       Order Xorder = bslayer.GetOrder(table.CurrentOrderIID);
-                       if (Xorder != null) {
-                           Xorder.TableIID = "";
-                           Xorder.TableName = "";
-                           bslayer.SaveOrder(Xorder);
-                       }
-                       table.CurrentOrderIID = "";
-                       bslayer.SaveTable(table);
-                   }
-                   this.LoadTables();
-                   break;
-               case DialogResult.No:
-                   return;
-               default:
-                   break;
-           }
-       }
+       //private void RemoveOrderLockFromTable(string TableIID) {
+       //    DialogResult whattodo = MessageBox.Show(this, "You are about to REMOVE ORDER from the table.\n" +
+       //    "Are you sure you want to continue ?",
+       //    "TABLE ORDER REMOVE WARNING", MessageBoxButtons.YesNo);
+       //    switch (whattodo) {
+       //        case DialogResult.Yes:
+       //            Table table = bslayer.GetTable(TableIID);
+       //            if (table != null) {
+       //                Order Xorder = bslayer.GetOrder(table.CurrentOrderIID);
+       //                if (Xorder != null) {
+       //                    Xorder.TableIID = "";
+       //                    Xorder.TableName = "";
+       //                    bslayer.SaveOrder(Xorder);
+       //                }
+       //                table.CurrentOrderIID = "";
+       //                bslayer.SaveTable(table);
+       //            }
+       //            this.LoadTables();
+       //            break;
+       //        case DialogResult.No:
+       //            return;
+       //        default:
+       //            break;
+       //    }
+       //}
   
-      private void UnlockTable(string TableIID) {         
+      private async void UnlockTable(string TableIID) {         
          DialogResult whattodo = MessageBox.Show(this, "You are about to unlock the table.\n" +
             "If any orderpad is amending this table or its order, its changes will not be updated!\n" +
             "Are you sure you want to continue ?",
             "TABLE UNLOCK WARNING", MessageBoxButtons.YesNo);
          switch (whattodo) {
             case DialogResult.Yes:
-               Table table = bslayer.GetTable(TableIID);
+               Table table =await bslayer.GetTable(TableIID);
                if (table != null) {
                   table.LockedClientIP = "";
                   bslayer.SaveTable(table);
@@ -390,8 +391,8 @@ namespace DTRMNS {
        }
 
 
-       private void RenameTable(string TableIID) {
-           Table table = bslayer.GetTable(TableIID);
+       private async void RenameTable(string TableIID) {
+           Table table = await bslayer.GetTable(TableIID);
            if (table != null) {
                trmInput frm = new trmInput(table.TableName);
                if (frm.ShowDialog() == DialogResult.OK) {

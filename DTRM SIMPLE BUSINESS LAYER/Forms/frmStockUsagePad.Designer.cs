@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Views;
+
+namespace DTRMNS {
     partial class frmStockUsagePad {
         /// <summary>
         /// Required designer variable.
@@ -361,7 +363,7 @@
             // 
             // stockItemUsageBindingSource
             // 
-            this.stockItemUsageBindingSource.DataSource = typeof(DTRMNS.StockItemUsage);
+            this.stockItemUsageBindingSource.DataSource = typeof(StockItemUsage);
             // 
             // dataGridViewTextBoxColumn1
             // 

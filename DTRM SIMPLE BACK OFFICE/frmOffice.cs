@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
@@ -52,7 +53,7 @@ namespace DTRMSimpleBackOffice
                 TryAgainLocally:
                     if (POSLayer.Library.UF.IsConfigFileExist())
                     {
-                        PosConfig config = DTRMNS.UF.GetConfig();
+                        PosConfig config = POSLayer.Library.UF.GetConfig();
                         if (config.Database_Instance == null |
                             config.Database_User_Name == null || config.Database_Password == null)
                         {
@@ -85,13 +86,13 @@ namespace DTRMSimpleBackOffice
                                     //Identify connection type
                                     if (blnLocalDatabase)
                                     {
-                                        conStatus = bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.ConnectedLocally;
+                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
                                         btnPrinters.Enabled = true;
                                         btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
                                     } else
                                     {
                                         //remote connection
-                                        conStatus = bslayer.OfficeConnectionStatus = DTRMNS.ConnectionStatus.ConnectedRemotely;
+                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
                                         //btnPrinters.Enabled = false;
                                         btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
                                     }
@@ -405,14 +406,14 @@ namespace DTRMSimpleBackOffice
         }
 
 
-        private void btnDatabaseBackup_Click(object sender, EventArgs e)
+        private async void btnDatabaseBackup_Click(object sender, EventArgs e)
         {
-            DatabaseBackup backup = new DatabaseBackup();
             DatabaseBackupOptions backupOptions = new DatabaseBackupOptions();
-            backupOptions.blnCustomers = backupOptions.blnImages = backupOptions.blnPrinters = backupOptions.blnStock =
-                backupOptions.blnTables = backupOptions.blnUsers = true;
+            backupOptions.includeCustomers = backupOptions.includeImages = backupOptions.includePrinters = backupOptions.includeStock =
+                backupOptions.includeTables = backupOptions.includeUsers = true;
 
-            if (bslayer.GetDatabaseBackup(options))
+            DatabaseBackup backup = await bslayer.GetDatabaseBackup(backupOptions);
+            if (backup != null)
             {
                 DRFile.XmlSerialize(Path.Combine("DatabaseBackup\\", "Database Backup on " +
                     DateTime.Now.ToString("dd MMM yyyy HH mm") + ".xml"), backup, typeof(DatabaseBackup), true);

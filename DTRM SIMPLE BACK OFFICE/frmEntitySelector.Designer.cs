@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmEntitySelector {
         /// <summary>
         /// Required designer variable.
@@ -39,7 +41,7 @@
             // 
             // entityBindingSource
             // 
-            this.entityBindingSource.DataSource = typeof(DTRMNS.Entity);
+            this.entityBindingSource.DataSource = typeof(Entity);
             // 
             // dgvEntity
             // 

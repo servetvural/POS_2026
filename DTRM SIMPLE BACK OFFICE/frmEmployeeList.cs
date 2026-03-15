@@ -14,8 +14,12 @@ using DTRMNS;
 using Newtonsoft.Json;
 
 using POSLayer.Library;
+using POSLayer.Models;
+
 //using POSLayer.Models;
 using POSLayer.Repository.IRepository;
+
+using POSWinFormLayer;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmEmployeeList : Form {
@@ -39,19 +43,19 @@ namespace DTRMSimpleBackOffice {
         private async void LoadEmployees() {
             lvwEmployee.Items.Clear();
             //List<POSLayer.Models.Employee> employees = await repoEmployee.GetAllAsync(); 
-            List<Employee> employees= bslayer.GetAllEmployeeList();
+            List<Employee> employees=await bslayer.GetAllEmployeeList();
 
             imgList.Images.Clear();
             foreach (Employee employee in employees)
             {
-                GenericImage gim = bslayer.GetGenericImage(employee.IID);
+                GenericImage gim =await bslayer.GetGenericImage(employee.IID);
                 System.Drawing.Image imgProfil = null;
                 if (gim == null)
                 {
                     imgProfil = Properties.Resources.BlueMan32;
                 } else
                 {
-                    imgProfil = gim.DisplayImage;
+                    imgProfil = gim.DisplayImage.ToImage();
                 }
 
                 imgList.Images.RemoveByKey(employee.IID);
@@ -68,7 +72,7 @@ namespace DTRMSimpleBackOffice {
 
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            frmEmployee frm = new frmEmployee(bslayer, new DTRMNS.Employee());
+            frmEmployee frm = new frmEmployee(bslayer, new Employee());
             if (frm.ShowDialog() == DialogResult.OK)
                 btnReload_Click(sender, e);
         }

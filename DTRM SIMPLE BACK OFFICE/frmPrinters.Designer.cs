@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmPrinters {
         /// <summary>
         /// Required designer variable.
@@ -164,7 +166,7 @@
             // 
             // applicationPrinterBindingSource
             // 
-            this.applicationPrinterBindingSource.DataSource = typeof(DTRMNS.ApplicationPrinter);
+            this.applicationPrinterBindingSource.DataSource = typeof(ApplicationPrinter);
             // 
             // panel1
             // 

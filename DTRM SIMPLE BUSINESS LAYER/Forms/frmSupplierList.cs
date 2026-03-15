@@ -33,7 +33,7 @@ namespace DTRMNS {
                 LoadSuppliers();
         }
 
-        private async Task btnEdit_Click(object sender, EventArgs e) {
+        private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 Supplier supplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 frmSupplier frm = new frmSupplier(bslayer, supplier);
@@ -64,7 +64,7 @@ namespace DTRMNS {
 
         }
 
-        private async Task btnSelect_Click(object sender, EventArgs e) {
+        private async void btnSelect_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 selectedSupplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 this.DialogResult = DialogResult.OK;
@@ -76,7 +76,7 @@ namespace DTRMNS {
             LoadSuppliers();
         }
 
-        private async Task btnExportAsJson_Click(object sender, EventArgs e)
+        private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
             List<Supplier> itemList =await bslayer.GetAllSuppliersAsList();
             using (SaveFileDialog sfd = new SaveFileDialog())

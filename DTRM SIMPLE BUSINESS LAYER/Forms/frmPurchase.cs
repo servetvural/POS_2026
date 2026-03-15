@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Views;
 
 namespace DTRMNS {
     public partial class frmPurchase : Form {

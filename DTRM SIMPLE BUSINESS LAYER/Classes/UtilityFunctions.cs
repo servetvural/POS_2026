@@ -1,19 +1,22 @@
 using System;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using System.Data;
-using PosLibrary;
-
-using System.Drawing.Imaging;
+using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
 using POSLayer.Library;
+
+using PosLibrary;
 
 namespace DTRMNS {
     /// <summary>
     /// Summary description for UF.
     /// </summary>
-    public class UF {
+    public static class UF {
         public static Color ThemeBackColour { get; set; } = Color.Black;
         public static Color ThemeForeColour { get; set; } = Color.White;
 
@@ -24,9 +27,7 @@ namespace DTRMNS {
 
         public static string DBListConfigFileName { get; set; } = "DBConfig.xml";
         public static string DBConfigFileName { get; set; } = "DTRMConfig.xml";
-        public UF() {
-        }
-
+       
         public static void ChangeDataGridViewZoom(DataGridView dgv) {
             bool blnSmall = (dgv.RowTemplate.Height == 22);
             if (blnSmall) {
@@ -325,7 +326,8 @@ namespace DTRMNS {
             return result;
         }
 
+        
     }
 
-
 }
+   

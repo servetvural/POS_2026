@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Library;
+
+namespace DTRMNS {
     partial class frmPinZWarning {
         /// <summary>
         /// Required designer variable.
@@ -106,8 +108,8 @@
             this.ctlNumeric1.Size = new System.Drawing.Size(346, 276);
             this.ctlNumeric1.TabIndex = 5;
             this.ctlNumeric1.OutputOccured += new PosLibrary.Delegate_String(this.ctlNumeric1_OutputOccured);
-            this.ctlNumeric1.BackspaceClicked += new DTRMNS.GenericFunctionCall(this.ctlNumeric1_BackspaceClicked);
-            this.ctlNumeric1.EnterClicked += new DTRMNS.GenericFunctionCall(this.ctlNumeric1_EnterClicked);
+            this.ctlNumeric1.BackspaceClicked += new GenericFunctionCall(this.ctlNumeric1_BackspaceClicked);
+            this.ctlNumeric1.EnterClicked += new GenericFunctionCall(this.ctlNumeric1_EnterClicked);
             // 
             // frmPinZWarning
             // 

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
-namespace POSLayer.Models;
+namespace POSLayer.Views;
 
 public partial class EntityButtonStockItemRecipe   : BaseClass
 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+using POSLayer.Library;
 using POSLayer.Views;
 
 namespace POSLayer.Models;
@@ -35,11 +36,11 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<EntityButton> EntityButtons { get; set; }
 
-    public virtual DbSet<EntityButtonStockItemLookUp> EntityButtonStockItemLookUps { get; set; }
+    //public virtual DbSet<EntityButtonStockItemLookUp> EntityButtonStockItemLookUps { get; set; }
 
-    public virtual DbSet<EntityButtonStockItemRecipe> EntityButtonStockItemRecipes { get; set; }
+   // public virtual DbSet<EntityButtonStockItemRecipe> EntityButtonStockItemRecipes { get; set; }
 
-    public virtual DbSet<BImage> Images { get; set; }
+    public virtual DbSet<GenericImage> Images { get; set; }
 
     public virtual DbSet<KitchenOrder> KitchenOrders { get; set; }
 
@@ -61,7 +62,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<PrinterLookup> PrinterLookups { get; set; }
 
-    public virtual DbSet<PrinterView> PrinterViews { get; set; }
+   // public virtual DbSet<PrinterView> PrinterViews { get; set; }
 
     public virtual DbSet<ServiceChargeSummary> ServiceChargeSummaries { get; set; }
 
@@ -71,7 +72,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<StockItem> StockItems { get; set; }
 
-    public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
+   // public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
@@ -389,7 +390,7 @@ public partial class PosDbContext : DbContext
                 .IsUnicode(false);
         });
 
-        modelBuilder.Entity<BImage>(entity =>
+        modelBuilder.Entity<GenericImage>(entity =>
         {
             entity.HasNoKey();
 

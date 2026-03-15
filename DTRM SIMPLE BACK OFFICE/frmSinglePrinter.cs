@@ -9,6 +9,9 @@ using System.Drawing.Printing;
 
 using DTRMNS;
 
+using POSLayer.Models;
+using POSLayer.Library;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmSinglePrinter : Form {
         private DTRMSimpleBusiness bslayer;
@@ -47,7 +50,7 @@ namespace DTRMSimpleBackOffice {
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (txtSpecialName.Text.Trim().Length == 0)
                 return;
 
@@ -60,7 +63,7 @@ namespace DTRMSimpleBackOffice {
             if (chkSetForThisTerminal.Checked)
                 ap.ClientIID = bslayer.config.Terminal_Name;
 
-            if (bslayer.SavePrinter(ap)) {
+            if (await bslayer.SavePrinter(ap)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }           

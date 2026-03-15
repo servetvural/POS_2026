@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+
+namespace DTRMNS {
    partial class trmPrinterSelector {
       /// <summary>
       /// Required designer variable.
@@ -118,7 +120,7 @@
           // 
           // ApplicationPrinterDataConnector
           // 
-          this.ApplicationPrinterDataConnector.DataSource = typeof(DTRMNS.ApplicationPrinter);
+          this.ApplicationPrinterDataConnector.DataSource = typeof(ApplicationPrinter);
           // 
           // panel1
           // 

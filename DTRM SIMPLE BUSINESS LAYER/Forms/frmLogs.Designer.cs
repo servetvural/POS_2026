@@ -1,4 +1,6 @@
-﻿namespace DTRMNS.Forms
+﻿using POSLayer.Models;
+
+namespace DTRMNS.Forms
 {
     partial class frmLog
     {
@@ -202,7 +204,7 @@
             // 
             // logItemBindingSource
             // 
-            this.logItemBindingSource.DataSource = typeof(DTRMNS.LogItem);
+            this.logItemBindingSource.DataSource = typeof(LogItem);
             // 
             // EventDateTime
             // 

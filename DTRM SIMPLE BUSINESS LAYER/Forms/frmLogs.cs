@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+
 namespace DTRMNS.Forms
 {
     public partial class frmLog : Form
@@ -106,16 +108,18 @@ namespace DTRMNS.Forms
         {
             if (dgvLog.SelectedRows.Count > 0)
             {
-                LogItem log = LogItem.Reconstruct(
-                     dgvLog.SelectedRows[0].Cells["IID"].Value,
-                     dgvLog.SelectedRows[0].Cells["OrderItemText"].Value,
-                     dgvLog.SelectedRows[0].Cells["Quantity"].Value,
-                     dgvLog.SelectedRows[0].Cells["Price"].Value,
-                     dgvLog.SelectedRows[0].Cells["Reason"].Value,
-                     dgvLog.SelectedRows[0].Cells["EventDateTime"].Value,
-                     dgvLog.SelectedRows[0].Cells["ComputerName"].Value,
-                     dgvLog.SelectedRows[0].Cells["OrderContent"].Value,
-                     dgvLog.SelectedRows[0].Cells["Reference"].Value);
+                LogItem log = new LogItem()
+                {
+                    IID = dgvLog.SelectedRows[0].Cells["IID"].Value.ToString(),
+                   OrderItemText= dgvLog.SelectedRows[0].Cells["OrderItemText"].Value.ToString(),
+                   Quantity = double.Parse( dgvLog.SelectedRows[0].Cells["Quantity"].Value.ToString()),
+                   Price =double.Parse( dgvLog.SelectedRows[0].Cells["Price"].Value.ToString()),
+                   Reason = dgvLog.SelectedRows[0].Cells["Reason"].Value.ToString(),
+                   EventDateTime =DateTime.Parse(  dgvLog.SelectedRows[0].Cells["EventDateTime"].Value.ToString()),
+                  ComputerName=  dgvLog.SelectedRows[0].Cells["ComputerName"].Value.ToString(),
+                   OrderContent = dgvLog.SelectedRows[0].Cells["OrderContent"].Value.ToString(),
+                  Reference =  dgvLog.SelectedRows[0].Cells["Reference"].Value.ToString()
+            };
 
                 //string OrderContent = dgvLog.SelectedRows[0].Cells["OrderContent"].Value.ToString();
 

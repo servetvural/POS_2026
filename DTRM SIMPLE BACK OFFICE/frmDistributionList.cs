@@ -4,11 +4,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
 
 using Newtonsoft.Json;
+
+using POSLayer.Models;
 
 using PosLibrary;
 
@@ -39,9 +42,9 @@ namespace DTRMSimpleBackOffice {
                 LoadDistributions();
         }
 
-        private void btnEdit_Click(object sender, EventArgs e) {
+        private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Distribution distribution = bslayer.GetDistribution(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                Distribution distribution =await bslayer.GetDistribution(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 frmDistribution frm = new frmDistribution(bslayer, distribution);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadDistributions();
@@ -102,9 +105,9 @@ namespace DTRMSimpleBackOffice {
 
 
 
-        private void btnExportAsJson_Click(object sender, EventArgs e)
+        private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Distribution> theList = bslayer.GetDistributionList();
+            List<Distribution> theList =await bslayer.GetDistributionList();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";

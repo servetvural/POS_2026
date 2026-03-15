@@ -12,7 +12,10 @@ public partial class Distribution : BaseClass
     public string ParentMenuIID { get; set; }      = string.Empty;
     public int DisplayOrder { get; set; }
 
-
+    public Distribution()
+    {
+        
+    }
     public Distribution(string DistributionName, string PrinterIID)
     {
         this.DistributionName = DistributionName;

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+
+using POSLayer.Library;
+
 using PosLibrary;
 
 namespace DTRMNS {
@@ -36,7 +39,7 @@ namespace DTRMNS {
                 //if (blnUseSearch)
                 //    dgv.DataSource = bslayer.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
                 //else
-                    dgv.DataSource = bslayer.GetStockItemUsage(true);
+                    dgv.DataSource = bslayer.GetStockItemUsages(true);
             } else {
                 //if (blnUseSearch)
                 //    dgv.DataSource = bslayer.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
@@ -77,7 +80,7 @@ namespace DTRMNS {
             vScroll.Value = e.NewValue;
         }
 
-        private void btnPrint_Click(object sender, EventArgs e) {
+        private async void btnPrint_Click(object sender, EventArgs e) {
             if (dgv.Rows.Count > 0) {
                 trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
                 if (fsp.ShowDialog() == DialogResult.OK) {
@@ -88,7 +91,7 @@ namespace DTRMNS {
                     //else {
                         int[] arrcols = new int[] { 3, 6, bslayer.config.GetFontMaximumCharacter(bslayer.config.ReportFontSize) - 17, 8 };
                         List<int> cols = new List<int>(arrcols);
-                        bslayer.PrintDataTable(bslayer.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                        bslayer.PrintDataTable(await bslayer.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
                     //}
                 }

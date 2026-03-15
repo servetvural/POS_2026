@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+
+namespace DTRMNS {
     partial class frmDistributionSelector {
         /// <summary>
         /// Required designer variable.
@@ -128,7 +130,7 @@
             // 
             // globalTypeBindingSource
             // 
-            this.globalTypeBindingSource.DataSource = typeof(DTRMNS.Distribution);
+            this.globalTypeBindingSource.DataSource = typeof(Distribution);
             // 
             // frmDistributionSelector
             // 

@@ -1,4 +1,7 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Library;
+using POSLayer.Models;
+
+namespace DTRMNS {
     partial class frmKassaCalculator {
         /// <summary>
         /// Required designer variable.
@@ -187,7 +190,7 @@
             // 
             // bonusBindingSource
             // 
-            this.bonusBindingSource.DataSource = typeof(DTRMNS.Bonus);
+            this.bonusBindingSource.DataSource = typeof(Bonus);
             // 
             // label3
             // 
@@ -990,7 +993,7 @@
             // 
             // expenseBindingSource
             // 
-            this.expenseBindingSource.DataSource = typeof(DTRMNS.Expense);
+            this.expenseBindingSource.DataSource = typeof(Expense);
             // 
             // toolStrip1
             // 

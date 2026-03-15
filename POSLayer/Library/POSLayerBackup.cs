@@ -1,5 +1,4 @@
-﻿
-using POSLayer.Models;
+﻿using POSLayer.Models;
 
 namespace POSLayer.Library;
 

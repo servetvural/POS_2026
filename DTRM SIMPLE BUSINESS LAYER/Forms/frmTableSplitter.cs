@@ -365,7 +365,7 @@ namespace DTRMNS
 
 
 
-        private async Task btnSourceToTarget_1_Click(object sender, EventArgs e)
+        private async void btnSourceToTarget_1_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
@@ -400,7 +400,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task btnSourceToTarget_X_Click(object sender, EventArgs e)
+        private async void btnSourceToTarget_X_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
@@ -459,7 +459,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task btnSourceToTarget_ALL_Click(object sender, EventArgs e)
+        private async void btnSourceToTarget_ALL_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.items.Count == 1)
@@ -497,7 +497,7 @@ namespace DTRMNS
         }
 
 
-        private async Task btnTargetToSource_1_Click(object sender, EventArgs e)
+        private async void btnTargetToSource_1_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                 TargetTable.AttachedOrder.items.Count == 1)
@@ -536,7 +536,7 @@ namespace DTRMNS
 
         }
 
-        private async Task btnTargetToSource_X_Click(object sender, EventArgs e)
+        private async void btnTargetToSource_X_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.items.Count == 1)
@@ -597,7 +597,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task btnTargetToSource_ALL_Click(object sender, EventArgs e)
+        private async void btnTargetToSource_ALL_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.items.Count == 1)
@@ -634,7 +634,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task btnChangeTargetTableName_Click(object sender, EventArgs e)
+        private async void btnChangeTargetTableName_Click(object sender, EventArgs e)
         {
             if (odTargetTable.OrderToDisplay != null)
             {

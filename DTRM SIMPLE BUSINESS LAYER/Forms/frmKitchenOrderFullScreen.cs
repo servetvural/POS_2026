@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Models;
+
+using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class frmKitchenOrderFullScreen : Form {
@@ -19,14 +22,14 @@ namespace DTRMNS {
             LoadKitchenOrderItem();
         }
 
-        private void LoadKitchenOrderItem() {
-            GenericImage prepImage = bslayer.GetEntityButtonPrepImage(korderitem.EntityButtonIID);
+        private async void LoadKitchenOrderItem() {
+            GenericImage prepImage =await bslayer.GetEntityButtonPrepImage(korderitem.EntityButtonIID);
             if (prepImage != null) {
                 ctlkoi.PBox.Visible = true;
                 ctlkoi.ActiveLabel.Text = korderitem.ItemText;                
                 this.Text = korderitem.ItemText;
                 ctlkoi.DetailLabel.Visible = true;
-                ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage;
+                ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage.ToImage();
                 ctlkoi.DetailLabel.Text = prepImage.ExtraText;
                 ctlkoi.DetailLabel.Font = new Font("Arial", bslayer.config.Display_Kitchen_FullScreen_Font_Size, FontStyle.Regular);
                 ctlkoi.ShowFullScreen = false;

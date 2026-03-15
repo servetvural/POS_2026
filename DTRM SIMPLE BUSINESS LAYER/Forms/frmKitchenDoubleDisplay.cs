@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmKitchenDoubleDisplay : Form {
@@ -12,15 +15,15 @@ namespace DTRMNS {
             InitializeComponent();
             this.bslayer = bslayer;
         }
-        private void frmKitchenDisplay_Load(object sender, EventArgs e) {
-            ctlKitchenFirst.Initiate(bslayer, bslayer.GetFirstDisplayTypeList(),false);
+        private async void frmKitchenDisplay_Load(object sender, EventArgs e) {
+            ctlKitchenFirst.Initiate(bslayer,await bslayer.GetFirstDisplayTypeList(),false);
             ctlKitchenFirst.DisplayTypeWillBeChange += CtlKitchenFirst_DisplayTypeWillBeChange;
             ctlKitchenFirst.DisplayClock = bslayer.config.Show_Clock_in_Kitchen;
             ctlKitchenFirst.BonusControl.Visible = false;
             ctlKitchenFirst.OrderDeleted += CtlKitchenFirst_OrderDeleted;
             ctlKitchenFirst.LoadAll();
 
-            ctlKitchenSecond.Initiate(bslayer, bslayer.GetSecondDisplayTypeList(),true);
+            ctlKitchenSecond.Initiate(bslayer,await bslayer.GetSecondDisplayTypeList(),true);
             ctlKitchenSecond.DisplayTypeWillBeChange += CtlKitchenSecond_DisplayTypeWillBeChange;
             ctlKitchenSecond.OrderDeleted += CtlKitchenSecond_OrderDeleted;
             if (bslayer.config.Display_Session_Bonus) {
@@ -46,26 +49,26 @@ namespace DTRMNS {
             ctlKitchenSecond.RemoveCompletedOrderQuitely(korderIID);
         }
 
-        private void CtlKitchenFirst_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = new frmDistributionSelector(bslayer, true,bslayer.GetFirstDisplayTypeList());
+        private async void CtlKitchenFirst_DisplayTypeWillBeChange() {
+            frmDistributionSelector frm = new frmDistributionSelector(bslayer, true, await bslayer.GetFirstDisplayTypeList());
             if (frm.ShowDialog() == DialogResult.OK) {
                 List<Distribution> theList = frm.selectedDistributions;
                 if (theList.Count > 0) {
                     bslayer.config.Default_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
                     UF.SaveConfig(bslayer.config);
-                    ctlKitchenFirst.DistributionChanged(bslayer.GetFirstDisplayTypeList());
+                    ctlKitchenFirst.DistributionChanged(await bslayer.GetFirstDisplayTypeList());
                 }
             }
         }
 
-        private void CtlKitchenSecond_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = new frmDistributionSelector(bslayer, true, bslayer.GetSecondDisplayTypeList());
+        private async void CtlKitchenSecond_DisplayTypeWillBeChange() {
+            frmDistributionSelector frm = new frmDistributionSelector(bslayer, true,await bslayer.GetSecondDisplayTypeList());
             if (frm.ShowDialog() == DialogResult.OK) {
                 List<POSLayer.Models.Distribution> theList = frm.selectedDistributions;
                 if (theList.Count > 0) {
                     bslayer.config.Secondary_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
                     UF.SaveConfig(bslayer.config);
-                    ctlKitchenSecond.DistributionChanged(bslayer.GetSecondDisplayTypeList());
+                    ctlKitchenSecond.DistributionChanged(await bslayer.GetSecondDisplayTypeList());
 
                 }
             }

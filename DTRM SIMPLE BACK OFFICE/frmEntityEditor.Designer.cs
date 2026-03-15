@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
    partial class frmEntityEditor {
       /// <summary>
       /// Required designer variable.
@@ -225,7 +227,7 @@
             // 
             // globalTypeBindingSource
             // 
-            this.globalTypeBindingSource.DataSource = typeof(DTRMNS.Distribution);
+            this.globalTypeBindingSource.DataSource = typeof(Distribution);
             // 
             // label20
             // 

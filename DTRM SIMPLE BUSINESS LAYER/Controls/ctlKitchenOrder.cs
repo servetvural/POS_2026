@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
 
 using PosLibrary;
+
+using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class ctlKitchenOrder : UserControl {
@@ -75,7 +78,7 @@ namespace DTRMNS {
         }
 
 
-        private void LoadKitchenOrder() {
+        private async Task LoadKitchenOrder() {
           
             try {
                // SuspendLayout();
@@ -171,11 +174,11 @@ namespace DTRMNS {
                             step = 6;
                         } else {
                             if (blnDisplayDetails && (terminalTypeList.Find(x => x.IID == koi.DistributionIID) != null)) {
-                                GenericImage prepImage = bslayer.GetEntityButtonPrepImage(koi.EntityButtonIID);
+                                GenericImage prepImage =await bslayer.GetEntityButtonPrepImage(koi.EntityButtonIID);
                                 if (prepImage != null) {
                                     ctlkoi.PBox.Visible = true;
                                     ctlkoi.DetailLabel.Visible = true;
-                                    ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage;
+                                    ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage.ToImage();
                                     ctlkoi.DetailLabel.Text = prepImage.ExtraText;
                                     ctlkoi.DetailLabel.Font = detailFont;
                                     ctlkoi.bslayer = bslayer;
@@ -261,12 +264,12 @@ namespace DTRMNS {
         }
 
 
-        private void MarkOrderItemsAsCompletedAsRequestedQuantity() {
+        private async void MarkOrderItemsAsCompletedAsRequestedQuantity() {
             if (bslayer.config.DebugMode) 
                 bslayer.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
             korder.CompletedDateTime = DateTime.Parse(bslayer.db.GetDataTable("Select getdate()").Rows[0][0].ToString());
-            POSLayer.Models.Order relatedOrder = bslayer.GetOrder(korder.OrderIID);
+            POSLayer.Models.Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
@@ -339,24 +342,24 @@ namespace DTRMNS {
             }         
         }
 
-        private void BtnPrint_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap = bslayer.GetDefaultReceiptPrinter();  
+        private async void BtnPrint_Click(object sender, EventArgs e) {
+            ApplicationPrinter ap = await bslayer.GetDefaultReceiptPrinter();  
             if (ap == null)
                 return;
 
             bslayer.PrintForKitchen(korder, ap);
         }
 
-        private void BtnPrintAsReceipt_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap = bslayer.GetDefaultReceiptPrinter(); 
+        private async void BtnPrintAsReceipt_Click(object sender, EventArgs e) {
+            ApplicationPrinter ap =await bslayer.GetDefaultReceiptPrinter(); 
             if (ap == null)
                 return;
 
             bslayer.PrintReceipt(korder.OrderIID, ap, 1);
         }
 
-        private void BtnPrintWithDetails_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap = bslayer.GetDefaultReceiptPrinter();
+        private async void BtnPrintWithDetails_Click(object sender, EventArgs e) {
+            ApplicationPrinter ap = await bslayer.GetDefaultReceiptPrinter();
             if (ap == null)
                 return;
 

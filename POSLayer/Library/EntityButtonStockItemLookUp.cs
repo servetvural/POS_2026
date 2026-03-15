@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using POSLayer.Library;
+using POSLayer.Models;
 
-namespace POSLayer.Models;
+namespace POSLayer.Library;
 
 public partial class EntityButtonStockItemLookUp : BaseClass
 {

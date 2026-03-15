@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using PosLibrary;
 using DTRMNS;
 using System.Diagnostics;
+using POSLayer.Models;
+using System.Threading.Tasks;
+using POSLayer.Library;
 
 namespace DTRMClientNS
 {
@@ -33,7 +36,7 @@ namespace DTRMClientNS
 
             if (bslayer == null || bslayer.config == null)
             {
-                if (!ValidateConfiguration())
+                if (!ValidateConfiguration().Result)
                 {
                     Application.Exit();
                 }
@@ -45,11 +48,11 @@ namespace DTRMClientNS
                 {
                     if (bslayer != null)
                         if (bslayer.config != null)
-                            this.WindowState = bslayer.config.Lock_Screen_Window_Format;
+                            this.WindowState = (FormWindowState)bslayer.config.Lock_Screen_Window_Format;
                         else
-                            this.WindowState = UF.GetConfig().Lock_Screen_Window_Format;
+                            this.WindowState = (FormWindowState)POSLayer.Library.UF.GetConfig().Lock_Screen_Window_Format;
                     else
-                        this.WindowState = UF.GetConfig().Lock_Screen_Window_Format;
+                        this.WindowState = (FormWindowState)POSLayer.Library.UF.GetConfig().Lock_Screen_Window_Format;
                 } catch
                 {
 
@@ -102,14 +105,14 @@ namespace DTRMClientNS
             lblNotify.Refresh();
         }
 
-        private bool ValidateConfiguration()
+        private async Task<bool> ValidateConfiguration()
         {
             try
             {
-                if (UF.GetConfig() == null)
+                if (POSLayer.Library.UF.GetConfig() == null)
                 {
                     LogoBox_DoubleClick(null, null);
-                    if (UF.GetConfig() == null)
+                    if (POSLayer.Library.UF.GetConfig() == null)
                     {
                         MessageBox.Show("CONFIGURATION ERROR, PLEASE CONFIGURE THE APPLICATION FIRST.", "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Application.Exit();
@@ -118,7 +121,7 @@ namespace DTRMClientNS
                 }
 
                 DisplayMessage("VALIDATING CONFIGURATION........   ", 2);
-                DTRMConfig config = UF.GetConfig();
+                PosConfig config = POSLayer.Library.UF.GetConfig();
                 //bslayer.config = config;
                 bslayer.CustomInitialize(config);
 
@@ -133,7 +136,7 @@ namespace DTRMClientNS
                 }
                 DisplayMessage("DB SERVER IP VALID, CHECKING DB CONNECTION  .....", 2);
 
-                if (!bslayer.EstablishDatabaseConnection())
+                if (await bslayer.EstablishDatabaseConnection())
                 {
                     if (MessageBox.Show("Check Database Connection Error : \r\n" + bslayer.DBConnectionError + "\r\n\r\nExit Application??", "Database Connection Error", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                         Application.Exit();
@@ -151,7 +154,7 @@ namespace DTRMClientNS
         }
 
 
-        private void BtnLogon_Click(object sender, System.EventArgs e)
+        private async void BtnLogon_Click(object sender, System.EventArgs e)
         {
             this.TopMost = false;
            // bslayer = new DTRMSimpleBusiness();
@@ -169,7 +172,7 @@ namespace DTRMClientNS
             {
                 //if (bslayer == null || bslayer.config == null || bslayer.db == null)
                 //{
-                    if (ValidateConfiguration())
+                    if (await ValidateConfiguration())
                     {
                         //DisplayMessage("CHECKING DATABASE UPDATES.............        ", 2);
                         //bslayer.CheckAndUpdateDatabaseVersion();
@@ -218,14 +221,14 @@ namespace DTRMClientNS
             tmrSaat.Enabled = true;
         }
 
-        private void CheckUser()
+        private async void CheckUser()
         {
             User user = null;
             bslayer.EnsureRequiredUsers();
 
             if (txtUserPassword.Text.Length > 0)
             {
-                user = bslayer.GetUserByPassword(txtUserPassword.Text);
+                user =await bslayer.GetUserByPassword(txtUserPassword.Text);
                 if (user == null)
                 {
                     DisplayMessage("LOGIN FAILURE ..........      ", 2);
@@ -329,7 +332,7 @@ namespace DTRMClientNS
             frmConfig frm = new frmConfig(null);
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                if (UF.SaveConfig(frm.config))
+                if (POSLayer.Library.UF.SaveConfig(frm.config))
                 {
                     if (bslayer != null)
                         bslayer.config = frm.config;

@@ -5,6 +5,10 @@ using DTRMNS;
 using PosLibrary;
 using System.Globalization;
 using System.IO;
+using POSLayer.Models;
+using POSLayer.Library;
+using POSWinFormLayer;
+using System.Threading.Tasks;
 
 namespace DTRMSimpleBackOffice {
     /// <summary>
@@ -104,7 +108,7 @@ namespace DTRMSimpleBackOffice {
         public FrmEntityButtonsEditor(DTRMNS.DTRMSimpleBusiness bslayer,  EntityButton entityButton) {
             InitializeComponent();
             this.bslayer = bslayer;
-            this.entity = bslayer.GetJustEntity(entityButton.PEIID);
+            this.entity = bslayer.GetJustEntity(entityButton.ParentEntityIID).Result;
             this.entityButton = entityButton;
 
             this.Text = this.Text + "  -- " + entityButton.EntityButtonName;
@@ -1430,12 +1434,12 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void LoadGenericImage() {
+        private async void LoadGenericImage() {
             try {
-                gim = bslayer.GetGenericImage(entityButton.IID);
+                gim =await bslayer.GetGenericImage(entityButton.IID);
                 if (gim != null) {
                     if (gim.DisplayImage != null)
-                        pBox.BackgroundImage = gim.DisplayImage;
+                        pBox.BackgroundImage =UFWin.ByteArrayToImage( gim.DisplayImage);
                     txtExtraText.Text = gim.ExtraText;
                     txtImageFile.Text = gim.ImageFileName;
                     lblImageSize.Text = gim.ImageSizeinKB + " KB";
@@ -1474,7 +1478,7 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private void btnUpdateButtonDetails_Click(object sender, System.EventArgs e) {
+        private async void btnUpdateButtonDetails_Click(object sender, System.EventArgs e) {
             System.Globalization.CultureInfo ci = bslayer.GetCulture(bslayer.config.Terminal_Currency_Culture);
             if (entityButton != null) {
 
@@ -1496,13 +1500,13 @@ namespace DTRMSimpleBackOffice {
                 //Availability
                 entityButton.AvailableFor = 0;
                 if (!chkAvailableAll.Checked) {
-                    entityButton.AvailableFor = (chkAvailableDirect.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Direct) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInHouse.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InHouse) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableTakeAway.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.TakeAwayB) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableDelivery.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Delivery) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInternetTakeAway.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetTakeAway) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInternetDelivery.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetDelivery) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableNone.Checked ? DRNumeric.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.NoSale) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableDirect.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Direct) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInHouse.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InHouse) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableTakeAway.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.TakeAwayB) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableDelivery.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Delivery) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInternetTakeAway.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetTakeAway) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInternetDelivery.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetDelivery) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableNone.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.NoSale) : entityButton.AvailableFor);
 
                 }
                 if (chkCompulsary.Checked)
@@ -1543,8 +1547,14 @@ namespace DTRMSimpleBackOffice {
                 bslayer.SaveJustEntityButton(entityButton, entity.ParentMenuIID); // .ParentMenuIID); // bslayer.config.ActiveMenuIID);
 
                 if (pBox.BackgroundImage != null) {
-                    GenericImage gim = new GenericImage(entityButton.IID, pBox.BackgroundImage, txtExtraText.Text, txtImageFile.Text);
-                    bslayer.SaveGenericImage(gim);
+                    GenericImage gim = new GenericImage()
+                    {
+                        ReferenceIID = entityButton.IID,
+                        DisplayImage = pBox.BackgroundImage.ToByteArray(),
+                        ExtraText = txtExtraText.Text,
+                        ImageFileName = txtImageFile.Text
+                    };
+                    await bslayer.SaveGenericImage(gim);
                 }
 
 
@@ -1558,7 +1568,7 @@ namespace DTRMSimpleBackOffice {
 
         private void cmbButtonType_SelectedIndexChanged(object sender, System.EventArgs e) {
             if (entityButton != null) {
-                if (entity.entityType == EntityTypes.SpecialEntity &&
+                if (entity.EntityType == EntityTypes.SpecialEntity &&
                     cmbButtonType.SelectedIndex < 7)
                     cmbButtonType.SelectedIndex = (int)entityButton.ButtonType;
             }
@@ -1763,7 +1773,7 @@ namespace DTRMSimpleBackOffice {
             try {
                 if (entityButton.WithImage && gim != null && gim.DisplayImage != null) {
                     //GenericImage genImage = bslayer.GetGenericImage(entityButton.IID);
-                    btnSample.Image = gim.DisplayImage;
+                    btnSample.Image = UFWin.ByteArrayToImage( gim.DisplayImage);
                 } else
                     btnSample.Image = null;
 
@@ -1772,7 +1782,7 @@ namespace DTRMSimpleBackOffice {
             catch { }
 
             try {
-                btnSample.Font = new Font(entityButton.FFamily, entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle));
+                btnSample.Font = new Font(entityButton.FFamily, (float)entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle));
             }
             catch { }
         }
@@ -1781,14 +1791,14 @@ namespace DTRMSimpleBackOffice {
 
         private void btnFont_Click(object sender, EventArgs e) {
             FontDialog fd = new FontDialog {
-                Font = new Font(entityButton.FFamily, entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle))
+                Font = new Font(entityButton.FFamily, (float)entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle))
             };
             if (fd.ShowDialog() == DialogResult.OK) {
                 entityButton.FFamily = fd.Font.FontFamily.Name;
                 entityButton.FSize = fd.Font.Size;
                 entityButton.FStyle = fd.Font.Style.ToString();
                 btnFont.Text = entityButton.FFamily + "," + entityButton.FSize.ToString() + "," + entityButton.FStyle;
-                btnSample.Font = new Font(entityButton.FFamily, entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle));
+                btnSample.Font = new Font(entityButton.FFamily, (float)entityButton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entityButton.FStyle));
             }
 
 
@@ -1844,14 +1854,20 @@ namespace DTRMSimpleBackOffice {
                 Image img = Image.FromFile(dlg.FileName);
                 pBox.BackgroundImage = img;
 
-                gim = new GenericImage(entityButton.IID, img, txtExtraText.Text, finfo.Name);
+                gim = new GenericImage()
+                {
+                    ReferenceIID = entityButton.IID,
+                    DisplayImage =img.ToByteArray(),
+                    ExtraText = txtExtraText.Text,
+                    ImageFileName = finfo.Name
+                };
 
                 DisplayButton();
             }
         }
 
-        private void btnDeletePrepImage_Click(object sender, EventArgs e) {
-            bslayer.DeletePrepImage(entityButton.IID);
+        private async void btnDeletePrepImage_Click(object sender, EventArgs e) {
+            await bslayer.DeleteGenericImage(entityButton.IID);
             pBox.BackgroundImage = null;
         }
 
@@ -1866,7 +1882,7 @@ namespace DTRMSimpleBackOffice {
             if (chkWithImage.Checked) {
                 if (gim != null && gim.DisplayImage != null) {
                     try {
-                        btnSample.Image = gim.DisplayImage;
+                        btnSample.Image = UFWin.ByteArrayToImage( gim.DisplayImage);
                     } catch { }
                 } 
             } else {
@@ -1898,8 +1914,8 @@ namespace DTRMSimpleBackOffice {
             incDisplayOrder.DecrementValue();
         }
 
-        private void pBox_DoubleClick(object sender, EventArgs e) {
-            frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, bslayer.GetGenericImage(entityButton.IID));
+        private async void pBox_DoubleClick(object sender, EventArgs e) {
+            frmGenericImageEditor frm = new frmGenericImageEditor(bslayer,await bslayer.GetGenericImage(entityButton.IID));
             if (frm .ShowDialog() == DialogResult.OK) {
                 LoadGenericImage();
             }

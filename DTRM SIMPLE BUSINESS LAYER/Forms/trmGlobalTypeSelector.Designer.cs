@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+
+namespace DTRMNS {
    partial class trmDistributionSelector {
       /// <summary>
       /// Required designer variable.
@@ -88,7 +90,7 @@
             // 
             // DistributionDataConnector
             // 
-            this.DistributionDataConnector.DataSource = typeof(DTRMNS.Distribution);
+            this.DistributionDataConnector.DataSource = typeof(Distribution);
             // 
             // panel1
             // 

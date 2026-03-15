@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmSessionReports {
         /// <summary>
         /// Required designer variable.
@@ -461,7 +463,7 @@
             // 
             // orderItemBindingSource
             // 
-            this.orderItemBindingSource.DataSource = typeof(DTRMNS.OrderItem);
+            this.orderItemBindingSource.DataSource = typeof(OrderItem);
             // 
             // dgvSessionAllOrderItems
             // 

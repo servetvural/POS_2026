@@ -1,9 +1,11 @@
 ﻿using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace POSWinFormLayer;
 
-public class UFWin
+public static class UFWin
 {
     //public static Color ThemeBackColour { get; set; } = Color.Black;
     //public static Color ThemeForeColour { get; set; } = Color.White;
@@ -15,9 +17,7 @@ public class UFWin
 
     //public static string DBListConfigFileName { get; set; } = "DBConfig.xml";
     //public static string DBConfigFileName { get; set; } = "DTRMConfig.xml";
-    public UFWin()
-    {
-    }
+
 
     public static void ChangeDataGridViewZoom(DataGridView dgv)
     {
@@ -403,6 +403,63 @@ public class UFWin
     //    }
     //    return result;
     //}
+
+
+    //public static Image GetImageFromBytes(byte[] byteArray)
+    //{
+    //    if (byteArray == null || byteArray.Length == 0)
+    //        return null;
+
+    //    using (MemoryStream ms = new MemoryStream(byteArray))
+    //    {
+    //        // Image.FromStream creates a Bitmap from the stream data
+    //        return Image.FromStream(ms);
+    //    }
+    //}
+    public static System.Drawing.Image ToImage(this byte[] byteArray)
+    {
+        if (byteArray == null || byteArray.Length == 0)
+            return null;
+
+        using (MemoryStream ms = new MemoryStream(byteArray))
+        {
+            // Image.FromStream creates a Bitmap from the stream data
+            return System.Drawing.Image.FromStream(ms);
+        }
+    }
+
+    //public static byte[] ImageToByteArray(System.Drawing.Image image)
+    //{
+    //    using (var ms = new MemoryStream())
+    //    {
+    //        // Save the image to the stream in a specific format (e.g., PNG for lossless)
+    //        image.Save(ms, ImageFormat.Png);
+    //        return ms.ToArray();
+    //    }
+    //}
+    public static byte[] ToByteArray(this System.Drawing.Image image)
+    {
+        using (var ms = new MemoryStream())
+        {
+            // Save the image to the stream in a specific format (e.g., PNG for lossless)
+            image.Save(ms, ImageFormat.Png);
+            return ms.ToArray();
+        }            
+    }
+
+    /// <summary>
+    /// Multiply the width of the image with this ratio to get the height of the image
+    /// </summary>
+    public static double RatioTimesWidthForHeight(System.Drawing.Image image)
+    {
+        return (double)((double)image.Height / (double)image.Width);
+    }
+
+    public static double RatioTimesHeightForWidth(System.Drawing.Image image)
+    {
+        return (double)((double)image.Width / (double)image.Height);
+
+    }
 
 }
 

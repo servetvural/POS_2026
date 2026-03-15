@@ -1,5 +1,7 @@
 ﻿using System.Data;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
 
     public class OrdersView {

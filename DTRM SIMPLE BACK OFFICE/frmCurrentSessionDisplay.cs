@@ -9,13 +9,17 @@ using System.Media;
 using PosLibrary;
 using DTRMNS;
 
+using POSLayer.Library;
+using System.Threading.Tasks;
+using POSLayer.Models;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmCurrentSessionDisplay : Form {
         private DTRMSimpleBusiness bslayer;
         private bool blnLoading;
         private SessionData CurrentSessionData;
-        private float oldGrossSessionTotal;
-        private float oldGrossSessionTotalUncompleted;
+        private double oldGrossSessionTotal;
+        private double oldGrossSessionTotalUncompleted;
 
         private int seconds;
 
@@ -74,9 +78,9 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private void UpdateSessionLabels() {
+        private async void UpdateSessionLabels() {
             //Update session values dynamically
-            CurrentSessionData = bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID);
+            CurrentSessionData = await bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID);
             int changeCount = 0;
             
             if (CurrentSessionData != null) {
@@ -84,14 +88,14 @@ namespace DTRMSimpleBackOffice {
                     CurrentSessionData.GrossSessionTotalUncompleted != oldGrossSessionTotalUncompleted )
                 {
                     lblSessionStartDateTime.Text = CurrentSessionData.SessionStartDateTime.ToString("dd/MMM/yy ddd HH:mm");
-                    float grossSessionTotal = CurrentSessionData.GrossSessionTotal;
+                    double grossSessionTotal = CurrentSessionData.GrossSessionTotal;
                     if (grossSessionTotal != oldGrossSessionTotal)
                     {
                         oldGrossSessionTotal = grossSessionTotal;
                         changeCount++;                        
                     }
                     lblGrossTotal.Text = grossSessionTotal.ToString("c2");
-                    float grossSessionTotalUncompleted = CurrentSessionData.GrossSessionTotalUncompleted;
+                    double grossSessionTotalUncompleted = CurrentSessionData.GrossSessionTotalUncompleted;
                     if (grossSessionTotalUncompleted != oldGrossSessionTotalUncompleted)
                     {
                         oldGrossSessionTotalUncompleted = grossSessionTotalUncompleted;
@@ -117,10 +121,10 @@ namespace DTRMSimpleBackOffice {
              }
         }
 
-        private void btnPrintReceipt_Click(object sender, EventArgs e) {
+        private async void btnPrintReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Order order =await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
                     bslayer.PrintReceipt(OrderIID, frm.SelectedApplicationPrinter, 1);
@@ -128,11 +132,11 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void btnViewReceipt_Click(object sender, EventArgs e) {
+        private async void btnViewReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
-                ApplicationPrinter ap = bslayer.GetDefaultReceiptPrinter();
+                Order order = await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                ApplicationPrinter ap =await bslayer.GetDefaultReceiptPrinter();
                 if (ap == null) {
                     MessageBox.Show("No printer attached!!");
                     return;

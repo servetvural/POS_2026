@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmSingleUser : Form {
         
@@ -60,7 +63,7 @@ namespace DTRMSimpleBackOffice {
             this.Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (txtUserName.Text.Trim().Length == 0)
                 return;
             if (cmbAccessLevels.Text == "")
@@ -76,7 +79,7 @@ namespace DTRMSimpleBackOffice {
             user.UserPassword = txtPassword.Text.Trim();
             user.AccessLevel = (AccessLevels)Enum.Parse(typeof(AccessLevels), cmbAccessLevels.Text); // (AccessLevels)cmbAccessLevels.SelectedIndex;
 
-            if (bslayer.SaveUser(user)) {
+            if (await bslayer.SaveUser(user)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }           

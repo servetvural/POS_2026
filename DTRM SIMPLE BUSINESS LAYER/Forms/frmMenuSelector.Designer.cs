@@ -1,4 +1,6 @@
 ﻿
+using POSLayer.Models;
+
 namespace DTRMNS {
     partial class frmMenuSelector {
         /// <summary>
@@ -100,7 +102,7 @@ namespace DTRMNS {
             // 
             // fMenuBindingSource
             // 
-            this.fMenuBindingSource.DataSource = typeof(DTRMNS.Menu);
+            this.fMenuBindingSource.DataSource = typeof(FoodMenu);
             // 
             // frmMenuSelector
             // 

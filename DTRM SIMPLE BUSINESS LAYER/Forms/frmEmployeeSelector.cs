@@ -11,6 +11,8 @@ using DTRMNS;
 
 using POSLayer.Models;
 
+using POSWinFormLayer;
+
 namespace DTRMNS.Forms {
     public partial class frmEmployeeSelector : Form {
 
@@ -28,7 +30,7 @@ namespace DTRMNS.Forms {
             LoadEmployeeList();
         }
 
-        private void LoadEmployeeList() {
+        private async void LoadEmployeeList() {
 
         //    lvwEmployees.Items.Clear();
         //    List<Employee> theList = bslayer.GetAllEmployeeList().OrderBy(x => x.EmployeeName).ToList(); 
@@ -43,17 +45,17 @@ namespace DTRMNS.Forms {
 
         //private void LoadEmployees() {
             lvwEmployees.Items.Clear();
-            List<Employee> employees = bslayer.GetAllEmployeeList();
+            List<Employee> employees =await bslayer.GetAllEmployeeList();
 
             imgList.Images.Clear();
             foreach (Employee employee in employees) {
                 if (blnPhotos) {
-                    GenericImage gim = bslayer.GetGenericImage(employee.IID);
+                    GenericImage gim =await bslayer.GetGenericImage(employee.IID);
                     Image imgProfil = null;
                     if (gim == null) {
                         imgProfil = Properties.Resources.BlueMan32;
                     } else {
-                        imgProfil = gim.DisplayImage;
+                        imgProfil = gim.DisplayImage.ToImage();
                     }
                     imgList.Images.RemoveByKey(employee.IID);
                     imgList.Images.Add(employee.IID, imgProfil);
@@ -81,9 +83,9 @@ namespace DTRMNS.Forms {
             Close();
         }
 
-        private void btnSelect_Click(object sender, EventArgs e) {
+        private async void btnSelect_Click(object sender, EventArgs e) {
             if (lvwEmployees.SelectedItems.Count > 0) {
-                SelectedEmployee = bslayer.GetEmployee(lvwEmployees.SelectedItems[0].Tag.ToString());
+                SelectedEmployee = await bslayer.GetEmployee(lvwEmployees.SelectedItems[0].Tag.ToString());
                 this.DialogResult = DialogResult.OK;
                 Close();
             }

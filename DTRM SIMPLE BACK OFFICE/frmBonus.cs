@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
+
+using POSLayer.Library;
+using POSLayer.Models;
+
 using PosLibrary;
 
 namespace DTRMSimpleBackOffice {
@@ -58,16 +55,16 @@ namespace DTRMSimpleBackOffice {
                 txtStepValue.Value = (decimal)bonus.StepValue;
                 txtHalfStepValue.Value = (decimal)bonus.HalfStepValue;
 
-                chkMonday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Monday);
+                chkMonday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Monday);
                 
-                chkTuesday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Tuesday);
-                chkWednesday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Wednesday);
-                chkThursday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Thursday);
-                chkFriday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Friday);
-                chkSaturday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Saturday);
-                chkSunday.Checked = DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Sunday);
+                chkTuesday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Tuesday);
+                chkWednesday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Wednesday);
+                chkThursday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Thursday);
+                chkFriday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Friday);
+                chkSaturday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Saturday);
+                chkSunday.Checked = POSLayer.Library.UF.IsBitSet((int)bonus.DaysAvailable, (int)WeekDays.Sunday);
 
-                lblTest.Text = UF.GetBonusDaysAsString((int)bonus.DaysAvailable);
+                lblTest.Text = POSLayer.Library.UF.GetBonusDaysAsString((int)bonus.DaysAvailable);
 
 
                 cmbStartTimeHour.SelectedIndex = bonus.StartTime.Hours;
@@ -126,7 +123,7 @@ namespace DTRMSimpleBackOffice {
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (txtPlanName.Text.Length > 0) {
                 bonus.PlanName = txtPlanName.Text;
                 bonus.PlanDescription = txtPlanDescription.Text;
@@ -156,13 +153,13 @@ namespace DTRMSimpleBackOffice {
                 bonus.HalfStepValue = (float)txtHalfStepValue.Value;
 
                 int whichday = 0;
-                if (chkMonday.Checked) whichday= DRNumeric.SetBit(whichday, (int)WeekDays.Monday);
-                if (chkTuesday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Tuesday);
-                if (chkWednesday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Wednesday);
-                if (chkThursday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Thursday);
-                if (chkFriday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Friday);
-                if (chkSaturday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Saturday);
-                if (chkSunday.Checked) whichday = DRNumeric.SetBit(whichday, (int)WeekDays.Sunday);
+                if (chkMonday.Checked) whichday= POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Monday);
+                if (chkTuesday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Tuesday);
+                if (chkWednesday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Wednesday);
+                if (chkThursday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Thursday);
+                if (chkFriday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Friday);
+                if (chkSaturday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Saturday);
+                if (chkSunday.Checked) whichday = POSLayer.Library.UF.SetBit(whichday, (int)WeekDays.Sunday);
                 bonus.DaysAvailable = (WeekDays)whichday;
 
 
@@ -227,7 +224,7 @@ namespace DTRMSimpleBackOffice {
 
 
 
-                if (bslayer.SaveBonus(bonus)) {                    
+                if (await bslayer.SaveBonus(bonus)) {                    
 
                     this.DialogResult = DialogResult.OK;
                     Close();

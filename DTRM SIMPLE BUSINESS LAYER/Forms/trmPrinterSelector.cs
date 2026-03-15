@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
@@ -24,9 +25,9 @@ namespace DTRMNS {
          dgv.DataSource = bslayer.GetPrintersByPrinterType(PrinterType);
       }
 
-      private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+      private async void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
       {
-         SelectedPrinter = bslayer.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+         SelectedPrinter = await bslayer.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
          this.DialogResult = DialogResult.OK;
          this.Close();
       }

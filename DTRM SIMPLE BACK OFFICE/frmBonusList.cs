@@ -7,6 +7,9 @@ using DTRMNS;
 using PosLibrary;
 using Newtonsoft.Json;
 
+using POSLayer.Models;
+using System.Threading.Tasks;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmBonusList : Form {
 
@@ -22,19 +25,19 @@ namespace DTRMSimpleBackOffice {
         private void frmBonusList_Load(object sender, EventArgs e) {
             LoadBonusList();
         }
-        private void LoadBonusList () {
-            DataTable dt = bslayer.GetAllBonus();
+        private async void LoadBonusList () {
+            //DataTable dt = bslayer.GetAllBonus();
 
-            for (int i = 0; i < dt.Rows.Count; i++) {
-                int daysInteger = int.Parse(dt.Rows[i]["DaysAvailable"].ToString());
+            //for (int i = 0; i < dt.Rows.Count; i++) {
+            //    int daysInteger = int.Parse(dt.Rows[i]["DaysAvailable"].ToString());
 
-                dt.Rows[i]["DaysAvailableAsString"] = UF.GetBonusDaysAsString(daysInteger);
-            }
-            ((DataGridViewTextBoxColumn)dgv.Columns[columnName: "colDaysAvailableAsString"]).DataPropertyName = "DaysAvailableAsString";
-            dgv.DataSource = dt;
+            //    dt.Rows[i]["DaysAvailableAsString"] = UF.GetBonusDaysAsString(daysInteger);
+            //}
+            //((DataGridViewTextBoxColumn)dgv.Columns[columnName: "colDaysAvailableAsString"]).DataPropertyName = "DaysAvailableAsString";
+            //dgv.DataSource = dt;
 
-           
-            
+           dgv.DataSource =await bslayer.GetAllBonusList();
+
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
@@ -43,9 +46,9 @@ namespace DTRMSimpleBackOffice {
                 LoadBonusList();
         }
 
-        private void btnEdit_Click(object sender, EventArgs e) {
+        private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Bonus bonus = bslayer.GetBonus(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                Bonus bonus = await bslayer.GetBonus(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 frmBonus frm = new frmBonus(bslayer, bonus);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadBonusList();
@@ -73,9 +76,9 @@ namespace DTRMSimpleBackOffice {
             btnEdit_Click(null, null);
         }
 
-        private void btnExportAsJson_Click(object sender, EventArgs e)
+        private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Bonus> itemList = bslayer.GetAllBonusList();
+            List<Bonus> itemList =await bslayer.GetAllBonusList();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";

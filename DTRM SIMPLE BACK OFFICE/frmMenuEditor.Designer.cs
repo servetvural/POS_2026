@@ -1,4 +1,5 @@
-﻿using POSLayer.Models;
+﻿using POSLayer.Library;
+using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     partial class FrmMenuEditor {
@@ -813,7 +814,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityButtonStockItemLookUpBindingSource
             // 
-            this.entityButtonStockItemLookUpBindingSource.DataSource = typeof(DTRMNS.EntityButtonStockItemLookUp);
+            this.entityButtonStockItemLookUpBindingSource.DataSource = typeof(EntityButtonStockItemLookUp);
             // 
             // pnlEBPicture
             // 
@@ -1254,7 +1255,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityButtonExtendedBindingSource
             // 
-            this.entityButtonExtendedBindingSource.DataSource = typeof(DTRMNS.EntityButtonExtended);
+            this.entityButtonExtendedBindingSource.DataSource = typeof(EntityButtonExtended);
             // 
             // barEntityButton
             // 

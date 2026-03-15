@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
-namespace POSLayer.Models;
+namespace POSLayer.Views;
 
 public partial class StockItemUsage : BaseClass
 {

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Xml;
 
 namespace POSLayer.Models;
 
@@ -23,4 +25,15 @@ public partial class LogItem : BaseClass
 
 
     public double Total { get { return Price * Quantity; } }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize<LogItem>(this, new JsonSerializerOptions() { WriteIndented = true });
+    }
+
+    public string ToSimpleString()
+    {
+        return "**** " + Reason + " => " + Quantity.ToString().PadLeft(3, ' ') + "  " + OrderItemText.PadRight(20, ' ') +
+            Price.ToString("N2").PadLeft(10, ' ') + Total.ToString("N2").PadLeft(10, ' ') + "   Reference = " + Reference.PadRight(12, ' ') + Environment.NewLine;
+    }
 }

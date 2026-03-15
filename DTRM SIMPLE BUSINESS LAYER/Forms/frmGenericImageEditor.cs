@@ -1,7 +1,14 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+using POSLayer.Models;
+
+using POSWinFormLayer;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DTRMNS {
     public partial class frmGenericImageEditor : Form {
@@ -35,13 +42,13 @@ namespace DTRMNS {
                 txtImageID.Text = gim.ReferenceIID;
                 txtFileName.Text = gim.ImageFileName;
                 txtExtra.Text = gim.ExtraText;
-                pbox.Image = gim.DisplayImage;
-                txtDimensions.Text = gim.DisplayImage.PhysicalDimension.ToString();
+                pbox.Image = UFWin.ByteArrayToImage( gim.DisplayImage);
+                txtDimensions.Text = pbox.Image.PhysicalDimension.ToString();
 
-                udWidth.Value = gim.DisplayImage.Width;
-                udHeight.Value = gim.DisplayImage.Height;
+                udWidth.Value = pbox.Image.Width;
+                udHeight.Value = pbox.Image.Height;
 
-                lblRatio.Text = gim.RatioTimesWidthForHeight.ToString("n2");
+                lblRatio.Text = UFWin.RatioTimesWidthForHeight(pbox.Image).ToString("n2");
 
                 lblFileSize.Text = gim.ImageSizeinKB.ToString("#,##0") + " KB";
             }
@@ -58,7 +65,7 @@ namespace DTRMNS {
             this.Close();
         }
 
-        private void btnSaveAs_Click(object sender, EventArgs e) {
+        private async void btnSaveAs_Click(object sender, EventArgs e) {
             if (gim == null)
                 return;
             SaveFileDialog dlg = new SaveFileDialog();
@@ -67,7 +74,9 @@ namespace DTRMNS {
             dlg.FileName = gim.ImageFileName;
             if (dlg.ShowDialog() == DialogResult.OK) {
                 try {
-                    gim.DisplayImage.Save(dlg.FileName); //, ImageFormat.Jpeg);
+                    //await bslayer.SaveGenericImage(gim)
+                    File.WriteAllBytes(dlg.FileName, gim.DisplayImage);
+                    //gim.DisplayImage.Save(dlg.FileName); //, ImageFormat.Jpeg);
                     gim.ImageFileName = dlg.FileName;
                 } catch (Exception ex) {
                     MessageBox.Show(ex.Message);
@@ -75,16 +84,16 @@ namespace DTRMNS {
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (gim == null)
                 return;
 
             gim.ReferenceIID = txtImageID.Text;
             gim.ImageFileName = txtFileName.Text;
             gim.ExtraText = txtExtra.Text;
-            gim.DisplayImage = pbox.Image;
+            gim.DisplayImage = pbox.Image.ToByteArray();
 
-            if (bslayer.SaveGenericImage(gim)) {
+            if (await bslayer.SaveGenericImage(gim)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }
@@ -99,9 +108,18 @@ namespace DTRMNS {
 
             if (dlg.ShowDialog() == DialogResult.OK) {
                 FileInfo finfo = new FileInfo(dlg.FileName);
-                gim = new GenericImage("",finfo);
+                gim = LoadGenericImage(finfo);
                 LoadImage();
             }
+        }
+
+        public GenericImage LoadGenericImage(FileInfo finfo)
+        {
+            // this.ReferenceIID = ReferenceIID;
+            GenericImage gim = null;
+            gim.DisplayImage = UF.LoadBitmapNolock(finfo.FullName).ToByteArray();
+            gim.ImageFileName = finfo.Name;
+            return gim;
         }
 
         private void ViewMode_CheckedChanged(object sender, EventArgs e) {
@@ -181,7 +199,7 @@ namespace DTRMNS {
                 return;
             }
             if (cropRectangle != null) {
-                gim.DisplayImage = UF.CropImage(gim.DisplayImage, (Rectangle)cropRectangle);
+                gim.DisplayImage =UF.CropImage(pbox.Image, (Rectangle)cropRectangle).ToByteArray();
                 LoadImage();
             }
         }
@@ -190,9 +208,11 @@ namespace DTRMNS {
             if (pbox.Image == null)
                 return;
             if (chkRatio.Checked)
-                udHeight.Value = (decimal)gim.RatioTimesWidthForHeight * udWidth.Value;
+            {                     
+                udHeight.Value = (decimal)UFWin.RatioTimesWidthForHeight(pbox.Image) * udWidth.Value;
+            }
 
-            gim.DisplayImage = UF.ReSizeImageTo(gim.DisplayImage, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked);
+            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 
@@ -200,8 +220,10 @@ namespace DTRMNS {
             if (pbox.Image == null)
                 return;
             if (chkRatio.Checked)
-                udWidth.Value = (decimal)gim.RatioTimesHeightForWidth * udHeight.Value;
-            gim.DisplayImage = UF.ReSizeImageTo(gim.DisplayImage, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked);
+            {                       
+                udWidth.Value = (decimal)UFWin.RatioTimesHeightForWidth(pbox.Image) * udHeight.Value;
+            }
+            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 
@@ -224,7 +246,7 @@ namespace DTRMNS {
         private void btnApplyResize_Click(object sender, EventArgs e) {
             if (gim == null)
                 return;
-            gim.DisplayImage = UF.ReSizeImageTo(gim.DisplayImage, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked);
+            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 
@@ -270,8 +292,8 @@ namespace DTRMNS {
         }
 
         private bool IsValidCropping() {
-            return !(x > gim.DisplayImage.Width || y > gim.DisplayImage.Height ||
-                x + w > gim.DisplayImage.Width || y + h > gim.DisplayImage.Height);
+            return !(x > pbox.Image.Width || y > pbox.Image.Height ||
+                x + w > pbox.Image.Width || y + h > pbox.Image.Height);
         }
 
     }

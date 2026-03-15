@@ -1,6 +1,8 @@
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+using POSLayer.Models;
+
 namespace DTRMNS {
 	/// <summary>
 	/// Summary description for frmSelectPrinter.
@@ -132,8 +134,8 @@ namespace DTRMNS {
       }
 		#endregion
 
-        private void LoadPrinters() {
-            List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList();
+        private async void LoadPrinters() {
+            List<ApplicationPrinter> PrinterList = await bslayer.GetReceiptPrinterList();
 
             ListViewItem lvi;
             ApplicationPrinter ap;

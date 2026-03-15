@@ -135,16 +135,4 @@ public partial class EntityButton : BaseClass
     }
 }
 
-public class EntityButtonSearchResult
-{
-    public string IID { get; set; }
-    public string EntityButtonName { get; set; }
-    public string EntityName { get; set; }
-    public BImage DisplayImage { get; set; }
-
-    public EntityButtonSearchResult()
-    {
-
-    }
-}
 

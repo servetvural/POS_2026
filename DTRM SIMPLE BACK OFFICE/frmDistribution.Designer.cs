@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmDistribution {
         /// <summary>
         /// Required designer variable.
@@ -97,7 +99,7 @@
             // 
             // applicationPrinterBindingSource
             // 
-            this.applicationPrinterBindingSource.DataSource = typeof(DTRMNS.ApplicationPrinter);
+            this.applicationPrinterBindingSource.DataSource = typeof(ApplicationPrinter);
             // 
             // label4
             // 

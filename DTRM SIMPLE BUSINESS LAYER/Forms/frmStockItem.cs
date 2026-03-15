@@ -5,6 +5,8 @@ using System.IO;
 
 using POSLayer.Models;
 using POSLayer.Library;
+using System.Threading.Tasks;
+using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class frmStockItem : Form {
@@ -39,7 +41,7 @@ namespace DTRMNS {
                 cmbOrderType.Items.Add(((QuantityTypes)i).ToString());                
             }
         }
-        private void LoadStockItem() {
+        private async void LoadStockItem() {
             txtStockName.Text = stockItem.StockName;
             cmbQuantityType.SelectedIndex = (int)stockItem.QuantityType;
             cmbOrderType.SelectedIndex = (int)stockItem.OrderType;
@@ -53,8 +55,8 @@ namespace DTRMNS {
             } catch { }
 
             try {
-                gim = bslayer.GetGenericImage(stockItem.IID);
-                pBox.BackgroundImage = gim?.DisplayImage;
+                gim =await bslayer.GetGenericImage(stockItem.IID);
+                pBox.BackgroundImage = gim?.DisplayImage.ToImage();
                 txtImageFile.Text = gim?.ImageFileName;
             } catch (Exception ex) {
                 string str = ex.Message;
@@ -68,7 +70,7 @@ namespace DTRMNS {
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (txtStockName.Text.Length > 0) {
                 stockItem.StockName = txtStockName.Text;
                 stockItem.QuantityType = (QuantityTypes)cmbQuantityType.SelectedIndex;
@@ -77,8 +79,14 @@ namespace DTRMNS {
                 stockItem.SupplierIID = cmbSupplier.SelectedValue.ToString();
                 if (bslayer.SaveStockItem(stockItem)) {
                     if (pBox.BackgroundImage != null) {
-                        GenericImage gim = new GenericImage(stockItem.IID, pBox.BackgroundImage, stockItem.StockName , txtImageFile.Text);
-                        bslayer.SaveGenericImage(gim);
+                        GenericImage gim = new GenericImage()
+                        {
+                            ReferenceIID = stockItem.IID,
+                            DisplayImage = pBox.BackgroundImage.ToByteArray(),
+                            ExtraText = stockItem.StockName,
+                            ImageFileName = txtImageFile.Text
+                        };
+                       await bslayer.SaveGenericImage(gim);
                     }
                     this.DialogResult = DialogResult.OK;
                     Close();
@@ -151,14 +159,20 @@ namespace DTRMNS {
                 Image img = Image.FromFile(dlg.FileName);
                 pBox.BackgroundImage = img;
 
-                gim = new GenericImage(stockItem.IID, img, stockItem.StockName , finfo.Name);
+                gim = new GenericImage()
+                {
+                    ReferenceIID = stockItem.IID,
+                    DisplayImage = img.ToByteArray(), 
+                    ExtraText = stockItem.StockName, 
+                    ImageFileName = finfo.Name
+                };
 
                 //DisplayButton();
             }
         }
 
-        private void btnDeleteImage_Click(object sender, EventArgs e) {
-            bslayer.DeletePrepImage(stockItem.IID);
+        private async void btnDeleteImage_Click(object sender, EventArgs e) {
+           await bslayer.DeleteGenericImage(stockItem.IID);
             pBox.BackgroundImage = null;
         }
 

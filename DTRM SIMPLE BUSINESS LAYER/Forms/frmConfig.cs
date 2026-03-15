@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
@@ -9,6 +10,8 @@ using POSLayer.Models;
 
 using PosLibrary;
 using PosLibrary.DBSpace;
+
+using POSWinFormLayer;
 
 namespace DTRMNS
 {
@@ -737,14 +740,14 @@ namespace DTRMNS
             }
         }
 
-        private void LoadLogoImages()
+        private async void LoadLogoImages()
         {
-            GenericImage gim1 = bslayer.GetGenericImage("Logo1");
+            GenericImage gim1 =await bslayer.GetGenericImage("Logo1");
             if (gim1 != null)
-                pBoxLogo1.Image = gim1.DisplayImage;
-            GenericImage gim2 = bslayer.GetGenericImage("Logo2");
+                pBoxLogo1.Image = gim1.DisplayImage.ToImage();
+            GenericImage gim2 =await bslayer.GetGenericImage("Logo2");
             if (gim2 != null)
-                pBoxLogo2.Image = gim2.DisplayImage;
+                pBoxLogo2.Image = gim2.DisplayImage.ToImage();
         }
         private void SaveCompanyDetails()
         {
@@ -856,7 +859,7 @@ namespace DTRMNS
             frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo1");
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                pBoxLogo1.Image = frm.gim.DisplayImage;
+                pBoxLogo1.Image =UFWin.ByteArrayToImage( frm.gim.DisplayImage);
             }
         }
 
@@ -865,20 +868,20 @@ namespace DTRMNS
             frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo2");
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                pBoxLogo2.Image = frm.gim.DisplayImage;
+                pBoxLogo2.Image = UFWin.ByteArrayToImage( frm.gim.DisplayImage);
             }
         }
 
-        private void btnDeleteLogo1_Click(object sender, EventArgs e)
+        private async void btnDeleteLogo1_Click(object sender, EventArgs e)
         {
-            bslayer.DeletePrepImage("Logo1");
+           await bslayer.DeleteGenericImage("Logo1");
             pBoxLogo1.Image = null;
             LoadLogoImages();
         }
 
-        private void btnDeleteLogo2_Click(object sender, EventArgs e)
+        private async void btnDeleteLogo2_Click(object sender, EventArgs e)
         {
-            bslayer.DeletePrepImage("Logo2");
+          await  bslayer.DeleteGenericImage("Logo2");
             pBoxLogo2.Image = null;
             LoadLogoImages();
         }

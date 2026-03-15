@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+
+namespace DTRMNS {
     partial class ctlPrep {
         /// <summary> 
         /// Required designer variable.
@@ -113,7 +115,7 @@
             // 
             // kitchenOrderItemBindingSource
             // 
-            this.kitchenOrderItemBindingSource.DataSource = typeof(DTRMNS.KitchenOrderItem);
+            this.kitchenOrderItemBindingSource.DataSource = typeof(KitchenOrderItem);
             // 
             // iIDDataGridViewTextBoxColumn
             // 

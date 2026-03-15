@@ -6,6 +6,8 @@ using PosLibrary;
 using POSLayer.Library;
 using POSLayer.Models;
 
+using POSWinFormLayer;
+
 namespace DTRMNS {
     /// <summary>
     /// Summary description for EntityTemplateItem.
@@ -47,7 +49,7 @@ namespace DTRMNS {
 
             
             try {
-                this.Font = new Font(entitybutton.FFamily, entitybutton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entitybutton.FStyle));
+                this.Font = new Font(entitybutton.FFamily, (float)entitybutton.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entitybutton.FStyle));
             }
             catch {
             }
@@ -63,7 +65,7 @@ namespace DTRMNS {
             FlatAppearance.BorderSize = 0;
             try {
                 if (entitybutton.WithImage) {
-                    this.Image = bs.GetImageFromDatabase(entitybutton.IID); //   Image.FromFile(entitybutton.ImageFileName);
+                    this.Image = UFWin.ByteArrayToImage( bs.GetGenericImage(entitybutton.IID).Result.DisplayImage); //   Image.FromFile(entitybutton.ImageFileName);
                     this.ImageAlign = ContentAlignment.TopCenter;
                     this.TextAlign = ContentAlignment.BottomCenter;
                 }
@@ -124,7 +126,7 @@ namespace DTRMNS {
             oiNew.OrderItemText = geb.PrintLabel;
             oiNew.DistributionIID = geb.entitybutton.DistributionIID; //geb.ParentUIE.entity.DistributionIID;
             oiNew.ItemType = OrderItemTypes.NormalOrderItem;
-            oiNew.dorder = geb.entitybutton.DisplayOrder;
+            oiNew.DisplayOrder = geb.entitybutton.DisplayOrder;
             oiNew.EntityName = geb.ParentUIE.entity.EntityName;
             oiNew.EntityDisplayOrder = geb.ParentUIE.entity.DisplayOrder;
             oiNew.TaxPercent = bslayer.GetEBTaxPercent(geb.entitybutton);
@@ -244,7 +246,7 @@ namespace DTRMNS {
                         break;
                 }
 
-                bslayer.AttachedOrder.AddOrderItem(geb.ParentUIE.IID, ShortGuid.NewDateBasedGuid2(), 1,
+                bslayer.AttachedOrder.AddOrderItem(geb.ParentUIE.IID, POSLayer.Library.ShortGuid.NewDateBasedGuid2(), 1,
                    exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.entity.DistributionIID,
                     UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.DisplayOrder, geb.ParentUIE.entity.EntityName,
                    geb.ParentUIE.entity.DisplayOrder, bslayer.GetEBTaxPercent(geb.entitybutton));

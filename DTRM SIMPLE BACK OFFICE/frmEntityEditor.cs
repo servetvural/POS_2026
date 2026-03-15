@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using DTRMNS;
 
+using POSLayer.Library;
+using POSLayer.Models;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmEntityEditor : Form {
         private DTRMSimpleBusiness bslayer;
@@ -45,7 +48,7 @@ namespace DTRMSimpleBackOffice {
                 incHeight.Value = en.ButtonHeight;
 
 
-                cmbEntityType.SelectedIndex = (int)en.entityType;
+                cmbEntityType.SelectedIndex = (int)en.EntityType;
                 try {
                     cmbDistribution.SelectedValue = en.DistributionIID;
                 }
@@ -55,7 +58,6 @@ namespace DTRMSimpleBackOffice {
                 incDisplayOrder.Text = en.DisplayOrder.ToString();
             }
         }
-
 
         private void btnEntityPanelColor_Click(object sender, EventArgs e) {
             ColorDialog cdlg = new ColorDialog();
@@ -77,7 +79,7 @@ namespace DTRMSimpleBackOffice {
                 en.ButtonWidth = incWidth.Value;
                 en.ButtonHeight = incHeight.Value;
                 //en.TaxPercent = float.Parse(txtTaxPercent.Text, bslayer.GetDBCulture());
-                en.entityType = (EntityTypes)cmbEntityType.SelectedIndex;
+                en.EntityType = (EntityTypes)cmbEntityType.SelectedIndex;
 
                 if (cmbDistribution.SelectedIndex < 0) {
                     MessageBox.Show("Printable Category must be supplied!");
@@ -95,7 +97,7 @@ namespace DTRMSimpleBackOffice {
 
         private void btnFont_Click(object sender, EventArgs e) {
             FontDialog fd = new FontDialog();
-            fd.Font = new Font(en.FFamily, en.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), en.FStyle));
+            fd.Font = new Font(en.FFamily, (float)en.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), en.FStyle));
             if (fd.ShowDialog() == DialogResult.OK) {
                 en.FFamily = fd.Font.FontFamily.Name;
                 en.FSize = fd.Font.Size;
@@ -103,12 +105,10 @@ namespace DTRMSimpleBackOffice {
                 btnFont.Text = en.FFamily + "," + en.FSize.ToString() +"," + en.FStyle;
             }
         }
-
         
         private void txtEntityName_Click(object sender, EventArgs e) {
             txtEntityName.SelectAll();
         }
-
        
         private void SetTaxRate(float rate) {
             foreach (EntityButton btn in en.Buttons) {
@@ -125,9 +125,7 @@ namespace DTRMSimpleBackOffice {
             cdlg.Color = ((Button)sender).BackColor;
             cdlg.ShowDialog();
             ((Button)sender).BackColor = cdlg.Color;
-            en.ForeColour = cdlg.Color.ToArgb();
-
-            
+            en.ForeColour = cdlg.Color.ToArgb();             
         }
 
         private void btnForceDistributionToAllButtons_Click(object sender, EventArgs e) {

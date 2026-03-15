@@ -11,6 +11,9 @@ using DTRMNS;
 using PosLibrary;
 using PosLibrary.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
+using System.Threading.Tasks;
+using POSLayer.Library;
+using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionReports : Form {
@@ -63,7 +66,7 @@ namespace DTRMSimpleBackOffice {
             if (InvokeRequired)
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else {
-                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
+                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
             }
         }
 
@@ -144,11 +147,11 @@ namespace DTRMSimpleBackOffice {
         }
         #endregion
 
-        private void btnEnsureSessionData_Click(object sender, EventArgs e) {
+        private async void btnEnsureSessionData_Click(object sender, EventArgs e) {
             if (dgvDatabase.SelectedRows.Count > 0) {
                 //List<string> SessionIIDList = new List<string>();
                 for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++) {
-                    bslayer.SaveSessionData(dgvDatabase.SelectedRows[i].Cells["dbIID"].Value.ToString());
+                   await bslayer.SaveSessionData(dgvDatabase.SelectedRows[i].Cells["dbIID"].Value.ToString());
                 }
                 LoadDBSessions();
                 MessageBox.Show("Completed");
@@ -400,7 +403,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         #region ARCHIVE SESSIONS TO SESSIONS DIRECTORY
         private void btnArchiveSessions_Click(object sender, EventArgs e) {
 
-            string directoryPath = DRFile.GetApplicationPath() + UF.SessionDirName;
+            string directoryPath = DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName;
 
             string[] SessionIIDList = new string[dgvDatabase.SelectedRows.Count];
             for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++) {
@@ -584,25 +587,25 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             LoadDBSessions();
         }
 
-        private void btnDuplicateOrders_Click(object sender, EventArgs e)
+        private async void btnDuplicateOrders_Click(object sender, EventArgs e)
         {
             Random rand = new Random();            
             for (int i=0; i < dgvOrders.SelectedRows.Count;i++)
             {
                 string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-                bslayer.SaveOrder(bslayer.GetOrder(orderIID).Duplicate(rand.Next(300, 1800)));
+               await bslayer.SaveOrder(bslayer.GetOrder(orderIID).Result.Duplicate(rand.Next(300, 1800)));
             }
             LoadOrders();
         }
 
-        private void btnDeleteOrder_Click(object sender, EventArgs e)
+        private async void btnDeleteOrder_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
             {
                 string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
                 string Payment = dgvOrders.SelectedRows[i].Cells["colPaymentMethod"].Value.ToString();
                 if (Payment == "1")
-                    bslayer.DeleteOrder(orderIID);
+                  await  bslayer.DeleteOrder(orderIID);
             }
             LoadOrders();
         }
@@ -657,12 +660,12 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             }
         }
 
-        private void btnAddOrderItem_Click(object sender, EventArgs e) {
+        private async void btnAddOrderItem_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string orderIID = dgvOrders.SelectedRows[0].Cells["colOrderIID"].Value.ToString();
                 frmEntityButtonSelector frm = new frmEntityButtonSelector(bslayer, bslayer.ActiveMenu.IID);
                 if (frm.ShowDialog() == DialogResult.OK) {
-                    Order order = bslayer.GetOrder(orderIID);
+                    Order order =await bslayer.GetOrder(orderIID);
                     for (int i = 0; i < frm.SelectedEntiyButtonIIDList.Count; i++) {
                         bslayer.DirectCreateTopOrderItemForOrder(order, frm.SelectedEntiyButtonIIDList[i] , true);
                     }
@@ -766,13 +769,13 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                 btnDeleteItem.Visible = pnl3661.Visible = blnShowHide;
         }
 
-        private void btnChangePaymentMethodForOrder_Click(object sender, EventArgs e) {
+        private async void btnChangePaymentMethodForOrder_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 frmPaymentType frm = new frmPaymentType();
                 if (frm.ShowDialog() == DialogResult.OK) {
                     for (int i = 0; i < dgvOrders.SelectedRows.Count; i++) {
                         string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-                        Order order = bslayer.GetOrder(orderIID);
+                        Order order =await bslayer.GetOrder(orderIID);
                         order.Payment = frm.SelectedPaymentMethod;
                         bslayer.SaveOrder(order);
                     }

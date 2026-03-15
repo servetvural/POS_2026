@@ -179,6 +179,7 @@
     <Compile Remove="Classes\EntityButtonStockItemRecipe.cs" />
     <Compile Remove="Classes\EntityView.cs" />
     <Compile Remove="Classes\Expense.cs" />
+    <Compile Remove="Classes\GenericImage.cs" />
     <Compile Remove="Classes\KitchenOrder Classes.cs" />
     <Compile Remove="Classes\LogItem.cs" />
     <Compile Remove="Classes\Menu.cs" />

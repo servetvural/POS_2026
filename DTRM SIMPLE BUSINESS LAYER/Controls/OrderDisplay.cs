@@ -694,7 +694,7 @@ namespace DTRMNS
 
 
                 arr = new String[5]{oi.IID, oi.Quantity.ToString("f0"),
-                                        oi.OrderItemText + " (" + bslayer.GetDistribution(oi.DistributionIID).ShortName + ")" ,
+                                        oi.OrderItemText + " (" + bslayer.GetDistribution(oi.DistributionIID).Result.ShortName + ")" ,
                                          oi.Total.ToString("c"),strCompletedQuantity};
 
                 ListViewItem toplvi = new ListViewItem(arr);
@@ -856,7 +856,7 @@ namespace DTRMNS
 
 
 
-        private async Task btnDeleteItem_Click(object sender, EventArgs e)
+        private async void btnDeleteItem_Click(object sender, EventArgs e)
         {
             if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
                 return;
@@ -896,7 +896,15 @@ namespace DTRMNS
                             Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
                             if (oldOrder != null)
                             {
-                                bslayer.SaveLogItem(new LogItem(oi, oi.Quantity, oldOrder.ToSimpleString(), "Deleted", bslayer.config.Terminal_Name, bslayer.AttachedOrder.Reference));
+                                bslayer.SaveLogItem(new LogItem()
+                                {
+                                    OrderItemText = oi.OrderItemText,
+                                    Quantity = oi.Quantity,
+                                    OrderContent = oldOrder.ToSimpleString(),
+                                    Reason = "Deleted",
+                                    ComputerName = bslayer.config.Terminal_Name,
+                                    Reference = bslayer.AttachedOrder.Reference
+                                });
                             }
                         } catch (Exception ex)
                         {
@@ -916,7 +924,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task btnMinusOne_Click(object sender, EventArgs e)
+        private async void btnMinusOne_Click(object sender, EventArgs e)
         {
             try
             {

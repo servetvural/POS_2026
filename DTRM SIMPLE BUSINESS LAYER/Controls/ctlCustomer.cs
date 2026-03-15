@@ -748,7 +748,7 @@ namespace DTRMNS {
             }
 
             if (bslayer.AttachedOrder.CustomerIID == null || bslayer.AttachedOrder.CustomerIID == "")
-                bslayer.AttachedOrder.CustomerIID = ShortGuid.NewGuid().ToString();
+                bslayer.AttachedOrder.CustomerIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
 
             this.bslayer.AttachedOrder.CName = txtName.Text;
             this.bslayer.AttachedOrder.Buzzer = txtBuzzer.Text;
@@ -832,10 +832,10 @@ namespace DTRMNS {
             //make sure first pcode has data
             txtPostCode2.Enabled = (txtPostCode1.Text.Trim() != "");
         }
-        private void btnSelect_Click(object sender, EventArgs e) {
+        private async void btnSelect_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 string SelectedCustomerIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                bslayer.CustomerDetailsToOrder(bslayer.GetCustomer(SelectedCustomerIID));
+                bslayer.CustomerDetailsToOrder(await bslayer.GetCustomer(SelectedCustomerIID));
                 LoadSearchResults();
             }
         }

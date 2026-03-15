@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmEmployeeList {
         /// <summary>
         /// Required designer variable.
@@ -269,7 +271,7 @@
             // 
             // employeeBindingSource
             // 
-            this.employeeBindingSource.DataSource = typeof(DTRMNS.Employee);
+            this.employeeBindingSource.DataSource = typeof(Employee);
             // 
             // frmEmployeeList
             // 

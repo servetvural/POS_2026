@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
+
+using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmUserEditor : Form {
@@ -41,17 +44,17 @@ namespace DTRMSimpleBackOffice {
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadUsers();
         }
-        private void btnEditUser_Click(object sender, System.EventArgs e) {
+        private async void btnEditUser_Click(object sender, System.EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                User user = bslayer.GetUser(GetUserIID());
+                User user =await bslayer.GetUser(GetUserIID());
                 frmSingleUser frm = new frmSingleUser(bslayer, user);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadUsers();
             }
         }
-        private void btnDeleteUser_Click(object sender, System.EventArgs e) {
+        private async void btnDeleteUser_Click(object sender, System.EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                bslayer.DeleteUser(GetUserIID());
+               await bslayer.DeleteUser(GetUserIID());
                 LoadUsers();
             }
         }

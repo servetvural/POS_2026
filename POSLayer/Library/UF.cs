@@ -4,7 +4,7 @@ using POSLayer.Models;
 
 namespace POSLayer.Library;
 
-public class UF
+public static class UF
 {
     public static Color ThemeBackColour { get; set; } = Color.Black;
     public static Color ThemeForeColour { get; set; } = Color.White;
@@ -16,9 +16,7 @@ public class UF
 
     public static string DBListConfigFileName { get; set; } = "DBConfig.xml";
     public static string DBConfigFileName { get; set; } = "DTRMConfig.xml";
-    public UF()
-    {
-    }
+   
 
     //public static void ChangeDataGridViewZoom(DataGridView dgv)
     //{
@@ -71,6 +69,17 @@ public class UF
             }
             return true;
         } catch
+        {
+            return false;
+        }
+    }
+    public static bool SaveByteArrayToFile(string fullpath,  byte[] bytes)
+    {
+        try
+        {
+            File.WriteAllBytes(fullpath, bytes);
+            return true;
+        }   catch
         {
             return false;
         }
@@ -427,4 +436,51 @@ public class UF
         return datetime.Year + "/" + datetime.Month + "/" + datetime.Day + " " + datetime.Hour + ":" + datetime.Minute + ":" + datetime.Second;
     }
 
+
+    /// <summary>
+    /// Checks if a collection is null or contains no elements.
+    /// </summary>
+    public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
+    {
+        return source == null || !source.Any();
+    }
+
+    #region DRNumeric functions
+    public static float Round2(float val, decimal howmuch, bool down)
+    {
+        decimal given = (decimal)val;
+        decimal lover = Math.Round(given, 1);
+        if (down)
+            return (float)lover;
+        else
+        {
+            if (given > lover)
+                return (float)(lover + howmuch);
+            else
+                return (float)lover;
+        }
+    }
+
+    public static bool IsBitSet(int CombinedNumber, int BitValue)
+    {
+        if (BitValue == 0)
+        {
+            if (CombinedNumber == 0)
+                return true;
+            else
+                return false;
+        }
+        return ((CombinedNumber & BitValue) == BitValue);
+    }
+    public static int SetBit(int CombinedNumber, int BitValue)
+    {
+        CombinedNumber |= BitValue;
+        return CombinedNumber;
+    }
+    public static int UnSetBit(int CombinedNumber, int BitValue)
+    {
+        CombinedNumber &= CombinedNumber - BitValue;
+        return CombinedNumber;
+    }
+    #endregion
 }

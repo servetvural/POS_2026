@@ -13,7 +13,10 @@ public partial class User : BaseClass
 
     public POSLayer.Library.AccessLevels AccessLevel { get; set; }   = AccessLevels.User;
 
-
+    public User()
+    {
+        
+    }
     public User(string UserName, string UserPassword, AccessLevels AccessLevel)
     {
         this.UserName = UserName;

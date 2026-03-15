@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Models;
+
+namespace DTRMNS {
     partial class frmSupplierList {
         /// <summary>
         /// Required designer variable.
@@ -145,7 +147,7 @@
             // 
             // supplierBindingSource
             // 
-            this.supplierBindingSource.DataSource = typeof(DTRMNS.Supplier);
+            this.supplierBindingSource.DataSource = typeof(Supplier);
             // 
             // panel1
             // 

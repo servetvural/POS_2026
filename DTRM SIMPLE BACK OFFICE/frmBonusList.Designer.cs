@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Models;
+
+namespace DTRMSimpleBackOffice {
     partial class frmBonusList {
         /// <summary>
         /// Required designer variable.
@@ -530,7 +532,7 @@
             // 
             // bonusBindingSource
             // 
-            this.bonusBindingSource.DataSource = typeof(DTRMNS.Bonus);
+            this.bonusBindingSource.DataSource = typeof(Bonus);
             // 
             // dataGridViewTextBoxColumn1
             // 

@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Views;
+using System.Threading.Tasks;
+using POSWinFormLayer;
 
 namespace DTRMNS {
     public class ReportGenerator {
@@ -44,7 +47,8 @@ namespace DTRMNS {
 
         public Image Logo1;
 
-        private DataTable dtStockUsage;
+        private IEnumerable<StockItemUsage> stockUsages;
+       // private DataTable dtStockUsage;
         private string StockSupplierName;
 
         private POSLayer.Models.ApplicationPrinter aPrinter;
@@ -173,8 +177,8 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public bool PrintLateSessionReport( string SessionIID, ReportFormatTypes reportFormat) {
-            session = bslayer.GetSessionDataDynamic(SessionIID);
+        public async Task<bool> PrintLateSessionReport( string SessionIID, ReportFormatTypes reportFormat) {
+            session =await bslayer.GetSessionDataDynamic(SessionIID);
             report = bslayer.GetReport(reportFormat);
             blnLateReport = true;
            
@@ -197,8 +201,8 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public bool PrintLateSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
-            session = bslayer.GetSessionDataDynamic(SessionIID);
+        public async Task<bool> PrintLateSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
+            session =await bslayer.GetSessionDataDynamic(SessionIID);
             report = bslayer.GetReport(reportFormat);
             blnSpecialSessionDirectory = true;
             this.SessionDirectory = SessionDirectory;
@@ -217,10 +221,10 @@ namespace DTRMNS {
             }
         }
 
-        public bool PrintSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
+        public async Task<bool> PrintSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
             blnSpecialSessionDirectory = true;
             this.SessionDirectory = SessionDirectory;
-            return PrintSessionReport(SessionIID, reportFormat);
+            return await PrintSessionReport(SessionIID, reportFormat);
         }
 
 
@@ -230,9 +234,9 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public bool PrintSessionReport(string SessionIID, ReportFormatTypes reportFormat) {
+        public async Task<bool> PrintSessionReport(string SessionIID, ReportFormatTypes reportFormat) {
 
-            session = bslayer.GetSessionDataDynamic(SessionIID);
+            session =await bslayer.GetSessionDataDynamic(SessionIID);
             bool blnCurrentSession = session.SessionIID == bslayer.GetCurrentSessionIID();
             report = bslayer.GetReport(reportFormat);
             ZForcedLabel:
@@ -282,12 +286,12 @@ namespace DTRMNS {
 
                         //Now prepare current session to be archive
                         if (session.SessionIID == bslayer.luv.CurrentSessionIID) {
-                            bslayer.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
+                            await bslayer.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
                         }
                     }
 
                     if (blnCurrentSession && (report.ReportType == ReportFormatTypes.ZReport)) {
-                        session = bslayer.GetSessionDataDynamic(session.SessionIID);
+                        session =await bslayer.GetSessionDataDynamic(session.SessionIID);
                         bslayer.SaveSessionData(session);
                     }
 
@@ -305,7 +309,7 @@ namespace DTRMNS {
                         }
                         //if z report is forced check here
                         if (report.ReportType == ReportFormatTypes.XReport ) {
-                            session = bslayer.GetSessionDataDynamic(session.SessionIID);
+                            session =await bslayer.GetSessionDataDynamic(session.SessionIID);
 
                             if (bslayer.Is_Z_ReportTimeNow(session)) {
                                 //now prepare for forced Z report
@@ -399,7 +403,7 @@ namespace DTRMNS {
 
             //Now Archive Session if required
             if (session != null && report.ReportType == ReportFormatTypes.ZReport && bslayer.config.Z_Archive_Always) {   
-                if (session.SessionIID != bslayer.GetLatestSession().SessionIID) {
+                if (session.SessionIID != bslayer.GetLatestSession().Result.SessionIID) {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
                         bslayer.ArchiveSessionToDirectory(SessionDirectory, session.SessionIID, true);
                     else
@@ -446,8 +450,8 @@ namespace DTRMNS {
             DrawReceipt();
             Reset();
         }
-        private void DrawReceipt() {
-            Order order = bslayer.GetOrder(orderIID);
+        private async void DrawReceipt() {
+            Order order = await bslayer.GetOrder(orderIID);
 
             DrawDoubleLine();
             DrawText(centeredString("RECEIPT" + 
@@ -470,7 +474,7 @@ namespace DTRMNS {
                     DrawText("Cust.Name :" + order.CName);
                     DrawText("Tel : " + order.Tel);
                     DrawText("Address : " + order.Address);
-                    DrawText("Postcode : " + order.PostCode);
+                    DrawText("Postcode : " + order.Postcode);
                     break;
                 case OrderTypes.InHouse:
                     DrawText("Waiter: " + order.UserName);
@@ -539,7 +543,7 @@ namespace DTRMNS {
             VerticalSpace(1);
 
             if (bslayer.config.ShowTaxOnReceipts) {
-                foreach(KeyValuePair<float,float> kvp in taxlist) {
+                foreach(KeyValuePair<double,double> kvp in taxlist) {
                     DrawText(("Tax " + String.Format("{0,2:N0} %",kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
@@ -698,9 +702,9 @@ namespace DTRMNS {
         #endregion
 
         #region STOCK uSAGE
-        public bool PrintStockUsage(DataTable dt, string StockSupplierName) {
+        public bool PrintStockUsage(IEnumerable<StockItemUsage> usages, string StockSupplierName) {
             try {
-                dtStockUsage = dt;
+                stockUsages = usages;
                 this.StockSupplierName = StockSupplierName;
                 
                 if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
@@ -735,15 +739,15 @@ namespace DTRMNS {
 
             DrawText(centeredString(DateTime.Now.ToString("dd /MMM HH:mm")));
             DrawDoubleLine();
-            
-            for (int i = 0; i < dtStockUsage.Rows.Count; i++) {
-                StockItemUsage item = new StockItemUsage(dtStockUsage.Rows[i]);
+
+            foreach (var item in stockUsages)
+            {
                 if (blnSupplier)
                     DrawText(string.Format("{0,2:N0} {1,-5} {2,-21}",
                                         item.OrderableQuantity,
                                         SubStr(item.OrderableType.ToString(), 5),
                                         SubStr(item.StockName, 27)));
-                
+
                 else
                     DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
                            item.OrderableQuantity,
@@ -752,7 +756,24 @@ namespace DTRMNS {
                            SubStr(item.SupplierName, 6)));
 
             }
-            if (dtStockUsage == null || dtStockUsage.Rows.Count == 0)
+            //for (int i = 0; i < dtStockUsage.Rows.Count; i++) {
+            //    StockItemUsage item = new StockItemUsage(dtStockUsage.Rows[i]);
+            //    if (blnSupplier)
+            //        DrawText(string.Format("{0,2:N0} {1,-5} {2,-21}",
+            //                            item.OrderableQuantity,
+            //                            SubStr(item.OrderableType.ToString(), 5),
+            //                            SubStr(item.StockName, 27)));
+                
+            //    else
+            //        DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
+            //               item.OrderableQuantity,
+            //               SubStr(item.OrderableType.ToString(), 5),
+            //               SubStr(item.StockName, 22),
+            //               SubStr(item.SupplierName, 6)));
+
+            //}
+           //if (dtStockUsage == null || dtStockUsage.Rows.Count == 0)
+           if (stockUsages.IsNullOrEmpty())
                 DrawText("No Stock Usage");
             NewLine();
             DrawDoubleLine();
@@ -793,7 +814,7 @@ namespace DTRMNS {
                 return false;
             }
         }
-        public void DrawKitchen() {
+        public async void DrawKitchen() {
             if (korder == null)
                 return;
 
@@ -818,14 +839,14 @@ namespace DTRMNS {
             
 
 
-            List<Distribution> theList = bslayer.GetDistributionListForPrinter(aPrinter.IID);
+            List<Distribution> theList =await bslayer.GetDistributionListForPrinter(aPrinter.IID);
 
             foreach (KitchenOrderItem item in korder.items) {
                 if (item.Status != KitchenOrderStatusTypes.Completed) {
                     if (theList.Find(x => x.IID == item.DistributionIID) != null) {
                         DrawText(string.Format("{0,-3:N0}".PadRight(4) + "{1,-32}", item.Quantity, item.ItemText));
                         if (blnKitchenOrderWithDetail)
-                            DrawDetailText(bslayer.GetEntityButtonStockItemText(item.EntityButtonIID));
+                            DrawDetailText(await bslayer.GetEntityButtonStockItemText(item.EntityButtonIID));
                     }
                 }
             }
@@ -1079,15 +1100,15 @@ namespace DTRMNS {
             startY += linespace + fontHeight;
         }
 
-        private bool EnsureLogo1() {
+        private async Task<bool> EnsureLogo1() {
             if (Logo1 != null)
                 return true;
 
-            GenericImage gim = bslayer.GetGenericImage("Logo1");
+            GenericImage gim =await bslayer.GetGenericImage("Logo1");
             if (gim == null)
                 return false;
 
-            Logo1 = gim.DisplayImage;
+            Logo1 = gim.DisplayImage.ToImage();
             if (Logo1 == null)
                 return false;
             else {
@@ -1095,14 +1116,14 @@ namespace DTRMNS {
             }
         }
 
-        private void DrawCompanyHeader(string CustomHeader) {
+        private async void DrawCompanyHeader(string CustomHeader) {
             //DTRMLicence licence = bslayer.GetLicence();
 
 
             try {
                 //Image image = Image.FromFile(bslayer.config.ReportLogo);
 
-                if (EnsureLogo1()) {
+                if (await EnsureLogo1()) {
 
                     float receiptWidth = GetReceiptWidth();
                     float scaleratio = 1;
@@ -1213,7 +1234,7 @@ namespace DTRMNS {
                     DrawText("Session End  : " + DateTime.Now.ToString("dd/MMM/yy HH:mm"));
                 } else {
                     //Old Session
-                    DrawText("Session End  : " + session.SessionEndDateTime.ToString("dd/MMM/yy HH:mm"));
+                    DrawText("Session End  : " + session.SessionEndDateTime.Value.ToString("dd/MMM/yy HH:mm"));
                 }
             }
             DrawDoubleLine();

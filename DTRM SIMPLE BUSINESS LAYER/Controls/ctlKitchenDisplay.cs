@@ -6,6 +6,7 @@ using DTRMNS.Controls;
 using System.ComponentModel;
 using POSLayer.Models;
 using POSLayer.Library;
+using System.Threading.Tasks;
 
 namespace DTRMNS {
     public partial class ctlKitchenDisplay : UserControl {
@@ -141,7 +142,7 @@ namespace DTRMNS {
 
 
 
-        public void LoadWaitingKitchenOrders() {
+        public async void LoadWaitingKitchenOrders() {
             if (bslayer == null || terminalDistributionList == null)
                 return;
 
@@ -151,7 +152,7 @@ namespace DTRMNS {
             this.DoubleBuffered = true;
 
             try {
-                List<KitchenOrder> orderList = bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, terminalDistributionList);
+                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, terminalDistributionList);
                 for (int i = 0; i < orderList.Count; i++) {
                     if (orderList[i].OrderType == OrderTypes.DirectSale && !bslayer.config.Hold_Order_Display_in_Kitchen)
                         continue;
@@ -190,7 +191,7 @@ namespace DTRMNS {
         }
 
 
-        public void LoadCompletedOrders() {
+        public async void LoadCompletedOrders() {
             if (bslayer == null || terminalDistributionList == null)
                 return;
 
@@ -206,7 +207,7 @@ namespace DTRMNS {
             //pnlCompletedOrders.Controls.Clear();
 
             try {
-                List<KitchenOrder> orderList = bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, terminalDistributionList);
+                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, terminalDistributionList);
                 double totalResponseTime = 0;
 
                 for (int i = 0; i < orderList.Count; i++) {
