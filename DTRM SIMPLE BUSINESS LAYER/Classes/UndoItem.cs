@@ -9,10 +9,6 @@
             blnConverted = true;
         }
 
-        //public UndoItem(string IID, int Quantity) {
-        //    this.IID = IID;
-        //    this.Quantity = Quantity;
-        //}
         public UndoItem(string IID, int Quantity, bool blnConverted) {
             this.IID = IID;
             this.Quantity = Quantity;

@@ -20,10 +20,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using POSLayer.Library;
 using POSLayer.Models;
-using System.ComponentModel;
 using POSLayer.Views;
-using System.DirectoryServices;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DTRMNS
 {
@@ -53,7 +50,7 @@ namespace DTRMNS
         public POSLayer.Models.FoodMenu ActiveMenu;
 
         [System.Xml.Serialization.XmlIgnore]
-        public DB db;
+       // public DB db;
 
         public bool blnReportLockOn;
         public string ReportLockClientIP;
@@ -691,10 +688,14 @@ namespace DTRMNS
             //return MenuList;
         }
 
-        public float GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
+        public async Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
         {
-            DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
-            return float.Parse(dt.Rows[0]["Total"].ToString());
+            List<OrdersView> orders = await repoOrder.GetOrdersView();
+
+            //DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
+            //return float.Parse(dt.Rows[0]["Total"].ToString());
+
+            return orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.CalculatedValue);
         }
 
         public async Task<List<POSLayer.Models.Debug>> GetDebugList()
@@ -1131,9 +1132,10 @@ namespace DTRMNS
             return GetDataTable("GetTableGroups");
         }
 
-        public TableGroup GetTableGroup(string IID)
+        public async Task<TableGroup> GetTableGroup(string IID)
         {
-            return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
+            return await repoTableGroup.Get(IID);
+           // return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
         }
 
         public async Task<List<Table>> GetTableList(string GroupIID)
@@ -1831,9 +1833,16 @@ namespace DTRMNS
             //    DistributionList.Add(new Distribution(dt.Rows[i]));
             //return DistributionList;
         }
-        public DataTable GetAllDistributions(string ActiveMenuIID)
+        public async Task<List<Distribution>> GetAllDistributionsForMenu(string ActiveMenuIID)
         {
-            return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
+            return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID);
+            //return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
+        }
+
+        public async Task<List<DistributionView>> GetAllDistributionsAsView()
+        {
+            return await repoDistribution.GetDistributionView();
+            //return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
         }
 
         public async Task<Distribution> GetDistribution(string DistributionIID)
@@ -1930,6 +1939,12 @@ namespace DTRMNS
             //} else
             //    return null;
         }
+
+        public async Task<OrdersView> GetOrderView(string IID)
+        {
+            return repoOrder.GetOrdersView().Result.Where(x => x.IID == IID).FirstOrDefault();
+        }
+
         public bool isOrderPaid(string OrderIID)
         {
             try
@@ -2167,11 +2182,12 @@ namespace DTRMNS
         #endregion
 
         #region "INSTRUCTION FUNCTIONS"
-        public Debug GetDebug(int DebugNo)
+        public async Task<Debug> GetDebug(int DebugNo)
         {
             try
             {
-                return new Debug(GetDataTable("Select * from Debug where DebugNo = " + DebugNo));
+                return await repoDebug.GetByField("DebugNo", DebugNo);
+               // return new Debug(GetDataTable("Select * from Debug where DebugNo = " + DebugNo));
             } catch
             {
                 return null;

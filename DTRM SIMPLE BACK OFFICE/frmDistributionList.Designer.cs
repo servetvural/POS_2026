@@ -1,4 +1,6 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿using POSLayer.Views;
+
+namespace DTRMSimpleBackOffice {
     partial class frmDistributionList {
         /// <summary>
         /// Required designer variable.
@@ -141,7 +143,7 @@
             // 
             // globalTypeViewBindingSource
             // 
-            globalTypeViewBindingSource.DataSource = typeof(DTRMNS.DistributionView);
+            globalTypeViewBindingSource.DataSource = typeof(DistributionView);
             // 
             // btnSave
             // 

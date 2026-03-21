@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace DTRMNS {
     public partial class frmPinZWarning : Form {
         bool blnCompare;
-        float CardTotal;
+        double CardTotal;
         private DTRMSimpleBusiness bslayer;
         public frmPinZWarning(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
@@ -19,7 +19,7 @@ namespace DTRMNS {
             this.bslayer = bslayer;
         }
 
-        public frmPinZWarning(DTRMSimpleBusiness bslayer, float CardTotal) {
+        public frmPinZWarning(DTRMSimpleBusiness bslayer, double CardTotal) {
             InitializeComponent();
             this.CardTotal = CardTotal;
             blnCompare = false;
@@ -34,7 +34,7 @@ namespace DTRMNS {
 
         private void btnOk_Click(object sender, EventArgs e) {
             if (blnCompare) {
-                float enteredAmount = float.Parse(txtCode.Text.Trim(), System.Globalization.NumberStyles.Any);
+                double enteredAmount = double.Parse(txtCode.Text.Trim(), System.Globalization.NumberStyles.Any);
                 if (enteredAmount > 1000)
                     return;
 

@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Views;
+
+namespace DTRMNS {
     partial class frmDump {
         /// <summary>
         /// Required designer variable.
@@ -313,7 +315,7 @@
             // 
             // ordersViewBindingSource
             // 
-            this.ordersViewBindingSource.DataSource = typeof(DTRMNS.OrdersView);
+            this.ordersViewBindingSource.DataSource = typeof(OrdersView);
             // 
             // btnReload
             // 

@@ -113,6 +113,7 @@ public enum ScreenSaverTypes { None, SingleDisplay, Flow }
 public enum ScreenSaverColourTypes { BlackBackGroundWhiteBrush, WhiteBackGroundBlackBrush }
 public enum AlignmentTypes { Left, Center, Right }
 
+public enum BonusTypes { NoTip, Half_Tip, Full_Tip }
 
 
 

@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Remove="Library\GenericImage.cs" />
+    <Compile Remove="Library\TableGroup.cs" />
+    <Compile Remove="Views\OrderItemView.cs" />
   </ItemGroup>
 
   <ItemGroup>

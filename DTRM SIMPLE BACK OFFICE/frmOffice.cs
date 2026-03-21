@@ -121,7 +121,7 @@ namespace DTRMSimpleBackOffice
                                 // config.Database_Name = db.DatabaseName;
                                 config.Database_User_Name = db.UserName;
                                 config.Database_Password = db.Password;
-                                DTRMNS.UF.SaveConfig(config);
+                                UF.SaveConfig(config);
                                 goto TryAgainLocally;
 
                             }

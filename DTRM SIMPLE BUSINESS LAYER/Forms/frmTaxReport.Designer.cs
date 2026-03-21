@@ -1,4 +1,6 @@
-﻿namespace DTRMNS {
+﻿using POSLayer.Views;
+
+namespace DTRMNS {
     partial class frmTaxReport {
         /// <summary>
         /// Required designer variable.
@@ -248,7 +250,7 @@
             // 
             // taxSummaryBindingSource
             // 
-            this.taxSummaryBindingSource.DataSource = typeof(DTRMNS.TaxSummary);
+            this.taxSummaryBindingSource.DataSource = typeof(TaxSummary);
             // 
             // dataGridViewTextBoxColumn3
             // 

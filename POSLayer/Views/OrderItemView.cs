@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace POSLayer.Models;
+using POSLayer.Models;
+
+namespace POSLayer.Views;
 
 public partial class OrderItemView   : BaseClass
 {

@@ -268,7 +268,7 @@ namespace DTRMNS {
             if (bslayer.config.DebugMode) 
                 bslayer.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
-            korder.CompletedDateTime = DateTime.Parse(bslayer.db.GetDataTable("Select getdate()").Rows[0][0].ToString());
+            korder.CompletedDateTime = DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
             POSLayer.Models.Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.items) {

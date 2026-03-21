@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using POSLayer.Models;
 using POSLayer.Library;
+using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice
 {
@@ -191,7 +192,7 @@ namespace DTRMSimpleBackOffice
                     "===========================================";
 
 
-                PrintHandler pHand = new PrintHandler(bslayer, str, ap.NetworkName);
+                PrintHandler pHand = new PrintHandler(bslayer.config, str, ap.NetworkName);
                 pHand.PrintNow();
 
             }

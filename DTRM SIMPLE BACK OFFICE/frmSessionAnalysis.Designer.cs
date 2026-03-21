@@ -783,7 +783,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // sessionViewBindingSource
             // 
-            this.sessionViewBindingSource.DataSource = typeof(DTRMNS.SessionView);
+            this.sessionViewBindingSource.DataSource = typeof(SessionView);
             // 
             // colOrderIID
             // 
@@ -819,7 +819,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // ordersViewBindingSource
             // 
-            this.ordersViewBindingSource.DataSource = typeof(DTRMNS.OrdersView);
+            this.ordersViewBindingSource.DataSource = typeof(OrdersView);
             // 
             // colItemIID
             // 

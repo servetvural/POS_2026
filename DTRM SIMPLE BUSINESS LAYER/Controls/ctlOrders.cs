@@ -9,6 +9,7 @@ using POSLayer.Library;
 using POSLayer.Models;
 using System.Threading.Tasks;
 using POSWinFormLayer;
+using POSLayer.Views;
 
 namespace DTRMNS {
     /// <summary>
@@ -435,7 +436,7 @@ namespace DTRMNS {
             // 
             // ordersViewDataConnector
             // 
-            this.ordersViewDataConnector.DataSource = typeof(DTRMNS.OrdersView);
+            this.ordersViewDataConnector.DataSource = typeof(OrdersView);
             // 
             // ctlOrders
             // 

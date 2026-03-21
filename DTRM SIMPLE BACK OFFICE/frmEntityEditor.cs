@@ -31,9 +31,9 @@ namespace DTRMSimpleBackOffice {
 
         private void LoadDistributions() {
             if (en.ParentMenuIID == null || en.ParentMenuIID == "")
-                cmbDistribution.DataSource = bslayer.GetAllDistributions(bslayer.config.ActiveMenuIID);
+                cmbDistribution.DataSource = bslayer.GetAllDistributionsForMenu(bslayer.config.ActiveMenuIID);
             else 
-                cmbDistribution.DataSource = bslayer.GetAllDistributions(en.ParentMenuIID);
+                cmbDistribution.DataSource = bslayer.GetAllDistributionsForMenu(en.ParentMenuIID);
         }
 
         private void LoadEntity() {
@@ -132,7 +132,7 @@ namespace DTRMSimpleBackOffice {
             try {
                 string gtypeIID = cmbDistribution.SelectedValue.ToString(); //((Distribution)cmbPrintableCategoy.SelectedItem).IID;
                                                                                 //en.DistributionName = cmbPrintableCategoy.Text; //((Distribution)cmbPrintableCategoy.SelectedItem).DistributionName;
-                if (bslayer.db.RunQuery("Update EntityButton set DistributionIID = '" + gtypeIID + "' where parentEntityIID ='" + en.IID + "'")) {
+                if (bslayer.RunQuery("Update EntityButton set DistributionIID = '" + gtypeIID + "' where parentEntityIID ='" + en.IID + "'")) {
                     MessageBox.Show("Done");
                 }
             } catch {

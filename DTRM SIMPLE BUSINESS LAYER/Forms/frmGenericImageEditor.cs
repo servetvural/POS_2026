@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 using POSWinFormLayer;
@@ -117,7 +118,7 @@ namespace DTRMNS {
         {
             // this.ReferenceIID = ReferenceIID;
             GenericImage gim = null;
-            gim.DisplayImage = UF.LoadBitmapNolock(finfo.FullName).ToByteArray();
+            gim.DisplayImage = UFWin.LoadBitmapNolock(finfo.FullName).ToByteArray();
             gim.ImageFileName = finfo.Name;
             return gim;
         }
@@ -199,7 +200,7 @@ namespace DTRMNS {
                 return;
             }
             if (cropRectangle != null) {
-                gim.DisplayImage =UF.CropImage(pbox.Image, (Rectangle)cropRectangle).ToByteArray();
+                gim.DisplayImage =UFWin.CropImage(pbox.Image, (Rectangle)cropRectangle).ToByteArray();
                 LoadImage();
             }
         }
@@ -212,7 +213,7 @@ namespace DTRMNS {
                 udHeight.Value = (decimal)UFWin.RatioTimesWidthForHeight(pbox.Image) * udWidth.Value;
             }
 
-            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
+            gim.DisplayImage =UFWin.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 
@@ -223,7 +224,7 @@ namespace DTRMNS {
             {                       
                 udWidth.Value = (decimal)UFWin.RatioTimesHeightForWidth(pbox.Image) * udHeight.Value;
             }
-            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
+            gim.DisplayImage =UFWin.ReSizeImageTo(pbox.Image, (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 
@@ -246,7 +247,7 @@ namespace DTRMNS {
         private void btnApplyResize_Click(object sender, EventArgs e) {
             if (gim == null)
                 return;
-            gim.DisplayImage =UF.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
+            gim.DisplayImage =UFWin.ReSizeImageTo(pbox.Image , (int)udWidth.Value, (int)udHeight.Value, chkRatio.Checked).ToByteArray();
             LoadImage();
         }
 

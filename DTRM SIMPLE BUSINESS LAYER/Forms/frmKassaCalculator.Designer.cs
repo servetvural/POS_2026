@@ -421,7 +421,7 @@ namespace DTRMNS {
             // 
             // staffIncomeBindingSource
             // 
-            this.staffIncomeBindingSource.DataSource = typeof(DTRMNS.StaffIncome);
+            this.staffIncomeBindingSource.DataSource = typeof(StaffIncome);
             // 
             // panel1
             // 

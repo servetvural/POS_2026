@@ -38,22 +38,12 @@ namespace DTRMNS {
             this.entity = entity;
             IID = entity.IID;
             UIEButtonsPanel = new FlowLayoutPanel();
-            //UIEButtonsPanel.AutoScroll = true;
-
-
-            //if (bslayer.config.Portrait_Trigger_Width > this.TopLevelControl.Width) // Screen.PrimaryScreen.Bounds.Width)
-            //    UIEButtonsPanel.Size = new Size(200, 1000);
-            //else 
-            //    UIEButtonsPanel.Size = new Size(721, 578);
 
             //Add Main Buttons Panel
             UIEButtonsPanel.AutoScroll = bs.config.Entity_Buttons_Scrollable;
-            //UIEButtonsPanel.VerticalScroll.
             Controls.Add(UIEButtonsPanel, 0, 1);
 
             UIEButtons = new List<UPEntityButton>();
-            //AutoScroll = false;
-            //AutoScroll = true;
             
             ButtonHeight = entity.ButtonHeight;
             ButtonWidth = entity.ButtonWidth;
@@ -94,13 +84,10 @@ namespace DTRMNS {
         }
         public void Reset() {
             this.OrderGroupIID = "";
-        }       
-
+        }      
         public void ShowPanels() {            
             this.UIEButtonsPanel.Visible = true;
-        }
-
-   
+        }      
 
         private void InitializeComponent() {
             this.SuspendLayout();

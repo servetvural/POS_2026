@@ -19,7 +19,7 @@ public class PosDbContextFactory : IDesignTimeDbContextFactory<PosDbContext>
 
         // optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=TestAgent;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt = False;");
 
-        optionsBuilder.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;");
+        optionsBuilder.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM2;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;");
 
         //optionsBuilder.UseSqlServer("Server=eo3jfludah.database.windows.net;Database=TestAgent;User Id =ServetVuralTestAgentUser;Password =StrongPassword123;Encrypt = False;MultipleActiveResultSets=true;Connect Timeout=120;");
 

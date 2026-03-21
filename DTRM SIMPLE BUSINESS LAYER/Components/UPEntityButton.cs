@@ -71,10 +71,8 @@ namespace DTRMNS {
                 }
             }
             catch {
-            }
-           
+            }             
         }
-
         public void ClickTheButton() {
             UIEBEventHandler(this, System.EventArgs.Empty);
         }
@@ -132,7 +130,6 @@ namespace DTRMNS {
             oiNew.TaxPercent = bslayer.GetEBTaxPercent(geb.entitybutton);
 
 
-
             //UnParented Item - No SizeBar  (Simple or Complex)  Exp= GB or Chicken Wings
             oiNew.ParentOrderIID = bslayer.AttachedOrder.IID;
 
@@ -145,8 +142,6 @@ namespace DTRMNS {
                 oiNew.OrderGroupIID = bslayer.StepableOrderItemGroupIID;
             else
                 oiNew.OrderGroupIID = bslayer.AttachedOrder.IID;
-            //oiNew.OrderGroupIID = geb.ParentUIE.OrderGroupIID;
-
 
             //--if Item has no subitems  Exp = GB			[Find Existing and increment]
             OrderItem incItem = bslayer.AttachedOrder.GetIncrementableItem(geb.IID, geb.entitybutton.DistributionIID, bslayer.StepableOrderItemGroupIID);
@@ -154,7 +149,6 @@ namespace DTRMNS {
             if (incItem == null)
             {
                 if (oiNew.Quantity >= 0)
-                    //geb.ParentUIE.OrderGroupIID =
                     bslayer.AttachedOrder.AddOrderItem(oiNew); //202#
             } else
             {
@@ -162,37 +156,10 @@ namespace DTRMNS {
                     incItem.Decrement();
                 else
                 {
-                    //if (blnDisplaySeperately)
-                    //    bslayer.AttachedOrder.AddOrderItem(oiNew);
-                    //else 
                     incItem.Increment();
                 }
-
                 bslayer.AttachedOrder.blnItemsChanged = true;
             }
-
-
-            //Display on the customer display
-            //if (bslayer.HasCustomerDisplay())
-            //{
-            //    string prs = GetEBRelatedPrice(bslayer, geb).ToString("f");
-            //    string tot = bslayer.AttachedOrder.GetFullTotal().ToString("f");
-            //    int spc = bslayer.config.Customer_Display_Text_Length - prs.Length - 3;
-            //    if (geb.PrintLabel.Length >= spc)
-            //    {
-            //        string msg1 = geb.PrintLabel.ToUpper().Substring(0, spc) + DRFormat.Space(3) + prs +
-            //           "TOTAL" + DRFormat.Space(bslayer.config.Customer_Display_Text_Length - tot.Length - 5) + tot;
-            //        bslayer.CDSendMessage(msg1, CDAreas.All);
-            //        //MessageBox.Show(msg1);
-            //    } else
-            //    {
-            //        string pl = geb.PrintLabel.ToUpper() + DRFormat.Space(spc - geb.PrintLabel.Length);
-            //        string msg2 = pl + DRFormat.Space(3) + prs +
-            //           "TOTAL" + DRFormat.Space(bslayer.config.Customer_Display_Text_Length - tot.Length - 5) + tot;
-            //        bslayer.CDSendMessage(msg2, CDAreas.All);
-            //        //MessageBox.Show(msg2);
-            //    }
-            //}
         bypass:
             //DISPLAY order
             bslayer.OnDisplayOrder();
@@ -250,30 +217,6 @@ namespace DTRMNS {
                    exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.entity.DistributionIID,
                     UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.DisplayOrder, geb.ParentUIE.entity.EntityName,
                    geb.ParentUIE.entity.DisplayOrder, bslayer.GetEBTaxPercent(geb.entitybutton));
-
-
-                //bslayer.AttachedOrder.AddOrderItem(geb.ParentUIE.IID, ShortGuid.NewGuid().ToString(), 1,
-                //  exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.entity.DistributionIID,
-                //   UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.DisplayOrder, geb.ParentUIE.entity.EntityName,
-                //  geb.ParentUIE.entity.DisplayOrder, bslayer.GetEBTaxPercent(geb.entitybutton));
-
-
-                //Display on the customer display
-                //if (bslayer.HasCustomerDisplay())
-                //{
-                //    string prs = exprice.ToString("f"); //.Substring(1);
-                //    string tot = bslayer.AttachedOrder.GetFullTotal().ToString("f");
-                //    int spc = bslayer.config.Customer_Display_Text_Length - prs.Length - 3;
-                //    if (geb.PrintLabel.Length >= spc)
-                //        bslayer.CDSendMessage(geb.PrintLabel.ToUpper().Substring(0, spc) + DRFormat.Space(3) + prs +
-                //           "TOTAL" + DRFormat.Space(bslayer.config.Customer_Display_Text_Length - tot.Length - 5) + tot, CDAreas.All);
-                //    else
-                //    {
-                //        string pl = geb.PrintLabel.ToUpper() + DRFormat.Space(spc - geb.PrintLabel.Length);
-                //        bslayer.CDSendMessage(pl + DRFormat.Space(3) + prs +
-                //           "TOTAL" + DRFormat.Space(bslayer.config.Customer_Display_Text_Length - tot.Length - 5) + tot, CDAreas.All);
-                //    }
-                //}
 
                 return true;
             } else

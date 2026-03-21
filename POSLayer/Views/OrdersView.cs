@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+
+using POSLayer.Library;
+using POSLayer.Models;
+
+namespace POSLayer.Views;
+
+public partial class OrdersView : BaseClass
+{
+    public string? TableIID { get; set; }
+    public string? TableName { get; set; }
+    public DateTime OrderDate { get; set; }
+    public int Covers { get; set; }
+    public OrderTypes OrderType { get; set; }
+    public PaymentMethods Payment { get; set; }
+    public string? CustomerIID { get; set; }
+    public string SessionIID { get; set; }
+    public StatusFlags Status { get; set; }
+    public string? LockedClientIp { get; set; }
+    public string? Instruction { get; set; }
+    public double MoneyPaid { get; set; }
+    public string? PaymentFlag { get; set; }
+    public string? Cname { get; set; }
+    public string? Postcode { get; set; }
+    public string? Address { get; set; }
+    public string? Buzzer { get; set; }
+    public string? Town { get; set; }
+    public string? Tel { get; set; }
+    public string? Mobile { get; set; }
+    public string? Email { get; set; }
+    public string? UserName { get; set; }
+    public int ItemCount { get; set; }
+    public string? CustomerDetails { get; set; }   
+    public string? Reference { get; set; }
+    public int? KitchenOrderNo { get; set; }
+    public double CalculatedValue { get; set; }
+    public double CalculatedVat { get; set; }
+    public double CalculatedExVatValue { get; set; }
+    public double ServiceCharge { get; set; }
+    public double ServiceChargeTax { get; set; }
+
+    public double GetServiceCharge(float rate)
+    {
+        return CalculatedValue * rate / 100;
+    }
+}

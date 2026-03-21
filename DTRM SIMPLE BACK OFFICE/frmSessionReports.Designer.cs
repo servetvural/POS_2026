@@ -1,4 +1,5 @@
 ﻿using POSLayer.Models;
+using POSLayer.Views;
 
 namespace DTRMSimpleBackOffice {
     partial class frmSessionReports {
@@ -275,7 +276,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // sessionViewBindingSource
             // 
-            this.sessionViewBindingSource.DataSource = typeof(DTRMNS.SessionView);
+            this.sessionViewBindingSource.DataSource = typeof(SessionView);
             // 
             // dgvOrders
             // 
@@ -352,7 +353,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // ordersViewBindingSource
             // 
-            this.ordersViewBindingSource.DataSource = typeof(DTRMNS.OrdersView);
+            this.ordersViewBindingSource.DataSource = typeof(OrdersView);
             // 
             // dgvOrderItems
             // 

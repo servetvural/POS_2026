@@ -5,6 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
+using POSWinFormLayer.Library;
+
 namespace DTRMNS {
     public partial class frmScreenSaver : Form {
 

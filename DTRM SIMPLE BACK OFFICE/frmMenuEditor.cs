@@ -785,7 +785,7 @@ namespace DTRMSimpleBackOffice {
             if (dgvStockItems.Rows.Count > 0) {
                 for (int i = 0; i < dgvStockItems.Rows.Count; i++) {
                     string IID = dgvStockItems.Rows[i].Cells["colStockUsageIID"].Value.ToString();
-                    bslayer.db.RunQuery("Update EntityButtonStockItemLookUp set DisplayOrder = " + i + " where IID = '" + IID + "'");
+                    bslayer.RunQuery("Update EntityButtonStockItemLookUp set DisplayOrder = " + i + " where IID = '" + IID + "'");
                 }
                 LoadStockItems();
             }
@@ -872,7 +872,7 @@ namespace DTRMSimpleBackOffice {
         private async void BtnExportStockManager_Click(object sender, EventArgs e) {
             if (dgvMenu.SelectedRows.Count > 0) {
                 StockManager sm = await bslayer.GetStockManager();
-                sm.Reference = "Stock Manager for " + bslayer.db.ConnectionName + "  " + DateTime.Now.ToString("dd MM yyyy");
+                sm.Reference = "Stock Manager for " + " Bunu duzeltmek lazim " + DateTime.Now.ToString("dd MM yyyy");
                 using (SaveFileDialog sfd = new SaveFileDialog()) {
                     sfd.Filter = "DTRM files (*.xml)|";
                     sfd.FileName = sm.Reference;

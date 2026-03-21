@@ -20,13 +20,10 @@ namespace DTRMNS{
             get { return TableType == TableTypes.StaticTable; }
         }
 
-        //public bool HasSubTables { get; set; }
-
         public TableButton() {
             IID = "";
             TableNumber = "";
             TableType = TableTypes.TemporaryTable;
-
         }
 
         public TableButton(string IID, string TableNumber, TableTypes TableType, int x, int y, int Width, int Height) {
@@ -38,7 +35,6 @@ namespace DTRMNS{
                 this.BackColor = Color.Purple;
             Location = new Point(x, y);
             Size = new Size(Width, Height);
-
         }
 
         public TableButton(string IID, string TableNumber, TableTypes TableType, int x, int y, int Width, int Height,
@@ -54,8 +50,6 @@ namespace DTRMNS{
             this.Shape = Shape;
         }
 
-
-
         protected override void OnPaint(System.Windows.Forms.PaintEventArgs e) {
             switch (Shape) {
                 case ButtonShapeTypes.Rectangle:
@@ -69,10 +63,5 @@ namespace DTRMNS{
                     break;
             }
         }
-
-        //public string ToInfoString() {
-        //    return 
-        //}
     }
-
 }

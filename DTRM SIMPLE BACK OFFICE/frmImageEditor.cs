@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using DTRMNS;
 using System.Globalization;
+using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmImageEditor : Form {

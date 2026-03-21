@@ -98,36 +98,7 @@ namespace DTRMNS {
             reportwidthcm = 270;          
 
         }
-        //public void CreateGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
-
-        //    this.bslayer = bslayer;
-        //    float fontSize = bslayer.config.ReportFontSize;
-        //    string fontName = bslayer.config.ReportFontName;
-        //    // aPrinter = ap;
-        //    this.printerNetworkName = printerNetworkName;
-
-        //    this.font = new Font(fontName, fontSize, FontStyle.Bold);
-        //    this.fontLarge = new Font(fontName, fontSize + 5, FontStyle.Bold);
-        //    fontHeight = (int)font.GetHeight();
-        //    brush = new SolidBrush(Color.Black);
-
-
-        //    max_numberOfCharacters = bslayer.config.GetFontMaximumCharacter(fontSize);
-
-        //    this.linespace = linespace;
-        //    startX = 10;
-        //    startY = 0;
-
-        //    pSettings = new PrinterSettings();
-        //    pDocument = new PrintDocument();
-        //    pDocument.QueryPageSettings += pDocument_QueryPageSettings;
-        //    pDocument.PrinterSettings = pSettings;
-        //    pSettings.PrinterName = printerNetworkName;
-
-        //    reportwidthcm = 270;
-
-        //}
-
+       
         void pDocument_QueryPageSettings(object sender, QueryPageSettingsEventArgs e) {
             //throw new NotImplementedException();
         }
@@ -148,11 +119,6 @@ namespace DTRMNS {
 
         
         private bool SetXReportValueToSession() {
-            //float uncompletedOrderTotal = 0f;
-            //if (session.SessionIID == bslayer.luv.CurrentSessionIID) {
-            //    uncompletedOrderTotal = bslayer.GetUncompletedOrdersTotalForCurrentSession();
-            //}
-
 
             switch (bslayer.GetAvailableXReportSlot(session)) {
                 case 1:
@@ -508,8 +474,8 @@ namespace DTRMNS {
             DrawLine();
 
 
-
-            OrdersView ordView = new OrdersView(bslayer.GetDataTable("Select * from OrdersView where IID = '" + order.IID + "'"));
+            OrdersView ordView =await  bslayer.GetOrderView(order.IID);
+            //OrdersView ordView = new OrdersView(bslayer.GetDataTable("Select * from OrdersView where IID = '" + order.IID + "'"));
 
 
 
@@ -559,7 +525,7 @@ namespace DTRMNS {
 
             }
 
-            DrawText("Payment Method : " + ordView.PaymentMethodName);
+            DrawText("Payment Method : " + ordView.Payment);
 
 
             DrawLine();

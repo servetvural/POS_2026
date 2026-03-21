@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Models;
@@ -22,8 +23,9 @@ namespace DTRMNS {
             LoadDistributions();
         }
 
-        private void LoadDistributions() {
-            dgv.DataSource = bslayer.db.GetDataTable("Select * from Distribution Where ParentMenuIID ='" + bslayer.config.ActiveMenuIID + "'");
+        private async Task LoadDistributions() {
+            dgv.DataSource = await bslayer.GetDistributionList(bslayer.config.ActiveMenuIID);
+                //bslayer.GetDataTable("Select * from Distribution Where ParentMenuIID ='" + bslayer.config.ActiveMenuIID + "'");
             if (existingList != null) {
                 for (int i = 0; i < dgv.Rows.Count; i++) {
                     string IID = dgv.Rows[i].Cells["colIID"].Value.ToString();

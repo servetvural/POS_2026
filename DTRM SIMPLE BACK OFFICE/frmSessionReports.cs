@@ -14,6 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 using System.Threading.Tasks;
 using POSLayer.Library;
 using POSLayer.Models;
+using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionReports : Form {
@@ -517,7 +518,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true,new int[]{-4,-21,5,8})) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer,exporter.csvText, frm.SelectedPrinterNetworkName );
+                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName );
                     printer.PrintNow();
                 }
             }
@@ -544,7 +545,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer,exporter.csvText, frm.SelectedPrinterNetworkName);
+                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
 
                     
@@ -573,7 +574,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer,exporter.csvText, frm.SelectedPrinterNetworkName);
+                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
                 }
             }

@@ -97,7 +97,11 @@ namespace DTRMNS {
         private void btnSet0_Click(object sender, EventArgs e) {
             if (oldItem == null) {
                 //First time so set to zero
-                oldItem = new UndoItem(stockItem.IID, (int)stockItem.UsedQuantity, true);
+                oldItem = new UndoItem() {
+                    IID = stockItem.IID,
+                    Quantity = (int)stockItem.UsedQuantity,
+                    blnConverted = true
+                };
                 stockItem.UsedQuantity = 0;
                 bslayer.SetStockItemQuantity(stockItem.IID, 0);
                 txtUsedQuantity.Text = "0";
@@ -124,7 +128,12 @@ namespace DTRMNS {
                 TrmGetValue frm = new TrmGetValue(NumberModes.IntegerMode, SystemColors.Control);              
                 if (frm.ShowDialog() == DialogResult.OK) {
                     int val = (int)frm.ReturnValue;
-                    oldItem = new UndoItem(stockItem.IID, (int)stockItem.UsedQuantity, true);
+                    oldItem = new UndoItem()
+                    {
+                        IID = stockItem.IID,
+                        Quantity = (int)stockItem.UsedQuantity,
+                        blnConverted = true
+                    };
                     stockItem.UsedQuantity = val;
                     bslayer.SetStockItemQuantity(stockItem.IID, val);
                     txtUsedQuantity.Text = val.ToString();

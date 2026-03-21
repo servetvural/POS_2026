@@ -2284,8 +2284,8 @@ namespace DTRMNS
         {
             //Set close/cancel order button properties
             cmdCancel.Size = new Size(bslayer.config.Cancel_Button_Width, cmdCancel.Size.Height);
-            UF.SetBackgroundImageForButton(cmdCancel, bslayer.config.Cancel_Button_Image, Properties.Resources.Delete, ImageLayout.Center);
-            UF.SetBackgroundColour(cmdCancel, bslayer.config.Cancel_Button_BackColour);
+            UFWin.SetBackgroundImageForButton(cmdCancel, bslayer.config.Cancel_Button_Image, Properties.Resources.Delete, ImageLayout.Center);
+            UFWin.SetBackgroundColour(cmdCancel, bslayer.config.Cancel_Button_BackColour);
             //UF.SetForegroundColour(cmdCancel, bslayer.config.Cancel_Button_ForeColour);
             cmdCancel.FlatStyle = bslayer.config.Cancel_Button_Show_Borders ? FlatStyle.Standard : FlatStyle.Flat;
             //if (!bslayer.config.Cancel_Button_Show_Borders)
@@ -3675,7 +3675,7 @@ namespace DTRMNS
                 }
                 if (blnPrint)
                 {
-                    frmPinZWarning frm = new frmPinZWarning(bslayer, bslayer.GetOrdersTotalForPaymentMethod(bslayer.GetCurrentSessionIID(), PaymentMethods.Card));
+                    frmPinZWarning frm = new frmPinZWarning(bslayer,await bslayer.GetOrdersTotalForPaymentMethod(bslayer.GetCurrentSessionIID(), PaymentMethods.Card));
                     if (frm.ShowDialog() == DialogResult.Cancel)
                     {
                         return;
@@ -4291,7 +4291,7 @@ namespace DTRMNS
 
             Font btnPriceFont = new Font("Arial", bslayer.config.Hold_Button_Price_Font_Size, FontStyle.Bold);
 
-            DataTable dt = bslayer.db.GetDataTable("select IID from OrdersView Where payment = 0 and Status = " + (int)StatusFlags.PENDING + " and SessionIID = '" + bslayer.GetCurrentSessionIID() + "'");
+            DataTable dt = bslayer.GetDataTable("select IID from OrdersView Where payment = 0 and Status = " + (int)StatusFlags.PENDING + " and SessionIID = '" + bslayer.GetCurrentSessionIID() + "'");
 
 
 

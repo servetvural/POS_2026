@@ -56,14 +56,6 @@ namespace DTRMNS {
         }
 
         void pDocument_PrintPage(object sender, PrintPageEventArgs e) {
-            //g = e.Graphics;
-
-            //g.SmoothingMode = SmoothingMode.AntiAlias;
-            //g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            //g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            //g.DrawString(DocumentToPrint, font, brush, new PointF(startX, startY));
-
             if (e.PageSettings.PaperSize.Kind == PaperKind.A4) {
 
                 int charactersOnPage = 0;
@@ -74,9 +66,7 @@ namespace DTRMNS {
                 e.Graphics.MeasureString(DocumentToPrint, font,
                     e.MarginBounds.Size, StringFormat.GenericTypographic,
                     out charactersOnPage, out linesPerPage);
-                //e.Graphics.MeasureString(DocumentToPrint, font,
-                //    new Size(e.PageSettings.PaperSize.Width, e.PageSettings.PaperSize.Height)    , StringFormat.GenericTypographic,
-                //    out charactersOnPage, out linesPerPage);
+
 
                 // Draws the string within the bounds of the page
                 e.Graphics.DrawString(DocumentToPrint, font, Brushes.Black,
@@ -93,54 +83,54 @@ namespace DTRMNS {
         }
             
        
-        private void DrawText(string line) {
-            g.DrawString(line, font, brush, startX, startY);
-            startY += fontHeight;
-        }
+        //private void DrawText(string line) {
+        //    g.DrawString(line, font, brush, startX, startY);
+        //    startY += fontHeight;
+        //}
 
-        private void DrawLine() {
-            // DrawText(new string('-',numberOfCharacters));
+        //private void DrawLine() {
+        //    // DrawText(new string('-',numberOfCharacters));
 
-            startY += 5;
-            g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
-            startY += 5;
-        }
+        //    startY += 5;
+        //    g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
+        //    startY += 5;
+        //}
 
-        private void DrawDoubleLine() {
-            //DrawText(new string('=', numberOfCharacters));
+        //private void DrawDoubleLine() {
+        //    //DrawText(new string('=', numberOfCharacters));
 
-            startY += 5;
-            g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
-            startY += 2;
-            g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
-            startY += 5;
+        //    startY += 5;
+        //    g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
+        //    startY += 2;
+        //    g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
+        //    startY += 5;
 
-        }
+        //}
 
-        private void NewLine() {
-            startY += fontHeight;
-        }
+        //private void NewLine() {
+        //    startY += fontHeight;
+        //}
 
         
 
-        private string centeredString(string s) {
-            if (s.Length >= max_numberOfCharacters) {
-                return s.Substring(0, max_numberOfCharacters - 1);
-            }
+        //private string centeredString(string s) {
+        //    if (s.Length >= max_numberOfCharacters) {
+        //        return s.Substring(0, max_numberOfCharacters - 1);
+        //    }
 
-            int leftPadding = (max_numberOfCharacters - s.Length) / 2;
-            int rightPadding = max_numberOfCharacters - s.Length - leftPadding;
+        //    int leftPadding = (max_numberOfCharacters - s.Length) / 2;
+        //    int rightPadding = max_numberOfCharacters - s.Length - leftPadding;
 
-            return new string(' ', leftPadding) + s + new string(' ', rightPadding);
-        }
+        //    return new string(' ', leftPadding) + s + new string(' ', rightPadding);
+        //}
 
 
-        private float MeasureStringMin(string str) {
-            return g.MeasureString(str, font).Width;
-        }
-        private float GetReceiptWidth() {
-            return g.MeasureString(new string('A', max_numberOfCharacters), font).Width;
-        }                
+        //private float MeasureStringMin(string str) {
+        //    return g.MeasureString(str, font).Width;
+        //}
+        //private float GetReceiptWidth() {
+        //    return g.MeasureString(new string('A', max_numberOfCharacters), font).Width;
+        //}                
     }
 }
 

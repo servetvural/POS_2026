@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTRMNS;
 
+using POSLayer.Library;
+
 namespace DTRM_Kassa_Calculator {
     public partial class frmMain : Form {
         private DTRMSimpleBusiness bslayer;

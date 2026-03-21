@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 using POSLayer.Models;
 using System.Threading.Tasks;
+using POSLayer.Library;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmBonusList : Form {

@@ -11,9 +11,12 @@ using DTRMNS;
 
 using Newtonsoft.Json;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 using PosLibrary;
+
+using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmDistributionList : Form {
@@ -31,9 +34,10 @@ namespace DTRMSimpleBackOffice {
             LoadDistributions();
         }
 
-        private void LoadDistributions() {
+        private async void LoadDistributions() {
             //dgv.DataSource = bslayer.db.GetDataTable("Select * from DistributionView Where ParentMenuIID ='" + bslayer.config.CurrentMenuIID + "'");
-            dgv.DataSource = bslayer.db.GetDataTable("Select * from DistributionView order by ParentMenuIID, DistributionName");
+            dgv.DataSource =await bslayer.GetAllDistributionsAsView();
+                //bslayer.GetDataTable("Select * from DistributionView order by ParentMenuIID, DistributionName");
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
@@ -97,7 +101,7 @@ namespace DTRMSimpleBackOffice {
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -4, -18, -10 })) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer, exporter.csvText, frm.SelectedPrinterNetworkName);
+                    PrintHandler printer = new PrintHandler(bslayer.config, exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
                 }
             }

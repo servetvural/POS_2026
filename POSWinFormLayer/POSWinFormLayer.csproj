@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Library\PrintHandlerText.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dronax.PosLibrary" Version="1.0.3" />
   </ItemGroup>
 

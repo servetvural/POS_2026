@@ -90,8 +90,12 @@ namespace DTRMSimpleBackOffice
                   //services.AddDbContext<PosDbContext>(options =>
                   //    options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;"));
 
+                  PosConfig posConfig = UF.GetConfig() ?? new PosConfig();
+                 
+                  services.AddSingleton(posConfig);
+
                   services.AddDbContextFactory<PosDbContext>(options =>
-                               options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;", b => b.MigrationsAssembly("POSLayer"))); // Specify where migrations live
+                               options.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM2;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;", b => b.MigrationsAssembly("POSLayer"))); // Specify where migrations live
 
 
                   // 2. Register Generic Repository

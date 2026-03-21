@@ -1339,9 +1339,9 @@ namespace DTRMSimpleBackOffice {
 
         private void LoadDistributions() {
             if (entity.ParentMenuIID == null || entity.ParentMenuIID == "")
-                cmbDistributions.DataSource = bslayer.GetAllDistributions(bslayer.config.ActiveMenuIID);
+                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(bslayer.config.ActiveMenuIID);
             else
-                cmbDistributions.DataSource = bslayer.GetAllDistributions(entity.ParentMenuIID);
+                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(entity.ParentMenuIID);
 
 
             //cmbDistributions.DataSource = bslayer.GetAllDistributions(bslayer.config.ActiveMenuIID);

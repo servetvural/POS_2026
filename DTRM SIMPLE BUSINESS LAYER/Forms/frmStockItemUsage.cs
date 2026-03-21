@@ -166,7 +166,11 @@ namespace DTRMNS {
                     frmPurchase frm = new frmPurchase(bslayer, stockitemusage);
                     if (frm.ShowDialog() == DialogResult.OK) {
                         //Apply changes and reload
-                        undoList.Push(new UndoItem(StockItemIID, frm.sentQuantity,true));
+                        undoList.Push(new UndoItem() { 
+                            IID = StockItemIID,
+                            Quantity = frm.sentQuantity,
+                            blnConverted = true 
+                        });
                         LoadUsage();
                         btnUndo.Enabled = undoList.Count > 0;
                     }
@@ -241,11 +245,13 @@ namespace DTRMNS {
                 int Qty = int.Parse(dgv.Rows[i].Cells["colOrderableQuantity"].Value.ToString());
                 string StockItemIID = dgv.Rows[i].Cells["colStockItemIID"].Value.ToString();
                 if (bslayer.BifileStockItem(StockItemIID, Qty)) {
-                    undoList.Push(new UndoItem(StockItemIID, Qty, false));
-
-
+                    undoList.Push(new UndoItem()
+                    {
+                        IID = StockItemIID,
+                        Quantity = Qty,
+                        blnConverted = false
+                    });
                 }
-
             }
             btnUndo.Enabled = undoList.Count > 0;
             LoadUsage();

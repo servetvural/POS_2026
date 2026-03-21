@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using POSLayer.Models;
 using POSWinFormLayer;
+using POSLayer.Library;
 
 namespace DTRMNS {
     public partial class frmImageList : Form {
@@ -350,7 +351,7 @@ namespace DTRMNS {
                 int width = int.Parse(txtSetWidth.Text);
                 Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
                 double ratio = UFWin.RatioTimesWidthForHeight(img);
-                gim.DisplayImage =UF.ReSizeImageTo(img, width, (int)(width*ratio), true).ToByteArray();
+                gim.DisplayImage =UFWin.ReSizeImageTo(img, width, (int)(width*ratio), true).ToByteArray();
                 await bslayer.SaveGenericImage(gim);
             }
         }
@@ -361,7 +362,7 @@ namespace DTRMNS {
                 int height = int.Parse(txtSetHeight.Text);
                 Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
                 double ratio = UFWin.RatioTimesHeightForWidth(img);
-                gim.DisplayImage =UF.ReSizeImageTo(img, (int)(height * ratio), height, true).ToByteArray();
+                gim.DisplayImage =UFWin.ReSizeImageTo(img, (int)(height * ratio), height, true).ToByteArray();
                 await bslayer.SaveGenericImage(gim);
             }
         }

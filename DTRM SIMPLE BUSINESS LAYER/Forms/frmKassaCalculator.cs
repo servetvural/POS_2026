@@ -3,12 +3,9 @@ using DTRMNS.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
@@ -21,9 +18,6 @@ namespace DTRMNS {
         private BindingList<Expense> expenses= new BindingList<Expense>();
 
 
-
-        //private int totalTipHours;
-        //private decimal hourlyTipRate;
         private double stepOneTotal;
 
         bool blnTerminate = false;
@@ -83,14 +77,7 @@ namespace DTRMNS {
             try {
                 CalculateBonus();
 
-                //totalTipHours = 0;
-                //foreach (StaffIncome staff in staffIncomes) {
-                //    totalTipHours += staff.hours;
-                //}
 
-                //if (totalTipHours > 0) {
-                //    hourlyTipRate = txtTipTotal.Value / totalTipHours;
-                //}
                 txtRateTotal.Value = 0;
                 txtBonusTotal.Value = 0;
 
@@ -141,7 +128,11 @@ namespace DTRMNS {
         private void cmdAdd_Click(object sender, EventArgs e) {
             Bonus bonus = cmbBonus.SelectedItem as Bonus;
 
-            frmStaffIncomeEditor frm = new frmStaffIncomeEditor(bslayer, new StaffIncome(txtXAmount.Value,bonus));
+            frmStaffIncomeEditor frm = new frmStaffIncomeEditor(bslayer, new StaffIncome()
+            {
+                xAmount = txtXAmount.Value,
+                bonus = bonus
+            });
             if (frm.ShowDialog() == DialogResult.OK) {
                 if (staffIncomes.Where(x => x.IID == frm.staff.IID).Any()) {
                     MessageBox.Show("Already in the list");

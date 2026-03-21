@@ -31,7 +31,7 @@ namespace DTRMNS {
        // StartAgain:
 
             try {
-                if (bslayer == null || bslayer.config == null || bslayer.db == null) {
+                if (bslayer == null || bslayer.config == null ) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
                     if (!bslayer.DoStartThings().Result) {
                         //DisplayMessage("Cannot Start Business Layer", 2);

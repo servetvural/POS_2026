@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using DTRMNS;
 
+using POSLayer.Library;
+
 namespace DTRM_Kitchen_Display {
     public partial class frmDisplaySelector : Form {
         private DTRMSimpleBusiness bslayer;

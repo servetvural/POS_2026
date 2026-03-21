@@ -1,4 +1,6 @@
-﻿namespace DTRMNS.Forms
+﻿using POSLayer.Views;
+
+namespace DTRMNS.Forms
 {
     partial class frmReportArchive
     {

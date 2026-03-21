@@ -3,6 +3,8 @@ using DTRMNS.Forms;
 using System;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class frmStaffIncomeEditor : Form {
         private DTRMSimpleBusiness bslayer;

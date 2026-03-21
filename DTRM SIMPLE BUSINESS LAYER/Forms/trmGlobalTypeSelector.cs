@@ -19,7 +19,7 @@ namespace DTRMNS {
       }
 
       private void LoadDistributions() {
-         dgv.DataSource = bslayer.GetAllDistributions(MenuIID);
+         dgv.DataSource = bslayer.GetAllDistributionsForMenu(MenuIID);
       }
       private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
       {

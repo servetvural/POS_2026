@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using Newtonsoft.Json;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {

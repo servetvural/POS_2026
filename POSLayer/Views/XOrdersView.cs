@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace POSLayer.Models;
+using POSLayer.Models;
 
-public partial class OrdersView : BaseClass
+namespace POSLayer.Views;
+
+public partial class XordersView : BaseClass
 {
     public string? TableIID { get; set; }
 
@@ -54,8 +56,6 @@ public partial class OrdersView : BaseClass
     public string? PaymentFlag { get; set; }
 
     public string? Reference { get; set; }
-
-    public int? KitchenOrderNo { get; set; }
 
     public double? CalculatedValue { get; set; }
 
