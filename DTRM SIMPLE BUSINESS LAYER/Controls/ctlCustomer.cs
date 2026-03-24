@@ -11,9 +11,7 @@ namespace DTRMNS {
     /// Summary description for ctlCustomer.
     /// </summary>
     public class ctlCustomer : System.Windows.Forms.UserControl {
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
 
         private DTRMNS.DTRMSimpleBusiness bslayer;
@@ -22,11 +20,9 @@ namespace DTRMNS {
 
         private string CustomerIID;
         public System.Windows.Forms.TextBox txtName;
-        public System.Windows.Forms.TextBox txtBuzzer;
         public System.Windows.Forms.TextBox txtPostCode1;
         public System.Windows.Forms.TextBox txtAddress;
         public System.Windows.Forms.TextBox txtTown;
-        public System.Windows.Forms.TextBox txtMobile;
         public System.Windows.Forms.TextBox txtEmail;
         public System.Windows.Forms.TextBox txtTel;
 
@@ -98,554 +94,451 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ctlCustomer));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.txtName = new System.Windows.Forms.TextBox();
-            this.txtBuzzer = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtPostCode1 = new System.Windows.Forms.TextBox();
-            this.txtAddress = new System.Windows.Forms.TextBox();
-            this.txtTown = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.txtMobile = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.txtEmail = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.btnAddCustomerToDatabase = new System.Windows.Forms.Button();
-            this.txtTel = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtPostCode2 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.dgv = new DataGridView();
-            this.iIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.addressDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.telDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.mobileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.postCodeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.customerBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.pnlTop = new System.Windows.Forms.Panel();
-            this.btnNotRequired = new System.Windows.Forms.Button();
-            this.btnSearchByTel = new System.Windows.Forms.Button();
-            this.btnDeleteCustomerFromDatabase = new System.Windows.Forms.Button();
-            this.btnSearchByPostCode = new System.Windows.Forms.Button();
-            this.btnSearchByAddress = new System.Windows.Forms.Button();
-            this.btnClearCustomerDetails = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customerBindingSource)).BeginInit();
-            this.pnlTop.SuspendLayout();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            components = new Container();
+            ComponentResourceManager resources = new ComponentResourceManager(typeof(ctlCustomer));
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            txtName = new TextBox();
+            txtPostCode1 = new TextBox();
+            txtAddress = new TextBox();
+            txtTown = new TextBox();
+            label7 = new Label();
+            txtEmail = new TextBox();
+            label10 = new Label();
+            btnAddCustomerToDatabase = new Button();
+            txtTel = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
+            txtPostCode2 = new TextBox();
+            label3 = new Label();
+            dgv = new DataGridView();
+            iIDDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            cNameDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            addressDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            telDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            customerBindingSource = new BindingSource(components);
+            btnSelect = new Button();
+            pnlTop = new Panel();
+            btnNotRequired = new Button();
+            btnSearchByTel = new Button();
+            btnDeleteCustomerFromDatabase = new Button();
+            btnSearchByPostCode = new Button();
+            btnSearchByAddress = new Button();
+            btnClearCustomerDetails = new Button();
+            label5 = new Label();
+            ((ISupportInitialize)dgv).BeginInit();
+            ((ISupportInitialize)customerBindingSource).BeginInit();
+            pnlTop.SuspendLayout();
+            SuspendLayout();
             // 
             // txtName
             // 
-            this.txtName.BackColor = System.Drawing.Color.Bisque;
-            // 
-            // 
-            // 
-            this.txtName.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtName.Location = new System.Drawing.Point(92, 61);
-            this.txtName.MaxLength = 255;
-            this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(270, 22);
-            this.txtName.TabIndex = 1;
-            this.txtName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtName_KeyDown);
-            this.txtName.TextChanged += new System.EventHandler(this.btnGetByName_Click);
-            // 
-            // txtBuzzer
-            // 
-            // 
-            // 
-            // 
-            this.txtBuzzer.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBuzzer.Location = new System.Drawing.Point(92, 153);
-            this.txtBuzzer.MaxLength = 255;
-            this.txtBuzzer.Name = "txtBuzzer";
-            this.txtBuzzer.Size = new System.Drawing.Size(270, 19);
-            this.txtBuzzer.TabIndex = 3;
-            this.txtBuzzer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(20, 155);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(63, 16);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "BUZZER";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            txtName.BackColor = Color.Bisque;
+            txtName.Font = new Font("Arial", 14F);
+            txtName.Location = new Point(92, 61);
+            txtName.MaxLength = 255;
+            txtName.Name = "txtName";
+            txtName.Size = new Size(270, 29);
+            txtName.TabIndex = 1;
+            txtName.TextChanged += btnGetByName_Click;
+            txtName.KeyDown += txtName_KeyDown;
             // 
             // txtPostCode1
             // 
-            // 
-            // 
-            // 
-            this.txtPostCode1.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtPostCode1.Location = new System.Drawing.Point(92, 192);
-            this.txtPostCode1.MaxLength = 4;
-            this.txtPostCode1.Name = "txtPostCode1";
-            this.txtPostCode1.Size = new System.Drawing.Size(69, 22);
-            this.txtPostCode1.TabIndex = 4;
-            this.txtPostCode1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPostCode_KeyDown);
-            this.txtPostCode1.Leave += new System.EventHandler(this.txtPostCode1_Leave);
-            this.txtPostCode1.TextChanged += new System.EventHandler(this.btnGetByPostCode_Click);
+            txtPostCode1.Font = new Font("Arial", 14F);
+            txtPostCode1.Location = new Point(92, 147);
+            txtPostCode1.MaxLength = 4;
+            txtPostCode1.Name = "txtPostCode1";
+            txtPostCode1.Size = new Size(69, 29);
+            txtPostCode1.TabIndex = 4;
+            txtPostCode1.TextChanged += btnGetByPostCode_Click;
+            txtPostCode1.KeyDown += txtPostCode_KeyDown;
+            txtPostCode1.Leave += txtPostCode1_Leave;
             // 
             // txtAddress
             // 
-            // 
-            // 
-            // 
-            this.txtAddress.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtAddress.Location = new System.Drawing.Point(92, 108);
-            this.txtAddress.MaxLength = 255;
-            this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(270, 19);
-            this.txtAddress.TabIndex = 2;
-            this.txtAddress.TextChanged += new System.EventHandler(this.btnGetByAddress_Click);
+            txtAddress.Font = new Font("Arial", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            txtAddress.Location = new Point(92, 108);
+            txtAddress.MaxLength = 255;
+            txtAddress.Name = "txtAddress";
+            txtAddress.Size = new Size(270, 26);
+            txtAddress.TabIndex = 2;
+            txtAddress.TextChanged += btnGetByAddress_Click;
             // 
             // txtTown
             // 
-            // 
-            // 
-            // 
-            this.txtTown.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtTown.Location = new System.Drawing.Point(92, 232);
-            this.txtTown.MaxLength = 255;
-            this.txtTown.Name = "txtTown";
-            this.txtTown.Size = new System.Drawing.Size(270, 22);
-            this.txtTown.TabIndex = 6;
-            this.txtTown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
+            txtTown.Font = new Font("Arial", 14F);
+            txtTown.Location = new Point(92, 187);
+            txtTown.MaxLength = 255;
+            txtTown.Name = "txtTown";
+            txtTown.Size = new Size(270, 29);
+            txtTown.TabIndex = 6;
+            txtTown.KeyDown += MainKeyHandler;
             // 
             // label7
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(33, 236);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 16);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "TOWN";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtMobile
-            // 
-            // 
-            // 
-            // 
-            this.txtMobile.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtMobile.Location = new System.Drawing.Point(92, 275);
-            this.txtMobile.MaxLength = 50;
-            this.txtMobile.Name = "txtMobile";
-            this.txtMobile.Size = new System.Drawing.Size(163, 22);
-            this.txtMobile.TabIndex = 7;
-            this.txtMobile.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(20, 278);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(63, 16);
-            this.label9.TabIndex = 18;
-            this.label9.Text = "MOBILE";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label7.AutoSize = true;
+            label7.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label7.ForeColor = Color.White;
+            label7.Location = new Point(33, 191);
+            label7.Name = "label7";
+            label7.Size = new Size(49, 16);
+            label7.TabIndex = 17;
+            label7.Text = "TOWN";
+            label7.TextAlign = ContentAlignment.MiddleRight;
             // 
             // txtEmail
             // 
-            // 
-            // 
-            // 
-            this.txtEmail.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtEmail.Location = new System.Drawing.Point(92, 318);
-            this.txtEmail.MaxLength = 255;
-            this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(270, 22);
-            this.txtEmail.TabIndex = 8;
-            this.txtEmail.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
+            txtEmail.Font = new Font("Arial", 14F);
+            txtEmail.Location = new Point(92, 230);
+            txtEmail.MaxLength = 255;
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(270, 29);
+            txtEmail.TabIndex = 8;
+            txtEmail.KeyDown += MainKeyHandler;
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(32, 321);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(51, 16);
-            this.label10.TabIndex = 19;
-            this.label10.Text = "EMAIL";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label10.AutoSize = true;
+            label10.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label10.ForeColor = Color.White;
+            label10.Location = new Point(32, 233);
+            label10.Name = "label10";
+            label10.Size = new Size(50, 16);
+            label10.TabIndex = 19;
+            label10.Text = "EMAIL";
+            label10.TextAlign = ContentAlignment.MiddleRight;
             // 
             // btnAddCustomerToDatabase
             // 
-            this.btnAddCustomerToDatabase.AutoEllipsis = true;
-            this.btnAddCustomerToDatabase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnAddCustomerToDatabase.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnAddCustomerToDatabase.BackgroundImage")));
-            this.btnAddCustomerToDatabase.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnAddCustomerToDatabase.FlatAppearance.BorderSize = 0;
-            this.btnAddCustomerToDatabase.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAddCustomerToDatabase.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnAddCustomerToDatabase.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnAddCustomerToDatabase.Location = new System.Drawing.Point(526, 236);
-            this.btnAddCustomerToDatabase.Name = "btnAddCustomerToDatabase";
-            this.btnAddCustomerToDatabase.Size = new System.Drawing.Size(138, 122);
-            this.btnAddCustomerToDatabase.TabIndex = 9;
-            this.btnAddCustomerToDatabase.Text = "SAVE CUSTOMER DETAILS AND CLOSE";
-            this.btnAddCustomerToDatabase.UseVisualStyleBackColor = false;
-            this.btnAddCustomerToDatabase.Click += new System.EventHandler(this.btnUpdateCustomer_Click);
-            this.btnAddCustomerToDatabase.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
+            btnAddCustomerToDatabase.AutoEllipsis = true;
+            btnAddCustomerToDatabase.BackColor = Color.FromArgb(0, 192, 0);
+            btnAddCustomerToDatabase.BackgroundImage = (Image)resources.GetObject("btnAddCustomerToDatabase.BackgroundImage");
+            btnAddCustomerToDatabase.BackgroundImageLayout = ImageLayout.Stretch;
+            btnAddCustomerToDatabase.FlatAppearance.BorderSize = 0;
+            btnAddCustomerToDatabase.FlatStyle = FlatStyle.Flat;
+            btnAddCustomerToDatabase.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnAddCustomerToDatabase.ForeColor = Color.FromArgb(0, 0, 0);
+            btnAddCustomerToDatabase.Location = new Point(526, 236);
+            btnAddCustomerToDatabase.Name = "btnAddCustomerToDatabase";
+            btnAddCustomerToDatabase.Size = new Size(138, 57);
+            btnAddCustomerToDatabase.TabIndex = 9;
+            btnAddCustomerToDatabase.Text = "SAVE CUSTOMER DETAILS AND CLOSE";
+            btnAddCustomerToDatabase.UseVisualStyleBackColor = false;
+            btnAddCustomerToDatabase.Click += btnUpdateCustomer_Click;
+            btnAddCustomerToDatabase.KeyDown += MainKeyHandler;
             // 
             // txtTel
             // 
-            this.txtTel.BackColor = System.Drawing.Color.Bisque;
-            // 
-            // 
-            // 
-            this.txtTel.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtTel.Location = new System.Drawing.Point(92, 18);
-            this.txtTel.MaxLength = 50;
-            this.txtTel.Name = "txtTel";
-            this.txtTel.Size = new System.Drawing.Size(163, 22);
-            this.txtTel.TabIndex = 0;
-            this.txtTel.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTel_KeyDown);
-            this.txtTel.TextChanged += new System.EventHandler(this.btnGetByPhone_Click);
+            txtTel.BackColor = Color.Bisque;
+            txtTel.Font = new Font("Arial", 14F);
+            txtTel.Location = new Point(92, 18);
+            txtTel.MaxLength = 50;
+            txtTel.Name = "txtTel";
+            txtTel.Size = new Size(163, 29);
+            txtTel.TabIndex = 0;
+            txtTel.TextChanged += btnGetByPhone_Click;
+            txtTel.KeyDown += txtTel_KeyDown;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(50, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(33, 16);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "TEL";
+            label1.AutoSize = true;
+            label1.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label1.ForeColor = Color.White;
+            label1.Location = new Point(50, 22);
+            label1.Name = "label1";
+            label1.Size = new Size(32, 16);
+            label1.TabIndex = 20;
+            label1.Text = "TEL";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(34, 65);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(49, 16);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "NAME";
+            label2.AutoSize = true;
+            label2.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label2.ForeColor = Color.White;
+            label2.Location = new Point(34, 65);
+            label2.Name = "label2";
+            label2.Size = new Size(48, 16);
+            label2.TabIndex = 21;
+            label2.Text = "NAME";
             // 
             // txtPostCode2
             // 
-            // 
-            // 
-            // 
-            this.txtPostCode2.Font = new System.Drawing.Font("Arial", 14F);
-            this.txtPostCode2.Location = new System.Drawing.Point(177, 192);
-            this.txtPostCode2.MaxLength = 4;
-            this.txtPostCode2.Name = "txtPostCode2";
-            this.txtPostCode2.Size = new System.Drawing.Size(78, 22);
-            this.txtPostCode2.TabIndex = 5;
-            this.txtPostCode2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
+            txtPostCode2.Font = new Font("Arial", 14F);
+            txtPostCode2.Location = new Point(177, 147);
+            txtPostCode2.MaxLength = 4;
+            txtPostCode2.Name = "txtPostCode2";
+            txtPostCode2.Size = new Size(78, 29);
+            txtPostCode2.TabIndex = 5;
+            txtPostCode2.KeyDown += MainKeyHandler;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(9, 111);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 16);
-            this.label3.TabIndex = 23;
-            this.label3.Text = "ADDRESS";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label3.AutoSize = true;
+            label3.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label3.ForeColor = Color.White;
+            label3.Location = new Point(9, 111);
+            label3.Name = "label3";
+            label3.Size = new Size(73, 16);
+            label3.TabIndex = 23;
+            label3.Text = "ADDRESS";
+            label3.TextAlign = ContentAlignment.MiddleRight;
             // 
             // dgv
             // 
-            this.dgv.AllowUserToAddRows = false;
-            this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AutoGenerateColumns = false;
-            this.dgv.BackgroundColor = System.Drawing.Color.Black;
-            this.dgv.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.iIDDataGridViewTextBoxColumn,
-            this.cNameDataGridViewTextBoxColumn,
-            this.addressDataGridViewTextBoxColumn,
-            this.telDataGridViewTextBoxColumn,
-            this.mobileDataGridViewTextBoxColumn,
-            this.postCodeDataGridViewTextBoxColumn});
-            this.dgv.DataSource = this.customerBindingSource;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv.Location = new System.Drawing.Point(5, 371);
-            this.dgv.MultiSelect = false;
-            this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
-            this.dgv.RowHeadersWidth = 15;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(682, 189);
-            this.dgv.TabIndex = 88;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AutoGenerateColumns = false;
+            dgv.BackgroundColor = Color.Black;
+            dgv.BorderStyle = BorderStyle.None;
+            dgv.Columns.AddRange(new DataGridViewColumn[] { iIDDataGridViewTextBoxColumn, cNameDataGridViewTextBoxColumn, addressDataGridViewTextBoxColumn, telDataGridViewTextBoxColumn });
+            dgv.DataSource = customerBindingSource;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Window;
+            dataGridViewCellStyle1.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle1;
+            dgv.Dock = DockStyle.Fill;
+            dgv.GridColor = Color.FromArgb(208, 215, 229);
+            dgv.Location = new Point(5, 317);
+            dgv.MultiSelect = false;
+            dgv.Name = "dgv";
+            dgv.ReadOnly = true;
+            dgv.RowHeadersWidth = 15;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.Size = new Size(682, 243);
+            dgv.TabIndex = 88;
             // 
             // iIDDataGridViewTextBoxColumn
             // 
-            this.iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
-            this.iIDDataGridViewTextBoxColumn.HeaderText = "IID";
-            this.iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
-            this.iIDDataGridViewTextBoxColumn.ReadOnly = true;
-            this.iIDDataGridViewTextBoxColumn.Visible = false;
+            iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
+            iIDDataGridViewTextBoxColumn.HeaderText = "IID";
+            iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
+            iIDDataGridViewTextBoxColumn.ReadOnly = true;
+            iIDDataGridViewTextBoxColumn.Visible = false;
             // 
             // cNameDataGridViewTextBoxColumn
             // 
-            this.cNameDataGridViewTextBoxColumn.DataPropertyName = "CName";
-            this.cNameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.cNameDataGridViewTextBoxColumn.Name = "cNameDataGridViewTextBoxColumn";
-            this.cNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.cNameDataGridViewTextBoxColumn.Width = 130;
+            cNameDataGridViewTextBoxColumn.DataPropertyName = "CName";
+            cNameDataGridViewTextBoxColumn.HeaderText = "Name";
+            cNameDataGridViewTextBoxColumn.Name = "cNameDataGridViewTextBoxColumn";
+            cNameDataGridViewTextBoxColumn.ReadOnly = true;
+            cNameDataGridViewTextBoxColumn.Width = 130;
             // 
             // addressDataGridViewTextBoxColumn
             // 
-            this.addressDataGridViewTextBoxColumn.DataPropertyName = "Address";
-            this.addressDataGridViewTextBoxColumn.HeaderText = "Address";
-            this.addressDataGridViewTextBoxColumn.Name = "addressDataGridViewTextBoxColumn";
-            this.addressDataGridViewTextBoxColumn.ReadOnly = true;
-            this.addressDataGridViewTextBoxColumn.Width = 200;
+            addressDataGridViewTextBoxColumn.DataPropertyName = "Address";
+            addressDataGridViewTextBoxColumn.HeaderText = "Address";
+            addressDataGridViewTextBoxColumn.Name = "addressDataGridViewTextBoxColumn";
+            addressDataGridViewTextBoxColumn.ReadOnly = true;
+            addressDataGridViewTextBoxColumn.Width = 200;
             // 
             // telDataGridViewTextBoxColumn
             // 
-            this.telDataGridViewTextBoxColumn.DataPropertyName = "Tel";
-            this.telDataGridViewTextBoxColumn.HeaderText = "Tel";
-            this.telDataGridViewTextBoxColumn.Name = "telDataGridViewTextBoxColumn";
-            this.telDataGridViewTextBoxColumn.ReadOnly = true;
-            this.telDataGridViewTextBoxColumn.Width = 110;
-            // 
-            // mobileDataGridViewTextBoxColumn
-            // 
-            this.mobileDataGridViewTextBoxColumn.DataPropertyName = "Mobile";
-            this.mobileDataGridViewTextBoxColumn.HeaderText = "Mobile";
-            this.mobileDataGridViewTextBoxColumn.Name = "mobileDataGridViewTextBoxColumn";
-            this.mobileDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // postCodeDataGridViewTextBoxColumn
-            // 
-            this.postCodeDataGridViewTextBoxColumn.DataPropertyName = "PostCode";
-            this.postCodeDataGridViewTextBoxColumn.HeaderText = "PostCode";
-            this.postCodeDataGridViewTextBoxColumn.Name = "postCodeDataGridViewTextBoxColumn";
-            this.postCodeDataGridViewTextBoxColumn.ReadOnly = true;
+            telDataGridViewTextBoxColumn.DataPropertyName = "Tel";
+            telDataGridViewTextBoxColumn.HeaderText = "Tel";
+            telDataGridViewTextBoxColumn.Name = "telDataGridViewTextBoxColumn";
+            telDataGridViewTextBoxColumn.ReadOnly = true;
+            telDataGridViewTextBoxColumn.Width = 110;
             // 
             // customerBindingSource
             // 
-            this.customerBindingSource.DataSource = typeof(POSLayer.Models.Customer);
+            customerBindingSource.DataSource = typeof(POSLayer.Models.Customer);
             // 
             // btnSelect
             // 
-            this.btnSelect.AutoEllipsis = true;
-            this.btnSelect.BackColor = System.Drawing.Color.DarkBlue;
-            this.btnSelect.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSelect.BackgroundImage")));
-            this.btnSelect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnSelect.FlatAppearance.BorderSize = 0;
-            this.btnSelect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSelect.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSelect.ForeColor = System.Drawing.Color.White;
-            this.btnSelect.Location = new System.Drawing.Point(526, 91);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(138, 57);
-            this.btnSelect.TabIndex = 11;
-            this.btnSelect.Text = "SELECT  FROM  LIST";
-            this.btnSelect.UseVisualStyleBackColor = false;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
-            this.btnSelect.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
+            btnSelect.AutoEllipsis = true;
+            btnSelect.BackColor = Color.DarkBlue;
+            btnSelect.BackgroundImage = (Image)resources.GetObject("btnSelect.BackgroundImage");
+            btnSelect.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSelect.FlatAppearance.BorderSize = 0;
+            btnSelect.FlatStyle = FlatStyle.Flat;
+            btnSelect.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnSelect.ForeColor = Color.White;
+            btnSelect.Location = new Point(526, 91);
+            btnSelect.Name = "btnSelect";
+            btnSelect.Size = new Size(138, 57);
+            btnSelect.TabIndex = 11;
+            btnSelect.Text = "SELECT  FROM  LIST";
+            btnSelect.UseVisualStyleBackColor = false;
+            btnSelect.Click += btnSelect_Click;
+            btnSelect.KeyDown += MainKeyHandler;
             // 
             // pnlTop
             // 
-            this.pnlTop.BackColor = System.Drawing.Color.Black;
-            this.pnlTop.Controls.Add(this.btnNotRequired);
-            this.pnlTop.Controls.Add(this.btnSearchByTel);
-            this.pnlTop.Controls.Add(this.btnDeleteCustomerFromDatabase);
-            this.pnlTop.Controls.Add(this.btnSearchByPostCode);
-            this.pnlTop.Controls.Add(this.btnSearchByAddress);
-            this.pnlTop.Controls.Add(this.btnClearCustomerDetails);
-            this.pnlTop.Controls.Add(this.label5);
-            this.pnlTop.Controls.Add(this.label1);
-            this.pnlTop.Controls.Add(this.btnSelect);
-            this.pnlTop.Controls.Add(this.label4);
-            this.pnlTop.Controls.Add(this.label7);
-            this.pnlTop.Controls.Add(this.label3);
-            this.pnlTop.Controls.Add(this.label9);
-            this.pnlTop.Controls.Add(this.txtPostCode2);
-            this.pnlTop.Controls.Add(this.label10);
-            this.pnlTop.Controls.Add(this.label2);
-            this.pnlTop.Controls.Add(this.txtName);
-            this.pnlTop.Controls.Add(this.txtBuzzer);
-            this.pnlTop.Controls.Add(this.txtTel);
-            this.pnlTop.Controls.Add(this.txtPostCode1);
-            this.pnlTop.Controls.Add(this.txtAddress);
-            this.pnlTop.Controls.Add(this.txtTown);
-            this.pnlTop.Controls.Add(this.btnAddCustomerToDatabase);
-            this.pnlTop.Controls.Add(this.txtMobile);
-            this.pnlTop.Controls.Add(this.txtEmail);
-            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Location = new System.Drawing.Point(5, 5);
-            this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(682, 366);
-            this.pnlTop.TabIndex = 89;
+            pnlTop.BackColor = Color.Black;
+            pnlTop.Controls.Add(btnNotRequired);
+            pnlTop.Controls.Add(btnSearchByTel);
+            pnlTop.Controls.Add(btnDeleteCustomerFromDatabase);
+            pnlTop.Controls.Add(btnSearchByPostCode);
+            pnlTop.Controls.Add(btnSearchByAddress);
+            pnlTop.Controls.Add(btnClearCustomerDetails);
+            pnlTop.Controls.Add(label5);
+            pnlTop.Controls.Add(label1);
+            pnlTop.Controls.Add(btnSelect);
+            pnlTop.Controls.Add(label7);
+            pnlTop.Controls.Add(label3);
+            pnlTop.Controls.Add(txtPostCode2);
+            pnlTop.Controls.Add(label10);
+            pnlTop.Controls.Add(label2);
+            pnlTop.Controls.Add(txtName);
+            pnlTop.Controls.Add(txtTel);
+            pnlTop.Controls.Add(txtPostCode1);
+            pnlTop.Controls.Add(txtAddress);
+            pnlTop.Controls.Add(txtTown);
+            pnlTop.Controls.Add(btnAddCustomerToDatabase);
+            pnlTop.Controls.Add(txtEmail);
+            pnlTop.Dock = DockStyle.Top;
+            pnlTop.Location = new Point(5, 5);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new Size(682, 312);
+            pnlTop.TabIndex = 89;
             // 
             // btnNotRequired
             // 
-            this.btnNotRequired.AutoEllipsis = true;
-            this.btnNotRequired.BackColor = System.Drawing.Color.MediumAquamarine;
-            this.btnNotRequired.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnNotRequired.BackgroundImage")));
-            this.btnNotRequired.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnNotRequired.FlatAppearance.BorderSize = 0;
-            this.btnNotRequired.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNotRequired.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnNotRequired.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnNotRequired.Location = new System.Drawing.Point(370, 236);
-            this.btnNotRequired.Name = "btnNotRequired";
-            this.btnNotRequired.Size = new System.Drawing.Size(138, 57);
-            this.btnNotRequired.TabIndex = 30;
-            this.btnNotRequired.Text = "NOT REQUIRED";
-            this.btnNotRequired.UseVisualStyleBackColor = false;
-            this.btnNotRequired.Click += new System.EventHandler(this.btnNotRequired_Click);
+            btnNotRequired.AutoEllipsis = true;
+            btnNotRequired.BackColor = Color.MediumAquamarine;
+            btnNotRequired.BackgroundImage = (Image)resources.GetObject("btnNotRequired.BackgroundImage");
+            btnNotRequired.BackgroundImageLayout = ImageLayout.Stretch;
+            btnNotRequired.FlatAppearance.BorderSize = 0;
+            btnNotRequired.FlatStyle = FlatStyle.Flat;
+            btnNotRequired.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnNotRequired.ForeColor = Color.FromArgb(0, 0, 0);
+            btnNotRequired.Location = new Point(370, 236);
+            btnNotRequired.Name = "btnNotRequired";
+            btnNotRequired.Size = new Size(138, 57);
+            btnNotRequired.TabIndex = 30;
+            btnNotRequired.Text = "NOT REQUIRED";
+            btnNotRequired.UseVisualStyleBackColor = false;
+            btnNotRequired.Click += btnNotRequired_Click;
             // 
             // btnSearchByTel
             // 
-            this.btnSearchByTel.AutoEllipsis = true;
-            this.btnSearchByTel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnSearchByTel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSearchByTel.BackgroundImage")));
-            this.btnSearchByTel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnSearchByTel.FlatAppearance.BorderSize = 0;
-            this.btnSearchByTel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchByTel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSearchByTel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnSearchByTel.Location = new System.Drawing.Point(370, 18);
-            this.btnSearchByTel.Name = "btnSearchByTel";
-            this.btnSearchByTel.Size = new System.Drawing.Size(138, 57);
-            this.btnSearchByTel.TabIndex = 29;
-            this.btnSearchByTel.Text = "SEARCH BY TEL";
-            this.btnSearchByTel.UseVisualStyleBackColor = false;
-            this.btnSearchByTel.Click += new System.EventHandler(this.btnGetByPhone_Click);
+            btnSearchByTel.AutoEllipsis = true;
+            btnSearchByTel.BackColor = Color.FromArgb(255, 128, 0);
+            btnSearchByTel.BackgroundImage = (Image)resources.GetObject("btnSearchByTel.BackgroundImage");
+            btnSearchByTel.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSearchByTel.FlatAppearance.BorderSize = 0;
+            btnSearchByTel.FlatStyle = FlatStyle.Flat;
+            btnSearchByTel.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnSearchByTel.ForeColor = Color.FromArgb(0, 0, 0);
+            btnSearchByTel.Location = new Point(370, 18);
+            btnSearchByTel.Name = "btnSearchByTel";
+            btnSearchByTel.Size = new Size(138, 57);
+            btnSearchByTel.TabIndex = 29;
+            btnSearchByTel.Text = "SEARCH BY TEL";
+            btnSearchByTel.UseVisualStyleBackColor = false;
+            btnSearchByTel.Click += btnGetByPhone_Click;
             // 
             // btnDeleteCustomerFromDatabase
             // 
-            this.btnDeleteCustomerFromDatabase.AutoEllipsis = true;
-            this.btnDeleteCustomerFromDatabase.BackColor = System.Drawing.Color.Red;
-            this.btnDeleteCustomerFromDatabase.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnDeleteCustomerFromDatabase.BackgroundImage")));
-            this.btnDeleteCustomerFromDatabase.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnDeleteCustomerFromDatabase.FlatAppearance.BorderSize = 0;
-            this.btnDeleteCustomerFromDatabase.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeleteCustomerFromDatabase.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDeleteCustomerFromDatabase.ForeColor = System.Drawing.Color.White;
-            this.btnDeleteCustomerFromDatabase.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnDeleteCustomerFromDatabase.Location = new System.Drawing.Point(526, 166);
-            this.btnDeleteCustomerFromDatabase.Name = "btnDeleteCustomerFromDatabase";
-            this.btnDeleteCustomerFromDatabase.Size = new System.Drawing.Size(138, 57);
-            this.btnDeleteCustomerFromDatabase.TabIndex = 28;
-            this.btnDeleteCustomerFromDatabase.Text = "Delete Selected Customer From Database";
-            this.btnDeleteCustomerFromDatabase.UseVisualStyleBackColor = false;
-            this.btnDeleteCustomerFromDatabase.Click += new System.EventHandler(this.btnDeleteCustomerFromDatabase_Click);
+            btnDeleteCustomerFromDatabase.AutoEllipsis = true;
+            btnDeleteCustomerFromDatabase.BackColor = Color.Red;
+            btnDeleteCustomerFromDatabase.BackgroundImage = (Image)resources.GetObject("btnDeleteCustomerFromDatabase.BackgroundImage");
+            btnDeleteCustomerFromDatabase.BackgroundImageLayout = ImageLayout.Stretch;
+            btnDeleteCustomerFromDatabase.FlatAppearance.BorderSize = 0;
+            btnDeleteCustomerFromDatabase.FlatStyle = FlatStyle.Flat;
+            btnDeleteCustomerFromDatabase.Font = new Font("Arial", 9F, FontStyle.Bold);
+            btnDeleteCustomerFromDatabase.ForeColor = Color.White;
+            btnDeleteCustomerFromDatabase.ImageAlign = ContentAlignment.MiddleLeft;
+            btnDeleteCustomerFromDatabase.Location = new Point(526, 166);
+            btnDeleteCustomerFromDatabase.Name = "btnDeleteCustomerFromDatabase";
+            btnDeleteCustomerFromDatabase.Size = new Size(138, 57);
+            btnDeleteCustomerFromDatabase.TabIndex = 28;
+            btnDeleteCustomerFromDatabase.Text = "Delete Selected Customer From Database";
+            btnDeleteCustomerFromDatabase.UseVisualStyleBackColor = false;
+            btnDeleteCustomerFromDatabase.Click += btnDeleteCustomerFromDatabase_Click;
             // 
             // btnSearchByPostCode
             // 
-            this.btnSearchByPostCode.AutoEllipsis = true;
-            this.btnSearchByPostCode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnSearchByPostCode.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSearchByPostCode.BackgroundImage")));
-            this.btnSearchByPostCode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnSearchByPostCode.FlatAppearance.BorderSize = 0;
-            this.btnSearchByPostCode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchByPostCode.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSearchByPostCode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnSearchByPostCode.Location = new System.Drawing.Point(370, 166);
-            this.btnSearchByPostCode.Name = "btnSearchByPostCode";
-            this.btnSearchByPostCode.Size = new System.Drawing.Size(138, 57);
-            this.btnSearchByPostCode.TabIndex = 27;
-            this.btnSearchByPostCode.Text = "SEARCH BY POSTCODE";
-            this.btnSearchByPostCode.UseVisualStyleBackColor = false;
-            this.btnSearchByPostCode.Click += new System.EventHandler(this.btnGetByPostCode_Click);
+            btnSearchByPostCode.AutoEllipsis = true;
+            btnSearchByPostCode.BackColor = Color.FromArgb(255, 128, 0);
+            btnSearchByPostCode.BackgroundImage = (Image)resources.GetObject("btnSearchByPostCode.BackgroundImage");
+            btnSearchByPostCode.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSearchByPostCode.FlatAppearance.BorderSize = 0;
+            btnSearchByPostCode.FlatStyle = FlatStyle.Flat;
+            btnSearchByPostCode.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnSearchByPostCode.ForeColor = Color.FromArgb(0, 0, 0);
+            btnSearchByPostCode.Location = new Point(370, 166);
+            btnSearchByPostCode.Name = "btnSearchByPostCode";
+            btnSearchByPostCode.Size = new Size(138, 57);
+            btnSearchByPostCode.TabIndex = 27;
+            btnSearchByPostCode.Text = "SEARCH BY POSTCODE";
+            btnSearchByPostCode.UseVisualStyleBackColor = false;
+            btnSearchByPostCode.Click += btnGetByPostCode_Click;
             // 
             // btnSearchByAddress
             // 
-            this.btnSearchByAddress.AutoEllipsis = true;
-            this.btnSearchByAddress.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnSearchByAddress.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnSearchByAddress.BackgroundImage")));
-            this.btnSearchByAddress.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnSearchByAddress.FlatAppearance.BorderSize = 0;
-            this.btnSearchByAddress.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSearchByAddress.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnSearchByAddress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnSearchByAddress.Location = new System.Drawing.Point(370, 92);
-            this.btnSearchByAddress.Name = "btnSearchByAddress";
-            this.btnSearchByAddress.Size = new System.Drawing.Size(138, 57);
-            this.btnSearchByAddress.TabIndex = 26;
-            this.btnSearchByAddress.Text = "SEARCH BY ADDRESS";
-            this.btnSearchByAddress.UseVisualStyleBackColor = false;
-            this.btnSearchByAddress.Click += new System.EventHandler(this.btnGetByAddress_Click);
+            btnSearchByAddress.AutoEllipsis = true;
+            btnSearchByAddress.BackColor = Color.FromArgb(255, 128, 0);
+            btnSearchByAddress.BackgroundImage = (Image)resources.GetObject("btnSearchByAddress.BackgroundImage");
+            btnSearchByAddress.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSearchByAddress.FlatAppearance.BorderSize = 0;
+            btnSearchByAddress.FlatStyle = FlatStyle.Flat;
+            btnSearchByAddress.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnSearchByAddress.ForeColor = Color.FromArgb(0, 0, 0);
+            btnSearchByAddress.Location = new Point(370, 92);
+            btnSearchByAddress.Name = "btnSearchByAddress";
+            btnSearchByAddress.Size = new Size(138, 57);
+            btnSearchByAddress.TabIndex = 26;
+            btnSearchByAddress.Text = "SEARCH BY ADDRESS";
+            btnSearchByAddress.UseVisualStyleBackColor = false;
+            btnSearchByAddress.Click += btnGetByAddress_Click;
             // 
             // btnClearCustomerDetails
             // 
-            this.btnClearCustomerDetails.AutoEllipsis = true;
-            this.btnClearCustomerDetails.BackColor = System.Drawing.Color.Red;
-            this.btnClearCustomerDetails.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnClearCustomerDetails.BackgroundImage")));
-            this.btnClearCustomerDetails.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnClearCustomerDetails.FlatAppearance.BorderSize = 0;
-            this.btnClearCustomerDetails.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearCustomerDetails.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.btnClearCustomerDetails.ForeColor = System.Drawing.Color.White;
-            this.btnClearCustomerDetails.Location = new System.Drawing.Point(526, 18);
-            this.btnClearCustomerDetails.Name = "btnClearCustomerDetails";
-            this.btnClearCustomerDetails.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnClearCustomerDetails.Size = new System.Drawing.Size(138, 57);
-            this.btnClearCustomerDetails.TabIndex = 25;
-            this.btnClearCustomerDetails.Text = "CLEAR CUSTOMER DETAILS";
-            this.btnClearCustomerDetails.UseVisualStyleBackColor = false;
-            this.btnClearCustomerDetails.Click += new System.EventHandler(this.btnClearCustomerDetails_Click);
+            btnClearCustomerDetails.AutoEllipsis = true;
+            btnClearCustomerDetails.BackColor = Color.Red;
+            btnClearCustomerDetails.BackgroundImage = (Image)resources.GetObject("btnClearCustomerDetails.BackgroundImage");
+            btnClearCustomerDetails.BackgroundImageLayout = ImageLayout.Stretch;
+            btnClearCustomerDetails.FlatAppearance.BorderSize = 0;
+            btnClearCustomerDetails.FlatStyle = FlatStyle.Flat;
+            btnClearCustomerDetails.Font = new Font("Arial", 10F, FontStyle.Bold);
+            btnClearCustomerDetails.ForeColor = Color.White;
+            btnClearCustomerDetails.Location = new Point(526, 18);
+            btnClearCustomerDetails.Name = "btnClearCustomerDetails";
+            btnClearCustomerDetails.RightToLeft = RightToLeft.Yes;
+            btnClearCustomerDetails.Size = new Size(138, 57);
+            btnClearCustomerDetails.TabIndex = 25;
+            btnClearCustomerDetails.Text = "CLEAR CUSTOMER DETAILS";
+            btnClearCustomerDetails.UseVisualStyleBackColor = false;
+            btnClearCustomerDetails.Click += btnClearCustomerDetails_Click;
             // 
             // label5
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(-2, 197);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 16);
-            this.label5.TabIndex = 24;
-            this.label5.Text = "POSTCODE";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            label5.AutoSize = true;
+            label5.Font = new Font("Arial", 10F, FontStyle.Bold);
+            label5.ForeColor = Color.White;
+            label5.Location = new Point(-2, 152);
+            label5.Name = "label5";
+            label5.Size = new Size(84, 16);
+            label5.TabIndex = 24;
+            label5.Text = "POSTCODE";
+            label5.TextAlign = ContentAlignment.MiddleRight;
             // 
             // ctlCustomer
             // 
-            this.BackColor = System.Drawing.Color.Black;
-            this.Controls.Add(this.dgv);
-            this.Controls.Add(this.pnlTop);
-            this.Location = new System.Drawing.Point(0, 74);
-            this.Name = "ctlCustomer";
-            this.Padding = new System.Windows.Forms.Padding(5);
-            this.Size = new System.Drawing.Size(692, 565);
-            this.Load += new System.EventHandler(this.frmCustomer_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainKeyHandler);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.customerBindingSource)).EndInit();
-            this.pnlTop.ResumeLayout(false);
-            this.pnlTop.PerformLayout();
-            this.ResumeLayout(false);
+            BackColor = Color.Black;
+            Controls.Add(dgv);
+            Controls.Add(pnlTop);
+            Location = new Point(0, 74);
+            Name = "ctlCustomer";
+            Padding = new Padding(5);
+            Size = new Size(692, 565);
+            Load += frmCustomer_Load;
+            KeyDown += MainKeyHandler;
+            ((ISupportInitialize)dgv).EndInit();
+            ((ISupportInitialize)customerBindingSource).EndInit();
+            pnlTop.ResumeLayout(false);
+            pnlTop.PerformLayout();
+            ResumeLayout(false);
 
         }
         #endregion
-
-
-
         private void frmCustomer_Load(object sender, System.EventArgs e) {
             LoadCustomer();
             txtTel.Focus();
@@ -655,47 +548,40 @@ namespace DTRMNS {
             }
         }
 
-
         public void LoadCustomer() {
             try {
                 CustomerIID = bslayer.AttachedOrder.CustomerIID;
-                txtName.Text = bslayer.AttachedOrder.CName;
-                txtBuzzer.Text = bslayer.AttachedOrder.Buzzer;
+                txtName.Text = bslayer.AttachedOrder.Customer.CName;
                 try {
-                    string[] parr = bslayer.AttachedOrder.Postcode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] parr = bslayer.AttachedOrder.Customer.Postcode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     if (parr.Length > 0)
                         txtPostCode1.Text = parr[0];
                     if (parr.Length > 1)
                         txtPostCode2.Text = parr[1];
                 } catch { }
-                txtAddress.Text = bslayer.AttachedOrder.Address;
-                txtTown.Text = bslayer.AttachedOrder.Town;
-                txtTel.Text = bslayer.AttachedOrder.Tel;
-                txtMobile.Text = bslayer.AttachedOrder.Mobile;
-                txtEmail.Text = bslayer.AttachedOrder.Email;
+                txtAddress.Text = bslayer.AttachedOrder.Customer.Address;
+                txtTown.Text = bslayer.AttachedOrder.Customer.Town;
+                txtTel.Text = bslayer.AttachedOrder.Customer.Tel;
+                txtEmail.Text = bslayer.AttachedOrder.Customer.Email;
             } catch { }
         }
 
         public void ClearUI() {
             CustomerIID = "";
             txtName.Text = "";
-            txtBuzzer.Text = "";
             txtPostCode1.Text = "";
             txtPostCode2.Text = "";
             txtAddress.Text = "";
             txtTown.Text = "";
             txtTel.Text = "";
-            txtMobile.Text = "";
             txtEmail.Text = "";
         }
         public bool IsUIHaveCustomerData() {
             if (txtName.Text.Trim().Length > 0 ||
-                txtBuzzer.Text.Trim().Length > 0 ||
                 txtPostCode1.Text.Trim().Length > 0 ||
                 txtAddress.Text.Trim().Length > 0 ||
                 txtTown.Text.Trim().Length > 0 ||
                 txtTel.Text.Trim().Length > 0 ||
-                txtMobile.Text.Trim().Length > 0 ||
                 txtEmail.Text.Trim().Length > 0)
                 return true;
             else
@@ -750,16 +636,14 @@ namespace DTRMNS {
             if (bslayer.AttachedOrder.CustomerIID == null || bslayer.AttachedOrder.CustomerIID == "")
                 bslayer.AttachedOrder.CustomerIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
 
-            this.bslayer.AttachedOrder.CName = txtName.Text;
-            this.bslayer.AttachedOrder.Buzzer = txtBuzzer.Text;
-            this.bslayer.AttachedOrder.Address = txtAddress.Text;
-            this.bslayer.AttachedOrder.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
-            this.bslayer.AttachedOrder.Town = txtTown.Text;
-            this.bslayer.AttachedOrder.Tel = txtTel.Text;
-            this.bslayer.AttachedOrder.Mobile = txtMobile.Text;
-            this.bslayer.AttachedOrder.Email = txtEmail.Text;
+            this.bslayer.AttachedOrder.Customer.CName = txtName.Text;
+            this.bslayer.AttachedOrder.Customer.Address = txtAddress.Text;
+            this.bslayer.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+            this.bslayer.AttachedOrder.Customer.Town = txtTown.Text;
+            this.bslayer.AttachedOrder.Customer.Tel = txtTel.Text;
+            this.bslayer.AttachedOrder.Customer.Email = txtEmail.Text;
 
-            if (bslayer.SaveCustomer(bslayer.CustomerDetailsFromOrder())) {
+            if (bslayer.SaveCustomer(bslayer.AttachedOrder.Customer)) {
                 Success = true;
                 CloseFunction();
                 if (CompleteAttachedOrder != null)
@@ -768,26 +652,14 @@ namespace DTRMNS {
         }
 
         public void UICustomerToCustomer() {
-            bslayer.AttachedOrder.CName = txtName.Text;
-            bslayer.AttachedOrder.Buzzer = txtBuzzer.Text;
-            bslayer.AttachedOrder.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
-            bslayer.AttachedOrder.Address = txtAddress.Text;
-            bslayer.AttachedOrder.Town = txtTown.Text;
-            bslayer.AttachedOrder.Tel = txtTel.Text;
-            bslayer.AttachedOrder.Mobile = txtMobile.Text;
-            bslayer.AttachedOrder.Email = txtEmail.Text;
+            bslayer.AttachedOrder.Customer.CName = txtName.Text;
+            bslayer.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+            bslayer.AttachedOrder.Customer.Address = txtAddress.Text;
+            bslayer.AttachedOrder.Customer.Town = txtTown.Text;
+            bslayer.AttachedOrder.Customer.Tel = txtTel.Text;
+            bslayer.AttachedOrder.Customer.Email = txtEmail.Text;
         }
 
-        //private void btnCustomerNotRequired_Click(object sender, EventArgs e) {
-        //    if (bslayer.AttachedOrder.OrderType == OrderTypes.Delivery)
-        //        return;
-
-        //    bslayer.AttachedOrder.CustomerIID = null;
-        //    Success = true;
-        //    CloseFunction();
-        //    if (CompleteAttachedOrder != null)
-        //        CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
-        //}
         private void MainKeyHandler(object sender, KeyEventArgs e) {
             if (e.KeyCode == Keys.Escape)
                 ClearUI();
@@ -835,19 +707,15 @@ namespace DTRMNS {
         private async void btnSelect_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 string SelectedCustomerIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                bslayer.CustomerDetailsToOrder(await bslayer.GetCustomer(SelectedCustomerIID));
+                //bslayer.CustomerDetailsToOrder(await bslayer.GetCustomer(SelectedCustomerIID));
                 LoadSearchResults();
             }
-        }
-
-       
+        }          
 
         private void btnDeleteCustomerFromDatabase_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 string DeleteCustomerIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
                 bslayer.DeleteCustomer(DeleteCustomerIID);
-                //bslayer.CustomerDetailsToOrder(bslayer.GetCustomer(SelectedCustomerIID));
-                //LoadSearchResults();
                 btnGetByPhone_Click(null, null);
             }
         }
@@ -863,10 +731,9 @@ namespace DTRMNS {
             if (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
                 return;
 
-            //bslayer.AttachedOrder.IsCustomerDetailsRequired = false;
             bslayer.AttachedOrder.CustomerIID = null;
-            bslayer.AttachedOrder.CName = ".";
-            bslayer.AttachedOrder.Tel = ".";
+            bslayer.AttachedOrder.Customer.CName = ".";
+            bslayer.AttachedOrder.Customer.Tel = ".";
             Success = true;
             CloseFunction();
             if (CompleteAttachedOrder != null)

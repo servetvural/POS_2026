@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Models;
@@ -34,7 +35,7 @@ namespace DTRMNS {
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             if (txtSupplierName.Text.Length > 0) {
                 supplier.SupplierName = txtSupplierName.Text;
                 supplier.Tel = txtTel.Text;
@@ -42,7 +43,7 @@ namespace DTRMNS {
                 supplier.Email1 = txtEmail1.Text;
                 supplier.Email2 = txtEmail2.Text;
                 supplier.Whatsup = txtwhatsup.Text;
-                if (bslayer.SaveSupplier(supplier)) {
+                if (await bslayer.SaveSupplier(supplier)) {
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }

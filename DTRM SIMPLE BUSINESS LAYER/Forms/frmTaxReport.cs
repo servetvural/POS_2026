@@ -5,9 +5,13 @@ using System.Windows.Forms;
 using System.IO;
 using PosLibrary;
 
+using POSLayer.Repository.IRepository;
+using POSLayer.Models;
+
 namespace DTRMNS {
     public partial class frmTaxReport : Form {
         private DTRMSimpleBusiness bslayer;
+
         private DataSet  dsReport;
 
         DateTime FirstStartDate;
@@ -74,8 +78,7 @@ namespace DTRMNS {
         }
 
         private async  void btnArcEmailAsCsv_Click(object sender, EventArgs e) {
-            POSLayer.Models.Luv luv = await bslayer.GetLuv();
-            if (luv.NotificationEmail == "") {
+            if (bslayer.shop.NotificationEmail == "") {
                 MessageBox.Show("There is no valid email address to send");
                 return;
             }
@@ -98,7 +101,7 @@ namespace DTRMNS {
             writer.Write(exporter.csvText);
             writer.Flush();
             stream.Position = 0;
-            if (bslayer.SendEmailToCustomRecepient(luv.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
+            if (bslayer.SendEmailToCustomRecepient(bslayer.shop.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
                 MessageBox.Show("Email Sent");
 
             //}            

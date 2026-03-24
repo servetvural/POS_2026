@@ -9,6 +9,8 @@ using POSLayer.Models;
 
 namespace DTRMNS.Controls {
     public partial class ctlBonus : UserControl {
+        PosConfig config;
+
         private DTRMSimpleBusiness bslayer;
         private bool blnUpdating;
 
@@ -30,34 +32,26 @@ namespace DTRMNS.Controls {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int ProgressBarWidth {  get { return pBar.Width; }  set { pBar.Width = value; } }
 
-        public ctlBonus() {
+        public ctlBonus(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
-        }
-
-        public void Activate(DTRMSimpleBusiness bslayer) {
+            config = configAsService;
             this.bslayer = bslayer;
-
-            bslayer.SetSuitableBonus();
-
-           
         }
 
+        public void Activate() {           
 
+            bslayer.SetSuitableBonus();              
+        }
 
         public void UpdateBonusDisplay() {
             blnUpdating = true;
             if (bslayer != null && bslayer.currentBonusScheme != null) {
-                float ciro = bslayer.GetCurrentSessionXSum();
-                //int previousBarrierNumber = bslayer.currentBonusScheme.GetPassedBarrierNumber(ciro);
-                //int previousBarrierValue = bslayer.currentBonusScheme.GetPassedBarrierNumber(ciro);
-
-                //int nextBarrierNumber = bslayer.currentBonusScheme.GetNextBarrierNumber(ciro);
-                //int nextBarrierValue = bslayer.currentBonusScheme.GetNextBarrierValue(ciro);
+                double ciro = bslayer.GetCurrentSessionXSum();
 
                 BonusStatus status = bslayer.currentBonusScheme.GetBonusStatus(ciro);
 
 
-                if (bslayer.config.Display_Session_Total_On_Bonus_Bar)
+                if (config.Display_Session_Total_On_Bonus_Bar)
                     lblCiro.Text = status.Ciro.ToString("C2");
                 else
                     lblCiro.Text = "";
@@ -65,12 +59,10 @@ namespace DTRMNS.Controls {
                 lblNext.Text = status.NextBarrierNumber.ToString();
                 pBar.Maximum = status.Difference;
 
-                if (bslayer.config.Display_Progress_On_Bonus_Bar)
+                if (config.Display_Progress_On_Bonus_Bar)
                     pBar.Value = status.AchievedDifference;
-                pBar.ShowRemainingValueText = bslayer.config.Display_Remaining_Balance_On_Bonus_Bar;
-                pBar.Visible = lblNext.Visible = bslayer.config.Display_Progress_Bar_On_Bonus_Bar;
-
-                
+                pBar.ShowRemainingValueText = config.Display_Remaining_Balance_On_Bonus_Bar;
+                pBar.Visible = lblNext.Visible = config.Display_Progress_Bar_On_Bonus_Bar;                 
             }
             else {
                 lblPrevious.Text = lblNext.Text = "?";
@@ -81,34 +73,29 @@ namespace DTRMNS.Controls {
         }
 
         private void tmrMain_Tick(object sender, EventArgs e) {
-            if (!blnUpdating && bslayer != null)
+            if (!blnUpdating)
                 UpdateBonusDisplay();
         }
 
         private void ctlBonus_Click(object sender, EventArgs e) {
-            if (!blnUpdating && bslayer != null) {
-                bslayer.config = UF.GetConfig();
+            if (!blnUpdating) {
                 UpdateBonusDisplay();
             }
         }
 
         private void pBar_Click(object sender, EventArgs e) {
-            bslayer.config= UF.GetConfig();
             UpdateBonusDisplay();
         }
 
         private void lblPrevious_Click(object sender, EventArgs e) {
-            bslayer.config = UF.GetConfig();
             UpdateBonusDisplay();
         }
 
         private void lblNext_Click(object sender, EventArgs e) {
-            bslayer.config = UF.GetConfig();
             UpdateBonusDisplay();
         }
 
         private void lblCiro_Click(object sender, EventArgs e) {
-            bslayer.config = UF.GetConfig();
             UpdateBonusDisplay();
         }
     }

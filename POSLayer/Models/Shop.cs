@@ -4,23 +4,19 @@ using System.ComponentModel;
 
 namespace POSLayer.Models;
 
-public partial class Luv    : BaseClass 
+public partial class Shop    : BaseClass 
 {
     #region 10.Shop Details
 
     [CategoryAttribute("10.Shop Details"), DisplayName("Name of this shop")]
-    public string ShopName { get; set; } = "New Shop";
+    public string Name { get; set; } = "New Shop";
 
     [CategoryAttribute("10.Shop Details"), DisplayName("Address of this shop")]
-    public string ShopAddress { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
 
     [CategoryAttribute("10.Shop Details"), DisplayName("Phone number")]
-    public string Tel1 { get; set; } = string.Empty;
+    public string Tel { get; set; } = string.Empty;
     [CategoryAttribute("10.Shop Details"), DisplayName("Phone number")]
-    public string Tel2 { get; set; } = string.Empty;
-    [CategoryAttribute("10.Shop Details"), DisplayName("Fax number")]
-    public string Fax { get; set; } = string.Empty;
-    [CategoryAttribute("10.Shop Details"), DisplayName("Tax number")]
     public string Vat { get; set; } = string.Empty;
 
 
@@ -40,8 +36,8 @@ public partial class Luv    : BaseClass
     [CategoryAttribute("11.Miscellaneous"), ReadOnlyAttribute(true), DisplayName("Unique ID for the current session")]
     public string CurrentSessionIID { get; set; }
 
-    [CategoryAttribute("11.Miscellaneous"), ReadOnlyAttribute(true), DisplayName("Current session's start date and time")]
-    public DateTime SessionStartDateTime { get; set; } = DateTime.Now;
+    //[CategoryAttribute("11.Miscellaneous"), ReadOnlyAttribute(true), DisplayName("Current session's start date and time")]
+    //public DateTime SessionStartDateTime { get; set; } = DateTime.Now;
 
     [CategoryAttribute("11.Miscellaneous"), DisplayName("Text of the button which opens the cash drawer if any attached")]
     public string VoidText { get; set; } = "VOID";
@@ -91,15 +87,6 @@ public partial class Luv    : BaseClass
     public string SmtpPassword { get; set; } = string.Empty;
     #endregion
 
-
-
-    [Browsable(false)]
-    public string CustomerKey { get; set; } = string.Empty;
-    [Browsable(false)]
-    public string CustomerPassword { get; set; } = string.Empty;
-
-
-    public int MdfFileVersion { get; set; }
 
     public DateTime KitchenModified { get; set; }
 

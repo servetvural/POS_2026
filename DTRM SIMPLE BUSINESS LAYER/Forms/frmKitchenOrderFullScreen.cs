@@ -3,16 +3,19 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class frmKitchenOrderFullScreen : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private KitchenOrderItem korderitem;
-        public frmKitchenOrderFullScreen(DTRMSimpleBusiness bslayer, KitchenOrderItem korderitem) {
+        public frmKitchenOrderFullScreen(PosConfig configAsService, DTRMSimpleBusiness bslayer, KitchenOrderItem korderitem) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.korderitem = korderitem;
         }
@@ -31,12 +34,9 @@ namespace DTRMNS {
                 ctlkoi.DetailLabel.Visible = true;
                 ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage.ToImage();
                 ctlkoi.DetailLabel.Text = prepImage.ExtraText;
-                ctlkoi.DetailLabel.Font = new Font("Arial", bslayer.config.Display_Kitchen_FullScreen_Font_Size, FontStyle.Regular);
+                ctlkoi.DetailLabel.Font = new Font("Arial", (float)config.Display_Kitchen_FullScreen_Font_Size, FontStyle.Regular);
                 ctlkoi.ShowFullScreen = false;
-                ctlkoi.ShowExpander = bslayer.config.Display_Kitchen_FullScreen_on_Display;
-                //ctlkoi.bslayer = bslayer;
-                //ctlkoi.korderitem = koi;
-               // blnExpand = true;
+                ctlkoi.ShowExpander = config.Display_Kitchen_FullScreen_on_Display;
             }
         }
 

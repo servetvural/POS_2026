@@ -120,7 +120,7 @@ namespace DTRMNS {
           // 
           // ApplicationPrinterDataConnector
           // 
-          this.ApplicationPrinterDataConnector.DataSource = typeof(ApplicationPrinter);
+          this.ApplicationPrinterDataConnector.DataSource = typeof(Printer);
           // 
           // panel1
           // 

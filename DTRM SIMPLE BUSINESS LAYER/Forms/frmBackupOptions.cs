@@ -28,7 +28,7 @@ namespace DTRMNS {
             options.includeMenus = chkMenus.Checked;
             options.includeStock = chkStock.Checked;
 
-            options.includeLuv = chkLuv.Checked;
+            options.includeShop = chkLuv.Checked;
             options.includeCurrentSession = chkCurrentSession.Checked;
             options.includeOrders = chkOrders.Checked;
             options.includeXOrders = chkXOrders.Checked;

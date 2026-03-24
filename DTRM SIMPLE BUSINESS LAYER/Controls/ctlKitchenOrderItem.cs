@@ -2,6 +2,9 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {
@@ -40,7 +43,7 @@ namespace DTRMNS {
 
         private void btnFullScreen_Click(object sender, EventArgs e) {
             if (bslayer != null && korderitem != null) {
-                frmKitchenOrderFullScreen frm = new frmKitchenOrderFullScreen(bslayer, korderitem);
+                frmKitchenOrderFullScreen frm = ActivatorUtilities.CreateInstance < frmKitchenOrderFullScreen>(ServiceHelper.Services, korderitem);
                 frm.Show();
             }
         }

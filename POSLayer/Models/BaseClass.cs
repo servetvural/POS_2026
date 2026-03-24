@@ -7,11 +7,11 @@ namespace POSLayer.Models;
 
 public partial class BaseClass : ISelectable
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     [Key]
-    public virtual string IID { get; set; }   = ShortGuid.NewGuid().ToString();
+    public virtual string IID { get; set; } = ShortGuid.NewGuid().ToString();
 
-   // public int DisplayOrder { get; set; }
+    public int dorder { get; set; }
 
     [NotMapped]
     public bool Selected { get; set; }
@@ -24,4 +24,7 @@ public partial class BaseClass : ISelectable
     {
         Selected = false;
     }
+
+    [NotMapped]
+    public bool IsNew { get; set; } = true;
 }

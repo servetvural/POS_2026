@@ -6,20 +6,24 @@ using System.Drawing;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using DTRMNS;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmDistribution : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         public Distribution distributionType;
 
-        public frmDistribution() {
+    
+        public frmDistribution(PosConfig configAsService, DTRMSimpleBusiness bslayer, Distribution distributionType) {
             InitializeComponent();
-        }
-        public frmDistribution(DTRMSimpleBusiness bslayer, Distribution distributionType) {
-            InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.distributionType = distributionType;
         }
@@ -31,23 +35,22 @@ namespace DTRMSimpleBackOffice {
 
         private async void LoadPrinterCombos() {
             try {
-                cmbPrimaryPrinter.DataSource =await bslayer.GetAllPrinters();
+                cmbPrimaryPrinter.DataSource =(await bslayer.GetAllPrinters()).ToBindingList<Printer>();
                 cmbPrimaryPrinter.SelectedValue = distributionType.PrinterIID;
             } catch { }
             
         }
 
         private void LoadDistribution() {
-            txtPrintableCategoryName.Text = distributionType.DistributionName;
-            txtPrintableCategoryShortName.Text = distributionType.ShortName;
+            txtPrintableCategoryName.Text = distributionType.Name;
         }
 
-        private void LoadMenuList() {
-            cmbMenu.DataSource = bslayer.GetMenuList();
+        private async void LoadMenuList() {
+            cmbMenu.DataSource = (await bslayer.GetMenuList()).ToBindingList();
             try {
-                cmbMenu.SelectedValue = distributionType.ParentMenuIID;
+                cmbMenu.SelectedValue = distributionType.MenuIID;
             } catch {
-                cmbMenu.SelectedValue = bslayer.config.ActiveMenuIID;
+                cmbMenu.SelectedValue = config.ActiveMenuIID;
             }
         }
 
@@ -56,15 +59,14 @@ namespace DTRMSimpleBackOffice {
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e) {
             
-            distributionType.DistributionName = txtPrintableCategoryName.Text;
+            distributionType.Name = txtPrintableCategoryName.Text;
 
-            if (distributionType.DistributionName.Trim().Length == 0)
+            if (distributionType.Name.Trim().Length == 0)
                 return;
 
-            distributionType.ShortName = txtPrintableCategoryShortName.Text;
-            distributionType.ParentMenuIID = cmbMenu.SelectedValue.ToString();
+            distributionType.MenuIID = cmbMenu.SelectedValue.ToString();
 
             try {
                 distributionType.PrinterIID = cmbPrimaryPrinter.SelectedValue.ToString();
@@ -72,13 +74,13 @@ namespace DTRMSimpleBackOffice {
                 distributionType.PrinterIID = "";
             }           
 
-            bslayer.SaveDistribution(distributionType);
+            await bslayer.SaveDistribution(distributionType);
             this.DialogResult = DialogResult.OK;
             Close();
         }
 
         private void btnNewPrinter_Click(object sender, EventArgs e) {
-            frmPrinters frm = new frmPrinters(bslayer,true);
+            frmPrinters frm = ActivatorUtilities.CreateInstance < frmPrinters>(ServiceHelper.Services,true);
             if (frm.ShowDialog() == DialogResult.OK) {
                 LoadPrinterCombos();
             }

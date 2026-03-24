@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 using POSLayer.Library;
 using POSLayer.Views;
@@ -12,15 +13,23 @@ public partial class PosDbContext : DbContext
 {
     public PosDbContext()
     {
+        
     }
 
     public PosDbContext(DbContextOptions<PosDbContext> options)
         : base(options)
     {
-        string str = "";
+        // When an entity is tracked (loaded from DB), set IsNew to false
+        ChangeTracker.Tracked += (sender, e) =>
+        {
+            if (e.Entry.Entity is BaseClass baseEntity)
+            {
+                baseEntity.IsNew = false;
+            }
+        };
     }
 
-    public virtual DbSet<ApplicationPrinter> ApplicationPrinters { get; set; }
+    public virtual DbSet<Printer> Printers { get; set; }
 
     public virtual DbSet<Bonus> Bonus { get; set; }
 
@@ -33,9 +42,9 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<Entity> Entities { get; set; }
+    public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<EntityButton> EntityButtons { get; set; }
+    public virtual DbSet<CategoryItem> CategoryItems { get; set; }
 
     public virtual DbSet<GenericImage> Images { get; set; }
 
@@ -45,31 +54,31 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<LogItem> LogItems { get; set; }
 
-    public virtual DbSet<Luv> Luvs { get; set; }
+    public virtual DbSet<Shop> Shops { get; set; }
 
-    public virtual DbSet<FoodMenu> Menus { get; set; }
+    public virtual DbSet<TheMenu> Menus { get; set; }
 
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<OrderItem> OrderItems { get; set; }
 
-   // public virtual DbSet<OrderItemView> OrderItemViews { get; set; }
+    // public virtual DbSet<OrderItemView> OrderItemViews { get; set; }
 
     //public virtual DbSet<OrdersView> OrdersViews { get; set; }
 
-    public virtual DbSet<PrinterLookup> PrinterLookups { get; set; }
+    // public virtual DbSet<PrinterLookup> PrinterLookups { get; set; }
 
-   // public virtual DbSet<PrinterView> PrinterViews { get; set; }
+    // public virtual DbSet<PrinterView> PrinterViews { get; set; }
 
-   // public virtual DbSet<ServiceChargeSummary> ServiceChargeSummaries { get; set; }
+    // public virtual DbSet<ServiceChargeSummary> ServiceChargeSummaries { get; set; }
 
     public virtual DbSet<Session> Sessions { get; set; }
 
-   // public virtual DbSet<SessionSum> SessionSums { get; set; }
+    // public virtual DbSet<SessionSum> SessionSums { get; set; }
 
     public virtual DbSet<StockItem> StockItems { get; set; }
 
-   // public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
+    // public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
@@ -77,19 +86,19 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<TableGroup> TableGroups { get; set; }
 
-   // public virtual DbSet<TaxPercentList> TaxPercentLists { get; set; }
+    // public virtual DbSet<TaxPercentList> TaxPercentLists { get; set; }
 
-   // public virtual DbSet<TaxSummary> TaxSummaries { get; set; }
+    // public virtual DbSet<TaxSummary> TaxSummaries { get; set; }
 
-  //  public virtual DbSet<TaxSummaryTotalView> TaxSummaryTotalViews { get; set; }
+    //  public virtual DbSet<TaxSummaryTotalView> TaxSummaryTotalViews { get; set; }
 
-  //  public virtual DbSet<UncompletedOrdersSessionSum> UncompletedOrdersSessionSums { get; set; }
+    //  public virtual DbSet<UncompletedOrdersSessionSum> UncompletedOrdersSessionSums { get; set; }
 
-   // public virtual DbSet<UncompletedOrdersView> UncompletedOrdersViews { get; set; }
+    // public virtual DbSet<UncompletedOrdersView> UncompletedOrdersViews { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
-  //  public virtual DbSet<UserSale> UserSales { get; set; }
+    //  public virtual DbSet<UserSale> UserSales { get; set; }
 
     public virtual DbSet<XOrder> Xorders { get; set; }
 
@@ -97,12 +106,210 @@ public partial class PosDbContext : DbContext
 
     //public virtual DbSet<XordersView> XordersViews { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;");
+    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+    //        => optionsBuilder.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // 1. Force EF to use YOUR generated IIDs for all levels
+        //modelBuilder.Entity<TheMenu>().Property(e => e.IID).ValueGeneratedNever();
+        //modelBuilder.Entity<Category>().Property(e => e.IID).ValueGeneratedNever();
+        //modelBuilder.Entity<CategoryItem>().Property(e => e.IID).ValueGeneratedNever();
+        //modelBuilder.Entity<Distribution>().Property(e => e.IID).ValueGeneratedNever();
+
+        // Apply this to all your main entities
+        //var entities = new[] { typeof(Shop), typeof(Session), typeof(Printer), typeof(TheMenu), typeof(Category), typeof(CategoryItem), typeof(Distribution),
+        //    typeof(Order), typeof(OrderItem)};
+
+        //foreach (var type in entities)
+        //{
+        //    modelBuilder.Entity(type)
+        //        .Property("IID")
+        //        .HasValueGenerator<Microsoft.EntityFrameworkCore.ValueGeneration.StringGuidValueGenerator>() // Generates string GUIDs client-side
+        //        .ValueGeneratedOnAdd();
+        //}
+
+        //foreach (var type in entities)
+        //{
+        //    modelBuilder.Entity(type)
+        //        .Property("IID")
+        //         .HasValueGenerator<Microsoft.EntityFrameworkCore.ValueGeneration.StringValueGenerator>()
+        //        .ValueGeneratedOnAdd();
+        //}
+
+
+        // Configure the BaseClass to ensure IDs are NEVER generated by the DB
+        // Use a loop or specify each entity to apply this to all derived types
+        var entities = modelBuilder.Model.GetEntityTypes()
+            .Where(e => typeof(BaseClass).IsAssignableFrom(e.ClrType));
+
+        foreach (var entity in entities)
+        {
+            modelBuilder.Entity(entity.ClrType)
+                .Property("IID")
+                .ValueGeneratedNever(); // Mandatory: software provides the ID
+        }
+
+
+
+
+
+
+
+        modelBuilder.Entity<Distribution>(entity =>
+        {
+            // Link Distribution to Printer
+            entity.HasOne(d => d.Printer)
+                .WithMany() // Or .WithMany(p => p.Distributions) if you add a collection to Printer
+                .HasForeignKey(d => d.PrinterIID)
+                .IsRequired(false); // Since PrinterIID is nullable (string?)
+
+            // Link Distribution to Menu
+            entity.HasOne(d => d.Menu)
+                .WithMany()
+                .HasForeignKey(d => d.MenuIID)
+                .IsRequired(); // Since MenuIID is non-nullable (string)
+        });
+
+        //Define the distribution Menu Navigation property foreign key name
+        modelBuilder.Entity<TheMenu>()
+           .HasMany(m => m.distributions)
+           .WithOne(d => d.Menu)
+           .HasForeignKey(d => d.MenuIID)
+           .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+
+
+
+
+
+
+
+        // Relationship: Customer -> Order
+        modelBuilder.Entity<Order>()
+            .HasOne(o => o.Customer)      // Order has one Customer
+            .WithMany(c => c.Orders)      // Customer has many Orders
+            .HasForeignKey(o => o.CustomerIID)
+            .OnDelete(DeleteBehavior.Restrict); // Usually, deleting a customer shouldn't delete all their orders automatically
+
+        // Your existing Order -> OrderItem relationship
+        modelBuilder.Entity<Order>()
+            .HasMany(o => o.items)
+            .WithOne(oi => oi.Order)
+            .HasForeignKey(oi => oi.OrderIID);
+
+
+        // 2. Map Menu -> Categories
+        modelBuilder.Entity<TheMenu>()
+            .HasMany(m => m.categories)
+            .WithOne(c => c.Menu)
+            .HasForeignKey(c => c.MenuIID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // 3. Map Category -> CategoryItems (The "Grandchildren")
+        modelBuilder.Entity<Category>()
+            .HasMany(c => c.Items)
+            .WithOne(ci => ci.Category)
+            .HasForeignKey(ci => ci.CategoryIID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+        //// 4. Map Menu -> Distributions (Fixes the naming issue)
+        //modelBuilder.Entity<Distribution>()
+        //    .HasOne(d => d.Menu)
+        //    .WithMany(m => m.distributions)
+        //    .HasForeignKey(d => d.MenuIID);
+
+
+        //modelBuilder.Entity<Distribution>(entity =>
+        //{
+        //    // Link Distribution to Printer
+        //    entity.HasOne(d => d.Printer)
+        //        .WithMany() // Or .WithMany(p => p.Distributions) if you add a collection to Printer
+        //        .HasForeignKey(d => d.PrinterIID)
+        //        .IsRequired(false); // Since PrinterIID is nullable (string?)
+
+        //    // Link Distribution to Menu
+        //    entity.HasOne(d => d.Menu)
+        //        .WithMany()
+        //        .HasForeignKey(d => d.MenuIID)
+        //        .IsRequired(); // Since MenuIID is non-nullable (string)
+        //});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        ////Define the distribution Menu Navigation property foreign key name
+        //modelBuilder.Entity<TheMenu>()
+        //   .HasMany(m => m.distributions)
+        //   .WithOne(d => d.Menu)
+        //   .HasForeignKey(d => d.MenuIID)
+        //   .OnDelete(DeleteBehavior.ClientSetNull);
+
+
+        //// 1. Menu to Categories (One-to-Many)
+        //modelBuilder.Entity<TheMenu>(
+        //    entity =>
+        //    {
+        //        entity.HasMany(m => m.categories)
+        //        .WithOne(c => c.Menu)
+        //        .HasForeignKey(c => c.MenuIID)
+        //        .OnDelete(DeleteBehavior.Cascade);
+        //    });
+
+        //// 2. Category to CategoryItems (One-to-Many)
+        //modelBuilder.Entity<Category>(entity =>
+        //{
+        //    entity.HasMany(c => c.Items)
+        //    .WithOne(ci => ci.Category)
+        //    .HasForeignKey(ci => ci.CategoryIID)
+        //    .OnDelete(DeleteBehavior.Cascade);
+        //});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Optional: Filter out items with 0 quantity at the Database level
+        //modelBuilder.Entity<CategoryItem>()
+        //            .HasQueryFilter(ci => ci.Quantity > 0);
+        /*Why use HasQueryFilter here?
+            I added the HasQueryFilter at the end because you previously mentioned removing items with zero quantity. 
+            By adding this line, EF Core will automatically add WHERE Quantity > 0 to every query you write for CategoryItems, 
+            effectively hiding them from your app without you having to manually filter them every time. */
+
+
+
+
+
         //modelBuilder.Entity<ApplicationPrinter>(entity =>
         //{
         //    entity.HasKey(e => e.IID);
@@ -132,52 +339,7 @@ public partial class PosDbContext : DbContext
         //        .IsUnicode(false);
         //});
 
-        //modelBuilder.Entity<Customer>(entity =>
-        //{
-        //    entity.HasKey(e => e.IID);
 
-        //    entity.ToTable("Customer");
-
-        //    entity.Property(e => e.IID)
-        //        .HasMaxLength(50)
-        //        .IsUnicode(false)
-        //        .HasColumnName("IID");
-        //    entity.Property(e => e.Address)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Buzzer)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.CName)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false)
-        //        .HasColumnName("CName");
-        //    entity.Property(e => e.CompanyName)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.CPassword)
-        //        .HasMaxLength(10)
-        //        .IsUnicode(false)
-        //        .HasColumnName("CPassword");
-        //    entity.Property(e => e.Email)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Fax)
-        //        .HasMaxLength(50)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Mobile)
-        //        .HasMaxLength(50)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Postcode)
-        //        .HasMaxLength(10)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Tel)
-        //        .HasMaxLength(50)
-        //        .IsUnicode(false);
-        //    entity.Property(e => e.Town)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false);
-        //});
 
         //modelBuilder.Entity<Debug>(entity =>
         //{
@@ -216,7 +378,7 @@ public partial class PosDbContext : DbContext
         //        .IsUnicode(false);
         //});
 
-       
+
 
         //modelBuilder.Entity<Employee>(entity =>
         //{
@@ -308,9 +470,9 @@ public partial class PosDbContext : DbContext
         //        .HasColumnName("ParentMenuIID");
         //});
 
-       
 
-       
+
+
 
         //modelBuilder.Entity<GenericImage>(entity =>
         //{
@@ -594,7 +756,7 @@ public partial class PosDbContext : DbContext
         //    entity.Property(e => e.Price).HasColumnType("money");
         //});
 
-       
+
 
         //modelBuilder.Entity<PrinterLookup>(entity =>
         //{
@@ -647,7 +809,7 @@ public partial class PosDbContext : DbContext
         //    entity.Property(e => e.X3total).HasColumnName("X3Total");
         //});
 
-       
+
 
         //modelBuilder.Entity<StockItem>(entity =>
         //{
@@ -668,7 +830,7 @@ public partial class PosDbContext : DbContext
         //        .HasColumnName("SupplierIID");
         //});
 
-       
+
 
         //modelBuilder.Entity<Supplier>(entity =>
         //{
@@ -748,10 +910,10 @@ public partial class PosDbContext : DbContext
         //        .HasMaxLength(50)
         //        .IsUnicode(false);
         //});
-       
 
 
-      
+
+
 
         //modelBuilder.Entity<User>(entity =>
         //{
@@ -769,7 +931,7 @@ public partial class PosDbContext : DbContext
         //        .IsUnicode(false);
         //});
 
-        
+
         //modelBuilder.Entity<XOrder>(entity =>
         //{
         //    entity.HasKey(e => e.IID);
@@ -879,10 +1041,14 @@ public partial class PosDbContext : DbContext
         //    entity.Property(e => e.Price).HasColumnType("money");
         //});
 
-       
+
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
+
+
+

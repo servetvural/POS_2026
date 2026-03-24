@@ -1,24 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using PosLibrary;
 
 namespace DTRMNS {
     public partial class frmStockUsagePad : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
+
         private string SupplierIID;
         private bool blnOpennedBySupplier;
 
-        public frmStockUsagePad(DTRMSimpleBusiness bslayer) {
+        public frmStockUsagePad(PosConfig configAsService,  DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
         }
-        public frmStockUsagePad(DTRMSimpleBusiness bslayer,string SupplierIID) {
+        public frmStockUsagePad(PosConfig configAsService, DTRMSimpleBusiness bslayer,string SupplierIID) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.SupplierIID = SupplierIID;
             if (SupplierIID != null)
@@ -89,7 +96,7 @@ namespace DTRMNS {
                     //    bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, bslayer.GetDataTableFromGridVisible(dgv, true, false),
                     //        "Stock Usage Report", bslayer.GetColumnPrintRatio(dgv), false);
                     //else {
-                        int[] arrcols = new int[] { 3, 6, bslayer.config.GetFontMaximumCharacter(bslayer.config.ReportFontSize) - 17, 8 };
+                        int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 17, 8 };
                         List<int> cols = new List<int>(arrcols);
                         bslayer.PrintDataTable(await bslayer.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
@@ -216,14 +223,13 @@ namespace DTRMNS {
             LoadUsage();
         }
 
-        private void btnEmail_Click(object sender, EventArgs e) {
-            
-            if (bslayer.luv.SmtpEmailAddress != null && bslayer.luv.SmtpEmailAddress.Length > 0 && bslayer.luv.PurchaseEmail != null && bslayer.luv.PurchaseEmail.Length > 0)
-                bslayer.SendEmailToCustomRecepient(bslayer.luv.PurchaseEmail, bslayer.luv.ShopName + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
+        private async void btnEmail_Click(object sender, EventArgs e) {
+            if (bslayer.shop.SmtpEmailAddress != null && bslayer.shop.SmtpEmailAddress.Length > 0 && bslayer.shop.PurchaseEmail != null && bslayer.shop.PurchaseEmail.Length > 0)
+                bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, bslayer.shop.Name + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
 
 
             //Now time to remove the ordered items from stockitem table if true
-            if (bslayer.config.Delete_Stock_Usage)
+            if (config.Delete_Stock_Usage)
                 bslayer.RemoveOrderedStockUsage(true);
         }
 

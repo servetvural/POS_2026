@@ -1,4 +1,8 @@
-﻿namespace DTRMNS {
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
+
+namespace DTRMNS {
     partial class frmKitchenDoubleDisplay {
         /// <summary>
         /// Required designer variable.
@@ -25,8 +29,8 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKitchenDoubleDisplay));
             this.splitMain = new System.Windows.Forms.SplitContainer();
-            this.ctlKitchenFirst = new DTRMNS.ctlKitchenDisplay();
-            this.ctlKitchenSecond = new DTRMNS.ctlKitchenDisplay();
+            this.ctlKitchenFirst = ActivatorUtilities.CreateInstance<ctlKitchenDisplay>(ServiceHelper.Services);
+            this.ctlKitchenSecond = ActivatorUtilities.CreateInstance <ctlKitchenDisplay>(ServiceHelper.Services);
             this.splitMain.Panel1.SuspendLayout();
             this.splitMain.Panel2.SuspendLayout();
             this.splitMain.SuspendLayout();

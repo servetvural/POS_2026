@@ -13,6 +13,7 @@ using POSWinFormLayer;
 
 namespace DTRMNS {
     public class ReportGenerator {
+        private PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private PrinterSettings pSettings;
         private PrintDocument pDocument;
@@ -51,31 +52,32 @@ namespace DTRMNS {
        // private DataTable dtStockUsage;
         private string StockSupplierName;
 
-        private POSLayer.Models.ApplicationPrinter aPrinter;
+        private Printer aPrinter;
 
         //private string printerNetworkName;
 
-        public ReportGenerator(Graphics g, DTRMSimpleBusiness bslayer, POSLayer.Models.ApplicationPrinter ap, int linespace) {
+        public ReportGenerator(Graphics g, PosConfig configAsService, DTRMSimpleBusiness bslayer, Printer printer, int linespace) {
                 this.g = g;
+            config = configAsService;
                 blnCustomGraphic = true;
 
-                CreateGenerator(bslayer, ap,  linespace);
+                CreateGenerator(bslayer, printer,  linespace);
         }
-        public ReportGenerator(DTRMSimpleBusiness bslayer, POSLayer.Models.ApplicationPrinter ap, int linespace) {
-               CreateGenerator(bslayer, ap, linespace);
+        public ReportGenerator(DTRMSimpleBusiness bslayer, Printer printer, int linespace) {
+               CreateGenerator(bslayer, printer, linespace);
         }
         //public ReportGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
         //    CreateGenerator(bslayer, printerNetworkName, linespace);
         //}
-        public ReportGenerator(DTRMSimpleBusiness bslayer, ApplicationPrinter ap) {
-            CreateGenerator(bslayer, ap, 2);
+        public ReportGenerator(DTRMSimpleBusiness bslayer, Printer printer) {
+            CreateGenerator(bslayer, printer, 2);
         }
-        public void CreateGenerator(DTRMSimpleBusiness bslayer, ApplicationPrinter ap,  int linespace) {
+        public void CreateGenerator(DTRMSimpleBusiness bslayer, Printer printer,  int linespace) {
 
             this.bslayer = bslayer;
-            float fontSize = bslayer.config.ReportFontSize;
-            string fontName =  bslayer.config.ReportFontName;
-            aPrinter = ap;
+            float fontSize = config.ReportFontSize;
+            string fontName =  config.ReportFontName;
+            aPrinter = printer;
 
             this.font = new Font(fontName, fontSize, FontStyle.Bold);
             this.fontLarge = new Font(fontName, fontSize + 5, FontStyle.Bold);
@@ -83,7 +85,7 @@ namespace DTRMNS {
             brush = new SolidBrush(Color.Black);
 
 
-            max_numberOfCharacters = bslayer.config.GetFontMaximumCharacter(fontSize);
+            max_numberOfCharacters = config.GetFontMaximumCharacter(fontSize);
 
             this.linespace = linespace;
             startX = 10;
@@ -93,7 +95,7 @@ namespace DTRMNS {
             pDocument = new PrintDocument();
             pDocument.QueryPageSettings += pDocument_QueryPageSettings;
             pDocument.PrinterSettings = pSettings;
-            pSettings.PrinterName = ap.NetworkName; 
+            pSettings.PrinterName = printer.NetworkName; 
 
             reportwidthcm = 270;          
 
@@ -112,24 +114,24 @@ namespace DTRMNS {
             catalogIID = "";
 
             try {
-                if (bslayer.config.Feed_Space_Cut)
+                if (config.Feed_Space_Cut)
                     PosLibrary.DRShell.SendCutCommandToUSBPrinter(pSettings.PrinterName);
             } catch { }
         }
 
         
-        private bool SetXReportValueToSession() {
+        private async Task<bool> SetXReportValueToSession() {
 
             switch (bslayer.GetAvailableXReportSlot(session)) {
                 case 1:
                     session.X1Total = session.NetPaidTotal;
-                    return bslayer.SaveSessionData(session);
+                    return await bslayer.SaveSessionData(session);
                 case 2:
                     session.X2Total = session.NetPaidTotal;
-                    return bslayer.SaveSessionData(session);                    
+                    return await bslayer.SaveSessionData(session);                    
                 case 3:
                     session.X3Total = session.NetPaidTotal;
-                    return bslayer.SaveSessionData(session);                             
+                    return await bslayer.SaveSessionData(session);                             
                 default:
                     return false;
             }
@@ -203,7 +205,7 @@ namespace DTRMNS {
         public async Task<bool> PrintSessionReport(string SessionIID, ReportFormatTypes reportFormat) {
 
             session =await bslayer.GetSessionDataDynamic(SessionIID);
-            bool blnCurrentSession = session.SessionIID == bslayer.GetCurrentSessionIID();
+            bool blnCurrentSession = session.SessionIID == bslayer.shop.CurrentSessionIID;
             report = bslayer.GetReport(reportFormat);
             ZForcedLabel:
 
@@ -227,31 +229,31 @@ namespace DTRMNS {
                         
 
                         //This is exactly the point where the current active real session to be archived for the first time
-                        if (bslayer.config.Record_Stock_Usage) {
+                        if (config.Record_Stock_Usage) {
                             //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
                             bslayer.TransferStockItemUsageNow();
 
                             //Print the updated stockusage report up to end of tonight
-                            if (bslayer.config.Print_Stock_Usage_Report)
+                            if (config.Print_Stock_Usage_Report)
                                 bslayer.PrintStockUsage(aPrinter); // pSettings.PrinterName);
                                 
                             
                             //Email the updated stockusage to required people (same as print)
-                            if (bslayer.config.Email_Stock_Usage_Report) {
+                            if (config.Email_Stock_Usage_Report) {
                                 
-                                if (bslayer.luv.SmtpEmailAddress != null && bslayer.luv.SmtpEmailAddress.Length > 0 && bslayer.luv.PurchaseEmail != null && bslayer.luv.PurchaseEmail.Length > 0)
-                                    bslayer.SendEmailToCustomRecepient(bslayer.luv.PurchaseEmail, bslayer.luv.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" + bslayer.GetOrderableStockItemUsageAsCsvText(), null);
+                                if (bslayer.shop.SmtpEmailAddress != null && bslayer.shop.SmtpEmailAddress.Length > 0 && bslayer.shop.PurchaseEmail != null && bslayer.shop.PurchaseEmail.Length > 0)
+                                    bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, bslayer.shop.Name + "  Stock Order List", "Stock Order List.\r\n\r\n" + bslayer.GetOrderableStockItemUsageAsCsvText(), null);
                             }
 
                             //Now time to remove the ordered items from stockitem table if true
-                            if (bslayer.config.Delete_Stock_Usage)
+                            if (config.Delete_Stock_Usage)
                                 bslayer.RemoveOrderedStockUsage(true);
 
                         }
 
 
                         //Now prepare current session to be archive
-                        if (session.SessionIID == bslayer.luv.CurrentSessionIID) {
+                        if (session.SessionIID == bslayer.shop.CurrentSessionIID) {
                             await bslayer.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
                         }
                     }
@@ -310,7 +312,7 @@ namespace DTRMNS {
                 return;
 
             //Draw in to printer
-            DrawCompanyHeader(bslayer.luv.ReportHeader);
+            DrawCompanyHeader(bslayer.shop.ReportHeader);
 
             DrawSessionHeader();
 
@@ -334,14 +336,14 @@ namespace DTRMNS {
             DrawReportSummary();
 
             //take a snapshot of report 
-            if (bslayer.config.Preserve_Previous_Report && !blnLateReport) {               
+            if (config.Preserve_Previous_Report && !blnLateReport) {               
                 imgSnapShot = new Bitmap(300, startY+10, g);
                 startY = 0;
                 Image img = Image.FromHbitmap(imgSnapShot.GetHbitmap());
                 g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                DrawCompanyHeader(bslayer.luv.ReportHeader);
+                DrawCompanyHeader(bslayer.shop.ReportHeader);
 
                 DrawSessionHeader();
 
@@ -368,7 +370,7 @@ namespace DTRMNS {
 
 
             //Now Archive Session if required
-            if (session != null && report.ReportType == ReportFormatTypes.ZReport && bslayer.config.Z_Archive_Always) {   
+            if (session != null && report.ReportType == ReportFormatTypes.ZReport && config.Z_Archive_Always) {   
                 if (session.SessionIID != bslayer.GetLatestSession().Result.SessionIID) {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
                         bslayer.ArchiveSessionToDirectory(SessionDirectory, session.SessionIID, true);
@@ -411,7 +413,7 @@ namespace DTRMNS {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            DrawCompanyHeader(bslayer.luv.ReceiptHeader);
+            DrawCompanyHeader(bslayer.shop.ReceiptHeader);
 
             DrawReceipt();
             Reset();
@@ -433,17 +435,17 @@ namespace DTRMNS {
             DrawText(centeredString(order.OrderType.ToString()));
             switch (order.OrderType) {
                 case OrderTypes.TakeAwayB:
-                    DrawText("Cust.Name :" + order.CName);
-                    DrawText("Tel : " + order.Tel);
+                    DrawText("Cust.Name :" + order.Customer.CName);
+                    DrawText("Tel : " + order.Customer.Tel);
                     break;
                 case OrderTypes.Delivery:
-                    DrawText("Cust.Name :" + order.CName);
-                    DrawText("Tel : " + order.Tel);
-                    DrawText("Address : " + order.Address);
-                    DrawText("Postcode : " + order.Postcode);
+                    DrawText("Cust.Name :" + order.Customer.CName);
+                    DrawText("Tel : " + order.Customer.Tel);
+                    DrawText("Address : " + order.Customer.Address);
+                    DrawText("Postcode : " + order.Customer.Postcode);
                     break;
                 case OrderTypes.InHouse:
-                    DrawText("Waiter: " + order.UserName);
+                    DrawText("Waiter: " + bslayer.LoggedUser.UserName);
                     break;
                 case OrderTypes.DirectSale:
 
@@ -459,14 +461,14 @@ namespace DTRMNS {
                 string ItemText = item.OrderItemText.Length > 26 ? item.OrderItemText.Substring(0, 25) : item.OrderItemText;
                 DrawText(string.Format("{0,2:n0}", item.Quantity).PadRight(3) + 
                             ItemText.PadRight(26) + 
-                            (bslayer.config.Show_Tax_Percent_in_everyline?String.Format("{0,5:N2}%", item.TaxPercent): "".PadRight(6)) + 
-                          String.Format("{0,8:C}", item.Total));
+                            (config.Show_Tax_Percent_in_everyline?String.Format("{0,5:N2}%", item.TaxPercent): "".PadRight(6)) + 
+                          String.Format("{0,8:C}", item.CalculatedValue));
                 
                 //collect tax percent data
                 if (taxlist.ContainsKey(item.TaxPercent))
-                    taxlist[item.TaxPercent] += item.TaxValue;
+                    taxlist[item.TaxPercent] += item.CalculatedVat;
                 else
-                    taxlist.Add(item.TaxPercent, item.TaxValue);
+                    taxlist.Add(item.TaxPercent, item.CalculatedVat);
 
 
             }
@@ -491,7 +493,7 @@ namespace DTRMNS {
             //if (bslayer.luv.ServiceChargeTaxRate != 0 && ServiceCharge != 0) 
             //    ServiceChargeTax = ServiceCharge * bslayer.luv.ServiceChargeTaxRate / 100;
 
-            if (bslayer.luv.ServiceChargeRate > 0) {
+            if (bslayer.shop.ServiceChargeRate > 0) {
                 DrawText("Total : ".PadRight(20) + String.Format("{0,8:C}", ordView.CalculatedValue - ordView.ServiceCharge));
                 DrawText("Service Inc.Tax : ".PadRight(20) + String.Format("{0,8:C}", ordView.ServiceCharge));
                 
@@ -508,19 +510,19 @@ namespace DTRMNS {
 
             VerticalSpace(1);
 
-            if (bslayer.config.ShowTaxOnReceipts) {
+            if (config.ShowTaxOnReceipts) {
                 foreach(KeyValuePair<double,double> kvp in taxlist) {
                     DrawText(("Tax " + String.Format("{0,2:N0} %",kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
                 //Show Service Charge Tax Total
-                if (bslayer.luv.ServiceChargeRate > 0)
-                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", bslayer.luv.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", ordView.ServiceChargeTax));
+                if (bslayer.shop.ServiceChargeRate > 0)
+                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", bslayer.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", ordView.ServiceChargeTax));
 
 
-                if (bslayer.config.Receipts_Print_Tax_Total)
+                if (config.Receipts_Print_Tax_Total)
                     DrawText("Tax Total : ".PadRight(35) + String.Format("{0,8:C}", ordView.CalculatedVat + ordView.ServiceChargeTax));
-                if (bslayer.config.Receipts_Print_Ex_Tax_Total)
+                if (config.Receipts_Print_Ex_Tax_Total)
                     DrawText("Ex.Tax Total : ".PadRight(35) + String.Format("{0,8:C}", ordView.CalculatedValue + ordView.ServiceCharge - ordView.CalculatedVat - ordView.ServiceChargeTax));
 
             }
@@ -532,7 +534,7 @@ namespace DTRMNS {
             //Luv luv = bslayer.GetLuv();
             //DrawText(centeredString(luv.ReceiptFooter));
 
-            string[] footer = bslayer.luv.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] footer = bslayer.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < footer.Length; i++) {
                 DrawText(centeredString(footer[i]));
             }
@@ -759,14 +761,14 @@ namespace DTRMNS {
 
             //font size = 10  so max = 30
             //font size = 11  so max = 25
-            this.font = new Font(bslayer.config.ReportFontName, bslayer.config.KitchenPrintFontSize, FontStyle.Bold);
+            this.font = new Font(config.ReportFontName, config.KitchenPrintFontSize, FontStyle.Bold);
             if (blnWithDetail) {
-                this.detailFont = new Font(bslayer.config.ReportFontName, bslayer.config.KitchenPrintDetailFontSize, FontStyle.Bold);
+                this.detailFont = new Font(config.ReportFontName, config.KitchenPrintDetailFontSize, FontStyle.Bold);
                 detailFontHeight = (int)detailFont.GetHeight();
             }
 
             fontHeight = (int)font.GetHeight();
-            max_numberOfCharacters = bslayer.config.GetFontMaximumCharacter(bslayer.config.KitchenPrintFontSize);
+            max_numberOfCharacters = config.GetFontMaximumCharacter(config.KitchenPrintFontSize);
 
             korder = korderlocal;
 
@@ -968,7 +970,7 @@ namespace DTRMNS {
                     TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
             }
 
-            if (bslayer.luv.ServiceChargeRate > 0) {
+            if (bslayer.shop.ServiceChargeRate > 0) {
                 dt = bslayer.GetDataTable("Select * from ServiceChargeSummary where SessionIID ='" + session.SessionIID + "' order by Payment asc");
                 float ServiceChargeTotal = 0;
                 float ServiceChargeTaxTotal = 0;
@@ -977,7 +979,7 @@ namespace DTRMNS {
                     ServiceChargeTotal = float.Parse(dt.Rows[i]["ServiceChargeTotal"].ToString());
                     ServiceChargeTaxTotal = float.Parse(dt.Rows[i]["ServiceChargeTaxTotal"].ToString());
                     DrawText(String.Format("Srv{0,-2:N0}" + pmethod.ToString().PadRight(5) + "{1,10:N2}" + "{2,12:N2}" + "{3,12:N2}",
-                        bslayer.luv.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
+                        bslayer.shop.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
 
                     mainGrossTotal += ServiceChargeTotal;
                     mainNetTaxValue += ServiceChargeTaxTotal;
@@ -1124,7 +1126,7 @@ namespace DTRMNS {
                 DrawText(centeredString(header[i]));
             }
 
-            string[] address = bslayer.luv.ShopAddress.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] address = bslayer.shop.Address.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < address.Length; i++) {
                 DrawText(centeredString(address[i]));
             }
@@ -1132,8 +1134,8 @@ namespace DTRMNS {
             //DrawText(centeredString(bslayer.luv.ShopAddress));
 
 
-            DrawText(centeredString(bslayer.luv.Tel1));
-            DrawText(centeredString(bslayer.luv.Vat));
+            DrawText(centeredString(bslayer.shop.Tel));
+            DrawText(centeredString(bslayer.shop.Vat));
 
         }
 
@@ -1195,7 +1197,7 @@ namespace DTRMNS {
 
             DrawText("Session Start: " + session.SessionStartDateTime.ToString("dd/MMM/yy HH:mm"));
             if (report != null && report.ReportType == ReportFormatTypes.ZReport) {
-                if (session.SessionIID == bslayer.luv.CurrentSessionIID) {
+                if (session.SessionIID == bslayer.shop.CurrentSessionIID) {
                     //Current Session
                     DrawText("Session End  : " + DateTime.Now.ToString("dd/MMM/yy HH:mm"));
                 } else {

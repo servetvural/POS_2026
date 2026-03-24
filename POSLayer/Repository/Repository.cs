@@ -1,13 +1,14 @@
 ﻿using System.Linq.Expressions;
+using System.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
+using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using POSLayer.Views;
-using POSLayer.Library;
 
 namespace PosLayer.Repository;
 
@@ -40,6 +41,18 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             return false;
         }
     }
+
+    public async Task<bool> Any()
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return _db.Set<T>().Any();
+        } catch (Exception ex)
+        {
+            return false;
+        }
+    }
     //public async Task<T> Get(int Id, string includeItems = "")
     //{
     //    using var _db = GetDBContext();
@@ -60,19 +73,68 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     //    }
     //}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="IID"></param>
+    /// <param name="includeItems">Comma seperated includes. If thenInclude required it is a different issue</param>
+    /// <returns></returns>
     public async Task<T> Get(string IID, string includeItems = "")
     {
         using var _db = GetDBContext();
         try
         {
-            DbSet<T> table = _db.Set<T>();
-            if (string.IsNullOrEmpty(includeItems))
+            //DbSet<T> table = _db.Set<T>();
+            IQueryable<T> query = _db.Set<T>();
+            //if (string.IsNullOrEmpty(includeItems))
+            //{
+            //    return await table.Where(x => x.IID == IID).FirstOrDefaultAsync();
+            //} else
+            //{
+            //    return await table.Where(x => x.IID == IID).Include(includeItems).FirstOrDefaultAsync();
+            //}
+            // Split comma-separated list and apply each include
+            if (!string.IsNullOrWhiteSpace(includeItems))
             {
-                return await table.Where(x => x.IID == IID).FirstOrDefaultAsync();
-            } else
-            {
-                return await table.Where(x => x.IID == IID).Include(includeItems).FirstOrDefaultAsync();
+                var includes = includeItems.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include.Trim());
+                }
             }
+
+            return await query.FirstOrDefaultAsync(x => x.IID == IID);
+        } catch (Exception ex)
+        {
+            string str = ex.Message;
+            return null;
+        }
+    }
+
+    public async Task<T> GetFirst(string includeItems = "")
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            //DbSet<T> table = _db.Set<T>();
+            IQueryable<T> query = _db.Set<T>();
+            //if (string.IsNullOrEmpty(includeItems))
+            //{
+            //    return await table.FirstOrDefaultAsync();
+            //} else
+            //{
+            //    return await table.Include(includeItems).FirstOrDefaultAsync();
+            //}
+            if (!string.IsNullOrWhiteSpace(includeItems))
+            {
+                var includes = includeItems.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include.Trim());
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -85,7 +147,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            DbSet<T> _dbSet = _db.Set<T>();
+            //DbSet<T> _dbSet = _db.Set<T>();
+            IQueryable<T> query = _db.Set<T>();
 
             var parameter = Expression.Parameter(typeof(T), "x");
             var property = Expression.Property(parameter, fieldName);
@@ -93,19 +156,36 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             var equality = Expression.Equal(property, constant);
             var lambda = Expression.Lambda<Func<T, bool>>(equality, parameter);
 
-            if (string.IsNullOrEmpty(includeItems))
+            //if (string.IsNullOrEmpty(includeItems))
+            //{
+            //    return await _dbSet.Where(lambda).FirstOrDefaultAsync();
+            //} else
+            //{
+            //    return await _dbSet.Where(lambda).Include(includeItems).FirstOrDefaultAsync();
+            //}
+            if (!string.IsNullOrWhiteSpace(includeItems))
             {
-                return await _dbSet.Where(lambda).FirstOrDefaultAsync();
-            } else
-            {
-                return await _dbSet.Where(lambda).Include(includeItems).FirstOrDefaultAsync();
+                var includes = includeItems.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include.Trim());
+                }
             }
+            return await query.Where(lambda).FirstOrDefaultAsync();
         } catch (Exception ex)
         {
             return null;
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="fieldName"></param>
+    /// <param name="value"></param>
+    /// <param name="includeItems">Comma seperated list</param>
+    /// <param name="OrderByField"></param>
+    /// <returns></returns>
     public async Task<List<T>> GetListByField(string fieldName, object value, string includeItems = "", string OrderByField = "")
     {
         using var _db = GetDBContext();
@@ -178,11 +258,12 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            DbSet<T> table = _db.Set<T>();
+            IQueryable<T> query = _db.Set<T>().AsNoTracking();
+
             if (string.IsNullOrEmpty(includeItems))
-                return await table.ToListAsync();
+                return await query.ToListAsync();
             else
-                return await table.Include(includeItems).ToListAsync();
+                return await query.Include(includeItems).ToListAsync();
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -215,6 +296,94 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             string str = ex.Message;
             return null;
         }
+    }
+    //public async Task SaveHierarchy<T>(T rootEntity) 
+    //{
+    //    using var _db = GetDBContext();
+    //    // Use TrackGraph to visit the Parent, Children, and Grandchildren
+    //    _db.ChangeTracker.TrackGraph(rootEntity, node =>
+    //    {
+    //        var entity = (BaseClass)node.Entry.Entity;
+
+    //        // 1. Check if this IID exists in the Database
+    //        // Use 'Any' for a fast check without loading the whole object
+    //        var exists = _db.Set(node.Entry.Metadata.ClrType)
+    //                             .Cast<BaseClass>()
+    //                             .Any(e => e.IID == entity.IID);
+
+    //        if (exists)
+    //        {
+    //            // If it exists, EF should UPDATE it
+    //            node.Entry.State = EntityState.Modified;
+    //        } else
+    //        {
+    //            // If it doesn't exist, EF should INSERT it
+    //            node.Entry.State = EntityState.Added;
+    //        }
+    //    });
+
+    //    await _db.SaveChangesAsync();
+    //}
+
+    public async Task SaveHierarchy<T>(T rootEntity)
+    {
+        using var _db = GetDBContext();
+        // TrackGraph visits every entity in the object graph (children, grandchildren, etc.)
+        _db.ChangeTracker.TrackGraph(rootEntity, node =>
+        {
+            var entry = node.Entry;
+            var entity = (BaseClass)entry.Entity;
+
+            // 1. If IID is missing, it's brand new
+            if (entity.IsNew)
+            {
+                entry.State = EntityState.Added;
+            } else
+            {
+                // 2. Check if this specific IID is already being tracked in the current context
+                var trackedEntry = _db.ChangeTracker.Entries<BaseClass>()
+                    .FirstOrDefault(e => e.Entity.IID == entity.IID);
+
+                if (trackedEntry == null)
+                {
+                    // If it's not tracked, assume it's a new child being added with a manual ID
+                    // Alternatively, use 'entry.State = EntityState.Unchanged' if it's an existing reference
+                    entry.State = EntityState.Added;
+                } else
+                {
+                    // 3. If it's already tracked, mark it as Modified to capture changes
+                    entry.State = EntityState.Modified;
+                }
+            }
+        });
+
+        await _db.SaveChangesAsync();
+    }
+
+
+    public async Task SaveMenuHierarchy(TheMenu menu)
+    {
+        using var _db = GetDBContext();
+        _db.ChangeTracker.TrackGraph(menu, node =>
+        {
+            // 1. Check if the entity is already being tracked
+            var alreadyTracked = _db.ChangeTracker.Entries()
+                .Any(e => e.Entity.GetType() == node.Entry.Entity.GetType()
+                     && ((BaseClass)e.Entity).IID == ((BaseClass)node.Entry.Entity).IID);
+
+            // 2. If it's not tracked, it's either NEW or needs to be ATTACHED
+            if (node.Entry.IsKeySet)
+            {
+                // If you know this is a mix of new and old, 
+                // you can check the DB or just force 'Added' if it's a new child
+                node.Entry.State = EntityState.Added;
+            } else
+            {
+                node.Entry.State = EntityState.Added;
+            }
+        });
+
+        await _db.SaveChangesAsync();
     }
 
     //public async Task<int> Delete(int Id)
@@ -411,7 +580,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 FROM EntityButtonStockItemLookUp LEFT OUTER JOIN
                          EntityButton ON EntityButtonStockItemLookUp.EntityButtonIID = EntityButton.IID LEFT OUTER JOIN
                          StockItem ON EntityButtonStockItemLookUp.StockItemIID = StockItem.IID";
-        return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();   
+        return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();
     }
 
     public async Task<List<DistributionView>> GetDistributionView()
@@ -447,7 +616,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         return await GetDBContext().Set<OrdersView>().FromSqlRaw(sql).ToListAsync();
     }
 
-    public async Task<List<TaxSummary>>  GetTaxSummaryView()
+    public async Task<List<TaxSummary>> GetTaxSummaryView()
     {
         var sql = @"SELECT Orders.SessionIID, Sessions.StartDate, Sessions.EndDate, OrderItem.TaxPercent, SUM(ROUND(OrderItem.Quantity * OrderItem.Price, 2)) AS GrossTotal, 
                          SUM(ROUND((OrderItem.Quantity * OrderItem.Price) / (100 + OrderItem.TaxPercent) * OrderItem.TaxPercent, 2)) AS NetTaxValue, SUM(ROUND(ROUND(OrderItem.Quantity * OrderItem.Price, 2) 
@@ -460,14 +629,134 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         return await GetDBContext().Set<TaxSummary>().FromSqlRaw(sql).ToListAsync();
     }
 
-//    public async Task<List<SessionView>> GetSessionView()
-//    {
-//        var sql = @"
+    //    public async Task<List<SessionView>> GetSessionView()
+    //    {
+    //        var sql = @"
+
+    //";
+    //        return await GetDBContext().Set<SessionView>().FromSqlRaw(sql).ToListAsync();
+
+    //    }
+
+    #endregion
+
+
+
+    //public async Task<string> CurrentSessionIID()
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        return _db.Shops.First().CurrentSessionIID;
+
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }
+    //}
+
+
+    public async Task<List<double>> GetAllTaxRatesForMenu(string MenuIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var query = _db.Menus.Where(m => m.IID == MenuIID)
+                .SelectMany(m => m.categories)
+                .SelectMany(c => c.Items);
+
+            var distinctList = await query.Select(ci => ci.SaleTax)
+                .Union(query.Select(ci => ci.SitinTax))
+                .Union(query.Select(ci => ci.TaTax))
+                .Union(query.Select(ci => ci.DTax))
+                .ToListAsync();
+
+            return distinctList;
+            //var distinctProperties = await _db.Menus
+            //        .Where(m => m.IID == MenuIID)
+            //        .SelectMany(m => m.categories)          // Flatten Categories
+            //        .SelectMany(c => c.Buttons)       // Flatten CategoryItems
+            //        .Select(ci => ci.PropertyName)          // Select the specific property
+            //        .Distinct()                             // Get only unique values
+            //        .ToListAsync();
+
+        } catch (Exception ex)
+        {
+            return null;
+        }
+
+
+
+    }
+
+
+
+    #region MENU FUNCTIONS
+    public async Task<TheMenu> GetMenu(string IID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return await _db.Menus.Where(x => x.IID == IID)
+                .Include(m => m.categories).ThenInclude(c => c.Items)
+                .Include(m => m.distributions).FirstOrDefaultAsync();
+            
+        } catch (Exception ex)
+        {
+            return null;
+        }
+
+    }
+    public async Task<TheMenu> SaveMenu(TheMenu menu)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            if (menu.IsNew)
+            {
+                await _db.Menus.AddAsync(menu);
+            } else
+            {
+
                 
-//";
-//        return await GetDBContext().Set<SessionView>().FromSqlRaw(sql).ToListAsync();
+                foreach (var distro in menu.distributions)
+                {
+                    if (distro.IsNew)
+                        await _db.Distributions.AddAsync(distro);
+                    else
+                        _db.Distributions.Update(distro);
+                }
+                foreach (var cat in menu.categories)
+                {
+                    if (cat.IsNew)
+                    {
+                        await _db.Categories.AddAsync(cat);
+                    }                                      
+                    else
+                    {
+                        _db.Categories.Update(cat);
+                        
+                    }
+                    foreach (var item in cat.Items)
+                    {
+                        if (item.IsNew)
+                        {
+                            await _db.CategoryItems.AddAsync(item);
+                        } else
+                        {
+                            _db.CategoryItems.Update(item);
 
-//    }
-
+                        }
+                    }
+                }
+                _db.Menus.Update(menu);
+            }
+            await _db.SaveChangesAsync();
+            return menu;
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
     #endregion
 }

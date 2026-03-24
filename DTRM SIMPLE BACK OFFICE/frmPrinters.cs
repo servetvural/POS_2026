@@ -14,20 +14,23 @@ using System.Threading.Tasks;
 using POSLayer.Models;
 using POSLayer.Library;
 using POSWinFormLayer.Library;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMSimpleBackOffice
 {
     public partial class frmPrinters : Form
     {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private bool blnasModal;
         public frmPrinters()
         {
             InitializeComponent();
         }
-        public frmPrinters(DTRMSimpleBusiness bslayer, bool asModal = false)
+        public frmPrinters(PosConfig configAsService, DTRMSimpleBusiness bslayer, bool asModal = false)
         {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.blnasModal = asModal;
             if (asModal)
@@ -44,60 +47,52 @@ namespace DTRMSimpleBackOffice
 
         private async void LoadPrinters()
         {
-            dgv.Columns["colClient"].Visible = chkAllPrinters.Checked;
-            dgv.DataSource = await bslayer.GetAllPrinters();
-            //if (chkAllPrinters.Checked)
-            //    dgv.DataSource = UF.StringifyEnumInDataTable(bslayer.GetSystemPrinterListDB(), "PrinterType", "PrinterTypeAsString", typeof(PrinterTypes));
-            //else
-            //    dgv.DataSource = UF.StringifyEnumInDataTable(bslayer.GetPrinterListDB(), "PrinterType", "PrinterTypeAsString", typeof(PrinterTypes));
 
-            try
-            {
-                cmbDeliveryPrinter.DataSource = bslayer.GetAllPrinters();
-                ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.Delivery);
-                if (ap != null)
-                    cmbDeliveryPrinter.SelectedValue = ap.IID;
-            } catch { }
+            dgv.DataSource = (await bslayer.GetAllPrinters()).ToBindingList();
 
-            try
-            {
-                cmbTakeAwayPrinter.DataSource = await bslayer.GetAllPrinters();
-                ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.TakeAwayB);
-                if (ap != null)
-                    cmbTakeAwayPrinter.SelectedValue = ap.IID;
-            } catch { }
 
-            try
-            {
-                cmbCashDrawerPrinter.DataSource = bslayer.GetAllPrinters();
-                if (bslayer.config.DtPrinterCashDrawerIID != null && bslayer.config.DtPrinterCashDrawerIID != "")
-                {
-                    ApplicationPrinter ap = await bslayer.GetPrinterForClient(bslayer.config.DtPrinterCashDrawerIID);
-                    if (ap != null)
-                        cmbCashDrawerPrinter.SelectedValue = ap.IID;
-                }
-            } catch { }
+            //try
+            //{
+            //    cmbDeliveryPrinter.DataSource = bslayer.GetAllPrinters();
+            //    ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.Delivery);
+            //    if (ap != null)
+            //        cmbDeliveryPrinter.SelectedValue = ap.IID;
+            //} catch { }
 
-            try
-            {
-                cmbLocalReceiptPrinter.DataSource = bslayer.GetAllPrinters();
-                if (bslayer.config.DTClientLocalReceiptPrinterIID != null && bslayer.config.DTClientLocalReceiptPrinterIID != "")
-                {
-                    ApplicationPrinter ap = await bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID);
-                    if (ap != null)
-                        cmbLocalReceiptPrinter.SelectedValue = ap.IID;
-                }
-            } catch { }
+            //try
+            //{
+            //    cmbTakeAwayPrinter.DataSource = await bslayer.GetAllPrinters();
+            //    ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.TakeAwayB);
+            //    if (ap != null)
+            //        cmbTakeAwayPrinter.SelectedValue = ap.IID;
+            //} catch { }
+
+            //try
+            //{
+            //    cmbCashDrawerPrinter.DataSource = bslayer.GetAllPrinters();
+            //    if (config.DtPrinterCashDrawerIID != null && config.DtPrinterCashDrawerIID != "")
+            //    {
+            //        ApplicationPrinter ap = await bslayer.GetPrinterForClient(config.DtPrinterCashDrawerIID);
+            //        if (ap != null)
+            //            cmbCashDrawerPrinter.SelectedValue = ap.IID;
+            //    }
+            //} catch { }
+
+            //try
+            //{
+            //    cmbLocalReceiptPrinter.DataSource = bslayer.GetAllPrinters();
+            //    if (config.DTClientLocalReceiptPrinterIID != null && config.DTClientLocalReceiptPrinterIID != "")
+            //    {
+            //        ApplicationPrinter ap = await bslayer.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID);
+            //        if (ap != null)
+            //            cmbLocalReceiptPrinter.SelectedValue = ap.IID;
+            //    }
+            //} catch { }
         }
-        //private void dgv_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) {
-        //    for (int i = 0; i < dgv.Rows.Count; i++) {
-        //        dgv.Rows[i].Cells["colPrinterTypeAsString"].Value = (PrinterTypes)int.Parse(dgv.Rows[i].Cells["colPrinterType"].Value.ToString());
-        //    }
-        //}
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            frmSinglePrinter frm = new frmSinglePrinter(bslayer, new ApplicationPrinter());
+            frmSinglePrinter frm = ActivatorUtilities.CreateInstance< frmSinglePrinter>(ServiceHelper.Services, new Printer());
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadPrinters();
         }
@@ -107,9 +102,9 @@ namespace DTRMSimpleBackOffice
             if (dgv.SelectedRows.Count > 0)
             {
                 string PrinterIID = dgv.SelectedRows[0].Cells["colPrinterIID"].Value.ToString();
-                ApplicationPrinter ap = await bslayer.GetPrinter(PrinterIID);
+                Printer printer = await bslayer.GetPrinter(PrinterIID);
 
-                frmSinglePrinter frm = new frmSinglePrinter(bslayer, ap);
+                frmSinglePrinter frm = ActivatorUtilities.CreateInstance < frmSinglePrinter>(ServiceHelper.Services, printer);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadPrinters();
             }
@@ -144,12 +139,12 @@ namespace DTRMSimpleBackOffice
 
         private void cmbCashDrawerPrinter_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            bslayer.config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
+            config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
         }
 
         private void cmbLocalReceiptPrinter_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            bslayer.config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
+            config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
         }
 
         private async void btnSave_Click(object sender, EventArgs e)
@@ -158,10 +153,10 @@ namespace DTRMSimpleBackOffice
             {
                 await bslayer.SaveUniquePrinter(cmbTakeAwayPrinter.SelectedValue.ToString(), OrderTypes.TakeAwayB);
                 await bslayer.SaveUniquePrinter(cmbDeliveryPrinter.SelectedValue.ToString(), OrderTypes.Delivery);
-                bslayer.config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
-                bslayer.config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
+                config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
+                config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
             } catch { }
-            POSLayer.Library.UF.SaveConfig(bslayer.config);
+            UF.SaveConfig(config);
             if (blnasModal)
             {
                 this.DialogResult = DialogResult.OK;
@@ -180,19 +175,19 @@ namespace DTRMSimpleBackOffice
             if (dgv.SelectedRows.Count > 0)
             {
                 string PrinterIID = dgv.SelectedRows[0].Cells["colPrinterIID"].Value.ToString();
-                ApplicationPrinter ap = await bslayer.GetPrinterForClient(PrinterIID);
-                if (ap == null)
+                Printer printer = await bslayer.GetPrinterForClient(PrinterIID);
+                if (printer == null)
                 {
                     MessageBox.Show("Configuration Eror: Printer Null");
                     return;
                 }
                 string str = "===========================================\r\n" +
-                    ap.ApplicationName + "\r\n" +
-                    ap.NetworkName + "\r\n" + "SUCCESS" + "\r\n" +
+                    printer.ApplicationName + "\r\n" +
+                    printer.NetworkName + "\r\n" + "SUCCESS" + "\r\n" +
                     "===========================================";
 
 
-                PrintHandler pHand = new PrintHandler(bslayer.config, str, ap.NetworkName);
+                PrintHandler pHand = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services, str, printer.NetworkName);
                 pHand.PrintNow();
 
             }
@@ -205,14 +200,9 @@ namespace DTRMSimpleBackOffice
                 exporter.ExportToFile();
         }
 
-        private void chkAllPrinters_CheckedChanged(object sender, EventArgs e)
-        {
-            chkAllPrinters.Image = chkAllPrinters.Checked ? Properties.Resources.Checked : Properties.Resources.Unchecked;
-        }
-
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<ApplicationPrinter> printerList = await bslayer.GetAllPrinters();
+            List<Printer> printerList = await bslayer.GetAllPrinters();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -246,8 +236,8 @@ namespace DTRMSimpleBackOffice
                         string content = POSLayer.Library.UF.GetTextFile(sfd.FileName);
                         if (!string.IsNullOrEmpty(content))
                         {
-                            List<ApplicationPrinter> printerList = JsonConvert.DeserializeObject<List<ApplicationPrinter>>(content);
-                            foreach (ApplicationPrinter printer in printerList)
+                            List<Printer> printerList = JsonConvert.DeserializeObject<List<Printer>>(content);
+                            foreach (Printer printer in printerList)
                             {
                                 await bslayer.SavePrinter(printer);
                             }

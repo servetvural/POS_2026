@@ -13,6 +13,7 @@ using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class ctlKitchenOrder : UserControl {
+        PosConfig config;
         public DTRMSimpleBusiness bslayer;
         public KitchenOrder korder;
         public bool blnWaiting;
@@ -38,24 +39,26 @@ namespace DTRMNS {
         }
 
 
-        public ctlKitchenOrder() {
+        public ctlKitchenOrder(PosConfig configAsService,DTRMSimpleBusiness bslayer) {
             InitializeComponent();
-        }
-        public ctlKitchenOrder(DTRMSimpleBusiness bslayer, KitchenOrder korder, List<Distribution> terminalTypeList, bool blnWaiting,bool blnDisplayDetails) {
-            InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
+
+        }
+        public ctlKitchenOrder(KitchenOrder korder, List<Distribution> terminalTypeList, bool blnWaiting,bool blnDisplayDetails) {
+            InitializeComponent();
             this.korder = korder;
             this.Name = korder.IID;
             this.terminalTypeList = terminalTypeList;
             this.blnWaiting = blnWaiting;
             this.blnDisplayDetails = blnDisplayDetails;
-            pBar.Maximum = bslayer.config.Kitchen_Prep_Bad_Time;
+            pBar.Maximum = config.Kitchen_Prep_Bad_Time;
             pBar.Value = 0;
             pBar.Visible = false;
 
-            mainFont = new Font("Arial", bslayer.config.Kitchen_Large_Font_Size, FontStyle.Bold);
-            subFont = new Font("Arial", bslayer.config.Kitchen_Small_Font_Size, FontStyle.Regular);
-            detailFont = new Font("Arial", bslayer.config.Kitchen_Detail_Font_Size, FontStyle.Regular);
+            mainFont = new Font("Arial", (float)config.Kitchen_Large_Font_Size, FontStyle.Bold);
+            subFont = new Font("Arial", (float)config.Kitchen_Small_Font_Size, FontStyle.Regular);
+            detailFont = new Font("Arial", (float)config.Kitchen_Detail_Font_Size, FontStyle.Regular);
 
             
            
@@ -183,7 +186,7 @@ namespace DTRMNS {
                                     ctlkoi.DetailLabel.Font = detailFont;
                                     ctlkoi.bslayer = bslayer;
                                     ctlkoi.korderitem = koi;
-                                    ctlkoi.ShowFullScreen = bslayer.config.Display_Kitchen_FullScreen_on_Display;
+                                    ctlkoi.ShowFullScreen = config.Display_Kitchen_FullScreen_on_Display;
                                     blnExpand = true;
                                     step = 7;
                                 }
@@ -193,7 +196,7 @@ namespace DTRMNS {
                             if (blnExpand) {
                                 ctlkoi.Height = ctlkoi.ActiveLabel.Font.Height + ctlkoi.DetailLabel.Height + 10;
                                 step = 9;
-                                if (bslayer.config.Kitchen_Can_Print)
+                                if (config.Kitchen_Can_Print)
                                     pnlButtons.Height = 64;
                                 blnExpand = false;
                                 step = 10; 
@@ -265,7 +268,7 @@ namespace DTRMNS {
 
 
         private async void MarkOrderItemsAsCompletedAsRequestedQuantity() {
-            if (bslayer.config.DebugMode) 
+            if (config.DebugMode) 
                 bslayer.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
             korder.CompletedDateTime = DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
@@ -288,11 +291,11 @@ namespace DTRMNS {
                 }
 
                 bslayer.SaveOrder(relatedOrder);
-                if (bslayer.config.DebugMode) 
+                if (config.DebugMode) 
                     bslayer.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
 
                 bslayer.SaveKitchenOrder(korder);
-                if (bslayer.config.DebugMode)
+                if (config.DebugMode)
                     bslayer.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
                 
             }
@@ -308,7 +311,7 @@ namespace DTRMNS {
             if (blnWaiting) {
                 
                 double waitingtime = DateTime.Now.Subtract(korder.CreatedDateTime).TotalSeconds;
-                if (waitingtime > (double)bslayer.config.Kitchen_Prep_Bad_Time) {
+                if (waitingtime > (double)config.Kitchen_Prep_Bad_Time) {
                     if (btnDone.BackColor == Color.Black) {
                         btnDone.BackColor = Color.Red;                        
                     } else
@@ -317,10 +320,10 @@ namespace DTRMNS {
                 lblTime.Text = DRUF.secondsToMinutes(waitingtime);
 
                 //This section for progress Bar if visible
-                if (bslayer.config.Kitchen_Show_Progress_Bar)
+                if (config.Kitchen_Show_Progress_Bar)
                 {
                     pBar.Visible = true;
-                    if (waitingtime > (double)bslayer.config.Kitchen_Prep_Bad_Time)
+                    if (waitingtime > (double)config.Kitchen_Prep_Bad_Time)
                     {
                         pBar.Value = pBar.Maximum;
                         pBar.BackColor = Color.Red;
@@ -336,34 +339,33 @@ namespace DTRMNS {
                 }
                 else
                     pBar.Visible = false;
-                ////
 
                 pnlPayment.Visible = !bslayer.isOrderPaid(korder.OrderIID);
             }         
         }
 
         private async void BtnPrint_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap = await bslayer.GetDefaultReceiptPrinter();  
-            if (ap == null)
+            Printer printer = await bslayer.GetDefaultReceiptPrinter();  
+            if (printer == null)
                 return;
 
-            bslayer.PrintForKitchen(korder, ap);
+            bslayer.PrintForKitchen(korder, printer);
         }
 
         private async void BtnPrintAsReceipt_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap =await bslayer.GetDefaultReceiptPrinter(); 
-            if (ap == null)
+            Printer printer =await bslayer.GetDefaultReceiptPrinter(); 
+            if (printer == null)
                 return;
 
-            bslayer.PrintReceipt(korder.OrderIID, ap, 1);
+            bslayer.PrintReceipt(korder.OrderIID, printer, 1);
         }
 
         private async void BtnPrintWithDetails_Click(object sender, EventArgs e) {
-            ApplicationPrinter ap = await bslayer.GetDefaultReceiptPrinter();
-            if (ap == null)
+            Printer printer = await bslayer.GetDefaultReceiptPrinter();
+            if (printer == null)
                 return;
 
-            bslayer.PrintForKitchen(korder, ap, true);
+            bslayer.PrintForKitchen(korder, printer, true);
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e) {

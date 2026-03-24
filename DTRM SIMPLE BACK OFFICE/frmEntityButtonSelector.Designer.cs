@@ -120,7 +120,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityButtonBindingSource
             // 
-            this.entityButtonBindingSource.DataSource = typeof(EntityButton);
+            this.entityButtonBindingSource.DataSource = typeof(CategoryItem);
             // 
             // txtFilter
             // 

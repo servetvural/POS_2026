@@ -1,68 +1,34 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Xml;    
-using System.Text.Json;
-
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using POSLayer.Library;
 
 namespace POSLayer.Models;
 
 public partial class Order  : BaseClass
-{
-    public List<OrderItem> items { get; set; } = new();
+{                
     public string? TableIID { get; set; }   = string.Empty; 
-
     public string? TableName { get; set; }      = string.Empty;
-
     public DateTime OrderDate { get; set; } = DateTime.Now;
-
     public int Covers { get; set; } = 1;
-
     public OrderTypes OrderType { get; set; } = OrderTypes.InHouse;
-
-    public PaymentMethods Payment { get; set; } = PaymentMethods.Unknown;
-
-    public string? CustomerIID { get; set; } = string.Empty;
-
+    public PaymentMethods Payment { get; set; } = PaymentMethods.Unknown;  
     public string? SessionIID { get; set; }  = string.Empty;
-
     public StatusFlags Status { get; set; } = StatusFlags.NEW;
-
     public string? LockedClientIP { get; set; }   = string.Empty;
-
     public string Instruction { get; set; } = string.Empty;
-
     public double MoneyPaid { get; set; }
-
-    public string? PaymentFlag { get; set; }   = string.Empty;
-
-    public string? CName { get; set; }      = string.Empty;
-
-    public string? Postcode { get; set; }     = string.Empty;
-
-    public string? Address { get; set; }    = string.Empty;
-
-    public string? Buzzer { get; set; }    = string.Empty;
-
-    public string? Town { get; set; }   = string.Empty;
-
-    public string? Tel { get; set; }    = string.Empty;
-
-    public string? Mobile { get; set; }   = string.Empty;
-
-    public string? Email { get; set; }   = string.Empty;
-
-    public string? UserName { get; set; } = string.Empty;
-
+    public string? PaymentFlag { get; set; }   = string.Empty;   
     public string? Reference { get; set; }   = string.Empty;
-
     public double ServiceChargeRate { get; set; }
-
     public double ServiceChargeTaxRate { get; set; }
 
-    
+    public string? Waiter { get; set; }
+
+
+    public List<OrderItem> items { get; set; } = new List<OrderItem>();
+
+    public string? CustomerIID { get; set; } = string.Empty;
+    public Customer Customer { get; set; } // Navigation property
+
 
 
     [NotMapped]
@@ -74,6 +40,9 @@ public partial class Order  : BaseClass
     public int RequestCount { get; set; }
     [NotMapped]
     public bool blnItemsChanged { get; set; }
+
+
+
 
 
     public Order(OrderTypes OrderType)
@@ -88,59 +57,55 @@ public partial class Order  : BaseClass
 
     public double GetFullTotal()
     {
-        return GetTaxIncludedItemTotal() + GetServiceCharge();
+        return CalculatedValue + ServiceCharge;
     }
 
     /// <summary>
     /// Tax Inclusive Item Total
     /// </summary>
     /// <returns></returns>
-    public double GetTaxIncludedItemTotal()
+    public double CalculatedValue
     {
-        double Total = 0f;
-        for (int i = 0; i < items.Count; i++)
+        get
         {
-            Total += ((OrderItem)items[i]).Total;
+            return items.Sum(x => x.CalculatedValue);
         }
-        return Total;
     }
 
     /// <summary>
     /// Total of All Items with Taxes
     /// </summary>
     /// <returns></returns>
-    public double GetItemTaxTotal()
+    public double CalculatedVat
     {
-        double VatTotal = 0f;
-        foreach (OrderItem item in items)
-        {
-            VatTotal += item.TaxValue;
+        get {
+            return items.Sum(x => x.CalculatedVat);
         }
-        return VatTotal;
     }
 
     /// <summary>
     /// Total of All items without taxes
     /// </summary>
     /// <returns></returns>
-    public double GetTaxExcludedItemTotal()
+    public double CalculatedExVat
     {
-        double Total = 0f;
-        foreach (OrderItem item in items)
+        get
         {
-            Total += item.Total - item.TaxValue;
+            return items.Sum(x => x.CalculatedExVat);
         }
-        return Total;
     }
 
-    public double GetServiceCharge()
+    public double ServiceCharge
     {
-        return GetTaxExcludedItemTotal() * ServiceChargeRate / 100;
+        get
+        {
+            return CalculatedExVat * ServiceChargeRate / 100;
+        }
     }
 
     public double GetServiceChargeTax()
     {
-        return GetServiceCharge() * ServiceChargeTaxRate / 100;
+        return ServiceCharge * ServiceChargeTaxRate / 100;
     }
 
 
@@ -166,9 +131,8 @@ public partial class Order  : BaseClass
         for (int i = 0; i < norder.items.Count; i++)
         {
             OrderItem oi = (OrderItem)norder.items[i];
-            oi.ParentOrderIID = this.IID;
+            oi.OrderIID = this.IID;
             this.AddIncrementOrderItem(oi);
-            //this.AddOrderItem(oi);
         }
         return true;
     }
@@ -194,20 +158,16 @@ public partial class Order  : BaseClass
                 shrinkableItems[i].OrderGroupIID = IID;
         }
 
-
-        for (int i = items.Count - 1; i >= 0; i--)
+        var toRemove = items.Where(x => x.Quantity <= 0).ToList();
+        foreach (var item in toRemove)
         {
-            if (items[i].Quantity == 0)
-                items.RemoveAt(i);
-
+            items.Remove(item);
         }
-
         string ordergroupshrunkguid = ShortGuid.NewDateBasedGuid(OrderDate);
-        for (int i = 0; i < items.Count; i++)
+        foreach (var item in items)
         {
-            items[i].OrderGroupIID = ordergroupshrunkguid;
+            item.OrderGroupIID = ordergroupshrunkguid;
         }
-
         return true;
     }
 
@@ -266,7 +226,7 @@ public partial class Order  : BaseClass
 
         foreach (OrderItem existingItem in items)
         {
-            OrderItem givenOrderItem = givenOrder.items.Find(x => x.EntityButtonIID == existingItem.EntityButtonIID);
+            OrderItem givenOrderItem = givenOrder.items.Where(x => x.EntityButtonIID == existingItem.EntityButtonIID).FirstOrDefault();
             if (givenOrderItem == null)
             {
                 //new item doesn't exist in old order so put all of it to result order
@@ -274,7 +234,6 @@ public partial class Order  : BaseClass
             } else
             {
                 //new item exist in old order 
-
                 if (givenOrderItem.Quantity < existingItem.Quantity)
                 {
                     //but new item quantity is more now
@@ -321,11 +280,6 @@ public partial class Order  : BaseClass
         }
 
         return duplicateOrder;
-        //if (duplicateOrder.items.Count > 0)
-        //    return duplicateOrder;
-        //else
-        //return null;
-
     }
 
 
@@ -356,15 +310,6 @@ public partial class Order  : BaseClass
             MoneyPaid = MoneyPaid,
 
             TableName = TableName,
-            CName = CName,
-            Postcode = Postcode,
-            Buzzer = Buzzer,
-            Address = Address,
-            Town = Town,
-            Tel = Tel,
-            Mobile = Mobile,
-            Email = Email,
-            UserName = UserName,
             Reference = Reference,
 
             ServiceChargeRate = ServiceChargeRate,
@@ -400,15 +345,6 @@ public partial class Order  : BaseClass
             MoneyPaid = MoneyPaid,
 
             TableName = TableName,
-            CName = CName,
-            Postcode = Postcode,
-            Buzzer = Buzzer,
-            Address = Address,
-            Town = Town,
-            Tel = Tel,
-            Mobile = Mobile,
-            Email = Email,
-            UserName = UserName,
             Reference = Reference,
 
             ServiceChargeRate = ServiceChargeRate,
@@ -445,15 +381,6 @@ public partial class Order  : BaseClass
             MoneyPaid = MoneyPaid,
 
             TableName = TableName,
-            CName = CName,
-            Postcode = Postcode,
-            Buzzer = Buzzer,
-            Address = Address,
-            Town = Town,
-            Tel = Tel,
-            Mobile = Mobile,
-            Email = Email,
-            UserName = UserName,
             Reference = Reference,
 
             ServiceChargeRate = ServiceChargeRate,
@@ -515,32 +442,11 @@ public partial class Order  : BaseClass
     public string AddOrderItem(OrderItem oi)
     {
         //Add this at the end of the list as top item
-        //oi.OrderGroupIID = ShortGuid.NewGuid().ToString();
         items.Add(oi);
         blnItemsChanged = true;
         return oi.OrderGroupIID;
     }
-    public void CancelOrderItem(string OrderGroupIID)
-    {
-        for (int i = 0; i < items.Count; i++)
-        {
-            OrderItem oi = (OrderItem)items[i];
-            if (oi.OrderGroupIID == OrderGroupIID)
-            {
-                items.Remove(oi);
-                i--;
-            }
-        }
-    }
-
-    public OrderItem GetOrderItem(string OrderItemIID)
-    {
-        return items.Find(x => x.IID == OrderItemIID);
-
-    }
-
-
-
+    
     public void DeleteOrderItem(string OrderItemIID)
     {
         if (OrderItemIID != null && OrderItemIID != "")
@@ -556,15 +462,6 @@ public partial class Order  : BaseClass
             }
         }
     }
-    public void VoidOrderItem(string OrderItemIID)
-    {
-        try
-        {
-            OrderItem oi = GetOrderItem(OrderItemIID);
-            if (!oi.OrderItemText.StartsWith("**VOID**"))
-                oi.OrderItemText = "**VOID** " + oi.OrderItemText;
-        } catch { }
-    }
 
     public void AddIncrementOrderItem(OrderItem newItem)
     {
@@ -577,31 +474,26 @@ public partial class Order  : BaseClass
 
     public OrderItem GetIncrementableItem(string EntityButtonIID, string DistributionIID, string OrderGroupIID)
     {
-        return items.Find(x => x.EntityButtonIID == EntityButtonIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID);
+        return items.Where(x => x.EntityButtonIID == EntityButtonIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
     }
     public void IncrementOrderItem(string OrderItemIID)
     {
         try
         {
-            this.GetOrderItem(OrderItemIID).Increment();
+            items.Where(x => x.IID == OrderItemIID).FirstOrDefault().Quantity++;
             blnItemsChanged = true;
         } catch { }
-    }
-    public void CloneOrderItem(string OrderItemIID)
-    {
-        try
-        {
-            items.Add(GetOrderItem(OrderItemIID).Clone(true));
-            blnItemsChanged = true;
-        } catch { }
-
     }
 
     public void DecrementOrderItem(string OrderItemIID)
     {
-        if (OrderItemIID == "")
+        if (string.IsNullOrEmpty(OrderItemIID))
             return;
-        OrderItem oi = this.GetOrderItem(OrderItemIID);
+
+        OrderItem oi = items.Where(x => x.IID ==OrderItemIID).FirstOrDefault();
+        if (oi == null)
+            return;
+
         if (!oi.Decrement())
             this.DeleteOrderItem(oi.IID);
         blnItemsChanged = true;
@@ -627,112 +519,14 @@ public partial class Order  : BaseClass
         {
             string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
             if (AddPrice)
-                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.Total) + "\r\n";
+                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.CalculatedValue) + "\r\n";
             else
                 str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10), item.Quantity, itemtext) + "\r\n";
         }
 
         return str;
     }
-
-    public ArrayList GetOrderAsArrayList()
-    {
-        ArrayList lines = new ArrayList();
-
-        OrderItem oi;
-        double OrderTotal = 0f;
-
-
-        switch (OrderType)
-        {
-            case OrderTypes.DirectSale:
-                lines.Add(new List<string>(new string[] { UserName + " @ " + UF.GetOrderTypeAsText(OrderType) }));
-                break;
-            case OrderTypes.InHouse:
-                lines.Add(new List<string>(new string[] { UserName + " @ " + this.TableName }));
-                break;
-            case OrderTypes.InternetTakeAway:
-            case OrderTypes.TakeAwayB:
-                lines.Add(new List<string>(new string[] { UserName + " @ " + UF.GetOrderTypeAsText(OrderType) }));
-                lines.Add(new List<string>(new string[] { "------------------------" }));
-                lines.Add(new List<string>(new string[] { "Customer : " + CName }));
-                lines.Add(new List<string>(new string[] { "Tel : " + Tel }));
-                lines.Add(new List<string>(new string[] { "Mobile : " + Mobile }));
-                break;
-            case OrderTypes.Delivery:
-            case OrderTypes.InternetDelivery:
-                lines.Add(new List<string>(new string[] { UserName + " @ " + UF.GetOrderTypeAsText(OrderType) }));
-                lines.Add(new List<string>(new string[] { "------------------------" }));
-                lines.Add(new List<string>(new string[] { "Customer : " + CName }));
-                lines.Add(new List<string>(new string[] { "Address : " + Address }));
-                lines.Add(new List<string>(new string[] { "Buzzer : " + Buzzer }));
-                lines.Add(new List<string>(new string[] { "Postcode : " + Postcode }));
-                lines.Add(new List<string>(new string[] { "Tel : " + Tel }));
-                lines.Add(new List<string>(new string[] { "Mobile : " + Mobile }));
-                lines.Add(new List<string>(new string[] { "Town : " + Town }));
-                break;
-            default:
-                lines.Add(new List<string>(new string[] { UserName + " @ " + UF.GetOrderTypeAsText(OrderType) }));
-                break;
-        }
-        lines.Add(new List<string>(new string[] { "------------------------" }));
-
-
-        for (int i = 0; i < items.Count; i++)
-        {
-
-            //Display Top Item
-            oi = (OrderItem)items[i];
-            lines.Add(new List<string>(new string[] { oi.Quantity.ToString("f0"), oi.OrderItemText, oi.Total.ToString("c") }));
-
-
-        }
-
-        OrderTotal = GetFullTotal();
-        lines.Add(new List<string>(new string[] { "------------------------" }));
-        lines.Add(new List<string>(new string[] { "Order Total : " + OrderTotal.ToString("c") }));
-
-        return lines;
-    }
-
-    public string GetOrderAsText(string columnDelimeter, string lineDelimeter)
-    {
-        string text = "";
-        ArrayList lines = GetOrderAsArrayList();
-        for (int i = 0; i < lines.Count; i++)
-        {
-            List<string> singleLine = (List<string>)lines[i];
-            for (int x = 0; x < singleLine.Count; x++)
-            {
-                text += singleLine[x] + columnDelimeter;
-            }
-            text += lineDelimeter;
-        }
-        return text;
-    }
-    public string CreateKitchenOrderText(string columnDelimeter, string lineDelimeter)
-    {
-        string text = "";
-        for (int i = 0; i < items.Count; i++)
-        {
-            OrderItem oi = (OrderItem)items[i];
-            text += oi.DistributionIID + columnDelimeter + oi.Quantity.ToString("f0") + columnDelimeter + oi.OrderItemText + lineDelimeter;
-        }
-        //if (blnShowTime) {
-        //    text += "\r\n" + DateTime.Now.ToString("HH:mm:ss");
-        //}
-        return text;
-    }
-    public string GetOrderAsSimpleText()
-    {
-        return GetOrderAsText("\t", "\r\n");
-    }
-
-    public string GetOrderAsHtml()
-    {
-        return GetOrderAsText("&nbsp;&nbsp;&nbsp;&nbsp;", "<br>");
-    }
-
+   
     public bool IsCustomerDetailsRequired
     {
         get
@@ -754,11 +548,6 @@ public partial class Order  : BaseClass
             }
         }
     }
-
-    //public override string ToString()
-    //{
-    //    return JsonConvert.SerializeObject(this, Formatting.Indented);
-    //}
 
     public string ToSimpleString()
     {

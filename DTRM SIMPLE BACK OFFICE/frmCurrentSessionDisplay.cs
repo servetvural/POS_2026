@@ -12,10 +12,12 @@ using DTRMNS;
 using POSLayer.Library;
 using System.Threading.Tasks;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmCurrentSessionDisplay : Form {
         private DTRMSimpleBusiness bslayer;
+
         private bool blnLoading;
         private SessionData CurrentSessionData;
         private double oldGrossSessionTotal;
@@ -80,7 +82,7 @@ namespace DTRMSimpleBackOffice {
 
         private async void UpdateSessionLabels() {
             //Update session values dynamically
-            CurrentSessionData = await bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID);
+            CurrentSessionData = await bslayer.GetSessionDataDynamic(bslayer.shop.CurrentSessionIID);
             int changeCount = 0;
             
             if (CurrentSessionData != null) {
@@ -117,7 +119,7 @@ namespace DTRMSimpleBackOffice {
         private void btnPrintReport_Click(object sender, EventArgs e) {
              frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
              if (fsp.ShowDialog() == DialogResult.OK) {
-                 bslayer.PrintReport(ReportFormatTypes.YReport, bslayer.GetCurrentSessionIID(), fsp.SelectedPrinterIID, true);
+                 bslayer.PrintReport(ReportFormatTypes.YReport, bslayer.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
              }
         }
 
@@ -127,7 +129,7 @@ namespace DTRMSimpleBackOffice {
                 Order order =await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
-                    bslayer.PrintReceipt(OrderIID, frm.SelectedApplicationPrinter, 1);
+                    bslayer.PrintReceipt(OrderIID, frm.SelectedPrinter, 1);
                 }
             }
         }
@@ -136,8 +138,8 @@ namespace DTRMSimpleBackOffice {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
                 Order order = await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
-                ApplicationPrinter ap =await bslayer.GetDefaultReceiptPrinter();
-                if (ap == null) {
+                Printer printer =await bslayer.GetDefaultReceiptPrinter();
+                if (printer == null) {
                     MessageBox.Show("No printer attached!!");
                     return;
                 }
@@ -146,7 +148,7 @@ namespace DTRMSimpleBackOffice {
                 Graphics g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                int imgHeight = bslayer.ViewReceipt(g, OrderIID, ap, 1);
+                int imgHeight = bslayer.ViewReceipt(g, OrderIID, printer, 1);
                 Image imgFinal = DRUF.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
 
                 frmViewImage frm = new frmViewImage(imgFinal);
@@ -185,7 +187,7 @@ namespace DTRMSimpleBackOffice {
             }
             else {
                 tmrSeconds.Enabled = true;
-                pnlBonus.Activate(bslayer);
+                pnlBonus.Activate();
                 LoadValues();
                 if (!pnlBonus.EnableAutoUpdate)
                     pnlBonus.UpdateBonusDisplay();

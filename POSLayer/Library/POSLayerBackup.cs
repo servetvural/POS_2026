@@ -4,8 +4,8 @@ namespace POSLayer.Library;
 
 public class POSLayerBackup
 {
-    public List<FoodMenu> menus { get; set; } = new List<FoodMenu>();
-    public List<ApplicationPrinter> printers { get; set; } = new List<ApplicationPrinter>();
+    public List<TheMenu> menus { get; set; } = new List<TheMenu>();
+    public List<Printer> printers { get; set; } = new List<Printer>();
     public List<Employee> employees { get; set; } = new List<Employee>();
     public List<Supplier> suppliers { get; set; } = new List<Supplier>();
     public List<StockItem> stockItems { get; set; } = new List<StockItem>();

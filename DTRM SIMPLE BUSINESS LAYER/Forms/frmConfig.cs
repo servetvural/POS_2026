@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using PosLibrary;
 using PosLibrary.DBSpace;
@@ -22,6 +23,9 @@ namespace DTRMNS
     {
 
         private DTRMNS.DTRMSimpleBusiness bslayer;
+        public PosConfig config;
+        IRepository<Shop> repoShop;
+
         private System.Windows.Forms.Panel panel2;
 
         private System.Windows.Forms.Button btnSave;
@@ -41,7 +45,7 @@ namespace DTRMNS
         private PropertyGrid pGridLuv;
         private IContainer components;
 
-        public PosConfig config;
+       
         private Button btnChangeConnection;
         private PictureBox pBox;
         private Label label2;
@@ -69,28 +73,30 @@ namespace DTRMNS
         //    InitializeComponent();
         //}
 
-        public frmConfig(DTRMSimpleBusiness bslayer)
+        public frmConfig(PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<Shop> _repoShop  )
         {
             this.bslayer = bslayer;
+            config = configAsService;
 
-            if (bslayer == null)
-            {
-                //Empty config required
-                blnEmpty = true;
-                config = UF.GetConfig();
-                if (config == null)
-                    config = new PosConfig();
+            //if (bslayer == null)
+            //{
+            //    //Empty config required
+            //    blnEmpty = true;
+            //    config = UF.GetConfig();
+            //    if (config == null)
+            //        config = new PosConfig();
 
-            } else
-            {
-                this.config = bslayer.config;
-                if (config == null)
-                    config = bslayer.config = UF.GetConfig();
-                if (config == null)
-                    config = bslayer.config = new PosConfig();
+            //} else
+            //{
+            //    this.config = bslayer.config;
+            //    if (config == null)
+            //        config = bslayer.config = UF.GetConfig();
+            //    if (config == null)
+            //        config = bslayer.config = new PosConfig();
 
-            }
+            //}
             InitializeComponent();
+            repoShop = _repoShop;
         }
 
 
@@ -654,7 +660,7 @@ namespace DTRMNS
 
             if (!blnEmpty)
             {
-                if (await bslayer.IsServerConnected())
+                if (await repoShop.IsDatabaseExist())
                 {
                     try
                     {
@@ -665,7 +671,7 @@ namespace DTRMNS
 
                     try
                     {
-                        LoadCompanyDetails();
+                        await LoadCompanyDetails();
                     } catch
                     {
                     }
@@ -690,7 +696,7 @@ namespace DTRMNS
                 cmbMenu.DataSource =await bslayer.GetMenuList();
                 try
                 {
-                    cmbMenu.SelectedValue = bslayer.config.ActiveMenuIID;
+                    cmbMenu.SelectedValue = config.ActiveMenuIID;
                 } catch (Exception ex) {
                     string str = ex.Message;
                 }
@@ -701,8 +707,8 @@ namespace DTRMNS
         {
             if (!blnEmpty)
             {
-                bslayer.config.ActiveMenuIID = cmbMenu.SelectedValue.ToString();
-                UF.SaveConfig(bslayer.config);
+                config.ActiveMenuIID = cmbMenu.SelectedValue.ToString();
+                UF.SaveConfig(config);
                 LoadMenuList();
                 bslayer.GetActiveMenu(true, true);
             }
@@ -710,28 +716,28 @@ namespace DTRMNS
 
         #region "COMPANY DETAILS THINGS"
 
-        private void LoadTaxRates()
+        private async void LoadTaxRates()
         {
             if (!blnEmpty)
             {
                 try
                 {
-                    cmbMenuTaxRates.DataSource = bslayer.GetAllTaxRates();
-                    cmbMenuTaxRates.DisplayMember = "TaxPercent";
-                    cmbMenuTaxRates.ValueMember = "TaxPercent";
+                    cmbMenuTaxRates.DataSource =await bslayer.GetAllTaxRates();
+                    //cmbMenuTaxRates.DisplayMember = "TaxPercent";
+                    //cmbMenuTaxRates.ValueMember = "TaxPercent";
                 } catch
                 {
                 }
             }
         }
 
-        private void LoadCompanyDetails()
+        private async Task LoadCompanyDetails()
         {
             if (!blnEmpty)
             {
                 try
                 {
-                    pGridLuv.SelectedObject = bslayer.GetLuv();
+                    pGridLuv.SelectedObject = await repoShop.GetFirst();
                     LoadTaxRates();
                     LoadLogoImages();
                 } catch
@@ -749,13 +755,14 @@ namespace DTRMNS
             if (gim2 != null)
                 pBoxLogo2.Image = gim2.DisplayImage.ToImage();
         }
-        private void SaveCompanyDetails()
+        private void SaveShop()
         {
             if (!blnEmpty)
             {
-                bslayer.luv = (POSLayer.Models.Luv)pGridLuv.SelectedObject;
-                bslayer.luv.VoidText = (bslayer.luv.VoidText.Length > 5 ? bslayer.luv.VoidText.Substring(0, 5) : bslayer.luv.VoidText);
-                bslayer.SaveLuv(bslayer.luv);
+                 Shop shop = (Shop)pGridLuv.SelectedObject;
+                shop.VoidText = (shop.VoidText.Length > 5 ? shop.VoidText.Substring(0, 5) : shop.VoidText);
+                repoShop.Save(shop);
+                bslayer.shop = shop;
             }
         }
 
@@ -769,10 +776,10 @@ namespace DTRMNS
                 ofd.ShowDialog();
                 if (ofd.FileName != "")
                 {
-                    FoodMenu fm = null;
+                    TheMenu fm = null;
                     try
                     {
-                        fm = (FoodMenu)DRFile.XmlDeSerialize(ofd.FileName, typeof(FoodMenu), false);
+                        fm = (TheMenu)DRFile.XmlDeSerialize(ofd.FileName, typeof(TheMenu), false);
                     } catch
                     {
                         MessageBox.Show("Menu cannot be imported");
@@ -795,8 +802,8 @@ namespace DTRMNS
                     MessageBox.Show("Configuration file saved");
                     if (!blnEmpty)
                     {
-                        bslayer.config = config;
-                        SaveCompanyDetails();
+                       // bslayer.config = config;
+                       SaveShop();
                     }
                     this.DialogResult = DialogResult.OK;
                     Close();
@@ -888,22 +895,22 @@ namespace DTRMNS
 
         private void btnSendTestEmailToPurchase_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.luv.PurchaseEmail, "Test email from DTRMSimple to Purchase", "test", null);
+            bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, "Test email from DTRMSimple to Purchase", "test", null);
         }
 
         private void btnSendTestEmailToOrders_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.luv.OrdersEmail, "Test email from DTRMSimple to Orders", "test", null);
+            bslayer.SendEmailToCustomRecepient(bslayer.shop.OrdersEmail, "Test email from DTRMSimple to Orders", "test", null);
         }
 
         private void btnSendTestEmailToReport_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.luv.ReportEmail, "Test email from DTRMSimple to Report", "test", null);
+            bslayer.SendEmailToCustomRecepient(bslayer.shop.ReportEmail, "Test email from DTRMSimple to Report", "test", null);
         }
 
         private void btnSendTestEmailToNotification_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.luv.NotificationEmail, "Test email from DTRMSimple to Notification", "test", null);
+            bslayer.SendEmailToCustomRecepient(bslayer.shop.NotificationEmail, "Test email from DTRMSimple to Notification", "test", null);
         }
     }
 }

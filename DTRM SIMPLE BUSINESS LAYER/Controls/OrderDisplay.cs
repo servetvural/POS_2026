@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 
 namespace DTRMNS
@@ -15,7 +17,11 @@ namespace DTRMNS
     /// </summary>
     public class OrderDisplay : System.Windows.Forms.UserControl
     {
+        PosConfig config;
+
         public DTRMNS.DTRMSimpleBusiness bslayer;
+
+
         private System.Windows.Forms.ColumnHeader IID;
         private System.Windows.Forms.ColumnHeader OrderItemText;
         private System.Windows.Forms.ColumnHeader colQuantity;
@@ -56,16 +62,16 @@ namespace DTRMNS
 
 
 
-        private POSLayer.Models.Order _OrderToDisplay;
+        private Order _OrderToDisplay;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public POSLayer.Models.Order OrderToDisplay { get { return _OrderToDisplay; } set { _OrderToDisplay = value; } }
+        public Order OrderToDisplay { get { return _OrderToDisplay; } set { _OrderToDisplay = value; } }
 
-        private POSLayer.Models.Order _OrderToSplit;
+        private Order _OrderToSplit;
         private ColumnHeader colCompletedQuantity;
         private Button btnViewKitchen;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public POSLayer.Models.Order OrderToSplit { get { return _OrderToSplit; } set { _OrderToSplit = value; } }
+        public Order OrderToSplit { get { return _OrderToSplit; } set { _OrderToSplit = value; } }
 
         public SplittingStatus SplitStatus = SplittingStatus.Normal;
 
@@ -114,25 +120,22 @@ namespace DTRMNS
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SplitDisplayHeight { get { return pnlSplit.Height; } set { pnlSplit.Height = value; } }
 
-        public OrderDisplay()
+        public OrderDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
-
+            config = configAsService;
+            this.bslayer = bslayer;
         }
 
-        public void AttachBusinessLayer(DTRMNS.DTRMSimpleBusiness bs)
+        public void AttachBusinessLayer()
         {
-            bslayer = bs;
             try
             {
-                if (bslayer != null)
-                {
-                    if (bslayer.config != null)
+                    if (config != null)
                     {
-                        ilSmall.ImageSize = new Size((int)bslayer.config.Order_Item_Display_Height, (int)bslayer.config.Order_Item_Display_Height);
+                        ilSmall.ImageSize = new Size((int)config.Order_Item_Display_Height, (int)config.Order_Item_Display_Height);
                         bslayer.DisplayOrder += new GenericFunctionCall(Display);
                     }
-                }
             } catch
             {
                 ilSmall.ImageSize = new Size(16, 16);
@@ -572,9 +575,9 @@ namespace DTRMNS
             if (OrderToSplit == null)
                 return;
             lvwSplittingOrder.Items.Clear();
-            foreach (POSLayer.Models.OrderItem oi in OrderToSplit.items)
+            foreach (OrderItem oi in OrderToSplit.items)
             {
-                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.Total.ToString("N2") }));
+                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.CalculatedValue.ToString("N2") }));
             }
         }
 
@@ -589,9 +592,9 @@ namespace DTRMNS
 
             if (bslayer.AttachedOrder != null)
             {
-                btnViewKitchen.Visible = bslayer.config.Display_Kitchen_Chef_on_Display &&
-                    ((bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.DirectSale && bslayer.config.Hold_Order_Available && bslayer.config.Hold_Order_Display_in_Kitchen) ||
-                    (bslayer.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && bslayer.config.Table_Orders_Allowed && bslayer.config.Table_Orders_Display_Kitchen_Orders));
+                btnViewKitchen.Visible = config.Display_Kitchen_Chef_on_Display &&
+                    ((bslayer.AttachedOrder.OrderType == OrderTypes.DirectSale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
+                    (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
 
                 colCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
@@ -628,7 +631,7 @@ namespace DTRMNS
 
             switch (OrderToDisplay.Status)
             {
-                case POSLayer.Library.StatusFlags.NEW:
+                case StatusFlags.NEW:
                     switch (SplitStatus)
                     {
                         case SplittingStatus.Normal:
@@ -644,8 +647,8 @@ namespace DTRMNS
                             break;
                     }
                     break;
-                case POSLayer.Library.StatusFlags.PENDING:
-                case POSLayer.Library.StatusFlags.DONE:
+                case StatusFlags.PENDING:
+                case StatusFlags.DONE:
                     switch (SplitStatus)
                     {
                         case SplittingStatus.Normal:
@@ -678,11 +681,11 @@ namespace DTRMNS
                 SingleTotal = oi.Price * oi.Quantity;
 
 
-                if ((bslayer.config.Table_Orders_Display_Kitchen_Orders || bslayer.config.Table_Orders_Kitchen_Receipt_Count > 0 || bslayer.config.Hold_Order_Display_in_Kitchen || bslayer.config.Hold_Order_Print_in_Kitchen) &&
+                if ((config.Table_Orders_Display_Kitchen_Orders || config.Table_Orders_Kitchen_Receipt_Count > 0 || config.Hold_Order_Display_in_Kitchen || config.Hold_Order_Print_in_Kitchen) &&
                     (OrderToDisplay.OrderType == OrderTypes.DirectSale || OrderToDisplay.OrderType == OrderTypes.InHouse) &&
                     OrderToSplit == null && (OrderToDisplay.Status == StatusFlags.NEW || OrderToDisplay.Status == StatusFlags.DONE || OrderToDisplay.Status == StatusFlags.PENDING))
                 {
-                    if (bslayer.config.Display_Kitchen_Orders_As_Reminders)
+                    if (config.Display_Kitchen_Orders_As_Reminders)
                     {
                         strCompletedQuantity = (oi.Quantity - oi.CompletedQuantity < 0 ? 0 : oi.Quantity - oi.CompletedQuantity).ToString("f0");
                         if (strCompletedQuantity == "0")
@@ -694,14 +697,14 @@ namespace DTRMNS
 
 
                 arr = new String[5]{oi.IID, oi.Quantity.ToString("f0"),
-                                        oi.OrderItemText + " (" + bslayer.GetDistribution(oi.DistributionIID).Result.ShortName + ")" ,
-                                         oi.Total.ToString("c"),strCompletedQuantity};
+                                        oi.OrderItemText ,
+                                         oi.CalculatedValue.ToString("c"),strCompletedQuantity};
 
                 ListViewItem toplvi = new ListViewItem(arr);
 
                 if (OrderToSplit == null)
                 {
-                    if (OrderToDisplay.OrderType == OrderTypes.InHouse && !bslayer.config.Table_Orders_Always_Shrinked)
+                    if (OrderToDisplay.OrderType == OrderTypes.InHouse && !config.Table_Orders_Always_Shrinked)
                     {
                         if (GroupIID != oi.OrderGroupIID)
                         {
@@ -717,11 +720,6 @@ namespace DTRMNS
                             toplvi.BackColor = Color.DarkGray;
                     }
                 }
-                //else {
-                //    //currently splitting so alternate lvi backcolor
-                //    if (oi.OrderGroupIID == OrderToDisplay.IID)
-                //        toplvi.BackColor = Color.DarkGray;
-                //}
 
                 lvwOrder.Items.Add(toplvi);
 
@@ -748,20 +746,20 @@ namespace DTRMNS
 
             OrderTotal = OrderToDisplay.GetFullTotal();
             if (OrderToDisplay.OrderType == OrderTypes.InHouse)
-                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + OrderToDisplay.TableName; // + " Total = " + OrderTotal.ToString("c") + "   ";
+                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + OrderToDisplay.TableName;
             else
-                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(OrderToDisplay.OrderType); // +"  /  Total = " + OrderTotal.ToString("c") + "   ";
+                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(OrderToDisplay.OrderType); 
 
-            if (bslayer.config.Order_Screen_Display_Service_Charge)
+            if (config.Order_Screen_Display_Service_Charge)
                 pnlDown.Height = 52;
             else
                 pnlDown.Height = 42;
 
-            if (bslayer.luv.ServiceChargeRate > 0 && bslayer.AttachedOrder != null)
+            if (bslayer.shop.ServiceChargeRate > 0 && bslayer.AttachedOrder != null)
             {
                 lblScrollDown.Text = "";
-                if (bslayer.config.Order_Screen_Display_Service_Charge)
-                    lblScrollDown.Text = "Service Charge " + bslayer.AttachedOrder.GetServiceCharge().ToString("c") + " " + Environment.NewLine;
+                if (config.Order_Screen_Display_Service_Charge)
+                    lblScrollDown.Text = "Service Charge " + bslayer.AttachedOrder.ServiceCharge.ToString("c") + " " + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + (OrderTotal).ToString("c") + " ";
             } else
@@ -779,15 +777,15 @@ namespace DTRMNS
             if (OrderToDisplay.MoneyPaid > 0)
             {
                 double fullTotal = bslayer.AttachedOrder.GetFullTotal();
-                double servicecharge = bslayer.AttachedOrder.GetServiceCharge();
+                double servicecharge = bslayer.AttachedOrder.ServiceCharge;
 
                 double paraustu = OrderToDisplay.MoneyPaid - fullTotal;
                 pnlDown.Height = 80;
-                if (servicecharge > 0 && bslayer.config.Order_Screen_Display_Service_Charge)
+                if (servicecharge > 0 && config.Order_Screen_Display_Service_Charge)
                     pnlDown.Height = 100;
 
                 lblScrollDown.Text = "";
-                if (bslayer.luv.ServiceChargeRate > 0 && bslayer.config.Order_Screen_Display_Service_Charge)
+                if (bslayer.shop.ServiceChargeRate > 0 && config.Order_Screen_Display_Service_Charge)
                     lblScrollDown.Text = "Service Charge " + string.Format("{0,15:0.00}", servicecharge.ToString("c")) + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + string.Format("{0,15:0.00}", fullTotal.ToString("c")) +
@@ -866,7 +864,7 @@ namespace DTRMNS
             {
                 if (HasSelection())
                 {
-                    if (OrderToDisplay.Status != StatusFlags.NEW && bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                    if (OrderToDisplay.Status != StatusFlags.NEW && config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
                     {
                         if (!bslayer.ConfirmForSupervision())
                             return;
@@ -879,7 +877,7 @@ namespace DTRMNS
                     if (oi != null && oi.ItemType != OrderItemTypes.NormalOrderItem)
                         blnTopItem = true;
 
-                    if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
+                    if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                     {
                         //check is deletable than delete else return directly
                         if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(oi))
@@ -889,7 +887,7 @@ namespace DTRMNS
                     OrderToDisplay.DeleteOrderItem(SelectedItemIID);
 
                     //XXX logdelete
-                    if (bslayer.AttachedOrder.Status != StatusFlags.NEW && bslayer.config.Log_Deleted_Order_Items)
+                    if (bslayer.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
                     {
                         try
                         {
@@ -902,7 +900,7 @@ namespace DTRMNS
                                     Quantity = oi.Quantity,
                                     OrderContent = oldOrder.ToSimpleString(),
                                     Reason = "Deleted",
-                                    ComputerName = bslayer.config.Terminal_Name,
+                                    ComputerName = config.Terminal_Name,
                                     Reference = bslayer.AttachedOrder.Reference
                                 });
                             }
@@ -935,26 +933,26 @@ namespace DTRMNS
                     if (OrderToDisplay != null)
                     {
 
-                        if (bslayer.config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                        if (config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
                         {
                             if (!bslayer.ConfirmForSupervision())
                                 return;
                         }
 
-                        if (bslayer.config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
+                        if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                         {
                             //check is deletable than delete else return directly
-                            if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.GetOrderItem(SelectedItemIID)))
+                            if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.items.Where(x => x.IID ==SelectedItemIID).FirstOrDefault()))
                                 return;
                         }
 
                         //XXX logdelete
 
-                        if (bslayer.AttachedOrder.Status != StatusFlags.NEW && bslayer.config.Log_Deleted_Order_Items)
+                        if (bslayer.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
                         {
                             try
                             {
-                                OrderItem oi = OrderToDisplay.GetOrderItem(SelectedItemIID);
+                                OrderItem oi = OrderToDisplay.items.Where(x => x.IID == SelectedItemIID).FirstOrDefault();
                                 if (oi != null)
                                 {
                                     Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
@@ -966,7 +964,7 @@ namespace DTRMNS
                                             Quantity = 1,
                                             OrderContent = oldOrder.ToSimpleString(),
                                             Reason = "Decremented",
-                                            ComputerName = bslayer.config.Terminal_Name,
+                                            ComputerName = config.Terminal_Name,
                                             Reference = bslayer.AttachedOrder.Reference
                                         });
                                     }
@@ -1110,12 +1108,12 @@ namespace DTRMNS
                 string IID = lvwSplittingOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                POSLayer.Models.OrderItem oiNew = OrderToSplit.GetOrderItem(IID).Clone(false);
+                OrderItem oiNew = OrderToSplit.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                 oiNew.Quantity = 1;
-                oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToDisplay.IID;
+                oiNew.OrderIID = oiNew.OrderGroupIID = OrderToDisplay.IID;
 
                 //Drop 1 from ordertosplit and save
-                if (!OrderToSplit.GetOrderItem(IID).Decrement())
+                if (!OrderToSplit.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToSplit.DeleteOrderItem(IID);
                 bslayer.SaveOrder(OrderToSplit);
 
@@ -1139,23 +1137,23 @@ namespace DTRMNS
                 string IID = lvwOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                POSLayer.Models.OrderItem oiNew = OrderToDisplay.GetOrderItem(IID).Clone(false);
+                OrderItem oiNew = OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                 oiNew.Quantity = 1;
-                oiNew.ParentOrderIID = oiNew.OrderGroupIID = OrderToSplit.IID;
+                oiNew.OrderIID = oiNew.OrderGroupIID = OrderToSplit.IID;
 
 
 
                 //Drop 1 from ordertodisplay and save
-                if (!OrderToDisplay.GetOrderItem(IID).Decrement())
+                if (!OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToDisplay.DeleteOrderItem(IID);
                 bslayer.SaveOrder(OrderToDisplay);
 
                 //Add new item to ordertosplit and save
-                POSLayer.Models.OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
+                OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
                 if (oiToIncrement == null)
                     OrderToSplit.AddOrderItem(oiNew);
                 else
-                    oiToIncrement.Increment();
+                    oiToIncrement.Quantity++;
                 bslayer.SaveOrder(OrderToSplit);
 
                 Display();
@@ -1171,8 +1169,8 @@ namespace DTRMNS
             if (lvwSplittingOrder.SelectedItems.Count > 0)
             {
                 ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
-                POSLayer.Models.OrderItem oi = OrderToSplit.GetOrderItem(lvi.Text);
-                oi.ParentOrderIID = OrderToDisplay.IID;
+                OrderItem oi = OrderToSplit.items.Where(x => x.IID == lvi.Text).FirstOrDefault();
+                oi.OrderIID = OrderToDisplay.IID;
                 OrderToSplit.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToSplit);
                 OrderToDisplay.AddOrderItem(oi);
@@ -1189,8 +1187,8 @@ namespace DTRMNS
             if (lvwOrder.SelectedItems.Count > 0)
             {
                 ListViewItem lvi = lvwOrder.SelectedItems[0];
-                POSLayer.Models.OrderItem oi = OrderToDisplay.GetOrderItem(lvi.Text);
-                oi.ParentOrderIID = oi.OrderGroupIID = OrderToSplit.IID;
+                OrderItem oi = OrderToDisplay.items.Where(x => x.IID == lvi.Text).FirstOrDefault();
+                oi.OrderIID = oi.OrderGroupIID = OrderToSplit.IID;
                 OrderToDisplay.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToDisplay);
                 OrderToSplit.AddOrderItem(oi);

@@ -15,6 +15,8 @@ namespace DTRMNS {
     /// Summary description for frmKeyboard.
     /// </summary>
     public class ctlNumberPad : System.Windows.Forms.UserControl {
+        PosConfig config;
+
         private Button button107;
         private Button button93;
         private Button button94;
@@ -67,13 +69,14 @@ namespace DTRMNS {
         private System.ComponentModel.Container components = null;
 
 
-        public ctlNumberPad() {
+        public ctlNumberPad(PosConfig configAsService,DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            config = configAsService;
+            this.bslayer = bslayer;
         }
 
-        public ctlNumberPad(DTRMSimpleBusiness bslayer, GenericFunctionCall CloseFunction) {
+        public ctlNumberPad( GenericFunctionCall CloseFunction) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.CloseFunction = CloseFunction;
             ItemPrice = "";
         }
@@ -809,7 +812,7 @@ namespace DTRMNS {
 
         private void ctlNumberPad_Load(object sender, EventArgs e) {
             LoadEntities();
-            switch (bslayer.config.OrderPad_Orientation) {
+            switch (config.OrderPad_Orientation) {
                 case POSLayer.Library.OrientationTypes.Landscape:
                     pnlCalculator.Dock = DockStyle.Left;
                     pnlCalculator.Width = 416;
@@ -842,49 +845,33 @@ namespace DTRMNS {
             //DataTable dt = bslayer.GetDataTable("SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN " +
             //          " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '" + bslayer.config.ActiveMenuIID + "' Order by Entitybutton.EntityButtonName");
 
-            List<EntityButton> entityButtons = await bslayer.GetEntityButtonsForNumberPad();
+            List<CategoryItem> entityButtons = await bslayer.GetEntityButtonsForNumberPad();
 
-            List<Entity> entities =await bslayer.GetAllEntities(bslayer.config.ActiveMenuIID);
+            List<Category> entities =await bslayer.GetAllEntities(config.ActiveMenuIID);
            
             foreach (var entitybutton in entityButtons)
             {
-                Entity parentEntity = entities.Where(x => x.IID == entitybutton.ParentEntityIID).FirstOrDefault();
+                Category parentEntity = entities.Where(x => x.IID == entitybutton.CategoryIID).FirstOrDefault();
                 EntityButtonSpecial btn = new EntityButtonSpecial();
 
-                btn.BackColor = Color.FromArgb(entitybutton.ButtonColor);
+                btn.BackColor = Color.FromArgb(entitybutton.BgColor);
 
-                btn.ForeColor = Color.FromArgb(entitybutton.ForeColor);
+                btn.ForeColor = Color.FromArgb(entitybutton.FgColor);
                 btn.MinimumSize = new Size(132, 76);
                 btn.AutoSize = true;
-                btn.Text = entitybutton.EntityButtonName;
+                btn.Text = entitybutton.Name;
                 btn.Font = new Font("Arial", 9f, FontStyle.Bold);
                 btn.Tag = entitybutton;
                 btn.PrintableTypeIID = parentEntity.DistributionIID;
-                btn.EntityName = parentEntity.EntityName; // dt.Rows[i]["EntityName"].ToString();
+                btn.EntityName = parentEntity.Name; // dt.Rows[i]["EntityName"].ToString();
                 pnlDistributions.Controls.Add(btn);
                 btn.Click += new EventHandler(btnEntityButton_Click);
             }
-            //for (int i = 0; i < dt.Rows.Count; i++) {
-            //    EntityButton entitybutton = new EntityButton(dt.Rows[i]);
-            //    EntityButtonSpecial btn = new EntityButtonSpecial();
-            //    btn.BackColor = Color.FromArgb(entitybutton.ButtonColor);
-
-            //    btn.ForeColor = Color.FromArgb(entitybutton.ForeColor);
-            //    btn.MinimumSize = new Size(132, 76);
-            //    btn.AutoSize = true;
-            //    btn.Text = entitybutton.EntityButtonName;
-            //    btn.Font = new Font("Arial", 9f, FontStyle.Bold);
-            //    btn.Tag = entitybutton;
-            //    btn.PrintableTypeIID = dt.Rows[i]["DistributionIID"].ToString();
-            //    btn.EntityName = dt.Rows[i]["EntityName"].ToString();
-            //    pnlDistributions.Controls.Add(btn);
-            //    btn.Click += new EventHandler(btnEntityButton_Click);
-            //}
         }
         
         void btnEntityButton_Click(object sender, EventArgs e) {
             EntityButtonSpecial btn = (EntityButtonSpecial)sender;
-            EntityButton entitybutton = (EntityButton)btn.Tag;
+            CategoryItem entitybutton = (CategoryItem)btn.Tag;
             try {              
 
                 if (Reg1 > 0) {
@@ -907,8 +894,8 @@ namespace DTRMNS {
                 if (Reg2 == 0)
                     return;
 
-                bslayer.AttachedOrder.AddOrderItem(entitybutton.ParentEntityIID, "", 1, 
-                   Reg2, "", entitybutton.EntityButtonName,  btn.PrintableTypeIID /*DistributionIID*/, 
+                bslayer.AttachedOrder.AddOrderItem(entitybutton.CategoryIID, "", 1, 
+                   Reg2, "", entitybutton.Name,  btn.PrintableTypeIID /*DistributionIID*/, 
                    OrderItemTypes.NormalOrderItem, 0, btn.EntityName, 0, bslayer.GetEBTaxPercent(entitybutton));
                 bslayer.OnDisplayOrder();
 

@@ -3,15 +3,19 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class trmSupervisorLogin : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private string UserPassword;
         public trmSupervisorLogin() {
             InitializeComponent();
         }
-        public trmSupervisorLogin(DTRMSimpleBusiness bslayer) {
+        public trmSupervisorLogin(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
         }
 
@@ -31,7 +35,7 @@ namespace DTRMNS {
        // StartAgain:
 
             try {
-                if (bslayer == null || bslayer.config == null ) {
+                if (bslayer == null || config == null ) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
                     if (!bslayer.DoStartThings().Result) {
                         //DisplayMessage("Cannot Start Business Layer", 2);

@@ -135,13 +135,13 @@ namespace DTRMNS {
 		#endregion
 
         private async void LoadPrinters() {
-            List<ApplicationPrinter> PrinterList = await bslayer.GetReceiptPrinterList();
+            List<Printer> PrinterList = await bslayer.GetReceiptPrinterList();
 
             ListViewItem lvi;
-            ApplicationPrinter ap;
+            Printer printer;
             for (int i = 0; i < PrinterList.Count; i++) {
-                ap = (ApplicationPrinter)PrinterList[i];
-                string[] plist = { ap.ApplicationName, ap.IID };
+                printer = (Printer)PrinterList[i];
+                string[] plist = { printer.ApplicationName, printer.IID };
                 lvi = new ListViewItem(plist, 0);
                 lvwPrinters.Items.Add(lvi);
             }

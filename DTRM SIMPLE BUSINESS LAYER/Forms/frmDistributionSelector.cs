@@ -3,16 +3,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmDistributionSelector : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         public List<Distribution> selectedDistributions;
         private List<Distribution> existingList;
 
-        public frmDistributionSelector(DTRMSimpleBusiness bslayer,bool blnMultiSelect, List<Distribution> existingList) {
+        public frmDistributionSelector(PosConfig configAsService, DTRMSimpleBusiness bslayer,bool blnMultiSelect, List<Distribution> existingList) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             selectedDistributions = new List<Distribution>();
             dgv.MultiSelect = blnMultiSelect;
@@ -21,10 +24,11 @@ namespace DTRMNS {
 
         private void frmDistributionSelector_Load(object sender, EventArgs e) {
             LoadDistributions();
+
         }
 
         private async Task LoadDistributions() {
-            dgv.DataSource = await bslayer.GetDistributionList(bslayer.config.ActiveMenuIID);
+            dgv.DataSource = await bslayer.GetDistributionList(config.ActiveMenuIID);
                 //bslayer.GetDataTable("Select * from Distribution Where ParentMenuIID ='" + bslayer.config.ActiveMenuIID + "'");
             if (existingList != null) {
                 for (int i = 0; i < dgv.Rows.Count; i++) {

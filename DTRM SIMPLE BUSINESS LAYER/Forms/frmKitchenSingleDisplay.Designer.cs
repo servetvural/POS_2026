@@ -1,4 +1,8 @@
-﻿namespace DTRMNS {
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
+
+namespace DTRMNS {
     partial class frmKitchenSingleDisplay {
         /// <summary>
         /// Required designer variable.
@@ -25,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmKitchenSingleDisplay));
-            ctlKitchen = new ctlKitchenDisplay();
+            ctlKitchen = ActivatorUtilities.CreateInstance < ctlKitchenDisplay>(ServiceHelper.Services);
             SuspendLayout();
             // 
             // ctlKitchen

@@ -10,12 +10,17 @@ using POSLayer.Models;
 using System.Threading.Tasks;
 using POSWinFormLayer;
 using POSLayer.Views;
+using POSLayer.Repository.IRepository;
 
-namespace DTRMNS {
+namespace DTRMNS
+{
     /// <summary>
     /// Summary description for frmOrders.
     /// </summary>
-    public class ctlOrders : UserControl {
+    public class ctlOrders : UserControl
+    {
+        PosConfig config;
+
         private System.Windows.Forms.Panel panel1;
         private Button btnLoadOrder;
         private Button btnDeleteOrder;
@@ -51,18 +56,23 @@ namespace DTRMNS {
 
         //private UtilityLibrary UF;
         private List<int> rowheights;
-        public ctlOrders() {
+        public ctlOrders(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        {
             InitializeComponent();
+            config = configAsService;
+            this.bslayer = bslayer;
         }
 
-        public ctlOrders(DTRMSimpleBusiness bs, GenericFunctionCall UnloadOrder,
+        public ctlOrders(PosConfig configAsService, DTRMSimpleBusiness bslayer, GenericFunctionCall UnloadOrder,
             GenericFunctionCall LoadAttachedOrder,
             GenericFunctionCall DetachPanel,
             PassControl AttachPanel,
-            RemoteCompleteAttachedOrder CompleteAttachedOrder) {
+            RemoteCompleteAttachedOrder CompleteAttachedOrder)
+        {
 
             InitializeComponent();
-            bslayer = bs;
+            config = configAsService;
+            this.bslayer = bslayer;
             UnloadOrderEvent = UnloadOrder;
             LoadAttachedOrderEvent = LoadAttachedOrder;
             DetachPanelEvent = DetachPanel;
@@ -73,9 +83,12 @@ namespace DTRMNS {
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
                     components.Dispose();
                 }
             }
@@ -87,7 +100,8 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -457,76 +471,88 @@ namespace DTRMNS {
         }
         #endregion
 
-        private void frmOrders_Load(object sender, System.EventArgs e) {
+        private void frmOrders_Load(object sender, System.EventArgs e)
+        {
             if (bslayer.LoggedUser.AccessLevel != AccessLevels.User && bslayer.LoggedUser.AccessLevel != AccessLevels.Manager)
                 btnDeleteOrder.Visible = true;
-            lblTotal.Visible = !(bslayer.LoggedUser.AccessLevel == AccessLevels.User && !bslayer.config.Standard_Users_Can_See_Session_Totals);
+            lblTotal.Visible = !(bslayer.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
             btnUnsetPaymentMethod.Visible = !(bslayer.LoggedUser.AccessLevel == AccessLevels.User);
             LoadOrders(true);
         }
 
-        private async Task LoadOrders(bool blnViewAllOrders) {
-            try {
-                DataTable dt = bslayer.GetAllOrdersForSessionDateOrderly(bslayer.luv.CurrentSessionIID, OrderByTypes.Descending);
+        private async Task LoadOrders(bool blnViewAllOrders)
+        {
+            try
+            {
+                DataTable dt = bslayer.GetAllOrdersForSessionDateOrderly(bslayer.shop.CurrentSessionIID, OrderByTypes.Descending);
                 //Add columns here
 
                 dt.Columns.Add("OrderItemsDetailed");
                 dt.Columns.Add("StatusName");
                 dt.Columns.Add("OrderTypeName");
                 dt.Columns.Add("PaymentMethodName");
-                for (int i = 0; i < dt.Rows.Count; i++) {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
                     dt.Rows[i]["StatusName"] = ((StatusFlags)int.Parse(dt.Rows[i]["Status"].ToString())).ToString();
                     dt.Rows[i]["OrderTypeName"] = ((OrderTypes)int.Parse(dt.Rows[i]["OrderType"].ToString())).ToString();
                     dt.Rows[i]["PaymentMethodName"] = ((PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString())).ToString();
                 }
 
-                int maxdetailed = dt.Rows.Count > bslayer.config.Order_List_Detailed_Orders_Max_Counter ? bslayer.config.Order_List_Detailed_Orders_Max_Counter : dt.Rows.Count;
+                int maxdetailed = dt.Rows.Count > config.Order_List_Detailed_Orders_Max_Counter ? config.Order_List_Detailed_Orders_Max_Counter : dt.Rows.Count;
                 rowheights = new List<int>();
-                for (int i=0; i < maxdetailed;i++) {
-                    Order order =await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
+                for (int i = 0; i < maxdetailed; i++)
+                {
+                    Order order = await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
                     dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
                     rowheights.Add(order.items.Count * 15 + 7);
                 }
                 dgv.DataSource = dt;
 
 
-                string currentSessionIID = bslayer.GetCurrentSessionIID();
-                float cashTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
-                float cardTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
-                float unpaidTotal = bslayer.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
+                string currentSessionIID = bslayer.shop.CurrentSessionIID;
+                double cashTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
+                double cardTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
+                double unpaidTotal = bslayer.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
 
                 lblTotal.Text = "Session Total : " + bslayer.GetCurrentSessionXSum().ToString("c") +
-                    "  Cash= " + cashTotal.ToString("c") + 
-                    " ,Card= " + cardTotal.ToString("c") + 
+                    "  Cash= " + cashTotal.ToString("c") +
+                    " ,Card= " + cardTotal.ToString("c") +
                     " ,Unpaid= " + unpaidTotal.ToString("c");
 
 
-                
+
 
                 vScroll.Maximum = dgv.RowCount;
 
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 string str = ex.Message;
             }
         }
 
 
-        private void btnClose_Click(object sender, System.EventArgs e) {
+        private void btnClose_Click(object sender, System.EventArgs e)
+        {
             DetachPanelEvent();
         }
 
-        private void btnLoadOrder_Click(object sender, System.EventArgs e) {
+        private void btnLoadOrder_Click(object sender, System.EventArgs e)
+        {
             LoadSelectedOrder();
         }
 
-        private async void LoadSelectedOrder() {
+        private async void LoadSelectedOrder()
+        {
             string SelectedIID = "";
             Table table = null;
-            if (dgv.SelectedRows.Count > 0) {
+            if (dgv.SelectedRows.Count > 0)
+            {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order =await bslayer.GetOrder(SelectedIID);
-                if (order.OrderType == OrderTypes.InHouse) {
-                    if (order.Status == StatusFlags.COMPLETED) {
+                Order order = await bslayer.GetOrder(SelectedIID);
+                if (order.OrderType == OrderTypes.InHouse)
+                {
+                    if (order.Status == StatusFlags.COMPLETED)
+                    {
                         table = new Table()
                         {
                             TableName = "Temp" + order.IID,
@@ -534,28 +560,29 @@ namespace DTRMNS {
                         };
                         order.TableIID = table.IID;
                         await bslayer.SaveOrder(order);
-                        table.LockedClientIP = bslayer.config.Terminal_Name;
+                        table.LockedClientIP = config.Terminal_Name;
                         table.AttachOrder(order);
                         table.CurrentOrderIID = order.IID;
 
                         bslayer.SaveTable(table);
                         await bslayer.BarrowTable(table.IID);
+                    } else
+                    {
+                        table = await bslayer.BarrowTable(order.TableIID);
                     }
-                    else {
-                        table =await bslayer.BarrowTable(order.TableIID);
-                    }
-                    if (table == null) {
+                    if (table == null)
+                    {
                         MessageBox.Show("Order cannot be openned");
                         return;
-                    }
-                    else {
+                    } else
+                    {
                         bslayer.AttachedOrder = table.AttachedOrder;
                         LoadAttachedOrderEvent();
                         DetachPanelEvent();
                     }
-                }
-                else {
-                    order =await bslayer.BarrowOrder(order.IID, bslayer.config.Terminal_Name);
+                } else
+                {
+                    order = await bslayer.BarrowOrder(order.IID, config.Terminal_Name);
                     bslayer.AttachedOrder = order;
                     LoadAttachedOrderEvent();
                     DetachPanelEvent();
@@ -564,52 +591,63 @@ namespace DTRMNS {
             }
         }
 
-        private void btnDeleteOrder_Click(object sender, System.EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
+        private void btnDeleteOrder_Click(object sender, System.EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
                     bslayer.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
                 LoadOrders(true);
             }
         }
 
-       
 
-        private void lvOrders_DoubleClick(object sender, System.EventArgs e) {
+
+        private void lvOrders_DoubleClick(object sender, System.EventArgs e)
+        {
             LoadSelectedOrder();
         }
 
 
 
-        private async void btnUnsetPaymentMethod_Click(object sender, EventArgs e) {
+        private async void btnUnsetPaymentMethod_Click(object sender, EventArgs e)
+        {
             string SelectedIID = "";
-            if (dgv.SelectedRows.Count > 0) {
+            if (dgv.SelectedRows.Count > 0)
+            {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order = await bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
+                POSLayer.Models.Order order = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
 
-                if (order != null) {
+                if (order != null)
+                {
                     order.Payment = POSLayer.Library.PaymentMethods.Unknown;
                     order.PaymentFlag = "";
-                    bslayer.SaveOrder(order);
-                    LoadOrders(true);
+                    await bslayer.SaveOrder(order);
+                    await LoadOrders(true);
                 }
             }
         }
 
-        private void chkDeliveryOrdersOnly_CheckedChanged(object sender, EventArgs e) {
-            LoadOrders(true);
+        private async void chkDeliveryOrdersOnly_CheckedChanged(object sender, EventArgs e)
+        {
+            await LoadOrders(true);
         }
 
-        private void dgv_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) {
+        private void dgv_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
             LoadSelectedOrder();
         }
 
-        private async void btnPrintReceipt_Click(object sender, EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-                POSLayer.Models.Order order =await bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
-                ApplicationPrinter ap =await bslayer.GetPrinterForOrderType(order.OrderType);
-                if (ap != null)
-                    bslayer.PrintReceipt(order.IID, ap, 1);
-                else {
+        private async void btnPrintReceipt_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                Order order = await bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                Printer printer = await bslayer.GetPrinterForOrderType(order.OrderType);
+                if (printer != null)
+                    bslayer.PrintReceipt(order.IID, printer, 1);
+                else
+                {
                     trmPrinterSelector trm = new trmPrinterSelector(bslayer, PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
                         bslayer.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
@@ -621,39 +659,49 @@ namespace DTRMNS {
 
 
 
-        private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {
-            if (e.RowIndex >=0 && e.RowIndex < rowheights.Count)
+        private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.RowIndex < rowheights.Count)
                 dgv.Rows[e.RowIndex].Height = rowheights[e.RowIndex];
         }
 
-        private void btnViewCustomerOrTable_Click(object sender, EventArgs e) {
+        private void btnViewCustomerOrTable_Click(object sender, EventArgs e)
+        {
             dgv.Columns["CustomerDetails"].Visible = !dgv.Columns["CustomerDetails"].Visible;
         }
 
-        private void vScroll_Scroll(object sender, ScrollEventArgs e) {
+        private void vScroll_Scroll(object sender, ScrollEventArgs e)
+        {
             if (e.NewValue >= 0)
                 dgv.FirstDisplayedScrollingRowIndex = e.NewValue;
         }
 
-        private void dgv_Scroll(object sender, ScrollEventArgs e) {
+        private void dgv_Scroll(object sender, ScrollEventArgs e)
+        {
             vScroll.Value = e.NewValue;
         }
 
-        private async void btnChangePaymentMethod_Click(object sender, EventArgs e) {
+        private async void btnChangePaymentMethod_Click(object sender, EventArgs e)
+        {
             string SelectedIID = "";
-            if (dgv.SelectedRows.Count > 0) {
+            if (dgv.SelectedRows.Count > 0)
+            {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order =await bslayer.GetOrder(SelectedIID);
-                if (order.OrderType == OrderTypes.InHouse) {
+                POSLayer.Models.Order order = await bslayer.GetOrder(SelectedIID);
+                if (order.OrderType == OrderTypes.InHouse)
+                {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
                 }
-                bslayer.AttachedOrder =await bslayer.BarrowOrder(SelectedIID, bslayer.config.Terminal_Name);
+                bslayer.AttachedOrder = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
 
-                if (bslayer.AttachedOrder != null) {
-                    if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED)) {
-                        if (bslayer.AttachedOrder.Payment == POSLayer.Library.PaymentMethods.Unknown) {
-                            PassControlEvent(new ctlPayment(bslayer, new GenericFunctionCall(DetachPanelEvent),
+                if (bslayer.AttachedOrder != null)
+                {
+                    if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED))
+                    {
+                        if (bslayer.AttachedOrder.Payment == POSLayer.Library.PaymentMethods.Unknown)
+                        {
+                            PassControlEvent(new ctlPayment(new GenericFunctionCall(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
                                 0, true, false, true));
 

@@ -19,7 +19,6 @@ public partial class Table : BaseClass
     public string CurrentOrderIID { get; set; } = string.Empty;
 
     public TableTypes TableType { get; set; } = TableTypes.TemporaryTable;
-    public int DisplayOrder { get; set; }
     public int XLocation { get; set; }
 
     public int YLocation { get; set; }

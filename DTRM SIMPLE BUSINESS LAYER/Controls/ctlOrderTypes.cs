@@ -1,5 +1,8 @@
 using System;
 using System.Windows.Forms;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSWinFormLayer;
 
@@ -181,7 +184,7 @@ namespace DTRMNS {
 
         private void btnInHouse_Click(object sender, System.EventArgs e) {
             if (bslayer.AttachedOrder.OrderType != OrderTypes.InHouse) {
-                ctlTables ct = new ctlTables(bslayer, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
+                ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(bslayer.sp, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
                 AttachPanelEvent(ct);
             } else
                 CloseFunction();

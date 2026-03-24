@@ -52,10 +52,10 @@ namespace DTRMNS {
             AddToStockItem(txtQuantity.Value, txtNewConversion.Value);
         }
 
-        private void AddToStockItem(int quantity, int conversion) {
+        private async void AddToStockItem(int quantity, int conversion) {
             //stockItem.UsedQuantity -= (quantity * conversion);
             sentQuantity = (quantity * conversion * -1);
-            if (bslayer.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
+            if (await bslayer.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }

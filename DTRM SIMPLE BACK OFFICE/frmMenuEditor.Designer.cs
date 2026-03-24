@@ -368,7 +368,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // catalogBindingSource
             // 
-            this.catalogBindingSource.DataSource = typeof(FoodMenu);
+            this.catalogBindingSource.DataSource = typeof(TheMenu);
             // 
             // popEntityButton
             // 
@@ -1713,7 +1713,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityBindingSource
             // 
-            this.entityBindingSource.DataSource = typeof(Entity);
+            this.entityBindingSource.DataSource = typeof(Category);
             // 
             // barEntity
             // 
@@ -2535,7 +2535,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityButtonBindingSource
             // 
-            this.entityButtonBindingSource.DataSource = typeof(EntityButton);
+            this.entityButtonBindingSource.DataSource = typeof(CategoryItem);
             // 
             // FrmMenuEditor
             // 

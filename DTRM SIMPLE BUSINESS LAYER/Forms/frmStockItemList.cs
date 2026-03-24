@@ -16,6 +16,7 @@ namespace DTRMNS
 {
     public partial class frmStockItemList : Form
     {
+        PosConfig config;
         DTRMSimpleBusiness bslayer;
         StockItem selectedStockItem;
 
@@ -23,9 +24,10 @@ namespace DTRMNS
         {
             InitializeComponent();
         }
-        public frmStockItemList(DTRMSimpleBusiness bslayer)
+        public frmStockItemList(PosConfig configAsService, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             rbAll.Checked = true;
         }
@@ -372,15 +374,15 @@ namespace DTRMNS
                     List<int> cols = null;
                     if (chkIncludeSupplierInPrint.Checked)
                     {
-                        arrcols = new int[] { bslayer.config.GetFontMaximumCharacter(bslayer.config.ReportFontSize) - 31, -6, 6, 6, -4, 4 };
+                        arrcols = new int[] { config.GetFontMaximumCharacter(config.ReportFontSize) - 31, -6, 6, 6, -4, 4 };
                         cols = new List<int>(arrcols);
                     } else
                     {
-                        arrcols = new int[] { bslayer.config.GetFontMaximumCharacter(bslayer.config.ReportFontSize) - 31, -6, 7, 7, -6, 0 };
+                        arrcols = new int[] { config.GetFontMaximumCharacter(config.ReportFontSize) - 31, -6, 7, 7, -6, 0 };
                         cols = new List<int>(arrcols);
                     }
 
-                    bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
+                    bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
                        "Stock Items Report " + DateTime.Now.ToString("dd MM yyyy HH:mm"), cols, true);
                 }
             }

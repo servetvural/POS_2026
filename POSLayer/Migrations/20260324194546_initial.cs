@@ -12,25 +12,6 @@ namespace POSLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ApplicationPrinters",
-                columns: table => new
-                {
-                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DeliveryPrinter = table.Column<bool>(type: "bit", nullable: false),
-                    TakeAwayPrinter = table.Column<bool>(type: "bit", nullable: false),
-                    AdminOnly = table.Column<bool>(type: "bit", nullable: false),
-                    ClientIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ApplicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrinterType = table.Column<int>(type: "int", nullable: false),
-                    PrinterTypeAsString = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApplicationPrinters", x => x.IID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Bonus",
                 columns: table => new
                 {
@@ -64,7 +45,8 @@ namespace POSLayer.Migrations
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     BonusHiddenStartTime = table.Column<TimeSpan>(type: "time", nullable: false),
-                    BonusHiddenEndTime = table.Column<TimeSpan>(type: "time", nullable: false)
+                    BonusHiddenEndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,16 +59,13 @@ namespace POSLayer.Migrations
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Postcode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Buzzer = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Town = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tel = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fax = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Mobile = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CPassword = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,7 +79,8 @@ namespace POSLayer.Migrations
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DebugNo = table.Column<int>(type: "int", nullable: false),
                     EventDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Data = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -114,7 +94,8 @@ namespace POSLayer.Migrations
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rate = table.Column<double>(type: "float", nullable: false),
-                    Shortable = table.Column<bool>(type: "bit", nullable: false)
+                    Shortable = table.Column<bool>(type: "bit", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -129,7 +110,8 @@ namespace POSLayer.Migrations
                     ReferenceIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DisplayImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ExtraText = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageFileName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ImageFileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -148,7 +130,8 @@ namespace POSLayer.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     OrderNo = table.Column<int>(type: "int", nullable: false),
                     BeingModified = table.Column<bool>(type: "bit", nullable: false),
-                    OrderType = table.Column<int>(type: "int", nullable: false)
+                    OrderType = table.Column<int>(type: "int", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -167,53 +150,12 @@ namespace POSLayer.Migrations
                     EventDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ComputerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LogItems", x => x.IID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Luvs",
-                columns: table => new
-                {
-                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ShopName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShopAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tel1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tel2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fax = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Vat = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PurchaseEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrdersEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NotificationEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CurrentSessionIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SessionStartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    VoidText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DefaultTaxRate = table.Column<double>(type: "float", nullable: false),
-                    ServiceChargeRate = table.Column<double>(type: "float", nullable: false),
-                    ServiceChargeTaxRate = table.Column<double>(type: "float", nullable: false),
-                    ReceiptHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReceiptFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KitchenHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    KitchenFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReportFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmtpServer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmtpEmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmtpFromLabel = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmtpAccountName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SmtpPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MdfFileVersion = table.Column<int>(type: "int", nullable: false),
-                    KitchenModified = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Luvs", x => x.IID);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +164,8 @@ namespace POSLayer.Migrations
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     MenuName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActiveMenu = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -230,56 +173,22 @@ namespace POSLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
+                name: "Printers",
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TableIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TableName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Covers = table.Column<int>(type: "int", nullable: false),
-                    OrderType = table.Column<int>(type: "int", nullable: false),
-                    Payment = table.Column<int>(type: "int", nullable: false),
-                    CustomerIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SessionIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    LockedClientIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Instruction = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MoneyPaid = table.Column<double>(type: "float", nullable: false),
-                    PaymentFlag = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Postcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Buzzer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Town = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Tel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Mobile = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ServiceChargeRate = table.Column<double>(type: "float", nullable: false),
-                    ServiceChargeTaxRate = table.Column<double>(type: "float", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false)
+                    ClientIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeliveryPrinter = table.Column<bool>(type: "bit", nullable: false),
+                    TakeAwayPrinter = table.Column<bool>(type: "bit", nullable: false),
+                    AdminOnly = table.Column<bool>(type: "bit", nullable: false),
+                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrinterType = table.Column<int>(type: "int", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Orders", x => x.IID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrinterLookups",
-                columns: table => new
-                {
-                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PrinterIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ClientIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeliveryPrinter = table.Column<int>(type: "int", nullable: false),
-                    TakeAwayPrinter = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PrinterLookups", x => x.IID);
+                    table.PrimaryKey("PK_Printers", x => x.IID);
                 });
 
             migrationBuilder.CreateTable(
@@ -311,11 +220,49 @@ namespace POSLayer.Migrations
                     OnlineTotal = table.Column<double>(type: "float", nullable: false),
                     X1total = table.Column<double>(type: "float", nullable: false),
                     X2total = table.Column<double>(type: "float", nullable: false),
-                    X3total = table.Column<double>(type: "float", nullable: false)
+                    X3total = table.Column<double>(type: "float", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sessions", x => x.IID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Shops",
+                columns: table => new
+                {
+                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Tel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Vat = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PurchaseEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrdersEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NotificationEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentSessionIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VoidText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DefaultTaxRate = table.Column<double>(type: "float", nullable: false),
+                    ServiceChargeRate = table.Column<double>(type: "float", nullable: false),
+                    ServiceChargeTaxRate = table.Column<double>(type: "float", nullable: false),
+                    ReceiptHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReceiptFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KitchenHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KitchenFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportHeader = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReportFooter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpServer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpEmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpFromLabel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpAccountName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SmtpPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KitchenModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shops", x => x.IID);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,7 +276,8 @@ namespace POSLayer.Migrations
                     Conversion = table.Column<int>(type: "int", nullable: false),
                     SupplierIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SupplierName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UsedQuantity = table.Column<double>(type: "float", nullable: false)
+                    UsedQuantity = table.Column<double>(type: "float", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -346,7 +294,8 @@ namespace POSLayer.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Whatsup = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Whatsup = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -359,9 +308,9 @@ namespace POSLayer.Migrations
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
                     Width = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false)
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -379,7 +328,6 @@ namespace POSLayer.Migrations
                     LockedClientIP = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CurrentOrderIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TableType = table.Column<int>(type: "int", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
                     XLocation = table.Column<int>(type: "int", nullable: false),
                     YLocation = table.Column<int>(type: "int", nullable: false),
                     Width = table.Column<int>(type: "int", nullable: false),
@@ -387,7 +335,8 @@ namespace POSLayer.Migrations
                     GroupIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ParentTableIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Shape = table.Column<int>(type: "int", nullable: false),
-                    DefaultName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    DefaultName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -401,11 +350,48 @@ namespace POSLayer.Migrations
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AccessLevel = table.Column<int>(type: "int", nullable: false)
+                    AccessLevel = table.Column<int>(type: "int", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.IID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TableIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TableName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Covers = table.Column<int>(type: "int", nullable: false),
+                    OrderType = table.Column<int>(type: "int", nullable: false),
+                    Payment = table.Column<int>(type: "int", nullable: false),
+                    SessionIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    LockedClientIP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Instruction = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MoneyPaid = table.Column<double>(type: "float", nullable: false),
+                    PaymentFlag = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ServiceChargeRate = table.Column<double>(type: "float", nullable: false),
+                    ServiceChargeTaxRate = table.Column<double>(type: "float", nullable: false),
+                    Waiter = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomerIID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.IID);
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerIID",
+                        column: x => x.CustomerIID,
+                        principalTable: "Customers",
+                        principalColumn: "IID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -418,7 +404,8 @@ namespace POSLayer.Migrations
                     KitchenOrderIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EntityButtonIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -432,54 +419,56 @@ namespace POSLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BgColour = table.Column<int>(type: "int", nullable: false),
+                    FgColour = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    EntityType = table.Column<int>(type: "int", nullable: false),
+                    MenuIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FFamily = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FSize = table.Column<double>(type: "float", nullable: false),
+                    FStyle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.IID);
+                    table.ForeignKey(
+                        name: "FK_Categories_Menus_MenuIID",
+                        column: x => x.MenuIID,
+                        principalTable: "Menus",
+                        principalColumn: "IID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Distributions",
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DistributionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShortName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrinterIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentMenuIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    FoodMenuIID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrinterIID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    MenuIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Distributions", x => x.IID);
                     table.ForeignKey(
-                        name: "FK_Distributions_Menus_FoodMenuIID",
-                        column: x => x.FoodMenuIID,
+                        name: "FK_Distributions_Menus_MenuIID",
+                        column: x => x.MenuIID,
                         principalTable: "Menus",
                         principalColumn: "IID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Entities",
-                columns: table => new
-                {
-                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EntityName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    BackColour = table.Column<int>(type: "int", nullable: false),
-                    ForeColour = table.Column<int>(type: "int", nullable: false),
-                    ButtonHeight = table.Column<int>(type: "int", nullable: false),
-                    ButtonWidth = table.Column<int>(type: "int", nullable: false),
-                    ParentMenuIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EntityType = table.Column<int>(type: "int", nullable: false),
-                    DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DistributionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FFamily = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FSize = table.Column<double>(type: "float", nullable: false),
-                    FStyle = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FoodMenuIID = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Entities", x => x.IID);
                     table.ForeignKey(
-                        name: "FK_Entities_Menus_FoodMenuIID",
-                        column: x => x.FoodMenuIID,
-                        principalTable: "Menus",
+                        name: "FK_Distributions_Printers_PrinterIID",
+                        column: x => x.PrinterIID,
+                        principalTable: "Printers",
                         principalColumn: "IID");
                 });
 
@@ -497,13 +486,12 @@ namespace POSLayer.Migrations
                     OrderGroupIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EntityButtonIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParentOrderIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ItemType = table.Column<int>(type: "int", nullable: false),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
                     TaxPercent = table.Column<double>(type: "float", nullable: false),
                     CompletedQuantity = table.Column<double>(type: "float", nullable: false),
+                    OrderIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
-                    OrderIID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -512,66 +500,71 @@ namespace POSLayer.Migrations
                         name: "FK_OrderItems_Orders_OrderIID",
                         column: x => x.OrderIID,
                         principalTable: "Orders",
-                        principalColumn: "IID");
+                        principalColumn: "IID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EntityButtons",
+                name: "CategoryItems",
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EntityButtonName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayOrder = table.Column<int>(type: "int", nullable: false),
-                    ButtonColor = table.Column<int>(type: "int", nullable: false),
-                    ForeColor = table.Column<int>(type: "int", nullable: false),
+                    CategoryIID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BgColor = table.Column<int>(type: "int", nullable: false),
+                    FgColor = table.Column<int>(type: "int", nullable: false),
                     ButtonType = table.Column<int>(type: "int", nullable: false),
                     AvailableFor = table.Column<int>(type: "int", nullable: false),
-                    ParentEntityIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ParentMenuIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Compulsary = table.Column<int>(type: "int", nullable: false),
                     Barcode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DirectSaleTaxPercent = table.Column<double>(type: "float", nullable: false),
-                    InHouseTaxPercent = table.Column<double>(type: "float", nullable: false),
-                    TakeAwayTaxPercent = table.Column<double>(type: "float", nullable: false),
-                    DeliveryTaxPercent = table.Column<double>(type: "float", nullable: false),
+                    SaleTax = table.Column<double>(type: "float", nullable: false),
+                    SitinTax = table.Column<double>(type: "float", nullable: false),
+                    TaTax = table.Column<double>(type: "float", nullable: false),
+                    DTax = table.Column<double>(type: "float", nullable: false),
                     PadFlag = table.Column<int>(type: "int", nullable: false),
-                    DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DirectSalePrice = table.Column<double>(type: "float", nullable: false),
-                    InHousePrice = table.Column<double>(type: "float", nullable: false),
-                    TakeAwayPrice = table.Column<double>(type: "float", nullable: false),
-                    DeliveryPrice = table.Column<double>(type: "float", nullable: false),
-                    ButtonWidth = table.Column<int>(type: "int", nullable: false),
-                    ButtonHeight = table.Column<int>(type: "int", nullable: false),
+                    DistributionIID = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SalePrice = table.Column<double>(type: "float", nullable: false),
+                    SitinPrice = table.Column<double>(type: "float", nullable: false),
+                    TaPrice = table.Column<double>(type: "float", nullable: false),
+                    DPrice = table.Column<double>(type: "float", nullable: false),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Height = table.Column<int>(type: "int", nullable: false),
                     FFamily = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FSize = table.Column<double>(type: "float", nullable: false),
                     FStyle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WithImage = table.Column<bool>(type: "bit", nullable: false),
-                    EntityIID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    dorder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EntityButtons", x => x.IID);
+                    table.PrimaryKey("PK_CategoryItems", x => x.IID);
                     table.ForeignKey(
-                        name: "FK_EntityButtons_Entities_EntityIID",
-                        column: x => x.EntityIID,
-                        principalTable: "Entities",
-                        principalColumn: "IID");
+                        name: "FK_CategoryItems_Categories_CategoryIID",
+                        column: x => x.CategoryIID,
+                        principalTable: "Categories",
+                        principalColumn: "IID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Distributions_FoodMenuIID",
+                name: "IX_Categories_MenuIID",
+                table: "Categories",
+                column: "MenuIID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryItems_CategoryIID",
+                table: "CategoryItems",
+                column: "CategoryIID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Distributions_MenuIID",
                 table: "Distributions",
-                column: "FoodMenuIID");
+                column: "MenuIID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Entities_FoodMenuIID",
-                table: "Entities",
-                column: "FoodMenuIID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EntityButtons_EntityIID",
-                table: "EntityButtons",
-                column: "EntityIID");
+                name: "IX_Distributions_PrinterIID",
+                table: "Distributions",
+                column: "PrinterIID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KitchenOrderItems_KitchenOrderIID",
@@ -582,19 +575,21 @@ namespace POSLayer.Migrations
                 name: "IX_OrderItems_OrderIID",
                 table: "OrderItems",
                 column: "OrderIID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_CustomerIID",
+                table: "Orders",
+                column: "CustomerIID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ApplicationPrinters");
-
-            migrationBuilder.DropTable(
                 name: "Bonus");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "CategoryItems");
 
             migrationBuilder.DropTable(
                 name: "Debugs");
@@ -606,9 +601,6 @@ namespace POSLayer.Migrations
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "EntityButtons");
-
-            migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
@@ -618,16 +610,13 @@ namespace POSLayer.Migrations
                 name: "LogItems");
 
             migrationBuilder.DropTable(
-                name: "Luvs");
-
-            migrationBuilder.DropTable(
                 name: "OrderItems");
 
             migrationBuilder.DropTable(
-                name: "PrinterLookups");
+                name: "Sessions");
 
             migrationBuilder.DropTable(
-                name: "Sessions");
+                name: "Shops");
 
             migrationBuilder.DropTable(
                 name: "StockItems");
@@ -645,7 +634,10 @@ namespace POSLayer.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Entities");
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Printers");
 
             migrationBuilder.DropTable(
                 name: "KitchenOrders");
@@ -655,6 +647,9 @@ namespace POSLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Menus");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
         }
     }
 }

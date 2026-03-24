@@ -1,86 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿
 using DTRMNS;
 
 using POSLayer.Library;
 
-namespace DTRM_Kitchen_Display {
-    public partial class frmDisplaySelector : Form {
-        private DTRMSimpleBusiness bslayer;
-
-        public frmDisplaySelector(DTRMSimpleBusiness bslayer) {
+namespace DTRM_Kitchen_Display
+{
+    public partial class frmDisplaySelector : Form
+    {
+        PosConfig config;
+        public frmDisplaySelector(PosConfig configAsService)
+        {
             InitializeComponent();
-            this.bslayer = bslayer;
+            config = configAsService;
         }
-        private void frmDisplaySelector_Load(object sender, EventArgs e) {
-            
+        private void frmDisplaySelector_Load(object sender, EventArgs e)
+        {
+
         }
 
-        private void frmDisplaySelector_Shown(object sender, EventArgs e) {
-            try {
-                if (!UF.IsConfigFileExist()) {
-                    if (!AskForConfig(null)) {
+        private void frmDisplaySelector_Shown(object sender, EventArgs e)
+        {
 
-                        Close();
-                        Application.Exit();
-                    }
-                }
-
-                bslayer.CustomInitialize( UF.GetConfig());
-                if (bslayer != null) {
-                    switch (bslayer.config.Kitchen_Monitor_Auto_Display_Type) {
-                        case POSLayer.Library.KitchenDisplayTypes.None:
-                            break;
-                        case POSLayer.Library.KitchenDisplayTypes.Single_Display:
-                            btnSingle_Click(null, null);
-                            break;
-                        case POSLayer.Library.KitchenDisplayTypes.Double_Display:
-                        case POSLayer.Library.KitchenDisplayTypes.Triple_Display:
-                            btnDouble_Click(null, null);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } catch {
-                AskForConfig(null);
+            switch (config.Kitchen_Monitor_Auto_Display_Type)
+            {
+                case KitchenDisplayTypes.None:
+                    break;
+                case KitchenDisplayTypes.Single_Display:
+                    btnSingle_Click(null, null);
+                    break;
+                case KitchenDisplayTypes.Double_Display:
+                case KitchenDisplayTypes.Triple_Display:
+                    btnDouble_Click(null, null);
+                    break;
+                default:
+                    break;
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.Close();
         }
 
-        private void btnSingle_Click(object sender, EventArgs e) {
-            frmKitchenSingleDisplay frm = new frmKitchenSingleDisplay(bslayer);
-            frm.Show();
+        private void btnSingle_Click(object sender, EventArgs e)
+        {
+            ServiceHelper.GetService<frmKitchenSingleDisplay>().Show();
         }
 
-        private void btnDouble_Click(object sender, EventArgs e) {
-            frmKitchenDoubleDisplay frm = new frmKitchenDoubleDisplay(bslayer);
-            frm.Show();
+        private void btnDouble_Click(object sender, EventArgs e)
+        {
+            ServiceHelper.GetService<frmKitchenDoubleDisplay>().Show();
         }
 
-        private void btnSettings_Click(object sender, EventArgs e) {
-            AskForConfig(bslayer);
+        private async void btnSettings_Click(object sender, EventArgs e)
+        {
+            if (await ServiceHelper.GetService<frmConfig>().ShowDialogAsync() == DialogResult.OK)
+                Close();
         }
 
-        private bool  AskForConfig(DTRMSimpleBusiness testbslayer) {
-            frmConfig frm = new frmConfig(testbslayer);
-            if (frm.ShowDialog() == DialogResult.OK) {
-                bslayer.CustomInitialize(UF.GetConfig());
-                return true;
-            } else
-                return false;
-
-        }
-
-        
     }
 }

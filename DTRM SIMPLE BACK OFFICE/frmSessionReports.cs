@@ -3,28 +3,36 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using System.IO;
 using DTRMNS;
-using PosLibrary;
-using PosLibrary.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
-using System.Threading.Tasks;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
+
+using PosLibrary;
+using PosLibrary.Forms;
+
 using POSWinFormLayer.Library;
+
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionReports : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         
-        public frmSessionReports() {
+        //public frmSessionReports() {
+        //    InitializeComponent();
+        //}
+        public frmSessionReports(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
-        }
-        public frmSessionReports(DTRMSimpleBusiness bslayer) {
-            InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
         }
         private void frmSessionReports_Load(object sender, EventArgs e) {
@@ -56,9 +64,9 @@ namespace DTRMSimpleBackOffice {
                 string sessionTableName = chkDynamicSessionTotals.Checked ? "SessionSum" : "Sessions";
                 try
                 {
-                    dgvDatabase.DataSource = bslayer.GetDataTable("Select * from " + sessionTableName + " where IID <> '" + bslayer.GetCurrentSessionIID() + "' order by StartDate desc");
+                    dgvDatabase.DataSource = bslayer.GetDataTable("Select * from " + sessionTableName + " where IID <> '" + bslayer.shop.CurrentSessionIID + "' order by StartDate desc");
 
-                    lblAllSessionTotal.Text = float.Parse(bslayer.GetDataTable("Select SUM(GrossSessionTotal) AS Total from " + sessionTableName + "  where IID <> '" + bslayer.GetCurrentSessionIID() + "'").Rows[0]["Total"].ToString()).ToString("N2");
+                    lblAllSessionTotal.Text = float.Parse(bslayer.GetDataTable("Select SUM(GrossSessionTotal) AS Total from " + sessionTableName + "  where IID <> '" + bslayer.shop.CurrentSessionIID + "'").Rows[0]["Total"].ToString()).ToString("N2");
                 }
                 catch { }
             }
@@ -111,7 +119,7 @@ namespace DTRMSimpleBackOffice {
                         LastEndDate = endDate;
                 }
 
-                frmTaxReport frm = new frmTaxReport(bslayer, FirstStartDate, LastEndDate); // bslayer.GetTaxSummaryReport(FirstStartDate, LastEndDate));
+                frmTaxReport frm = ActivatorUtilities.CreateInstance<frmTaxReport>(ServiceHelper.Services, bslayer, FirstStartDate, LastEndDate); // bslayer.GetTaxSummaryReport(FirstStartDate, LastEndDate));
                 frm.Show();
 
 
@@ -518,7 +526,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true,new int[]{-4,-21,5,8})) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName );
+                    PrintHandler printer = new PrintHandler(config,exporter.csvText, frm.SelectedPrinterNetworkName );
                     printer.PrintNow();
                 }
             }
@@ -545,7 +553,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName);
+                    PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
 
                     
@@ -574,7 +582,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
                 frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
-                    PrintHandler printer = new PrintHandler(bslayer.config,exporter.csvText, frm.SelectedPrinterNetworkName);
+                    PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
                 }
             }

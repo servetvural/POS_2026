@@ -9,14 +9,14 @@ namespace DTRMNS {
     public partial class frmEntityButtonStockItemLookUp : Form {
         private DTRMSimpleBusiness bslayer;
         public EntityButtonStockItemLookUp lookup;
-        public EntityButton entityButton;
+        public CategoryItem entityButton;
         private StockItem selectedStockItem;
         private bool blnLoading;
 
         public frmEntityButtonStockItemLookUp() {
             InitializeComponent();
         }
-        public frmEntityButtonStockItemLookUp(DTRMSimpleBusiness bslayer, EntityButton entityButton) {
+        public frmEntityButtonStockItemLookUp(DTRMSimpleBusiness bslayer, CategoryItem entityButton) {
             InitializeComponent();
             this.bslayer = bslayer;
             this.entityButton = entityButton;
@@ -46,7 +46,7 @@ namespace DTRMNS {
         }
 
         private async Task LoadLookUp() {
-            txtEntityButton.Text = entityButton.EntityButtonName;
+            txtEntityButton.Text = entityButton.Name;
             lblQuantityType.Text = lookup.QuantityType.ToString();
             incQuantity.Value = lookup.Quantity;
             incUsageAmount.Value = (int)lookup.Quantity;
@@ -54,8 +54,6 @@ namespace DTRMNS {
             txtComment.Text = lookup.Comment;
             if (lookup.StockItemIID == "")
             {
-                //cmbStockItem.Enabled = false;
-                //incQuantity.Enabled = false;
                 chkFreeItem.Checked = true;
             } else
             {
@@ -130,7 +128,7 @@ namespace DTRMNS {
 
         private void btnAddStockItem_Click(object sender, EventArgs e) {
             StockItem si = new StockItem();
-            si.StockName = entityButton.EntityButtonName;
+            si.StockName = entityButton.Name;
             frmStockItem frm = new frmStockItem(bslayer, si);
             if (frm.ShowDialog() == DialogResult.OK) {
                 LoadStockItemList();

@@ -129,7 +129,7 @@ namespace DTRMNS.Forms
                 try
                 {
                     string sessionTableName = "Sessions";
-                    dgvDatabase.DataSource = bslayer.GetDataTable("Select * from " + sessionTableName + " where IID <> '" + bslayer.GetCurrentSessionIID() + "' order by StartDate desc");
+                    dgvDatabase.DataSource = bslayer.GetDataTable("Select * from " + sessionTableName + " where IID <> '" + bslayer.shop.CurrentSessionIID + "' order by StartDate desc");
 
                    // lblAllSessionTotal.Text = float.Parse(bslayer.GetDataTable("Select SUM(GrossSessionTotal) AS Total from " + sessionTableName + "  where IID <> '" + bslayer.GetCurrentSessionIID() + "'").Rows[0]["Total"].ToString()).ToString("N2");
                 } catch { }

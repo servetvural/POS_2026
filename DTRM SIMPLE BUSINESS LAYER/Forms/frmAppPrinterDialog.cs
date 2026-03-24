@@ -10,7 +10,7 @@ namespace DTRMNS {
     public partial class frmAppPrinterDialog : Form {
         private DTRMSimpleBusiness bslayer;
         public string SelectedPrinterIID="";
-        public ApplicationPrinter SelectedApplicationPrinter;
+        public Printer SelectedPrinter;
         public string SelectedPrinterNetworkName="";
 
         public frmAppPrinterDialog() {
@@ -27,13 +27,13 @@ namespace DTRMNS {
 
 
         private void LoadPrinters() {
-            List<ApplicationPrinter> PrinterList = bslayer.GetReceiptPrinterList().Result;
+            List<Printer> PrinterList = bslayer.GetReceiptPrinterList().Result;
 
             ListViewItem lvi;
-            ApplicationPrinter ap;
+            Printer printer;
             for (int i = 0; i < PrinterList.Count; i++) {
-                ap = (ApplicationPrinter)PrinterList[i];
-                string[] plist = { ap.ApplicationName, ap.IID };
+                printer = (Printer)PrinterList[i];
+                string[] plist = { printer.ApplicationName, printer.IID };
                 lvi = new ListViewItem(plist, 0);
                 lvwPrinters.Items.Add(lvi);
             }
@@ -48,8 +48,8 @@ namespace DTRMNS {
             if (lvwPrinters.SelectedIndices.Count > 0) {
                 ListViewItem lvi = lvwPrinters.SelectedItems[0];
                 this.SelectedPrinterIID = lvi.SubItems[1].Text;
-                this.SelectedApplicationPrinter =await bslayer.GetPrinterForClient(SelectedPrinterIID);
-                this.SelectedPrinterNetworkName = SelectedApplicationPrinter.NetworkName;
+                this.SelectedPrinter =await bslayer.GetPrinterForClient(SelectedPrinterIID);
+                this.SelectedPrinterNetworkName = SelectedPrinter.NetworkName;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

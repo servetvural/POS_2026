@@ -1,4 +1,10 @@
-﻿namespace DTRMNS {
+﻿using DTRMNS.Controls;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
+
+namespace DTRMNS {
     partial class ctlKitchenDisplay {
         /// <summary> 
         /// Required designer variable.
@@ -27,7 +33,7 @@
             components = new System.ComponentModel.Container();
             pnlTop = new System.Windows.Forms.Panel();
             panel2 = new System.Windows.Forms.Panel();
-            ctrlBonus = new DTRMNS.Controls.ctlBonus();
+            ctrlBonus = ActivatorUtilities.CreateInstance<ctlBonus>(ServiceHelper.Services);
             lblClock = new System.Windows.Forms.Label();
             btnShrink = new System.Windows.Forms.Button();
             btnReload = new System.Windows.Forms.Button();

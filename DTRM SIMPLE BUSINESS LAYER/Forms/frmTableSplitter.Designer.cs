@@ -1,4 +1,8 @@
-﻿namespace DTRMNS {
+﻿using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
+
+namespace DTRMNS {
     partial class frmTableSplitter {
         /// <summary>
         /// Required designer variable.
@@ -38,8 +42,8 @@
             this.pnlSourceTables = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlTargetTables = new System.Windows.Forms.FlowLayoutPanel();
             this.btnAddTargetTable = new System.Windows.Forms.Button();
-            this.odTargetTable = new DTRMNS.OrderDisplay();
-            this.odSourceTable = new DTRMNS.OrderDisplay();
+            this.odTargetTable = ActivatorUtilities.CreateInstance < OrderDisplay>(ServiceHelper.Services);
+            this.odSourceTable = ActivatorUtilities.CreateInstance <OrderDisplay>(ServiceHelper.Services);
             this.btnChangeTargetTableName = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 

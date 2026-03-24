@@ -13,9 +13,9 @@ namespace DTRMNS {
     /// Summary description for EntityTemplateItem.
     /// </summary>
     public class UPEntityButton : Button {
-
+        PosConfig config;
         public string IID;
-        public EntityButton entitybutton;
+        public CategoryItem entitybutton;
         public string PrintLabel;
         public EntityButtonTypes ButtonType;
         public UPEntity ParentUIE;
@@ -29,13 +29,14 @@ namespace DTRMNS {
         /// <param name="Parent"></param>
         /// <param name="entitybutton"></param>
         /// <param name="EditorButton"></param>
-        public UPEntityButton(DTRMNS.DTRMSimpleBusiness bs, UPEntity ParentUPEntity, EntityButton entitybutton) {
+        public UPEntityButton(PosConfig configAsService, DTRMSimpleBusiness bs, UPEntity ParentUPEntity, CategoryItem entitybutton) {
             
+            config = configAsService;
             //new button type construction
 
             if (entitybutton.ButtonType == EntityButtonTypes.SpaceButton) {
                 BackgroundImage = null;
-                entitybutton.EntityButtonName = "";
+                entitybutton.Name = "";
                 Enabled = false;
             } else {                
                 BackgroundImage = Properties.Resources.shadow;
@@ -55,11 +56,11 @@ namespace DTRMNS {
             }
 
             this.Click += new System.EventHandler(this.UIEBEventHandler);
-            this.Size = new System.Drawing.Size(entitybutton.ButtonWidth, entitybutton.ButtonHeight);
-            this.Text = entitybutton.EntityButtonName;
-            this.PrintLabel = entitybutton.EntityButtonName;
-            this.BackColor = Color.FromArgb(entitybutton.ButtonColor);
-            this.ForeColor = Color.FromArgb(entitybutton.ForeColor);
+            this.Size = new System.Drawing.Size(entitybutton.Width, entitybutton.Height);
+            this.Text = entitybutton.Name;
+            this.PrintLabel = entitybutton.Name;
+            this.BackColor = Color.FromArgb(entitybutton.BgColor);
+            this.ForeColor = Color.FromArgb(entitybutton.FgColor);
             this.ButtonType = entitybutton.ButtonType;
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
@@ -79,8 +80,6 @@ namespace DTRMNS {
 
         #region EVENT HANDLER
         private void UIEBEventHandler(object sender, System.EventArgs e) {
-            //UIEventHandler.HanldeEBClick(bslayer, this);
-
 
             UPEntityButton geb = this;
             if (geb.entitybutton.ButtonType == EntityButtonTypes.SpaceButton)
@@ -88,14 +87,14 @@ namespace DTRMNS {
 
             if (bslayer.AttachedOrder == null)
             {
-                if (bslayer.config.DebugMode)
+                if (config.DebugMode)
                     bslayer.SaveDebug("EB Handle bslayer.AttachedOrder is null");
                 return;
             }
 
             if (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED)
             {
-                if (bslayer.config.DebugMode)
+                if (config.DebugMode)
                     bslayer.SaveDebug("EB Handle order status completed or archived");
                 return;
             }
@@ -103,7 +102,7 @@ namespace DTRMNS {
             //CHECK if EB is applicable to CurrentOrderType
             if (!IsEBApplicableToOrderType(bslayer, geb))
             {
-                if (bslayer.config.DebugMode)
+                if (config.DebugMode)
                     bslayer.SaveDebug("EB Handle 125");
                 return;
             }
@@ -111,7 +110,7 @@ namespace DTRMNS {
             //HANDLE Extra, Disco , ManagerDisco BUTTON
             if (HandleExtraDiscoManagerItems(bslayer, geb))
             {
-                if (bslayer.config.DebugMode)
+                if (config.DebugMode)
                     bslayer.SaveDebug("EB Handle 126");
                 goto bypass;
             }
@@ -124,14 +123,14 @@ namespace DTRMNS {
             oiNew.OrderItemText = geb.PrintLabel;
             oiNew.DistributionIID = geb.entitybutton.DistributionIID; //geb.ParentUIE.entity.DistributionIID;
             oiNew.ItemType = OrderItemTypes.NormalOrderItem;
-            oiNew.DisplayOrder = geb.entitybutton.DisplayOrder;
-            oiNew.EntityName = geb.ParentUIE.entity.EntityName;
-            oiNew.EntityDisplayOrder = geb.ParentUIE.entity.DisplayOrder;
+            oiNew.dorder = geb.entitybutton.dorder;
+            oiNew.EntityName = geb.ParentUIE.entity.Name;
+            oiNew.EntityDisplayOrder = geb.ParentUIE.entity.dorder;
             oiNew.TaxPercent = bslayer.GetEBTaxPercent(geb.entitybutton);
 
 
             //UnParented Item - No SizeBar  (Simple or Complex)  Exp= GB or Chicken Wings
-            oiNew.ParentOrderIID = bslayer.AttachedOrder.IID;
+            oiNew.OrderIID = bslayer.AttachedOrder.IID;
 
             //This is true if OrderItemStepable conditions are meet.
             bool blnDisplaySeperately = (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse &&
@@ -156,7 +155,7 @@ namespace DTRMNS {
                     incItem.Decrement();
                 else
                 {
-                    incItem.Increment();
+                    incItem.Quantity++;
                 }
                 bslayer.AttachedOrder.blnItemsChanged = true;
             }
@@ -168,7 +167,6 @@ namespace DTRMNS {
         private double GetEBRelatedPrice(DTRMSimpleBusiness bslayer, UPEntityButton geb)
         {
             return geb.entitybutton.GetPrice(bslayer.AttachedOrder.OrderType);
-
         }
 
         private bool HandleExtraDiscoManagerItems(DTRMSimpleBusiness bslayer, UPEntityButton geb)
@@ -215,8 +213,8 @@ namespace DTRMNS {
 
                 bslayer.AttachedOrder.AddOrderItem(geb.ParentUIE.IID, POSLayer.Library.ShortGuid.NewDateBasedGuid2(), 1,
                    exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.entity.DistributionIID,
-                    UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.DisplayOrder, geb.ParentUIE.entity.EntityName,
-                   geb.ParentUIE.entity.DisplayOrder, bslayer.GetEBTaxPercent(geb.entitybutton));
+                    UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.dorder, geb.ParentUIE.entity.Name,
+                   geb.ParentUIE.entity.dorder, bslayer.GetEBTaxPercent(geb.entitybutton));
 
                 return true;
             } else

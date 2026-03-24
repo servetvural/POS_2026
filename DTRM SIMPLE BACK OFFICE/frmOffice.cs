@@ -7,14 +7,17 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using POSLayer.Library;
+using POSLayer.Models;
 
 using PosLibrary;
 using PosLibrary.DBSpace;
 
 using POSWinFormLayer;
+using POSLayer.Repository.IRepository;
 
 
 namespace DTRMSimpleBackOffice
@@ -22,15 +25,23 @@ namespace DTRMSimpleBackOffice
     public enum ViewModes { User, Accountant, MenuEditor, Owner };
     public partial class frmOffice : Form
     {
+        readonly IServiceProvider sp;
+        PosConfig config;
 
         private ConnectionStatus conStatus;
         private DTRMSimpleBusiness bslayer;
         private ViewModes viewMode = ViewModes.User;
 
-        public frmOffice(DTRMSimpleBusiness _bslayer, IFormFactory formFactory)
+        readonly  IRepository<User> repoUser;
+
+        public frmOffice(IServiceProvider _sp, PosConfig configAsService, DTRMSimpleBusiness _bslayer, IRepository<User> _repoUser,  IFormFactory formFactory)
         {
             InitializeComponent();
+            sp = _sp;
+            config = configAsService;
             bslayer = _bslayer;
+            repoUser = _repoUser;
+           // bslayer.config = configAsService;
             if (!string.IsNullOrEmpty(Program.UserType))
             {
                 if (!Enum.TryParse<ViewModes>(Program.UserType, true, out viewMode))
@@ -44,101 +55,57 @@ namespace DTRMSimpleBackOffice
             CheckTabHeight();
         }
 
-        private async  void btnConnect_Click(object sender, EventArgs e)
+        private async void btnConnect_Click(object sender, EventArgs e)
         {
             bool blnLocalDatabase = false;
-            switch (conStatus)
+
+            if (conStatus == ConnectionStatus.Disconnected)
             {
-                case ConnectionStatus.Disconnected:
-                TryAgainLocally:
-                    if (POSLayer.Library.UF.IsConfigFileExist())
+                if (await repoUser.IsDatabaseExist())
+                {
+                    frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(sp, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
+                    if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
-                        PosConfig config = POSLayer.Library.UF.GetConfig();
-                        if (config.Database_Instance == null |
-                            config.Database_User_Name == null || config.Database_Password == null)
-                        {
-                            frmConfig frm = ServiceHelper.GetService<frmConfig>();
-                            if (frm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                                Application.Exit();
-                        }
-                        bslayer.CustomInitialize(config);
+                        User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
+                        if (user == null) { return; }
 
-                        if (!bslayer.DBConnectionSuccessful)
+                        if (user.IsManagerOrMore())
                         {
-                            if (MessageBox.Show("Check Database Connection Error : \r\n" + bslayer.DBConnectionError + "\r\n\r\nExit Application??", "Database Connection Error", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                                Application.Exit();
-                            return;
-                        }
-                        if (bslayer.DoStartThings().Result)
-                        {
-                            blnLocalDatabase = (DRUF.IsLocalIpAddress(config.Database_Instance) || config.Database_Instance == ".");
-                            bslayer.EnsureRequiredUsers();
 
-                            frmPassword frmpswd = new frmPassword(bslayer,
-                                "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
-                            if (frmpswd.ShowDialog() == DialogResult.OK)
+                            ConnectActions(true);
+
+                            //Identify connection type
+                            if (blnLocalDatabase)
                             {
-                                if (bslayer.IsAdmin(frmpswd.Password).Result)
-                                {
-
-                                    ConnectActions(true);
-
-                                    //Identify connection type
-                                    if (blnLocalDatabase)
-                                    {
-                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
-                                        btnPrinters.Enabled = true;
-                                        btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
-                                    } else
-                                    {
-                                        //remote connection
-                                        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
-                                        //btnPrinters.Enabled = false;
-                                        btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
-                                    }
-
-                                    btnConnect.Visible = false;
-                                    btnDisconnect.Visible = true;
-
-                                    lblStatus.Text = conStatus.ToString() + " : " +
-                                                     "Instanse/IP: " + bslayer.config.Database_Instance + ", " +
-                                                     "Database: " + bslayer.config.Database_Name + ", " +
-                                                     "User : " + bslayer.config.Database_User_Name;
-
-                                    this.Refresh();
-
-                                }
-                            }
-                        } else
-                        {
-                            //Local DTRMConfig is not valid handle this
-                            PosLibrary.DBSpace.frmDatabaseLogin frm = new frmDatabaseLogin();
-                            frm.StartPosition = FormStartPosition.CenterParent;
-                            if (frm.ShowDialog() == DialogResult.OK)
+                                conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
+                                btnPrinters.Enabled = true;
+                                btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
+                            } else
                             {
-                                DB db = frm.db;
-                                config.Database_Instance = db.ServerIP;
-                                // config.Database_Name = db.DatabaseName;
-                                config.Database_User_Name = db.UserName;
-                                config.Database_Password = db.Password;
-                                UF.SaveConfig(config);
-                                goto TryAgainLocally;
-
+                                //remote connection
+                                conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
+                                //btnPrinters.Enabled = false;
+                                btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
                             }
+
+                            btnConnect.Visible = false;
+                            btnDisconnect.Visible = true;
+
+                            lblStatus.Text = conStatus.ToString() + " : " +
+                                             "Instanse/IP: " + config.Database_Instance + ", " +
+                                             "Database: " + config.Database_Name + ", " +
+                                             "User : " + config.Database_User_Name;
+
+                            this.Refresh();
+
                         }
                     } else
                     {
-                        frmConfig frm = ServiceHelper.GetService<frmConfig>();
-                        if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                            goto TryAgainLocally;
-                        else
-                            Application.Exit();
+                        //MessageBox.Show("Failed to Login");
                     }
-                    barMain.Refresh();
-                    break;
-
+                }                
             }
-        }
+        }            
 
 
 
@@ -308,41 +275,40 @@ namespace DTRMSimpleBackOffice
             {
                 foreach (Form frm in this.MdiChildren)
                     frm.Close();
-                bslayer.config = null;
             }
 
         }
 
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            FrmMenuEditor frm = new FrmMenuEditor(bslayer);
+            FrmMenuEditor frm = ActivatorUtilities.CreateInstance<FrmMenuEditor>(sp);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnDistributions_Click(object sender, EventArgs e)
         {
-            frmDistributionList frm = new frmDistributionList(bslayer);
+            frmDistributionList frm = ActivatorUtilities.CreateInstance <frmDistributionList>(sp);
             frm.MdiParent = this;
             frm.Show();
         }
         private void btnUserEditor_Click(object sender, EventArgs e)
         {
-            frmUserEditor frm = new frmUserEditor(bslayer);
+            frmUserEditor frm = ActivatorUtilities.CreateInstance<frmUserEditor>(sp);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnPrinters_Click(object sender, EventArgs e)
         {
-            frmPrinters frm = new frmPrinters(bslayer);
+            frmPrinters frm = ActivatorUtilities.CreateInstance<frmPrinters>(sp);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnDisplay_Click(object sender, EventArgs e)
         {
-            frmCurrentSessionDisplay frm = new frmCurrentSessionDisplay(bslayer);
+            frmCurrentSessionDisplay frm = ActivatorUtilities.CreateInstance<frmCurrentSessionDisplay>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -351,7 +317,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionReports_Click(object sender, EventArgs e)
         {
-            frmSessionReports frm = new frmSessionReports(bslayer);
+            frmSessionReports frm = ActivatorUtilities.CreateInstance < frmSessionReports>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -359,7 +325,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            frmSupplierList frm = new frmSupplierList(bslayer);
+            frmSupplierList frm = ActivatorUtilities.CreateInstance < frmSupplierList>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -367,7 +333,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnStockItemList_Click(object sender, EventArgs e)
         {
-            frmStockItemList frm = new frmStockItemList(bslayer);
+            frmStockItemList frm = ActivatorUtilities.CreateInstance<frmStockItemList>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -376,7 +342,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnStockUsage_Click(object sender, EventArgs e)
         {
-            frmStockItemUsage frm = new frmStockItemUsage(bslayer);
+            frmStockItemUsage frm = ActivatorUtilities.CreateInstance<frmStockItemUsage>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -384,7 +350,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnImageList_Click(object sender, EventArgs e)
         {
-            frmImageList frm = new frmImageList(bslayer, false);
+            frmImageList frm = ActivatorUtilities.CreateInstance<frmImageList>(sp, false);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -392,7 +358,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionAnalysis_Click(object sender, EventArgs e)
         {
-            frmSessionAnalysis frm = new frmSessionAnalysis(bslayer);
+            frmSessionAnalysis frm = ActivatorUtilities.CreateInstance<frmSessionAnalysis>(sp);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -401,7 +367,7 @@ namespace DTRMSimpleBackOffice
         private void btnSettings_Click(object sender, EventArgs e)
         {
             //frmConfig frm = new frmConfig(bslayer);
-            frmConfig frm = ServiceHelper.GetService<frmConfig>();
+            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(sp); 
             frm.Show();
         }
 
@@ -548,7 +514,7 @@ namespace DTRMSimpleBackOffice
             //frmKassaCalculator frm = new frmKassaCalculator();
             //frm.MdiParent = this;
             //frm.Show();
-            var frm = ServiceHelper.GetService<frmKassaCalculator>();
+            var frm = ActivatorUtilities.CreateInstance<frmKassaCalculator>(sp);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -562,7 +528,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnQuickReports_Click(object sender, EventArgs e)
         {
-            frmSessionReportsQuick frm = new frmSessionReportsQuick(bslayer);
+            frmSessionReportsQuick frm = new frmSessionReportsQuick();
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -570,14 +536,14 @@ namespace DTRMSimpleBackOffice
 
         private void btnOrderPad_Click(object sender, EventArgs e)
         {
-            if (!bslayer.IsMenuExist(bslayer.config.ActiveMenuIID))
+            if (!bslayer.IsMenuExist(config.ActiveMenuIID))
             {
                 MessageBox.Show("Create and/or Select Default Menu");
                 return;
             }
 
 
-            trmOrderPadMain frm = new trmOrderPadMain(bslayer, null, true);
+            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(sp, null, true);
             frm.Text = "Order Pad";
             frm.ControlBox = true;
             frm.MinimizeBox = true;

@@ -30,13 +30,8 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDistributionList));
             dgv = new System.Windows.Forms.DataGridView();
-            iIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            globalTypeNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ShortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            parentMenuIIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            displayOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            PrinterNetworkName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            catalogNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            distributionViewBindingSource = new System.Windows.Forms.BindingSource(components);
+            distributionBindingSource = new System.Windows.Forms.BindingSource(components);
             globalTypeViewBindingSource = new System.Windows.Forms.BindingSource(components);
             btnSave = new System.Windows.Forms.Button();
             btnClose = new System.Windows.Forms.Button();
@@ -49,7 +44,14 @@ namespace DTRMSimpleBackOffice {
             cmdPrintList = new System.Windows.Forms.ToolStripButton();
             btnExportAsJson = new System.Windows.Forms.ToolStripButton();
             btnImportFromJson = new System.Windows.Forms.ToolStripButton();
+            iIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            PrinterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            PrinterNetworkName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            MenuName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)distributionViewBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)distributionBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)globalTypeViewBindingSource).BeginInit();
             panel1.SuspendLayout();
             barMain.SuspendLayout();
@@ -62,8 +64,8 @@ namespace DTRMSimpleBackOffice {
             dgv.AutoGenerateColumns = false;
             dgv.BackgroundColor = System.Drawing.Color.White;
             dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { iIDDataGridViewTextBoxColumn, globalTypeNameDataGridViewTextBoxColumn, ShortNameDataGridViewTextBoxColumn, parentMenuIIDDataGridViewTextBoxColumn, displayOrderDataGridViewTextBoxColumn, PrinterNetworkName, catalogNameDataGridViewTextBoxColumn });
-            dgv.DataSource = globalTypeViewBindingSource;
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { iIDDataGridViewTextBoxColumn, DistributionName, PrinterName, PrinterNetworkName, MenuName });
+            dgv.DataSource = distributionViewBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
@@ -81,65 +83,18 @@ namespace DTRMSimpleBackOffice {
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 25;
             dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(983, 507);
+            dgv.Size = new System.Drawing.Size(1147, 564);
             dgv.TabIndex = 0;
             dgv.CellDoubleClick += dgv_CellDoubleClick;
             dgv.CellPainting += dgv_CellPainting;
             // 
-            // iIDDataGridViewTextBoxColumn
+            // distributionViewBindingSource
             // 
-            iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
-            iIDDataGridViewTextBoxColumn.HeaderText = "IID";
-            iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
-            iIDDataGridViewTextBoxColumn.ReadOnly = true;
-            iIDDataGridViewTextBoxColumn.Visible = false;
+            distributionViewBindingSource.DataSource = typeof(DistributionView);
             // 
-            // globalTypeNameDataGridViewTextBoxColumn
+            // distributionBindingSource
             // 
-            globalTypeNameDataGridViewTextBoxColumn.DataPropertyName = "DistributionName";
-            globalTypeNameDataGridViewTextBoxColumn.HeaderText = "Distribution Type";
-            globalTypeNameDataGridViewTextBoxColumn.Name = "globalTypeNameDataGridViewTextBoxColumn";
-            globalTypeNameDataGridViewTextBoxColumn.ReadOnly = true;
-            globalTypeNameDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // ShortNameDataGridViewTextBoxColumn
-            // 
-            ShortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
-            ShortNameDataGridViewTextBoxColumn.HeaderText = "Short Name";
-            ShortNameDataGridViewTextBoxColumn.Name = "ShortNameDataGridViewTextBoxColumn";
-            ShortNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // parentMenuIIDDataGridViewTextBoxColumn
-            // 
-            parentMenuIIDDataGridViewTextBoxColumn.DataPropertyName = "ParentMenuIID";
-            parentMenuIIDDataGridViewTextBoxColumn.HeaderText = "ParentMenuIID";
-            parentMenuIIDDataGridViewTextBoxColumn.Name = "parentMenuIIDDataGridViewTextBoxColumn";
-            parentMenuIIDDataGridViewTextBoxColumn.ReadOnly = true;
-            parentMenuIIDDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // displayOrderDataGridViewTextBoxColumn
-            // 
-            displayOrderDataGridViewTextBoxColumn.DataPropertyName = "DisplayOrder";
-            displayOrderDataGridViewTextBoxColumn.HeaderText = "DisplayOrder";
-            displayOrderDataGridViewTextBoxColumn.Name = "displayOrderDataGridViewTextBoxColumn";
-            displayOrderDataGridViewTextBoxColumn.ReadOnly = true;
-            displayOrderDataGridViewTextBoxColumn.Visible = false;
-            // 
-            // PrinterNetworkName
-            // 
-            PrinterNetworkName.DataPropertyName = "PrinterNetworkName";
-            PrinterNetworkName.HeaderText = "Printer Name";
-            PrinterNetworkName.Name = "PrinterNetworkName";
-            PrinterNetworkName.ReadOnly = true;
-            PrinterNetworkName.Width = 250;
-            // 
-            // catalogNameDataGridViewTextBoxColumn
-            // 
-            catalogNameDataGridViewTextBoxColumn.DataPropertyName = "MenuName";
-            catalogNameDataGridViewTextBoxColumn.HeaderText = "MenuName";
-            catalogNameDataGridViewTextBoxColumn.Name = "catalogNameDataGridViewTextBoxColumn";
-            catalogNameDataGridViewTextBoxColumn.ReadOnly = true;
-            catalogNameDataGridViewTextBoxColumn.Width = 250;
+            distributionBindingSource.DataSource = typeof(POSLayer.Models.Distribution);
             // 
             // globalTypeViewBindingSource
             // 
@@ -150,7 +105,7 @@ namespace DTRMSimpleBackOffice {
             btnSave.Dock = System.Windows.Forms.DockStyle.Right;
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            btnSave.Location = new System.Drawing.Point(825, 12);
+            btnSave.Location = new System.Drawing.Point(989, 12);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSave.Name = "btnSave";
             btnSave.Size = new System.Drawing.Size(146, 57);
@@ -166,7 +121,7 @@ namespace DTRMSimpleBackOffice {
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            btnClose.Location = new System.Drawing.Point(679, 12);
+            btnClose.Location = new System.Drawing.Point(843, 12);
             btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnClose.Name = "btnClose";
             btnClose.Size = new System.Drawing.Size(146, 57);
@@ -180,11 +135,11 @@ namespace DTRMSimpleBackOffice {
             panel1.Controls.Add(btnClose);
             panel1.Controls.Add(btnSave);
             panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            panel1.Location = new System.Drawing.Point(0, 561);
+            panel1.Location = new System.Drawing.Point(0, 618);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
-            panel1.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
-            panel1.Size = new System.Drawing.Size(983, 81);
+            panel1.Padding = new System.Windows.Forms.Padding(12);
+            panel1.Size = new System.Drawing.Size(1147, 81);
             panel1.TabIndex = 44;
             // 
             // barMain
@@ -192,7 +147,7 @@ namespace DTRMSimpleBackOffice {
             barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete, cmdReload, cmdPrintList, btnExportAsJson, btnImportFromJson });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(983, 54);
+            barMain.Size = new System.Drawing.Size(1147, 54);
             barMain.TabIndex = 45;
             barMain.Text = "toolStrip1";
             // 
@@ -273,11 +228,51 @@ namespace DTRMSimpleBackOffice {
             btnImportFromJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             btnImportFromJson.Click += btnImportFromJson_Click;
             // 
+            // iIDDataGridViewTextBoxColumn
+            // 
+            iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
+            iIDDataGridViewTextBoxColumn.HeaderText = "IID";
+            iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
+            iIDDataGridViewTextBoxColumn.ReadOnly = true;
+            iIDDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // DistributionName
+            // 
+            DistributionName.DataPropertyName = "DistributionName";
+            DistributionName.HeaderText = "Name";
+            DistributionName.Name = "DistributionName";
+            DistributionName.ReadOnly = true;
+            DistributionName.Width = 200;
+            // 
+            // PrinterName
+            // 
+            PrinterName.DataPropertyName = "PrinterName";
+            PrinterName.HeaderText = "PrinterName";
+            PrinterName.Name = "PrinterName";
+            PrinterName.ReadOnly = true;
+            PrinterName.Width = 200;
+            // 
+            // PrinterNetworkName
+            // 
+            PrinterNetworkName.DataPropertyName = "PrinterNetworkName";
+            PrinterNetworkName.HeaderText = "PrinterNetworkName";
+            PrinterNetworkName.Name = "PrinterNetworkName";
+            PrinterNetworkName.ReadOnly = true;
+            PrinterNetworkName.Width = 350;
+            // 
+            // MenuName
+            // 
+            MenuName.DataPropertyName = "MenuName";
+            MenuName.HeaderText = "MenuName";
+            MenuName.Name = "MenuName";
+            MenuName.ReadOnly = true;
+            MenuName.Width = 250;
+            // 
             // frmDistributionList
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(983, 642);
+            ClientSize = new System.Drawing.Size(1147, 699);
             Controls.Add(dgv);
             Controls.Add(barMain);
             Controls.Add(panel1);
@@ -289,6 +284,8 @@ namespace DTRMSimpleBackOffice {
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += frmDistributionList_Load;
             ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            ((System.ComponentModel.ISupportInitialize)distributionViewBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)distributionBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)globalTypeViewBindingSource).EndInit();
             panel1.ResumeLayout(false);
             barMain.ResumeLayout(false);
@@ -305,13 +302,6 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.BindingSource globalTypeViewBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn iIDDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn globalTypeNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn parentMenuIIDDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn displayOrderDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PrinterNetworkName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn catalogNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ShortNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripButton cmdAdd;
         private System.Windows.Forms.ToolStripButton cmdEdit;
         private System.Windows.Forms.ToolStripButton cmdDelete;
@@ -320,5 +310,12 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStrip barMain;
         private System.Windows.Forms.ToolStripButton btnExportAsJson;
         private System.Windows.Forms.ToolStripButton btnImportFromJson;
+        private System.Windows.Forms.BindingSource distributionViewBindingSource;
+        private System.Windows.Forms.BindingSource distributionBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DistributionName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PrinterName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PrinterNetworkName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MenuName;
     }
 }

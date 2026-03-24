@@ -11,6 +11,7 @@ using PosLibrary;
 
 namespace DTRMNS {
     public partial class frmSubTableSelector : Form{
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private string rootTableIID;
         private GenericEventHandler ButtonClickHandler;
@@ -19,8 +20,9 @@ namespace DTRMNS {
 
         private TableButton sourceMergeTable;
 
-        public frmSubTableSelector(DTRMSimpleBusiness bslayer, string rootTableIID, GenericEventHandler ButtonClickHandler) {
+        public frmSubTableSelector(PosConfig configAsService, DTRMSimpleBusiness bslayer, string rootTableIID, GenericEventHandler ButtonClickHandler) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.rootTableIID = rootTableIID;
             this.ButtonClickHandler = ButtonClickHandler;
@@ -144,12 +146,12 @@ namespace DTRMNS {
             if (chkPrintTableOrder.Checked) {
                 TableButton tableButton = (TableButton)sender;
                 Table table =await bslayer.BarrowTable(tableButton.IID);
-                if (table.AttachedOrder != null && string.IsNullOrEmpty(bslayer.config.DTClientLocalReceiptPrinterIID)) { 
+                if (table.AttachedOrder != null && string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID)) { 
                         bslayer.PrintEntireOrder(table.AttachedOrder, true, false, 1,
-                            bslayer.config.DTClientLocalReceiptPrinterIID);
-                        if (bslayer.config.Force_Receipt_Printer_To_Cut)
+                            config.DTClientLocalReceiptPrinterIID);
+                        if (config.Force_Receipt_Printer_To_Cut)
                             DRShell.SendCutCommandToUSBPrinter(
-                                bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
+                                bslayer.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                     
                 }
             }
@@ -157,9 +159,7 @@ namespace DTRMNS {
             if (chkChangeTableName.Checked) {
                 TableButton tableButton = (TableButton) sender;
                 Table table = await bslayer.GetTable(tableButton.IID);
-                //if (string.IsNullOrEmpty(table.ParentTableIID))
-                //    return;
-                //else {
+
                     trmInput frm = new trmInput(tableButton.Text);
                     if (frm.ShowDialog() == DialogResult.OK) {
                         table.TableName = frm.input;
@@ -167,7 +167,6 @@ namespace DTRMNS {
                         LoadTables();
                         chkChangeTableName.Checked = false;
                     }
-                //}
             }
             else {
                 this.Close();
@@ -187,12 +186,12 @@ namespace DTRMNS {
 
         private void btnPrintAllTables_Click(object sender, EventArgs e) {
             for (int i = 0; i < tablelist.Count; i++) {
-                if (string.IsNullOrEmpty(bslayer.config.DTClientLocalReceiptPrinterIID)) {
+                if (string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID)) {
                     bslayer.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1,
-                        bslayer.config.DTClientLocalReceiptPrinterIID);
-                    if (bslayer.config.Force_Receipt_Printer_To_Cut)
+                        config.DTClientLocalReceiptPrinterIID);
+                    if (config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                            bslayer.GetPrinterForClient(bslayer.config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
+                            bslayer.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }

@@ -41,7 +41,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // entityBindingSource
             // 
-            this.entityBindingSource.DataSource = typeof(Entity);
+            this.entityBindingSource.DataSource = typeof(Category);
             // 
             // dgvEntity
             // 

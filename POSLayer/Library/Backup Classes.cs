@@ -54,17 +54,17 @@ public class DatabaseBackup
     public List<User> userList { get; set; }
 
     //Printer List
-    public List<ApplicationPrinter> printerList { get; set; }
+    public List<Printer> printerList { get; set; }
 
     //Global Settings
-    public POSLayer.Models.Luv luv { get; set; }
+    public Shop shop { get; set; }
     public SessionData currentSession { get; set; }
 
     //Table Layout
     public List<TableGroup> tableGroupList { get; set; }
     public List<Table> tableList { get; set; }
 
-    public List<FoodMenu> menuList { get; set; }
+    public List<TheMenu> menuList { get; set; }
 
     public StockManager stockManager { get; set; }                  
 
@@ -92,10 +92,10 @@ public class DatabaseBackup
     {
         customerList = new List<Customer>();
         userList = new List<User>();
-        printerList = new List<ApplicationPrinter>();
+        printerList = new List<Printer>();
         tableGroupList = new List<TableGroup>();
         tableList = new List<Table>();
-        menuList = new List<FoodMenu>();
+        menuList = new List<TheMenu>();
 
         orderList = new List<Order>();
         xorderList = new List<XOrder>();
@@ -122,7 +122,7 @@ public struct DatabaseBackupOptions
     public bool includeMenus { get; set; }
     public bool includeStock { get; set; }
 
-    public bool includeLuv { get; set; }
+    public bool includeShop { get; set; }
     public bool includeCurrentSession { get; set; }
     public bool includeOrders { get; set; }
     public bool includeXOrders { get; set; }
@@ -133,14 +133,14 @@ public struct DatabaseBackupOptions
     public DatabaseBackupOptions Reset()
     {
         includeCustomers = includeUsers = includePrinters = includeTables = includeMenus = includeStock =
-            includeLuv = includeCurrentSession = includeOrders = includeXOrders =
+            includeShop = includeCurrentSession = includeOrders = includeXOrders =
             includeKitchenOrders = includeDebugInformation = includeImages = false;
         return this;
     }
     public void ResetAll()
     {
         includeCustomers = includeUsers = includePrinters = includeTables = includeMenus = includeStock =
-            includeLuv = includeCurrentSession = includeOrders = includeXOrders =
+            includeShop = includeCurrentSession = includeOrders = includeXOrders =
             includeKitchenOrders = includeDebugInformation = includeImages = false;
     }
 }

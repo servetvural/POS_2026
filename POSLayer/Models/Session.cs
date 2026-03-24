@@ -5,7 +5,7 @@ namespace POSLayer.Models;
 
 public partial class Session      : BaseClass
 {
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Now;
 
     public DateTime? EndDate { get; set; }
 

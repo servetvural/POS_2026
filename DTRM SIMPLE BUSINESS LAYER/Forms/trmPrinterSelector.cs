@@ -8,7 +8,7 @@ using POSLayer.Models;
 namespace DTRMNS {
    public partial class trmPrinterSelector : Form {
       private DTRMSimpleBusiness bslayer;
-      public ApplicationPrinter SelectedPrinter;
+      public Printer SelectedPrinter;
       private PrinterTypes PrinterType;
 
       public trmPrinterSelector() {

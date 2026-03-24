@@ -67,7 +67,7 @@ namespace DTRMSimpleBackOffice
                 lblInfo.Text = "";
                 btnAllSessionTotal.Text = "";
 
-                string sessionIID = bslayer.GetCurrentSessionIID();
+                string sessionIID = bslayer.shop.CurrentSessionIID;
                 try
                 {
                     DataTable dt = bslayer.GetDataTable("Select * from SessionSum where IID <> '" + sessionIID + "' order by StartDate desc");

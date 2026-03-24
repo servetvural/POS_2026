@@ -105,7 +105,7 @@ namespace DTRMNS {
                     break;
                 case 8:
                     //Cancel
-                    koi.ItemText = bslayer.GetJustEntityButton(koi.EntityButtonIID).Result.EntityButtonName;
+                    koi.ItemText = bslayer.GetJustEntityButton(koi.EntityButtonIID).Result.Name;
                     koi.Modified = ModificationFlag.None;
                     koi.ModifiedQuantity = 0;
                     dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText;

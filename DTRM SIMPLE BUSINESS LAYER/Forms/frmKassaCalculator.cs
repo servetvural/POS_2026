@@ -1,19 +1,32 @@
-﻿using PosLibrary;
-using DTRMNS.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using DTRMNS.Forms;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualBasic;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
+using PosLibrary;
 
 namespace DTRMNS {
     public partial class frmKassaCalculator : Form {
+        readonly IServiceProvider sp;
+        readonly IRepository<User> repoUser;
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
+
+
+
         private BindingList<StaffIncome> staffIncomes = new BindingList<StaffIncome>();
         private BindingList<Expense> expenses= new BindingList<Expense>();
 
@@ -21,36 +34,61 @@ namespace DTRMNS {
         private double stepOneTotal;
 
         bool blnTerminate = false;
-        public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
+        public frmKassaCalculator(IServiceProvider _sp, DTRMSimpleBusiness bslayer, PosConfig configAsService, IRepository<User> _repoUser) {
             InitializeComponent();
-            if (!UF.IsConfigFileExist()) {
-                if (!AskForConfig(null)) {
+            sp = _sp;
+            config = configAsService;
+            repoUser = _repoUser;
 
-                    Close();
-                    blnTerminate = true;
-                    Application.Exit();
+            if (config.IsValid())
+            {
+                LoginUser();
+            }    else
+            {
+                if (AskForConfig())
+                {
+                    Environment.Exit(0);
                 }
             }
+
             this.bslayer = bslayer;
-            this.bslayer.CustomInitialize(UF.GetConfig());
-
-
-            frmPassword frmpswd = new frmPassword(bslayer,"");
-            if (frmpswd.ShowDialog() == DialogResult.OK) {
-                if (!bslayer.IsLoginSuccess(frmpswd.Password).Result)
-                    blnTerminate = true;
-            } else {
-                blnTerminate = true; }
-
         }
-        private bool AskForConfig(DTRMSimpleBusiness testbslayer) {
-            frmConfig frm = new frmConfig(testbslayer);
-            if (frm.ShowDialog() == DialogResult.OK) {                 
-                bslayer.CustomInitialize(UF.GetConfig());
+
+        async Task<bool> LoginUser()
+        {
+            if (await repoUser.IsDatabaseExist())
+            {
+                frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(sp, "Database : " + config.Database_Instance);
+                if (frmpswd.ShowDialog() == DialogResult.OK)
+                {
+                    User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
+                    if (user == null)
+                    {
+                        return false; 
+                    }      else
+                    {
+                        return true;
+                    }
+                } else
+                {
+                    MessageBox.Show("Failed to Login");
+                    return false;
+                }
+            } else 
+                return false;
+        }
+
+        private bool AskForConfig() {
+            frmConfig frm = ActivatorUtilities.CreateInstance < frmConfig>(sp);
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                MessageBox.Show("Saved Restart Application");
                 return true;
             } else
+            {
+                MessageBox.Show("Failed Restart Application");
                 return false;
-
+            }
         }
 
         //public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
@@ -240,7 +278,7 @@ namespace DTRMNS {
                     report.Add("drawline");
                 }
 
-                bslayer.PrintKassaReport(report, fsp.SelectedApplicationPrinter, 1);
+                bslayer.PrintKassaReport(report, fsp.SelectedPrinter, 1);
             }
         }
         private void cmdClose_Click(object sender, EventArgs e) {

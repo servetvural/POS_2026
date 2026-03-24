@@ -95,7 +95,7 @@ public partial class Bonus : BaseClass
         vals[20] = Barrier20;
     }
 
-    public int GetPassedBarrierNumber(float ciro)
+    public int GetPassedBarrierNumber(double ciro)
     {
         for (int i = 1; i < vals.Length; i++)
         {
@@ -104,7 +104,7 @@ public partial class Bonus : BaseClass
         }
         return 20;
     }
-    public int GetPassedBarrierValue(float ciro)
+    public int GetPassedBarrierValue(double ciro)
     {
         for (int i = 1; i < vals.Length; i++)
         {
@@ -113,7 +113,7 @@ public partial class Bonus : BaseClass
         }
         return (int)ciro;
     }
-    public int GetNextBarrierNumber(float ciro)
+    public int GetNextBarrierNumber(double ciro)
     {
         for (int i = 1; i < vals.Length; i++)
         {
@@ -122,7 +122,7 @@ public partial class Bonus : BaseClass
         }
         return 20;
     }
-    public int GetNextBarrierValue(float ciro)
+    public int GetNextBarrierValue(double ciro)
     {
         for (int i = 1; i < vals.Length; i++)
         {
@@ -132,7 +132,7 @@ public partial class Bonus : BaseClass
         return (int)ciro;
     }
 
-    public BonusStatus GetBonusStatus(float ciro)
+    public BonusStatus GetBonusStatus(double ciro)
     {
         for (int i = 1; i < vals.Length; i++)
         {

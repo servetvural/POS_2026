@@ -1,5 +1,8 @@
-﻿using System.Data;
+﻿using System.ComponentModel;
+using System.Data;
 using System.Drawing;
+using System.Runtime.CompilerServices;
+
 using POSLayer.Models;
 
 namespace POSLayer.Library;
@@ -206,7 +209,7 @@ public static class UF
 
 
 
-    public static double GetRelatedPrice(OrderItem oi, Entity en, EntityButton eb, Order order)
+    public static double GetRelatedPrice(OrderItem oi, Category en, CategoryItem eb, Order order)
     {
         return eb.GetPrice(order.OrderType);
     }
@@ -443,6 +446,10 @@ public static class UF
     public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
     {
         return source == null || !source.Any();
+    }
+    //var bindingList = new BindingList<POSLayer.Models.TheMenu>(await bslayer.GetMenuList());
+    public static BindingList<T> ToBindingList<T>(this IList<T>? source) {
+        return new BindingList<T>(source);
     }
 
     #region DRNumeric functions

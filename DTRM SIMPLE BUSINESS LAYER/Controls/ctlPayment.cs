@@ -3,11 +3,15 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 
-namespace DTRMNS {
+namespace DTRMNS
+{
     /// <summary>
     /// Summary description for frmPaymentMethods.
     /// </summary>
-    public class ctlPayment : UserControl {
+    public class ctlPayment : UserControl
+    {
+        PosConfig config;
+
         private Button btnClose;
         private Button btnCash;
         private Button btnOnline;
@@ -27,13 +31,16 @@ namespace DTRMNS {
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        public ctlPayment() {
+        public ctlPayment(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        {
             InitializeComponent();
-        }
-        public ctlPayment(DTRMSimpleBusiness bslayer, GenericFunctionCall CloseFunction, RemoteCompleteAttachedOrder CompleteAttachedOrder,
-           int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive) {
-            InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
+        }
+        public ctlPayment(GenericFunctionCall CloseFunction, RemoteCompleteAttachedOrder CompleteAttachedOrder,
+           int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive)
+        {
+            InitializeComponent();
             this.CloseFunction = CloseFunction;
             this.CompleteAttachedOrder = CompleteAttachedOrder;
             this.NumberOfCopy = NumberOfCopy;
@@ -45,9 +52,12 @@ namespace DTRMNS {
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
-        protected override void Dispose(bool disposing) {
-            if (disposing) {
-                if (components != null) {
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
                     components.Dispose();
                 }
             }
@@ -59,7 +69,8 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ctlPayment));
             this.btnCard = new System.Windows.Forms.Button();
             this.btnOnline = new System.Windows.Forms.Button();
@@ -166,19 +177,23 @@ namespace DTRMNS {
         }
         #endregion
 
-        private void btnClose_Click(object sender, System.EventArgs e) {
+        private void btnClose_Click(object sender, System.EventArgs e)
+        {
             CloseFunction();
         }
 
-        private void btnOnline_Click(object sender, System.EventArgs e) {
+        private void btnOnline_Click(object sender, System.EventArgs e)
+        {
             bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
             CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
             CloseFunction();
         }
 
-        private void btnCard_Click(object sender, System.EventArgs e) {
+        private void btnCard_Click(object sender, System.EventArgs e)
+        {
             frmConfirmCardPayment frm = new frmConfirmCardPayment();
-            if (frm.ShowDialog() == DialogResult.OK) {
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
                 //PrintFinalPayment(PaymentMethods.Card, true);
                 bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
                 CompleteAttachedOrder(1, true, true, true);
@@ -186,19 +201,21 @@ namespace DTRMNS {
             }
 
 
-            
+
         }
 
-        private void btnCash_Click(object sender, System.EventArgs e) {
+        private void btnCash_Click(object sender, System.EventArgs e)
+        {
             bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
             CompleteAttachedOrder(1, blnArchive, true, blnEnforceDeliveryArchive);
             CloseFunction();
         }
 
-        private void frmPaymentMethods_Load(object sender, EventArgs e) {
-            btnCash.Visible = (bslayer.config.Payments_Can_Be_Made_By_Cash || bslayer.config.Payments_Can_Be_Made_By_Cash_And_Print);
-            btnCard.Visible = (bslayer.config.Payments_Can_Be_Made_By_Card || bslayer.config.Payments_Can_Be_Made_By_Card_And_Print);
-            btnOnline.Visible = (bslayer.config.Payments_Can_Be_Made_Online || bslayer.config.Payments_Can_Be_Made_Online_And_Print);
+        private void frmPaymentMethods_Load(object sender, EventArgs e)
+        {
+            btnCash.Visible = (config.Payments_Can_Be_Made_By_Cash || config.Payments_Can_Be_Made_By_Cash_And_Print);
+            btnCard.Visible = (config.Payments_Can_Be_Made_By_Card || config.Payments_Can_Be_Made_By_Card_And_Print);
+            btnOnline.Visible = (config.Payments_Can_Be_Made_Online || config.Payments_Can_Be_Made_Online_And_Print);
         }
 
 

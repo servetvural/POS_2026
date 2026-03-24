@@ -1,4 +1,9 @@
-﻿using POSLayer.Models;
+﻿using DTRMNS.Controls;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
+using POSLayer.Models;
 using POSLayer.Views;
 
 namespace DTRMSimpleBackOffice {
@@ -72,7 +77,7 @@ namespace DTRMSimpleBackOffice {
             this.tmrSeconds = new System.Windows.Forms.Timer(this.components);
             this.pnlInformation = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
-            this.pnlBonus = new DTRMNS.Controls.ctlBonus();
+            this.pnlBonus = ActivatorUtilities.CreateInstance <ctlBonus>(ServiceHelper.Services);
             this.barMain = new System.Windows.Forms.ToolStrip();
             this.cmdInterval = new System.Windows.Forms.ToolStripDropDownButton();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();

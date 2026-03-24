@@ -9,6 +9,7 @@ using POSLayer.Models;
 using POSLayer.Library;
 using POSWinFormLayer;
 using System.Threading.Tasks;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
     /// <summary>
@@ -16,10 +17,11 @@ namespace DTRMSimpleBackOffice {
     /// </summary>
     public class FrmEntityButtonsEditor : Form {
 
+        PosConfig config;
         private DTRMNS.DTRMSimpleBusiness bslayer;
 
-        public Entity entity;
-        public EntityButton entityButton;
+        public Category entity;
+        public CategoryItem entityButton;
 
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnUpdateButtonDetails;
@@ -102,24 +104,26 @@ namespace DTRMSimpleBackOffice {
         private Label lblImageSize;
         private GenericImage gim;
 
-        public FrmEntityButtonsEditor() {
+        //public FrmEntityButtonsEditor() {
+        //    InitializeComponent();
+        //}
+        public FrmEntityButtonsEditor(PosConfig configAsService,  DTRMSimpleBusiness bslayer,  CategoryItem entityButton) {
             InitializeComponent();
-        }
-        public FrmEntityButtonsEditor(DTRMNS.DTRMSimpleBusiness bslayer,  EntityButton entityButton) {
-            InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
-            this.entity = bslayer.GetJustEntity(entityButton.ParentEntityIID).Result;
+            this.entity = bslayer.GetJustEntity(entityButton.CategoryIID).Result;
             this.entityButton = entityButton;
 
-            this.Text = this.Text + "  -- " + entityButton.EntityButtonName;
+            this.Text = this.Text + "  -- " + entityButton.Name;
         }
-        public FrmEntityButtonsEditor(DTRMNS.DTRMSimpleBusiness bslayer, Entity entity, EntityButton entityButton) {
+        public FrmEntityButtonsEditor(PosConfig configAsService, DTRMSimpleBusiness bslayer, Category entity, CategoryItem entityButton) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.entity = entity;
             this.entityButton = entityButton;
 
-            this.Text = this.Text + "  -- " + entityButton.EntityButtonName;
+            this.Text = this.Text + "  -- " + entityButton.Name;
         }
 
         /// <summary>
@@ -1338,10 +1342,10 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void LoadDistributions() {
-            if (entity.ParentMenuIID == null || entity.ParentMenuIID == "")
-                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(bslayer.config.ActiveMenuIID);
+            if (entity.MenuIID == null || entity.MenuIID == "")
+                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(config.ActiveMenuIID);
             else
-                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(entity.ParentMenuIID);
+                cmbDistributions.DataSource = bslayer.GetAllDistributionsForMenu(entity.MenuIID);
 
 
             //cmbDistributions.DataSource = bslayer.GetAllDistributions(bslayer.config.ActiveMenuIID);
@@ -1354,17 +1358,17 @@ namespace DTRMSimpleBackOffice {
                     //parentEntityButton.SyncronizePriceItems();
                 CultureInfo ci = bslayer.GetUICulture(); 
 
-                txtEntityButtonName.Text = entityButton.EntityButtonName;
-                btnButtonColor.BackColor = Color.FromArgb(entityButton.ButtonColor);
-                btnForeColor.BackColor = Color.FromArgb(entityButton.ForeColor);
+                txtEntityButtonName.Text = entityButton.Name;
+                btnButtonColor.BackColor = Color.FromArgb(entityButton.BgColor);
+                btnForeColor.BackColor = Color.FromArgb(entityButton.FgColor);
                 cmbButtonType.SelectedIndex = (int)entityButton.ButtonType;
 
 
 
-                txtDirectSaleTaxRate.Value = entityButton.DirectSaleTaxPercent; //.ToString("f2",CultureInfo.CurrentUICulture);
-                txtInHouseTaxRate.Value = entityButton.InHouseTaxPercent; //.ToString("f2", CultureInfo.CurrentUICulture);
-                txtTakeAwayTaxRate.Value = entityButton.TakeAwayTaxPercent; //.ToString("f2", CultureInfo.CurrentUICulture);
-                txtDeliveryTaxRate.Value = entityButton.DeliveryTaxPercent; //.ToString("f2", CultureInfo.CurrentUICulture);
+                txtDirectSaleTaxRate.Value = entityButton.SaleTax; //.ToString("f2",CultureInfo.CurrentUICulture);
+                txtInHouseTaxRate.Value = entityButton.SitinTax; //.ToString("f2", CultureInfo.CurrentUICulture);
+                txtTakeAwayTaxRate.Value = entityButton.TaTax; //.ToString("f2", CultureInfo.CurrentUICulture);
+                txtDeliveryTaxRate.Value = entityButton.DTax; //.ToString("f2", CultureInfo.CurrentUICulture);
 
                 switch (entityButton.PadFlag) {
                     case PadFlags.EBOnly:
@@ -1390,10 +1394,10 @@ namespace DTRMSimpleBackOffice {
                 try {
                     
                     txtDirectSalePrice.CustomUICulture = txtInHousePrice.CustomUICulture = txtTakeAwayPrice.CustomUICulture= txtDeliveryPrice.CustomUICulture =  bslayer.GetUICulture().ToString();
-                    txtDirectSalePrice.Value = entityButton.DirectSalePrice; 
-                    txtInHousePrice.Value = entityButton.InHousePrice; 
-                    txtTakeAwayPrice.Value = entityButton.TakeAwayPrice; 
-                    txtDeliveryPrice.Value = entityButton.DeliveryPrice;
+                    txtDirectSalePrice.Value = entityButton.SalePrice; 
+                    txtInHousePrice.Value = entityButton.TaTax; 
+                    txtTakeAwayPrice.Value = entityButton.TaPrice; 
+                    txtDeliveryPrice.Value = entityButton.DPrice;
 
                     string format = "c2";
                     if (entityButton.ButtonType == EntityButtonTypes.PercentAddition || entityButton.ButtonType == EntityButtonTypes.PercentDeduction) 
@@ -1419,13 +1423,13 @@ namespace DTRMSimpleBackOffice {
 
                 chkCompulsary.Checked = (entityButton.Compulsary == 1);
 
-                incWidth.Value = entityButton.ButtonWidth;
-                incHeight.Value = entityButton.ButtonHeight;
+                incWidth.Value = entityButton.Width;
+                incHeight.Value = entityButton.Height;
                // txtImageFile.Text = entityButton.ImageFileName;
                 chkWithImage.Checked = entityButton.WithImage;
 
                 btnFont.Text = entityButton.FFamily + "," + entityButton.FSize.ToString() + "," + entityButton.FStyle;
-                incDisplayOrder.Value = entityButton.DisplayOrder;
+                incDisplayOrder.Value = entityButton.dorder;
 
                 LoadGenericImage();
                 
@@ -1479,34 +1483,34 @@ namespace DTRMSimpleBackOffice {
 
 
         private async void btnUpdateButtonDetails_Click(object sender, System.EventArgs e) {
-            System.Globalization.CultureInfo ci = bslayer.GetCulture(bslayer.config.Terminal_Currency_Culture);
+            System.Globalization.CultureInfo ci = bslayer.GetCulture(config.Terminal_Currency_Culture);
             if (entityButton != null) {
 
                 entityButton.ButtonType = (EntityButtonTypes)cmbButtonType.SelectedIndex;
 
 
 
-                entityButton.DirectSalePrice = (float)txtDirectSalePrice.Value; // float.Parse(txtDirectSalePrice.Text, CultureInfo.CurrentUICulture); // AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
-                entityButton.InHousePrice = (float)txtInHousePrice.Value; // float.Parse(txtInHousePrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
-                entityButton.TakeAwayPrice = (float)txtTakeAwayPrice.Value; // float.Parse(txtTakeAwayPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); // AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
-                entityButton.DeliveryPrice = (float)txtDeliveryPrice.Value; // float.Parse(txtDeliveryPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
+                entityButton.SalePrice = (float)txtDirectSalePrice.Value; // float.Parse(txtDirectSalePrice.Text, CultureInfo.CurrentUICulture); // AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
+                entityButton.SitinPrice = (float)txtInHousePrice.Value; // float.Parse(txtInHousePrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
+                entityButton.TaPrice = (float)txtTakeAwayPrice.Value; // float.Parse(txtTakeAwayPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); // AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
+                entityButton.DPrice = (float)txtDeliveryPrice.Value; // float.Parse(txtDeliveryPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
 
 
-                entityButton.EntityButtonName = txtEntityButtonName.Text;
+                entityButton.Name = txtEntityButtonName.Text;
 
-                entityButton.ButtonColor = btnButtonColor.BackColor.ToArgb();
-                entityButton.ForeColor = btnForeColor.BackColor.ToArgb();
+                entityButton.BgColor = btnButtonColor.BackColor.ToArgb();
+                entityButton.FgColor = btnForeColor.BackColor.ToArgb();
 
                 //Availability
                 entityButton.AvailableFor = 0;
                 if (!chkAvailableAll.Checked) {
-                    entityButton.AvailableFor = (chkAvailableDirect.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Direct) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInHouse.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InHouse) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableTakeAway.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.TakeAwayB) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableDelivery.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Delivery) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInternetTakeAway.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetTakeAway) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableInternetDelivery.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetDelivery) : entityButton.AvailableFor);
-                    entityButton.AvailableFor = (chkAvailableNone.Checked ? POSLayer.Library.UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.NoSale) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableDirect.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Direct) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInHouse.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InHouse) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableTakeAway.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.TakeAwayB) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableDelivery.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.Delivery) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInternetTakeAway.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetTakeAway) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableInternetDelivery.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.InternetDelivery) : entityButton.AvailableFor);
+                    entityButton.AvailableFor = (chkAvailableNone.Checked ?UF.SetBit(entityButton.AvailableFor, (int)AvailabilityTypes.NoSale) : entityButton.AvailableFor);
 
                 }
                 if (chkCompulsary.Checked)
@@ -1514,10 +1518,10 @@ namespace DTRMSimpleBackOffice {
                 else
                     entityButton.Compulsary = 0;
 
-                entityButton.DirectSaleTaxPercent = (float)txtDirectSaleTaxRate.Value; // float.Parse(txtDirectSaleTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
-                entityButton.InHouseTaxPercent = (float)txtInHouseTaxRate.Value; // float.Parse(txtInHouseTaxRate.Text.Trim(), CultureInfo.CurrentUICulture);// , System.Globalization.NumberStyles.Any, ci);
-                entityButton.TakeAwayTaxPercent = (float)txtTakeAwayTaxRate.Value; // float.Parse(txtTakeAwayTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
-                entityButton.DeliveryTaxPercent = (float)txtDeliveryTaxRate.Value; // float.Parse(txtDeliveryTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
+                entityButton.SaleTax = (float)txtDirectSaleTaxRate.Value; // float.Parse(txtDirectSaleTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
+                entityButton.SitinTax = (float)txtInHouseTaxRate.Value; // float.Parse(txtInHouseTaxRate.Text.Trim(), CultureInfo.CurrentUICulture);// , System.Globalization.NumberStyles.Any, ci);
+                entityButton.TaTax = (float)txtTakeAwayTaxRate.Value; // float.Parse(txtTakeAwayTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
+                entityButton.DTax = (float)txtDeliveryTaxRate.Value; // float.Parse(txtDeliveryTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
 
                 switch (cmbPadFlag.SelectedIndex) {
                     case 0:
@@ -1536,15 +1540,15 @@ namespace DTRMSimpleBackOffice {
 
                 entityButton.DistributionIID = cmbDistributions.SelectedValue.ToString();
 
-                entityButton.ButtonWidth = incWidth.Value;
-                entityButton.ButtonHeight = incHeight.Value;
+                entityButton.Width = incWidth.Value;
+                entityButton.Height = incHeight.Value;
 
                 //entityButton.ImageFileName = txtImageFile.Text;
-                entityButton.DisplayOrder = (int)incDisplayOrder.Value;
+                entityButton.dorder = (int)incDisplayOrder.Value;
 
                 entityButton.WithImage = chkWithImage.Checked;
 
-                bslayer.SaveJustEntityButton(entityButton, entity.ParentMenuIID); // .ParentMenuIID); // bslayer.config.ActiveMenuIID);
+                bslayer.SaveJustEntityButton(entityButton); 
 
                 if (pBox.BackgroundImage != null) {
                     GenericImage gim = new GenericImage()
@@ -1722,8 +1726,8 @@ namespace DTRMSimpleBackOffice {
         }
 
         private async void btnSetTaxToDefault_Click(object sender, EventArgs e) {
-            POSLayer.Models.Luv luv =await bslayer.GetLuv();
-            txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = luv.DefaultTaxRate;
+           
+            txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = bslayer.shop.DefaultTaxRate;
         }
 
 

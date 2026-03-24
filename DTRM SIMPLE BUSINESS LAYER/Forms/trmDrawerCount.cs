@@ -2,17 +2,20 @@ using System;
 using System.Windows.Forms;
 
 using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class TrmDrawerCount : Form {
         private DTRMSimpleBusiness bslayer;
+
         private SessionData session;
         private bool OpenAsTool;
 
         public TrmDrawerCount(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             this.bslayer = bslayer;
-            this.session = bslayer.GetSessionDataDynamic(bslayer.luv.CurrentSessionIID).Result; 
+            this.session = bslayer.GetSessionDataDynamic(bslayer.shop.CurrentSessionIID).Result; 
         }
         public TrmDrawerCount(DTRMSimpleBusiness bslayer, bool OpenAsTool) {
             InitializeComponent();

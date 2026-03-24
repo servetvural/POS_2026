@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,8 +22,8 @@ namespace DTRMNS
         {
             InitializeComponent();
             this.bslayer = bslayer;
-            odSourceTable.AttachBusinessLayer(bslayer);
-            odTargetTable.AttachBusinessLayer(bslayer);
+            odSourceTable.AttachBusinessLayer();
+            odTargetTable.AttachBusinessLayer();
             this.SourceTable = SourceTable;
             rootTable = SourceTable;
 
@@ -381,12 +382,12 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     oiNew.Quantity = 1;
-                    oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement())
+                    if (!odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
                     await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
@@ -415,7 +416,7 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     if (oiNew.Quantity > 1)
                     {
                         frmNumericInput frm = new frmNumericInput();
@@ -430,16 +431,16 @@ namespace DTRMNS
                     } else
                         oiNew.Quantity = 1;
 
-                    oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
+                    if (!odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
                     try
                     {
-                        POSLayer.Models.OrderItem testItem = odSourceTable.OrderToDisplay.GetOrderItem(IID);
+                        OrderItem testItem = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault();
                         if (testItem != null)
                         {
                             if (testItem.Quantity == 0)
@@ -475,10 +476,10 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
-                    oiNew.ParentOrderIID = odTargetTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
                     odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
@@ -513,12 +514,12 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     oiNew.Quantity = 1;
-                    oiNew.ParentOrderIID = odSourceTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.GetOrderItem(IID).Decrement())
+                    if (!odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
                     await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
@@ -552,7 +553,7 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     if (oiNew.Quantity > 1)
                     {
                         frmNumericInput frm = new frmNumericInput();
@@ -567,16 +568,16 @@ namespace DTRMNS
                     } else
                         oiNew.Quantity = 1;
 
-                    oiNew.ParentOrderIID = odSourceTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
+                    if (!odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
                     try
                     {
-                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.GetOrderItem(IID);
+                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault();
                         if (testItem != null)
                         {
                             if (testItem.Quantity == 0)
@@ -613,10 +614,10 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.GetOrderItem(IID).Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
-                    oiNew.ParentOrderIID = odSourceTable.OrderToDisplay.IID;
+                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
                     odTargetTable.OrderToDisplay.DeleteOrderItem(IID);

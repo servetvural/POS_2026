@@ -4,12 +4,41 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
 namespace POSLayer.Library;
 
 
 [System.Serializable]
 public class PosConfig
 {
+
+
+    public PosConfig()
+    {
+       
+    }
+
+    public bool IsValid()
+    {
+
+        IRepository<Session> repoSession = ServiceHelper.GetService<IRepository<Session>>();
+        return true;
+    }
+
+    public string ConnectionString { 
+        get
+        {
+            return "Server=" + Database_Instance +
+                ";Database=" + Database_Name +
+                ";User Id=" + Database_User_Name +
+                ";Password=" + Database_Password +
+                ";TrustServerCertificate=" + TrustServerCertificate +
+                ";Encrypt=" + Encrypt + ";";
+        }
+    }
+
 
 
     #region 10.Connection Settings
@@ -25,7 +54,7 @@ public class PosConfig
 
 
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Database Name  exp:DTRMSimple , must be a valid name."), DisplayName("Name of Database")]
-    public string Database_Name { get; set; } = "DTRM";
+    public string Database_Name { get; set; } = "DTRM2";
 
     private string _Database_User_Name = "sa";
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("It must be a valid username to access the database."), PasswordPropertyText(true), DisplayName("Database Username")]
@@ -35,7 +64,11 @@ public class PosConfig
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("It must be the given password during installation"), PasswordPropertyText(true), DisplayName("Database Password")]
     public string Database_Password { get; set; } = string.Empty;
 
+    [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Set this to true"), DisplayName("Trust Server Certificate")]
+    public bool TrustServerCertificate { get; set; } = true;
 
+    [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Set this to true"), DisplayName("Encrypt")]
+    public bool Encrypt { get; set; } = true;
 
     [CategoryAttribute("10.Connection Settings"), DisplayName("What is currency culture in database"), DescriptionAttribute("Database Currency Culture as Text exp: en-GB, nl-NL, tr-TR ")]
     public string Database_Currency_Culture { get; set; } = "en-GB";

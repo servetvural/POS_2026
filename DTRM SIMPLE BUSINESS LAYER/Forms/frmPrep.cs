@@ -6,23 +6,26 @@ using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmPrep : Form {
+        PosConfig config;
+
         private DTRMSimpleBusiness bslayer;
         private KitchenOrder korder;
         public PrepDialogReturnTypes prepResult;
         public frmPrep() {
             InitializeComponent();
         }
-        public frmPrep(DTRMSimpleBusiness bslayer, KitchenOrder korder) {
+        public frmPrep(PosConfig configAsService, DTRMSimpleBusiness bslayer, KitchenOrder korder) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.korder = korder;
            
         }
         private void frmPrep_Load(object sender, EventArgs e) {
             LoadPrep();
-            btnHold.Visible = bslayer.config.Prep_Can_Hold;
-            btnCashAndOK.Visible = bslayer.config.Prep_Can_Hold_And_Cash;
-            btnCashPrintAndOK.Visible = bslayer.config.Prep_Can_Hold_Cash_And_Print;
+            btnHold.Visible = config.Prep_Can_Hold;
+            btnCashAndOK.Visible = config.Prep_Can_Hold_And_Cash;
+            btnCashPrintAndOK.Visible = config.Prep_Can_Hold_Cash_And_Print;
 
             this.Top = 0;
             this.Height = bslayer.maxHeight;
@@ -83,7 +86,7 @@ namespace DTRMNS {
                     bslayer.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }
 
-            if (blnOpenCashDrawer && bslayer.config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
+            if (blnOpenCashDrawer && config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
                 bslayer.OpenCashDrawer(false);
             this.Close();
         }

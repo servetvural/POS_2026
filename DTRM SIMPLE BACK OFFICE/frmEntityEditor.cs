@@ -3,24 +3,31 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DTRMNS;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmEntityEditor : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
-        public Entity en;
+        public Category en;
 
-        public frmEntityEditor() {
-            InitializeComponent();
-        }
+        //public frmEntityEditor() {
+        //    InitializeComponent();
+        //}
 
-        public frmEntityEditor(DTRMSimpleBusiness bslayer, Entity en) {
+        public frmEntityEditor(PosConfig configAsService, DTRMSimpleBusiness bslayer, Category en)
+        {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.en = en;
         }
@@ -29,33 +36,38 @@ namespace DTRMSimpleBackOffice {
             LoadEntity();
         }
 
-        private void LoadDistributions() {
-            if (en.ParentMenuIID == null || en.ParentMenuIID == "")
-                cmbDistribution.DataSource = bslayer.GetAllDistributionsForMenu(bslayer.config.ActiveMenuIID);
-            else 
-                cmbDistribution.DataSource = bslayer.GetAllDistributionsForMenu(en.ParentMenuIID);
+        private async void LoadDistributions() {
+
+            if (en.MenuIID == null || en.MenuIID == "")
+                cmbDistribution.DataSource =(await bslayer.GetAllDistributionsForMenu(config.ActiveMenuIID)).ToBindingList();
+            else
+                cmbDistribution.DataSource = (await bslayer.GetAllDistributionsForMenu(en.MenuIID)).ToBindingList();
+
         }
 
         private void LoadEntity() {
             if (en != null) {
-                txtEntityName.Text = en.EntityName;
-                btnEntityPanelBackColor.BackColor = Color.FromArgb(en.BackColour);
+                txtEntityName.Text = en.Name;
+                btnEntityPanelBackColor.BackColor = Color.FromArgb(en.BgColour);
                 try {
-                    btnEntityForeColour.BackColor = Color.FromArgb(en.ForeColour);
+                    btnEntityForeColour.BackColor = Color.FromArgb(en.FgColour);
                 }
                 catch { }
-                incWidth.Value = en.ButtonWidth;
-                incHeight.Value = en.ButtonHeight;
+                incWidth.Value = en.Width;
+                incHeight.Value = en.Height;
 
 
                 cmbEntityType.SelectedIndex = (int)en.EntityType;
-                try {
-                    cmbDistribution.SelectedValue = en.DistributionIID;
+                if (en.DistributionIID != null)
+                {
+                    try
+                    {
+                        cmbDistribution.SelectedValue = en.DistributionIID;
+                    } catch { }
                 }
-                catch { }
 
                 btnFont.Text = en.FFamily + "," + en.FSize.ToString() + "," + en.FStyle;
-                incDisplayOrder.Text = en.DisplayOrder.ToString();
+                incDisplayOrder.Text = en.dorder.ToString();
             }
         }
 
@@ -73,11 +85,11 @@ namespace DTRMSimpleBackOffice {
 
         private void btnSave_Click(object sender, EventArgs e) {
             if (en != null) {
-                en.EntityName = txtEntityName.Text;
-                en.BackColour = btnEntityPanelBackColor.BackColor.ToArgb();
-                en.ForeColour = btnEntityForeColour.BackColor.ToArgb();
-                en.ButtonWidth = incWidth.Value;
-                en.ButtonHeight = incHeight.Value;
+                en.Name = txtEntityName.Text;
+                en.BgColour = btnEntityPanelBackColor.BackColor.ToArgb();
+                en.FgColour = btnEntityForeColour.BackColor.ToArgb();
+                en.Width = incWidth.Value;
+                en.Height = incHeight.Value;
                 //en.TaxPercent = float.Parse(txtTaxPercent.Text, bslayer.GetDBCulture());
                 en.EntityType = (EntityTypes)cmbEntityType.SelectedIndex;
 
@@ -85,10 +97,9 @@ namespace DTRMSimpleBackOffice {
                     MessageBox.Show("Printable Category must be supplied!");
                     return;
                 }
-                en.DisplayOrder = (int)incDisplayOrder.Value;
+                en.dorder = (int)incDisplayOrder.Value;
 
-                en.DistributionIID = cmbDistribution.SelectedValue.ToString(); //((Distribution)cmbPrintableCategoy.SelectedItem).IID;
-                en.DistributionName = cmbDistribution.Text; //((Distribution)cmbPrintableCategoy.SelectedItem).DistributionName;
+                en.DistributionIID = cmbDistribution.SelectedValue.ToString(); 
                 bslayer.SaveEntityDB(en);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
@@ -111,11 +122,11 @@ namespace DTRMSimpleBackOffice {
         }
        
         private void SetTaxRate(float rate) {
-            foreach (EntityButton btn in en.Buttons) {
-                btn.DirectSaleTaxPercent = rate;
-                btn.InHouseTaxPercent = rate;
-                btn.TakeAwayTaxPercent = rate;
-                btn.DeliveryTaxPercent = rate;
+            foreach (CategoryItem btn in en.Items) {
+                btn.SaleTax = rate;
+                btn.SitinTax = rate;
+                btn.TaTax = rate;
+                btn.DTax = rate;
             }
         }
 
@@ -125,14 +136,14 @@ namespace DTRMSimpleBackOffice {
             cdlg.Color = ((Button)sender).BackColor;
             cdlg.ShowDialog();
             ((Button)sender).BackColor = cdlg.Color;
-            en.ForeColour = cdlg.Color.ToArgb();             
+            en.FgColour = cdlg.Color.ToArgb();             
         }
 
-        private void btnForceDistributionToAllButtons_Click(object sender, EventArgs e) {
+        private async void btnForceDistributionToAllButtons_Click(object sender, EventArgs e) {
             try {
                 string gtypeIID = cmbDistribution.SelectedValue.ToString(); //((Distribution)cmbPrintableCategoy.SelectedItem).IID;
                                                                                 //en.DistributionName = cmbPrintableCategoy.Text; //((Distribution)cmbPrintableCategoy.SelectedItem).DistributionName;
-                if (bslayer.RunQuery("Update EntityButton set DistributionIID = '" + gtypeIID + "' where parentEntityIID ='" + en.IID + "'")) {
+                if (await bslayer.RunQuery("Update EntityButton set DistributionIID = '" + gtypeIID + "' where parentEntityIID ='" + en.IID + "'")) {
                     MessageBox.Show("Done");
                 }
             } catch {
@@ -165,7 +176,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void btnNewDistribution_Click(object sender, EventArgs e) {
-            frmDistribution frm = new frmDistribution(bslayer, new Distribution());
+            frmDistribution frm = ActivatorUtilities.CreateInstance< frmDistribution>(ServiceHelper.Services, new Distribution());
             if (frm.ShowDialog() == DialogResult.OK) {
                 LoadDistributions();
             }

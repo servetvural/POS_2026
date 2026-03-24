@@ -12,6 +12,7 @@ using PosLibrary;
 
 namespace DTRMNS {
     public partial class frmStockItemUsage : Form {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         
         private Stack<UndoItem> undoList;
@@ -19,8 +20,9 @@ namespace DTRMNS {
         public frmStockItemUsage() {
             InitializeComponent();
         }
-        public frmStockItemUsage(DTRMSimpleBusiness bslayer) {
+        public frmStockItemUsage(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
             this.undoList = new Stack<UndoItem>();
         }
@@ -63,12 +65,12 @@ namespace DTRMNS {
                 if (fsp.ShowDialog() == DialogResult.OK) {
                     // bslayer.PrintStockUsage(fsp.SelectedPrinterIID, bslayer.GetDataTableFromGridVisible(dgv, true));
                     if (chkViewDetails.Checked)
-                        bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, DRUF.GetDataTableFromGridVisible(dgv, true,false),
+                        bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true,false),
                             "Stock Usage Report", bslayer.GetColumnPrintRatio(dgv),false);
                     else {
-                        int[] arrcols = new int[] { 3, 6, bslayer.config.GetFontMaximumCharacter(bslayer.config.ReportFontSize) - 21, 8 };
+                        int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 21, 8 };
                         List<int> cols = new List<int>(arrcols);
-                        bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, DRUF.GetDataTableFromGridVisible(dgv, true,false),
+                        bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true,false),
                            "Stock Usage Report",cols,false);
                     }
 
@@ -240,11 +242,11 @@ namespace DTRMNS {
         }
 
 
-        private void btnBoughtAll_Click(object sender, EventArgs e) {
+        private async void btnBoughtAll_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgv.Rows.Count; i++) {
                 int Qty = int.Parse(dgv.Rows[i].Cells["colOrderableQuantity"].Value.ToString());
                 string StockItemIID = dgv.Rows[i].Cells["colStockItemIID"].Value.ToString();
-                if (bslayer.BifileStockItem(StockItemIID, Qty)) {
+                if (await bslayer.BifileStockItem(StockItemIID, Qty)) {
                     undoList.Push(new UndoItem()
                     {
                         IID = StockItemIID,

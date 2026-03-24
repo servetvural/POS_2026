@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmKitchenSingleDisplay : Form
     {
+        PosConfig config;
         private DTRMSimpleBusiness bslayer;
         private bool blnForSpecificDistribution;
 
@@ -16,17 +19,18 @@ namespace DTRMNS {
         {
             InitializeComponent();
         }
-        public frmKitchenSingleDisplay(DTRMSimpleBusiness bslayer)
+        public frmKitchenSingleDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
         }
         private async void frmKitchenDisplay_Load(object sender, EventArgs e)
         {
             if (!blnForSpecificDistribution)
             {
-                ctlKitchen.Initiate(bslayer,await bslayer.GetFirstDisplayTypeList(), true);
-                ctlKitchen.DisplayClock = bslayer.config.Show_Clock_in_Kitchen;
+                ctlKitchen.Initiate(await bslayer.GetFirstDisplayTypeList(), true);
+                ctlKitchen.DisplayClock = config.Show_Clock_in_Kitchen;
                 ctlKitchen.DisplayTypeWillBeChange += CtlKitchen_DisplayTypeWillBeChange;
                 ctlKitchen.LoadAll();
             }
@@ -45,7 +49,7 @@ namespace DTRMNS {
 
             List<Distribution> theDistributionList = new List<Distribution>();
             theDistributionList.Add(bslayer.GetDistribution(DistributionIID).Result);
-            ctlKitchen.Initiate(bslayer, theDistributionList, CloseVisible);
+            ctlKitchen.Initiate( theDistributionList, CloseVisible);
             //ctlKitchen.DisplayTypeWillBeChange += CtlKitchen_DisplayTypeWillBeChangeWithoutSaving;
             //ctlKitchen.LoadAll();
 
@@ -55,14 +59,15 @@ namespace DTRMNS {
 
         private async void CtlKitchen_DisplayTypeWillBeChange()
         {
-            frmDistributionSelector frm = new frmDistributionSelector(bslayer, true,await bslayer.GetFirstDisplayTypeList());
+           // if (await ServiceHelper.GetService<frmDistributionSelector>().ShowDialog() == DialogResult.OK) {
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true,await bslayer.GetFirstDisplayTypeList());
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 List<Distribution> theList = frm.selectedDistributions;
                 if (theList.Count > 0)
                 {
-                    bslayer.config.Default_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
-                    UF.SaveConfig(bslayer.config);
+                    config.Default_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
+                    UF.SaveConfig(config);
                     ctlKitchen.DistributionChanged(await bslayer.GetFirstDisplayTypeList());
                 }
             }

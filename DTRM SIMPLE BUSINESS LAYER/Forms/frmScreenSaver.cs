@@ -7,8 +7,12 @@ using System.IO;
 
 using POSWinFormLayer.Library;
 
+using POSLayer.Library;
+
 namespace DTRMNS {
     public partial class frmScreenSaver : Form {
+
+        PosConfig config;
 
         private List<ScreenSaverImage> nonDrawableList;
         private List<ScreenSaverImage> drawingList;
@@ -29,9 +33,10 @@ namespace DTRMNS {
         {
             InitializeComponent();
         }
-        public frmScreenSaver(DTRMSimpleBusiness bslayer)
+        public frmScreenSaver(PosConfig configAsService, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
+            config = configAsService;
             this.bslayer = bslayer;
         }
 
@@ -46,7 +51,7 @@ namespace DTRMNS {
 
             if (bslayer != null)
             {
-                switch (bslayer.config.Screen_Saver_Color)
+                switch (config.Screen_Saver_Color)
                 {
                     case POSLayer.Library.ScreenSaverColourTypes.BlackBackGroundWhiteBrush:
                         pBox.BackColor = Color.Black;
@@ -61,8 +66,8 @@ namespace DTRMNS {
                         textColorBrush = Brushes.White;
                         break;
                 }
-                singleImageFont = new Font("Comic Sans MS", bslayer.config.Screen_Saver_Large_Font_Size, FontStyle.Bold);
-                singleImageSmallFont = new Font("Comic Sans MS", bslayer.config.Screen_Saver_Small_Font_Size, FontStyle.Bold);
+                singleImageFont = new Font("Comic Sans MS", (float)config.Screen_Saver_Large_Font_Size, FontStyle.Bold);
+                singleImageSmallFont = new Font("Comic Sans MS", (float)config.Screen_Saver_Small_Font_Size, FontStyle.Bold);
 
                 LoadImages();
                 drawingList = new List<ScreenSaverImage>();
@@ -73,15 +78,15 @@ namespace DTRMNS {
         {
             try {
                 //Directory of the images
-                files = Directory.GetFiles(bslayer.config.Screen_Saver_Image_Folder);
+                files = Directory.GetFiles(config.Screen_Saver_Image_Folder);
                 //Imagespacer Value (20) default
-                int spacer = totalimagecount * bslayer.config.Screen_Saver_Image_Spacer;
+                int spacer = totalimagecount * config.Screen_Saver_Image_Spacer;
                 //speed difference value (10) default
-                int speeddifference = bslayer.config.Screen_Saver_Speed_Difference;
+                int speeddifference = config.Screen_Saver_Speed_Difference;
                 //timer interval (50) default
-                tmrMain.Interval = bslayer.config.Screen_Saver_Timer_Interval;
+                tmrMain.Interval = config.Screen_Saver_Timer_Interval;
 
-                if (!bslayer.config.Screen_Saver_Show_Pos_Logo)
+                if (!config.Screen_Saver_Show_Pos_Logo)
                     pBox.Image = null;
 
                 nonDrawableList = new List<ScreenSaverImage>();
@@ -89,7 +94,7 @@ namespace DTRMNS {
                 totalimagecount = files.Length;
 
 
-                if (bslayer.config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
+                if (config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
 
                     int[] regions = new int[] { swidth / 3, (sheight / 3) * 2 };
                     int regioncounter = 0;
@@ -98,13 +103,13 @@ namespace DTRMNS {
 
                     for (int i = 0; i < totalimagecount; i++) {
                         //Terminate loop if too many images will be load
-                        if (nonDrawableList.Count >= bslayer.config.Screen_Saver_Maximum_Image_Count)
+                        if (nonDrawableList.Count >= config.Screen_Saver_Maximum_Image_Count)
                             break;
 
 
                         //Do not load big images in KB
                         FileInfo finfo = new FileInfo(files[i]);
-                        if (finfo.Length / 1024 > bslayer.config.Screen_Saver_Maximum_Image_Size)
+                        if (finfo.Length / 1024 > config.Screen_Saver_Maximum_Image_Size)
                             continue;
 
                         //Do not load images bigger than the screen size
@@ -117,10 +122,10 @@ namespace DTRMNS {
                             //This might not be an image file so continue
                             continue;
                         }
-                        spacer += rnd.Next(bslayer.config.Screen_Saver_Image_Spacer);
+                        spacer += rnd.Next(config.Screen_Saver_Image_Spacer);
                         ScreenSaverImage ssi = new ScreenSaverImage(img, swidth, sheight,
                             Screen.PrimaryScreen.WorkingArea.Width, false, -1 * rnd.Next(2, speeddifference),
-                            rnd.Next(-1 * bslayer.config.Screen_Saver_Left_Step, bslayer.config.Screen_Saver_Right_Step));
+                            rnd.Next(-1 * config.Screen_Saver_Left_Step, config.Screen_Saver_Right_Step));
 
                         ssi.Name = Path.GetFileNameWithoutExtension(finfo.Name);
 
@@ -157,12 +162,12 @@ namespace DTRMNS {
                 pBox.Refresh();
 
             fillthelist:
-                if (bslayer.config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
-                    if (drawingList.Count < bslayer.config.Screen_Saver_Maximum_Drawable_Image_Count) {
+                if (config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
+                    if (drawingList.Count < config.Screen_Saver_Maximum_Drawable_Image_Count) {
                         if (nonDrawableList.Count > 0) {
                             drawingList.Add(nonDrawableList[0]);
                             nonDrawableList.RemoveAt(0);
-                            if (drawingList.Count < bslayer.config.Screen_Saver_Maximum_Drawable_Image_Count)
+                            if (drawingList.Count < config.Screen_Saver_Maximum_Drawable_Image_Count)
                                 goto fillthelist;
                         }
                     }
@@ -181,12 +186,12 @@ namespace DTRMNS {
         {
             try {
 
-                switch (bslayer.config.Screen_Saver_Type) {
+                switch (config.Screen_Saver_Type) {
                     case POSLayer.Library.ScreenSaverTypes.None:
 
                         break;
                     case POSLayer.Library.ScreenSaverTypes.SingleDisplay:
-                        if (!Directory.Exists(bslayer.config.Screen_Saver_Image_Folder)) {
+                        if (!Directory.Exists(config.Screen_Saver_Image_Folder)) {
                             this.Close();
                             return;
                         }
@@ -207,7 +212,7 @@ namespace DTRMNS {
 
                                 string[] imagewords = Path.GetFileNameWithoutExtension(files[singleDisplayCounter]).Trim().Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                                int linespace = bslayer.config.Screen_Saver_Text_Line_Space;
+                                int linespace = config.Screen_Saver_Text_Line_Space;
 
                                 int countline = 0;
                                 Font font = singleImageFont;
@@ -215,35 +220,35 @@ namespace DTRMNS {
                                     font = singleImageSmallFont;
 
                                 int y_text = (sheight - ((imagewords.Length * font.Height) + (linespace * (imagewords.Length - 1)))) / 2;
-                                y_text = bslayer.config.Screen_Saver_Text_Top_Indent >= 0 ? bslayer.config.Screen_Saver_Text_Top_Indent : y_text;
+                                y_text = config.Screen_Saver_Text_Top_Indent >= 0 ? config.Screen_Saver_Text_Top_Indent : y_text;
 
                                 int x_text = (Screen.PrimaryScreen.WorkingArea.Width / 3) + 50;
-                                x_text = bslayer.config.Screen_Saver_Text_Left_Indent >= 0 ? bslayer.config.Screen_Saver_Text_Left_Indent : x_text;
+                                x_text = config.Screen_Saver_Text_Left_Indent >= 0 ? config.Screen_Saver_Text_Left_Indent : x_text;
 
                                 int x_image = 0;
-                                switch (bslayer.config.Screen_Saver_Image_Alignment) {
+                                switch (config.Screen_Saver_Image_Alignment) {
                                     case POSLayer.Library.AlignmentTypes.Center:
-                                        x_image = ((x_text - img.Width) / 2) + bslayer.config.Screen_Saver_Image_Indent;
+                                        x_image = ((x_text - img.Width) / 2) + config.Screen_Saver_Image_Indent;
                                         break;
                                     case POSLayer.Library.AlignmentTypes.Left:
-                                        x_image = bslayer.config.Screen_Saver_Image_Indent;
+                                        x_image = config.Screen_Saver_Image_Indent;
                                         break;
                                     case POSLayer.Library.AlignmentTypes.Right:
-                                        x_image = (x_text - img.Width) - bslayer.config.Screen_Saver_Image_Indent;
+                                        x_image = (x_text - img.Width) - config.Screen_Saver_Image_Indent;
                                         break;
                                 }
 
 
-                                //int x_image =  ? bslayer.config.Screen_Saver_Image_Left_Indent :  (true? (x_text - img.Width);
-                                int y_image = bslayer.config.Screen_Saver_Image_Top_Indent >= 0 ? bslayer.config.Screen_Saver_Image_Top_Indent : ((sheight) - img.Height) / 2;
+                                //int x_image =  ? config.Screen_Saver_Image_Left_Indent :  (true? (x_text - img.Width);
+                                int y_image = config.Screen_Saver_Image_Top_Indent >= 0 ? config.Screen_Saver_Image_Top_Indent : ((sheight) - img.Height) / 2;
 
-                                if (bslayer.config.Screen_Saver_Debug)
+                                if (config.Screen_Saver_Debug)
                                     e.Graphics.DrawRectangle(Pens.Red, new Rectangle(x_image - 1, y_image - 1, img.Width + 3, img.Height + 3));
 
                                 ////////////////////////////
                                 e.Graphics.DrawImage(img, new Rectangle(x_image, y_image, img.Width, img.Height));
                                 ////////////////////////////
-                                //if (bslayer.config.Screen_Saver_Debug)
+                                //if (config.Screen_Saver_Debug)
                                 //    e.Graphics.DrawString(img.Width.ToString() + ", " + img.Height.ToString() + ", " +
                                 //        x_image.ToString() + ", " + y_image.ToString(), singleImageFont, textColorBrush, x_image, y_image - 50);
 
@@ -276,7 +281,7 @@ namespace DTRMNS {
                             for (int i = 0; i < drawingList.Count; i++) {
                                 if (drawingList[i].location.Y <= pBox.Height) {
                                     e.Graphics.DrawImage(drawingList[i].image, drawingList.ElementAt(i).location);
-                                    if (bslayer.config.Screen_Saver_Debug) {
+                                    if (config.Screen_Saver_Debug) {
                                         x = drawingList[i].location.X;
                                         y = drawingList[i].location.Y - 10;
                                         zoomf = drawingList[i].ZoomFactor;

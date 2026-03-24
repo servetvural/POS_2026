@@ -1,16 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using System.IO;
 using DTRMNS;
 using PosLibrary;
-using PosLibrary.Forms;
-
 using POSLayer.Library;
 using POSLayer.Models;
 
@@ -40,8 +32,6 @@ namespace DTRMSimpleBackOffice {
                 dgvDatabase.DataSource = bslayer.GetDataTable("Select IID, StartDate, EndDate, GrossSessionTotal from SessionSum order by StartDate desc");
             }
         }
-
-
         private string GetSelectedSessionIIDListSQL() {
             string sessionList = "(";
             if (dgvDatabase.SelectedRows.Count > 0) {
@@ -55,7 +45,6 @@ namespace DTRMSimpleBackOffice {
                 sessionList += ")";
             return sessionList;
         }
-
 
         private void LoadOrders() {
             if (dgvDatabase.SelectedRows.Count > 0) {
@@ -104,9 +93,7 @@ namespace DTRMSimpleBackOffice {
                 }
             }
             lblOrderTotal.Text = "Order Total : " +  total.ToString("n2");
-        }
-
-        
+        }            
 
         private void LoadOrderItemsAndStockUsage() {
             if (dgvOrders.SelectedRows.Count > 0) {
@@ -121,9 +108,6 @@ namespace DTRMSimpleBackOffice {
             } 
         }
 
-        //private DataTable GetOrderItemsForOrderCustom(string OrderIID) {
-        //    return bslayer.GetDataTable("Select IID,Quantity, OrderItemText,Price, (Quantity * Price) as Total from OrderItem where ParentOrderIID = '" + OrderIID + "' order by DisplayOrder, OrderGroupIID");
-        //}
         private DataTable GetOrderItemsForSelectedOrders(string orderIIDList) {
                 return bslayer.GetDataTable("Select Sum(Quantity) as Quantity, OrderItemText, Sum(Quantity * Price) as Total,Price, EntityButtonIID from OrderItem where ParentOrderIID in " +
                     orderIIDList + " group by OrderItemText,Price, EntityButtonIID Order by OrderItemText");
@@ -157,19 +141,19 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private string GetSelectedEntityButtonIIDListForOrderItemsSQL() {
-            string entityButtonIIDList = "(";
-            if (dgvOrderItems.SelectedRows.Count > 0) {
-                for (int i = 0; i < dgvOrderItems.SelectedRows.Count; i++) {
-                    entityButtonIIDList += "'" + dgvOrderItems.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString() + "'";
-                    if (i < dgvOrderItems.SelectedRows.Count - 1)
-                        entityButtonIIDList += ",";
-                }
-                entityButtonIIDList += ")";
-            } else
-                entityButtonIIDList += ")";
-            return entityButtonIIDList;
-        }
+        //private string GetSelectedEntityButtonIIDListForOrderItemsSQL() {
+        //    string entityButtonIIDList = "(";
+        //    if (dgvOrderItems.SelectedRows.Count > 0) {
+        //        for (int i = 0; i < dgvOrderItems.SelectedRows.Count; i++) {
+        //            entityButtonIIDList += "'" + dgvOrderItems.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString() + "'";
+        //            if (i < dgvOrderItems.SelectedRows.Count - 1)
+        //                entityButtonIIDList += ",";
+        //        }
+        //        entityButtonIIDList += ")";
+        //    } else
+        //        entityButtonIIDList += ")";
+        //    return entityButtonIIDList;
+        //}
 
 
         //private void PopulateRowsForUsageTypes() {
@@ -193,7 +177,6 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void dgvStockItems_Sorted(object sender, EventArgs e) {
-            //PopulateRowsForUsageTypes();
         }
 
         private void btnSelectAllOrders_Click(object sender, EventArgs e) {
@@ -213,14 +196,9 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void LoadSuppliers() {
-            //cmbSuppliers.ComboBox.BindingContext = this.BindingContext;
             cmbSuppliers.ComboBox.DisplayMember = "SupplierName";
-            //cmbSuppliers.ComboBox.ValueMember = 
-
             cmbSuppliers.Items.AddRange(bslayer.GetAllSuppliersAsList().Result.ToArray());
-        }
-
-        
+        }          
 
         private void btnReloadStockItems_Click(object sender, EventArgs e) {
             LoadOrderItemsAndStockUsage();
@@ -230,25 +208,21 @@ namespace DTRMSimpleBackOffice {
             LoadOrderItemsAndStockUsage();
         }
 
-
-
         private void btnPrintStockItems_Click(object sender, EventArgs e) {
             if (dgvStockItems.Rows.Count > 0) {
                 frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
                 if (fsp.ShowDialog() == DialogResult.OK) {
-                    bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
+                    bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
                             "Stock Usage Report", bslayer.GetColumnPrintRatio(dgvStockItems), true);
                  }
             }
-        }
-
-      
+        }       
 
         private void btnOrderItemPrint_Click(object sender, EventArgs e) {
             if (dgvOrderItems.Rows.Count > 0) {
                 frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
                 if (fsp.ShowDialog() == DialogResult.OK) {
-                    bslayer.PrintDataTable(fsp.SelectedApplicationPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems,true, true),
+                    bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems,true, true),
                             "Order Item List", bslayer.GetColumnPrintRatio(dgvOrderItems), true);
                 }
             }
@@ -314,7 +288,6 @@ namespace DTRMSimpleBackOffice {
                     "    Service Charge Tax : " + sctaxtotal.ToString("c2");
             else
                 lblXOrderTotals.Text = "0.00";
-
         }
 
         private void dgvXOrders_DataSourceChanged(object sender, EventArgs e) {

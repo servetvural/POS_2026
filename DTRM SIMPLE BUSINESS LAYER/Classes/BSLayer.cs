@@ -21,36 +21,22 @@ using Microsoft.EntityFrameworkCore;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Views;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMNS
 {
-
-    [System.Xml.Serialization.XmlInclude(typeof(Menu))]
-    [System.Xml.Serialization.XmlInclude(typeof(Order))]
-    [System.Xml.Serialization.XmlInclude(typeof(Luv))]
-    [System.Xml.Serialization.XmlInclude(typeof(PosConfig))]
-    [System.Xml.Serialization.XmlInclude(typeof(User))]
-    [System.Serializable]
     public class DTRMSimpleBusiness
     {
         public bool DBConnectionSuccessful { get; set; }
         public string DBConnectionError { get; set; }
 
 
-        [System.Xml.Serialization.XmlIgnore]
-        public POSLayer.Library.PosConfig config;
+        private PosConfig config;
 
-        [System.Xml.Serialization.XmlIgnore]
-        public POSLayer.Models.Luv luv;
-
-        public POSLayer.Models.User LoggedUser;
-        public POSLayer.Models.Order AttachedOrder;
-
-        [System.Xml.Serialization.XmlIgnore]
-        public POSLayer.Models.FoodMenu ActiveMenu;
-
-        [System.Xml.Serialization.XmlIgnore]
-       // public DB db;
+        public Shop shop;
+        public User LoggedUser;
+        public Order AttachedOrder;
+        public TheMenu ActiveMenu;
 
         public bool blnReportLockOn;
         public string ReportLockClientIP;
@@ -70,7 +56,7 @@ namespace DTRMNS
 
         public int maxHeight;
 
-        public POSLayer.Models.Bonus currentBonusScheme;
+        public Bonus currentBonusScheme;
 
         private CultureInfo ci;
 
@@ -97,7 +83,7 @@ namespace DTRMNS
         }
 
         public event KitchenEventHandler KitchenRequestOccured;
-        public void OnKitchenRequestOccured(POSLayer.Models.KitchenOrder order)
+        public void OnKitchenRequestOccured(KitchenOrder order)
         {
             KitchenRequestOccured?.Invoke(order);
         }
@@ -108,58 +94,64 @@ namespace DTRMNS
             ImmediateDebugOccured?.Invoke(str);
         }
 
-        IRepository<POSLayer.Models.Session> repoSession;
-        IRepository<POSLayer.Models.Employee> repoEmployee;
-        IRepository<POSLayer.Models.FoodMenu> repoMenu;
-        IRepository<POSLayer.Models.Luv> repoLuv;
-        IRepository<POSLayer.Models.User> repoUser;
-        IRepository<POSLayer.Models.Debug> repoDebug;
-        IRepository<POSLayer.Models.Entity> repoEntity;
-        IRepository<POSLayer.Models.EntityButton> repoEntityButton;
-        IRepository<POSLayer.Models.Distribution> repoDistribution;
-        IRepository<POSLayer.Models.ApplicationPrinter> repoAppPrinter;
-        IRepository<POSLayer.Models.Order> repoOrder;
-        IRepository<POSLayer.Models.OrderItem> repoOrderItem;
-        IRepository<POSLayer.Models.Customer> repoCustomer;
-        IRepository<POSLayer.Models.Bonus> repoBonus;
-        IRepository<POSLayer.Models.KitchenOrder> repoKitchenOrder;
-        IRepository<POSLayer.Models.KitchenOrderItem> repoKitchenOrderItem;
-        IRepository<POSLayer.Models.Table> repoTable;
-        IRepository<POSLayer.Models.TableGroup> repoTableGroup;
-        IRepository<POSLayer.Models.XOrder> repoXOrder;
-        IRepository<POSLayer.Models.XOrderItem> repoXOrderItem;
-        IRepository<POSLayer.Models.Supplier> repoSupplier;
-        IRepository<EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
-        IRepository<POSLayer.Models.StockItem> repoStockItem;
-        IRepository<StockItemUsage> repoStockItemUsage;
-        IRepository<POSLayer.Models.ApplicationPrinter> repoApplicationPrinter;
-        IRepository<POSLayer.Models.GenericImage> repoImage;
+        public readonly IServiceProvider sp;
 
-        public DTRMSimpleBusiness(IRepository<POSLayer.Models.Session> _repoSession,
-            IRepository<POSLayer.Models.Employee> _repoEmployee,
-            IRepository<POSLayer.Models.FoodMenu> _repoMenu, IRepository<POSLayer.Models.Luv> _repoLuv,
-            IRepository<POSLayer.Models.User> _repoUser, IRepository<POSLayer.Models.Debug> _repoDebug,
-            IRepository<POSLayer.Models.Entity> _repoEntity, IRepository<POSLayer.Models.EntityButton> _repoEntityButton,
-            IRepository<POSLayer.Models.Distribution> _repoDistribution, IRepository<POSLayer.Models.ApplicationPrinter> _repoAppPrinter,
-            IRepository<POSLayer.Models.Order> _repoOrder, IRepository<POSLayer.Models.OrderItem> _repoOrderItem,
-            IRepository<POSLayer.Models.Customer> _repoCustomer, IRepository<POSLayer.Models.Bonus> _repoBonus,
-              IRepository<POSLayer.Models.KitchenOrder> _repoKitchenOrder, IRepository<POSLayer.Models.KitchenOrderItem> _repoKitchenOrderItem,
-               IRepository<POSLayer.Models.Table> _repoTable, IRepository<POSLayer.Models.TableGroup> _repoTableGroup,
-               IRepository<POSLayer.Models.XOrder> _repoXOrder, IRepository<POSLayer.Models.XOrderItem> _repoXOrderItem,
-               IRepository<POSLayer.Models.Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
-               IRepository<POSLayer.Models.StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
-               IRepository<ApplicationPrinter> _repoApplicationPrinter, IRepository<POSLayer.Models.GenericImage> _repoImage)
+        IRepository<Shop> repoShop;
+        IRepository<Session> repoSession;
+        IRepository<Employee> repoEmployee;
+        IRepository<TheMenu> repoMenu;
+        IRepository<User> repoUser;
+        IRepository<Debug> repoDebug;
+        IRepository<Category> repoCategory;
+        IRepository<CategoryItem> repoCategoryItem;
+        IRepository<Distribution> repoDistribution;
+        IRepository<Printer> repoPrinter;
+        IRepository<Order> repoOrder;
+        IRepository<OrderItem> repoOrderItem;
+        IRepository<Customer> repoCustomer;
+        IRepository<Bonus> repoBonus;
+        IRepository<KitchenOrder> repoKitchenOrder;
+        IRepository<KitchenOrderItem> repoKitchenOrderItem;
+        IRepository<Table> repoTable;
+        IRepository<TableGroup> repoTableGroup;
+        IRepository<XOrder> repoXOrder;
+        IRepository<XOrderItem> repoXOrderItem;
+        IRepository<Supplier> repoSupplier;
+        IRepository<EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
+        IRepository<StockItem> repoStockItem;
+        IRepository<StockItemUsage> repoStockItemUsage;
+        IRepository<GenericImage> repoImage;
+
+        public DTRMSimpleBusiness(IServiceProvider _sp,
+            PosConfig configAsService, IRepository<Shop> _repoShop,
+            IRepository<Session> _repoSession,
+            IRepository<Employee> _repoEmployee,
+            IRepository<TheMenu> _repoMenu,
+            IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
+            IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
+            IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter,
+            IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
+            IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
+              IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
+               IRepository<Table> _repoTable, IRepository<TableGroup> _repoTableGroup,
+               IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
+               IRepository<Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
+               IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
+               IRepository<GenericImage> _repoImage)
         {
+            sp = _sp;
+
+            config = configAsService;
+            repoShop = _repoShop;
             repoSession = _repoSession;
             repoEmployee = _repoEmployee;
             repoMenu = _repoMenu;
-            repoLuv = _repoLuv;
             repoUser = _repoUser;
             repoDebug = _repoDebug;
-            repoEntity = _repoEntity;
-            repoEntityButton = _repoEntityButton;
+            repoCategory = _repoCategory;
+            repoCategoryItem = _repoCategoryItem;
             repoDistribution = _repoDistribution;
-            repoAppPrinter = _repoAppPrinter;
+            repoPrinter = _repoPrinter;
             repoOrder = _repoOrder;
             repoOrderItem = _repoOrderItem;
             repoCustomer = _repoCustomer;
@@ -175,22 +167,12 @@ namespace DTRMNS
             repoStockItem = _repoStockItem;
             repoStockItemUsage = _repoStockItemUsage;
 
-            // EstablishDatabaseConnection().Result;
-            repoApplicationPrinter = _repoApplicationPrinter;
             repoImage = _repoImage;
         }
 
-        public async void CustomInitialize(PosConfig config)
-        {
-            this.config = config;
-            if (await EstablishDatabaseConnection())
-            {
-                Environment.Exit(0);
-            }
-        }
         public async Task<bool> IsLoginSuccess(string password)
         {
-            POSLayer.Models.User user = await GetUserByPassword(password);
+            User user = await GetUserByPassword(password);
             if (user != null)
             {
                 LoggedUser = user;
@@ -200,7 +182,7 @@ namespace DTRMNS
         }
         public async Task<bool> IsAdmin(string password)
         {
-            POSLayer.Models.User user = await GetUserByPassword(password);
+            User user = await GetUserByPassword(password);
             if (user != null && user.IsManagerOrMore())
             {
                 LoggedUser = user;
@@ -232,13 +214,11 @@ namespace DTRMNS
             return GetCulture(config.Terminal_Currency_Culture);
         }
 
-
-
         public async Task<bool> DoStartThings()
         {
             try
             {
-                luv = await GetLuv();
+                shop = await repoShop.GetFirst();
                 ci = GetDBCulture();
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(config.Terminal_Currency_Culture);
             } catch
@@ -264,123 +244,31 @@ namespace DTRMNS
             return true;
         }
 
-        /// <summary>
-        /// Currently during connection this is called for creating db connection
-        /// </summary>
-        /// <returns></returns>
-        public async Task<bool> EstablishDatabaseConnection()
+
+        public void RePriceOrderForOrderType(Order order, OrderTypes orderType)
         {
-            try
-            {
-                //if (config == null)
-                //    return false;
-
-                //Connect to remote SQLExpress Server
-                // db = new DB(config.Database_Instance, config.Database_Name, config.Database_User_Name,config.Database_Password);
-
-                //connectionString = "Server=192.168.0.24;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
-
-                connectionString = "Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;";
-                //connectionString = "Server=" + config.Database_Instance +
-                //    ";Database=" + config.Database_Name +
-                //    ";User Id=" + config.Database_User_Name +
-                //    ";Password=" + config.Database_Password +
-                //    ";Encrypt=True;TrustServerCertificate=True;";
-
-                // db = new DB(connectionString);
-
-
-
-                //db = new DB("data source=" + config.Database_Instance + ";initial catalog=" + config.Database_Name + ";Integrated Security=false;User ID=" + 
-                //    config.Database_User_Name + ";Password=" + config.Database_Password + ";Connection Timeout=3;Encrypt=False;");
-
-
-                // db = new DB("data source=SERVET2022\\SQLEXPRESS;initial catalog=DTRM;Integrated Security=false;User ID=sa;Password=servetvural;Connection Timeout=3;Encrypt=False;");
-
-
-                //if (config != null)
-                //    DebugMode = config.DebugMode;
-                //string localerrormessage;
-                //DBConnectionSuccessful = CheckDatabaseConnection(out localerrormessage);
-                //DBConnectionError = localerrormessage;
-
-                 DBConnectionSuccessful =await repoMenu.IsDatabaseExist();
-    ;          // return DBConnectionSuccessful;
-
-            } catch (Exception ex)
-            {
-                DBConnectionError = ex.Message;
-                DBConnectionSuccessful = false;
-            }
-            return DBConnectionSuccessful;
-        }
-        public void RePriceOrderForOrderType(POSLayer.Models.Order order, POSLayer.Library.OrderTypes orderType)
-        {
-            POSLayer.Models.FoodMenu fm = ActiveMenu;
-            POSLayer.Models.OrderItem oi;
+            TheMenu fm = ActiveMenu;
+            OrderItem oi;
             for (int i = 0; i < order.items.Count; i++)
             {
-                oi = (POSLayer.Models.OrderItem)order.items[i];
+                oi = (OrderItem)order.items[i];
                 oi.Price = fm.GetItemPrice(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
         }
 
-        public void ReTaxOrderForOrderType(POSLayer.Models.Order order, POSLayer.Library.OrderTypes orderType)
+        public void ReTaxOrderForOrderType(Order order, OrderTypes orderType)
         {
-            POSLayer.Models.FoodMenu fm = ActiveMenu;
-            POSLayer.Models.OrderItem oi;
+            TheMenu fm = ActiveMenu;
+            OrderItem oi;
             for (int i = 0; i < order.items.Count; i++)
             {
-                oi = (POSLayer.Models.OrderItem)order.items[i];
+                oi = (OrderItem)order.items[i];
                 oi.TaxPercent = fm.GetItemTaxRate(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
         }
-        public void CustomerDetailsToOrder(Customer customer)
-        {
-            if (customer != null)
-            {
-                AttachedOrder.CustomerIID = customer.IID;
-                AttachedOrder.CName = customer.CName;
-                AttachedOrder.Buzzer = customer.Buzzer;
-                AttachedOrder.Address = customer.Address;
-                AttachedOrder.Postcode = customer.Postcode;
-                AttachedOrder.Town = customer.Town;
-                AttachedOrder.Tel = customer.Tel;
-                AttachedOrder.Mobile = customer.Mobile;
-                AttachedOrder.Email = customer.Email;
-            }
-        }
 
-        public Customer CustomerDetailsFromOrder()
-        {
-            Customer customer = new Customer
-            {
-                CName = AttachedOrder.CName,
-                Buzzer = AttachedOrder.Buzzer,
-                Address = AttachedOrder.Address,
-                Postcode = AttachedOrder.Postcode,
-                Town = AttachedOrder.Town,
-                Tel = AttachedOrder.Tel,
-                Mobile = AttachedOrder.Mobile,
-                Email = AttachedOrder.Email
-            };
-            return customer;
-        }
-        public async Task<bool> IsServerConnected()
-        {
-            //List<FMenu> ml;
-            //try
-            //{
-            return await repoMenu.IsDatabaseExist();
-            //ml = this.GetMenuListDB();
-            // return true;
-            //} catch
-            //{
-            //    return false;
-            //}
-        }
 
         public DataTable GetDataTable(string sql)
         {
@@ -420,102 +308,23 @@ namespace DTRMNS
                 string str = "";
             }
         }
-        public bool RunQuery(string sql)
+        public async Task<bool> RunQuery(string sql)
         {
-            return repoMenu.GetDBContext().Database.ExecuteSqlRawAsync(sql).Result > 0;
-            //using (SqlConnection conn = new SqlConnection(connectionString))
-            //{
-            //    SqlCommand cmd = new SqlCommand(sql, conn);
-            //    conn.Open();
-            //    return cmd.ExecuteNonQuery() > 0;
-            //}
+            return await repoMenu.GetDBContext().Database.ExecuteSqlRawAsync(sql) > 0;
         }
 
         #region "ADMIN FUNCTIONS"
 
-        //public int CheckDBRowCount(string TableName)
-        //{
 
-        //    return repoMenu.GetDBContext().Luvs.Count();
-        //    //DataTable dt = GetDataTable("select count(*) as howmany from " + TableName);
-        //    //return int.Parse(dt.Rows[0]["howmany"].ToString());
-        //}
-
-        //public DataTable GetLuvDB()
-        //{
-        //    if (CheckDBRowCount("Luv") == 0)
-        //    {
-        //        SaveLuv(new Luv());
-        //    }
-        //    return GetDataTable("GetLuv");
-        //}
-
-        public async Task<POSLayer.Models.Luv> GetLuv()
+        public async Task<List<double>> GetAllTaxRates()
         {
-            try
-            {
-                POSLayer.Models.Luv luv = repoMenu.GetDBContext().Luvs.FirstOrDefault();
-                return luv ?? new POSLayer.Models.Luv();
-                //return new Luv(GetLuvDB());
-            } catch
-            {
-                return new POSLayer.Models.Luv();
-            }
-        }
-        public void SaveLuv(POSLayer.Models.Luv luv)
-        {
-            repoLuv.Save(luv);
-            //try
-            //{
-            //    string smtppassword = (luv.SmtpPassword == null ? "" : luv.SmtpPassword.Replace("'", "''"));
-            //    string customerpassword = (luv.CustomerPassword == null ? "" : luv.CustomerPassword.Replace("'", "''"));
-
-            //    string query = "SaveLuv '" +
-            //        luv.ShopName.Replace("'", "''") + "','" +
-            //        luv.ShopAddress.Replace("'", "''") + "','" +
-            //        luv.Tel1.Replace("'", "''") + "','" +
-            //        luv.Tel2.Replace("'", "''") + "','" +
-            //        luv.Fax.Replace("'", "''") + "','" +
-            //        luv.Vat.Replace("'", "''") + "','" +
-            //        luv.PurchaseEmail.Replace("'", "''") + "','" +
-            //        luv.OrdersEmail.Replace("'", "''") + "','" +
-            //        luv.ReportEmail.Replace("'", "''") + "','" +
-            //        luv.NotificationEmail.Replace("'", "''") + "','" +
-            //        luv.CurrentSessionIID + "'," +
-            //        DRDateTime.DatetimeToMSSql(luv.SessionStartDateTime) + ",'" +
-            //        luv.VoidText.ToUpper().Replace("'", "''") + "','" +
-            //        luv.DefaultTaxRate + "','" +
-            //        luv.ServiceChargeRate + "','" +
-            //        luv.ServiceChargeTaxRate + "','" +
-            //        luv.ReceiptHeader.Replace("'", "''") + "','" +
-            //        luv.ReceiptFooter.Replace("'", "''") + "','" +
-            //        luv.KitchenHeader.Replace("'", "''") + "','" +
-            //        luv.KitchenFooter.Replace("'", "''") + "','" +
-            //        luv.ReportHeader.Replace("'", "''") + "','" +
-            //        luv.ReportFooter.Replace("'", "''") + "','" +
-            //        luv.SmtpServer.Replace("'", "''") + "','" +
-            //        luv.SmtpEmailAddress.Replace("'", "''") + "','" +
-            //        luv.SmtpFromLabel.Replace("'", "''") + "','" +
-            //        luv.SmtpAccountName.Replace("'", "''") + "','" +
-            //        DRFormat.Encode(smtppassword) + "','" +
-            //        luv.CustomerKey.Replace("'", "''") + "','" +
-            //        DRFormat.Encode(customerpassword) + "'";
-
-            //    RunQuery(query);
-            //} catch (Exception ex)
-            //{
-            //    MessageBox.Show("Save Luv Error : " + ex.Message);
-            //}
-        }
-        public DataTable GetAllTaxRates()
-        {
-            // return repoMenu.GetDBContext().Database.ExecuteSqlInterpolated($"Select * from TaxPercentList where ParentMenuIID = '{config.ActiveMenuIID}'");
-            return GetDataTable("Select * from TaxPercentList where ParentMenuIID = '" + config.ActiveMenuIID + "'");
+            return await repoMenu.GetAllTaxRatesForMenu(config.ActiveMenuIID);
+            // return GetDataTable("Select * from TaxPercentList where ParentMenuIID = '" + config.ActiveMenuIID + "'");
         }
 
-        public bool SetTaxRate(float DBTaxRate, float NewTaxRate)
+        public async Task<bool> SetTaxRate(double DBTaxRate, double NewTaxRate)
         {
-            return RunQuery("UpdateTaxRates '" + config.ActiveMenuIID + "'," + DBTaxRate + "," + NewTaxRate);
+            return await RunQuery("UpdateTaxRates '" + config.ActiveMenuIID + "'," + DBTaxRate + "," + NewTaxRate);
         }
 
         #endregion
@@ -525,13 +334,13 @@ namespace DTRMNS
 
         public async void EnsureRequiredUsers()
         {
-            await SaveUser(new POSLayer.Models.User("1", "Waiter", "1", POSLayer.Library.AccessLevels.User));
-            await SaveUser(new POSLayer.Models.User("2", "Manager", "2", POSLayer.Library.AccessLevels.Manager));
-            await SaveUser(new POSLayer.Models.User("3", "Admin", "9999", POSLayer.Library.AccessLevels.SuperUser));
-            await SaveUser(new POSLayer.Models.User("4", "Tech", "2020", POSLayer.Library.AccessLevels.TechnicalSupport));
+            await SaveUser(new User("1", "Waiter", "1", AccessLevels.User));
+            await SaveUser(new User("2", "Manager", "2", AccessLevels.Manager));
+            await SaveUser(new User("3", "Admin", "9999", AccessLevels.SuperUser));
+            await SaveUser(new User("4", "Tech", "2020", AccessLevels.TechnicalSupport));
         }
 
-        public async Task<List<POSLayer.Models.User>> GetUserList()
+        public async Task<List<User>> GetUserList()
         {
             return await repoUser.GetAllAsync();
             //List<User> UserList = new List<User>();
@@ -540,7 +349,7 @@ namespace DTRMNS
             //    UserList.Add(new User(dt.Rows[i]));
             //return UserList;
         }
-        public async Task<POSLayer.Models.User> GetUserByPassword(string Password)
+        public async Task<User> GetUserByPassword(string Password)
         {
             return await repoUser.GetByField("Password", Password);
             //DataTable dt = GetDataTable("GetUserByPassword", Password);
@@ -550,7 +359,7 @@ namespace DTRMNS
             //    return null;
         }
 
-        public async Task<POSLayer.Models.User> GetUser(string UserIID)
+        public async Task<User> GetUser(string UserIID)
         {
             return await repoUser.Get(UserIID);
             //DataTable dt = GetDataTable("GetUser", UserIID);
@@ -560,7 +369,7 @@ namespace DTRMNS
             //    return null;
         }
 
-        public async Task<bool> SaveUser(POSLayer.Models.User user)
+        public async Task<bool> SaveUser(User user)
         {
             return await repoUser.Save(user) != null;
 
@@ -578,7 +387,7 @@ namespace DTRMNS
 
         #region "ENTITY FUNCTIONS"
 
-        public FoodMenu GetActiveMenu(bool blnReloadConfig, bool blnReloadMenu)
+        public TheMenu GetActiveMenu(bool blnReloadConfig, bool blnReloadMenu)
         {
             if (blnReloadMenu)
             {
@@ -608,15 +417,15 @@ namespace DTRMNS
             return ActiveMenu;
         }
 
-        public void SaveMenuA(FoodMenu foodMenu)
+        public void SaveMenuA(TheMenu foodMenu)
         {
             DRFile.XmlSerialize(DRFile.GetApplicationPath() + foodMenu.GetMenuFileName(), foodMenu,
-                typeof(FoodMenu), false);
+                typeof(TheMenu), false);
         }
 
-        public async Task<List<POSLayer.Models.FoodMenu>> GetMenuList()
+        public async Task<List<TheMenu>> GetMenuList()
         {
-            List<POSLayer.Models.FoodMenu> menuList = await repoMenu.GetAllAsync();
+            List<TheMenu> menuList = await repoMenu.GetAllAsync();
             return menuList;
             //if (config != null)
             //{
@@ -644,7 +453,7 @@ namespace DTRMNS
 
         public string GetFirstMenuIID()
         {
-            POSLayer.Models.FoodMenu menu = repoMenu.GetAllAsync().Result.FirstOrDefault();
+            TheMenu menu = repoMenu.GetAllAsync().Result.FirstOrDefault();
             return menu?.IID ?? "";
 
             //DataTable dt = GetDataTable("GetMenuList");
@@ -654,7 +463,7 @@ namespace DTRMNS
             //    return dt.Rows[0]["IID"].ToString();
         }
 
-        public async Task<List<POSLayer.Models.FoodMenu>> GetMenuListDB()
+        public async Task<List<TheMenu>> GetMenuListDB()
         {
             return await repoMenu.GetAllAsync();
             //DataTable dt = GetDataTable("GetMenuList");
@@ -674,7 +483,7 @@ namespace DTRMNS
         /// Returns list of menus in the database. Menus have all the entities and entity buttons in it
         /// </summary>
         /// <returns></returns>
-        public async Task<List<POSLayer.Models.FoodMenu>> GetAllMenuList(GenericProgressFunction progress = null, int startfrom = 0)
+        public async Task<List<TheMenu>> GetAllMenuList(GenericProgressFunction progress = null, int startfrom = 0)
         {
             return await repoMenu.GetAllAsync("Entity");
             //DataTable dt = GetDataTable("GetMenuList");
@@ -698,7 +507,7 @@ namespace DTRMNS
             return orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.CalculatedValue);
         }
 
-        public async Task<List<POSLayer.Models.Debug>> GetDebugList()
+        public async Task<List<Debug>> GetDebugList()
         {
             return await repoDebug.GetAllAsync();
 
@@ -710,36 +519,21 @@ namespace DTRMNS
             //}
             //return theList;
         }
-        public async Task<POSLayer.Models.FoodMenu> GetMenuDB(string MenuIID, GenericProgressFunction progress = null, int startfrom = 0)
+        public async Task<TheMenu> GetMenuDB(string MenuIID, GenericProgressFunction progress = null, int startfrom = 0)
         {
-            POSLayer.Models.FoodMenu menu = await repoMenu.Get(MenuIID);
+            TheMenu menu = await repoMenu.Get(MenuIID);
             if (menu != null)
             {
-                menu.items = await repoEntity.GetDBContext().Entities.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
-                for (int i = 0; i < menu.items.Count; i++)
+                menu.categories = await repoCategory.GetDBContext().Categories.Where(x => x.MenuIID == MenuIID).ToListAsync();
+                for (int i = 0; i < menu.categories.Count; i++)
                 {
-                    menu.items[i].Buttons = await repoEntityButton.GetDBContext().EntityButtons.Where(x => x.ParentEntityIID == menu.items[i].IID).ToListAsync();
+                    menu.categories[i].Items = await repoCategoryItem.GetDBContext().CategoryItems.Where(x => x.CategoryIID == menu.categories[i].IID).ToListAsync();
                 }
-                menu.Distributions = await repoDistribution.GetDBContext().Distributions.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
+                menu.distributions = await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == MenuIID).ToListAsync();
 
                 return menu;
             } else
                 return null;
-
-            //DataTable dt = GetDataTable("GetMenu", MenuIID);
-            //if (dt.Rows.Count > 0)
-            //{
-            //    Menu fm = new Menu(dt);
-            //    dt = this.GetEntitiesForMenuDB(MenuIID);
-            //    for (int i = 0; i < dt.Rows.Count; i++)
-            //    {
-            //        fm.items.Add(this.GetEntityDB(dt.Rows[i]["IID"].ToString()));
-            //        progress?.Invoke(null, new System.ComponentModel.ProgressChangedEventArgs(startfrom + i, null));
-            //    }
-            //    fm.Distributions = this.GetDistributionList(MenuIID);
-            //    return fm;
-            //} else
-            //    return null;
         }
 
         /// <summary>
@@ -747,7 +541,7 @@ namespace DTRMNS
         /// </summary>
         /// <param name="menu"></param>
         /// <returns></returns>
-        public async Task<bool> SaveMenu(POSLayer.Models.FoodMenu menu)
+        public async Task<bool> SaveMenu(TheMenu menu)
         {
             return await repoMenu.Save(menu) != null;
 
@@ -759,7 +553,7 @@ namespace DTRMNS
         /// Saves the entire menu
         /// </summary>
         /// <param name="foodMenu"></param>
-        public async Task<bool> SaveMenuDB(POSLayer.Models.FoodMenu foodMenu)
+        public async Task<bool> SaveMenuDB(TheMenu foodMenu)
         {
             return await repoMenu.Save(foodMenu) != null;
 
@@ -774,7 +568,7 @@ namespace DTRMNS
             //    bool blnEntityRequired = false;
             //    for (int i = 0; i < foodMenu.items.Count; i++)
             //    {
-            //        if (((POSLayer.Models.Entity)foodMenu.items[i]).IID == DBEntityIID)
+            //        if (((Entity)foodMenu.items[i]).IID == DBEntityIID)
             //        {
             //            blnEntityRequired = true;
             //            break;
@@ -786,7 +580,7 @@ namespace DTRMNS
             //}
             ////Save this menu's entities
             //for (int i = 0; i < foodMenu.items.Count; i++)
-            //    this.SaveEntityDB((POSLayer.Models.Entity)foodMenu.items[i]);
+            //    this.SaveEntityDB((Entity)foodMenu.items[i]);
 
             ////Delete distributions first
             //this.DeleteAllDistributionsForMenu(foodMenu.IID);
@@ -810,14 +604,14 @@ namespace DTRMNS
             //return RunQuery("DeleteMenu", MenuIID);
         }
 
-        public async Task<Entity> GetEntity(string EntityIID)
+        public async Task<Category> GetEntity(string EntityIID)
         {
-            return await repoEntity.Get(EntityIID);
+            return await repoCategory.Get(EntityIID);
         }
 
-        public async Task<List<Entity>> GetAllEntities(string MenuIID)
+        public async Task<List<Category>> GetAllEntities(string MenuIID)
         {
-            return await repoEntity.GetDBContext().Entities.Where(x => x.ParentMenuIID == MenuIID).ToListAsync();
+            return await repoCategory.GetDBContext().Categories.Where(x => x.MenuIID == MenuIID).ToListAsync();
         }
         //public async Task<Entity> GetEntity(string EntityIID)
         //{
@@ -840,51 +634,51 @@ namespace DTRMNS
         //    return GetDataTable("GetEntitiesForMenu", ParentMenuIID);
         //}
 
-        public bool SetEntityDisplayOrder(string EntityIID, int displayOrder)
+        public async Task<bool> SetEntityDisplayOrder(string EntityIID, int displayOrder)
         {
-            return RunQuery("Update Entity set DisplayOrder = " + displayOrder + " where IID = '" + EntityIID + "'");
+            return await RunQuery("Update Entity set DisplayOrder = " + displayOrder + " where IID = '" + EntityIID + "'");
         }
 
-        public void SaveEntityDB(POSLayer.Models.Entity entity)
+        public void SaveEntityDB(Category entity)
         {
+            repoCategory.Save(entity);
+
+
+            //CategoryItem eb = null;
+
+            //DeleteEntityDB(entity.IID);
+            //CultureInfo ci = GetDBCulture();
+            ////This only saves the entity in the EntityTable
+            //RunQuery("SaveEntity '" + entity.IID + "','" + entity.Name.Replace("'", "''") + "'," +
+            //            entity.dorder + "," + entity.BgColour + "," + entity.Height + "," +
+            //            entity.Width + ",'" + entity.MenuIID + "'," +
+            //            (int)entity.EntityType + ",'" + entity.DistributionIID + "','" + entity.DistributionName + "','" +
+            //            entity.FFamily + "','" + entity.FSize.ToString(ci) + "','" + entity.FStyle + "'," + entity.FgColour);
 
 
 
-            POSLayer.Models.EntityButton eb = null;
+            //DataTable dt = this.GetEntityButtonsForEntityDB(entity.IID);
+            //for (int r = 0; r < dt.Rows.Count; r++)
+            //{
+            //    string DBEntityButtonIID = dt.Rows[r]["IID"].ToString();
+            //    bool blnEntityButtonRequired = false;
+            //    blnEntityButtonRequired = entity.Buttons.Find(x => x.IID == DBEntityButtonIID) != null;
 
-            DeleteEntityDB(entity.IID);
-            CultureInfo ci = GetDBCulture();
-            //This only saves the entity in the EntityTable
-            RunQuery("SaveEntity '" + entity.IID + "','" + entity.EntityName.Replace("'", "''") + "'," +
-                        entity.DisplayOrder + "," + entity.BackColour + "," + entity.ButtonHeight + "," +
-                        entity.ButtonWidth + ",'" + entity.ParentMenuIID + "'," +
-                        (int)entity.EntityType + ",'" + entity.DistributionIID + "','" + entity.DistributionName + "','" +
-                        entity.FFamily + "','" + entity.FSize.ToString(ci) + "','" + entity.FStyle + "'," + entity.ForeColour);
+            //    if (!blnEntityButtonRequired)
+            //        this.DeleteEntityButtonDB(DBEntityButtonIID);
+            //}
 
-
-
-            DataTable dt = this.GetEntityButtonsForEntityDB(entity.IID);
-            for (int r = 0; r < dt.Rows.Count; r++)
-            {
-                string DBEntityButtonIID = dt.Rows[r]["IID"].ToString();
-                bool blnEntityButtonRequired = false;
-                blnEntityButtonRequired = entity.Buttons.Find(x => x.IID == DBEntityButtonIID) != null;
-
-                if (!blnEntityButtonRequired)
-                    this.DeleteEntityButtonDB(DBEntityButtonIID);
-            }
-
-            for (int i = 0; i < entity.Buttons.Count; i++)
-            {
-                eb = (POSLayer.Models.EntityButton)entity.Buttons[i];
-                eb.DisplayOrder = i;
-                this.SaveJustEntityButton(eb, entity.ParentMenuIID);
-            }
+            //for (int i = 0; i < entity.Buttons.Count; i++)
+            //{
+            //    eb = (CategoryItem)entity.Buttons[i];
+            //    eb.dorder = i;
+            //    this.SaveJustEntityButton(eb);
+            //}
         }
 
         public async Task<bool> DeleteEntityDB(string EntityIID)
         {
-            return await repoEntityButton.GetDBContext().EntityButtons.Where(x => x.ParentEntityIID == EntityIID).ExecuteDeleteAsync() > 0;
+            return await repoCategoryItem.GetDBContext().CategoryItems.Where(x => x.CategoryIID == EntityIID).ExecuteDeleteAsync() > 0;
             //DataTable dt = GetEntityButtonsForEntityDB(EntityIID);
             //for (int i = 0; i < dt.Rows.Count; i++)
             //    DeleteEntityButtonDB(dt.Rows[i]["IID"].ToString());
@@ -896,50 +690,50 @@ namespace DTRMNS
         //    //This should call EntityList for active food Menu but as far as the server is concerned what is the active Menu?
         //    return GetDataTable("GetEntityListForMenu", ActiveMenu.IID);
         //}
-        public double GetEBTaxPercent(POSLayer.Models.EntityButton eb)
+        public double GetEBTaxPercent(CategoryItem eb)
         {
             if (AttachedOrder == null)
                 return 0.0f;
             switch (AttachedOrder.OrderType)
             {
-                case POSLayer.Library.OrderTypes.DirectSale:
-                    return eb.DirectSaleTaxPercent;
-                case POSLayer.Library.OrderTypes.InHouse:
-                    return eb.InHouseTaxPercent;
-                case POSLayer.Library.OrderTypes.TakeAwayB:
-                case POSLayer.Library.OrderTypes.InternetTakeAway:
-                    return eb.TakeAwayTaxPercent;
-                case POSLayer.Library.OrderTypes.Delivery:
-                case POSLayer.Library.OrderTypes.InternetDelivery:
-                    return eb.DeliveryTaxPercent;
+                case OrderTypes.DirectSale:
+                    return eb.SaleTax;
+                case OrderTypes.InHouse:
+                    return eb.SitinTax;
+                case OrderTypes.TakeAwayB:
+                case OrderTypes.InternetTakeAway:
+                    return eb.TaTax;
+                case OrderTypes.Delivery:
+                case OrderTypes.InternetDelivery:
+                    return eb.DTax;
                 default:
-                    return eb.DirectSaleTaxPercent;
+                    return eb.SaleTax;
             }
         }
-        public double GetEBTaxPercentForGenericOrder(POSLayer.Models.Order order, POSLayer.Models.EntityButton eb)
+        public double GetEBTaxPercentForGenericOrder(Order order, CategoryItem eb)
         {
             if (order == null)
                 return 0.0f;
             switch (order.OrderType)
             {
-                case POSLayer.Library.OrderTypes.DirectSale:
-                    return eb.DirectSaleTaxPercent;
-                case POSLayer.Library.OrderTypes.InHouse:
-                    return eb.InHouseTaxPercent;
-                case POSLayer.Library.OrderTypes.TakeAwayB:
-                case POSLayer.Library.OrderTypes.InternetTakeAway:      
-                    return eb.TakeAwayTaxPercent;
-                case POSLayer.Library.OrderTypes.Delivery:
-                case POSLayer.Library.OrderTypes.InternetDelivery:
-                    return eb.DeliveryTaxPercent;
+                case OrderTypes.DirectSale:
+                    return eb.SaleTax;
+                case OrderTypes.InHouse:
+                    return eb.SitinTax;
+                case OrderTypes.TakeAwayB:
+                case OrderTypes.InternetTakeAway:
+                    return eb.TaTax;
+                case OrderTypes.Delivery:
+                case OrderTypes.InternetDelivery:
+                    return eb.DTax;
                 default:
-                    return eb.DirectSaleTaxPercent;
+                    return eb.SaleTax;
             }
         }
-        public async Task<POSLayer.Models.EntityButton> GetJustEntityButton(string EntityButtonIID)
+        public async Task<CategoryItem> GetJustEntityButton(string EntityButtonIID)
         {
-            return await repoEntityButton.Get(EntityButtonIID);
-            // return new POSLayer.Models.EntityButton(GetDataTable("GetEntityButton", EntityButtonIID).Rows[0]);
+            return await repoCategoryItem.Get(EntityButtonIID);
+            // return new EntityButton(GetDataTable("GetEntityButton", EntityButtonIID).Rows[0]);
         }
 
         public DataTable GetEntityButtonsForEntityDB(string PEIID)
@@ -950,22 +744,20 @@ namespace DTRMNS
         {
             return GetDataTable("GetEntityButtonsForEntityWithImage '" + PEIID + "'");
         }
-        public bool SetEntityButtonDisplayOrder(string EBIID, int displayOrder)
+        public async Task<bool> SetEntityButtonDisplayOrder(string EBIID, int displayOrder)
         {
-            return RunQuery("Update EntityButton set DisplayOrder = " + displayOrder + " where IID = '" + EBIID + "'");
+            return  await RunQuery("Update EntityButton set DisplayOrder = " + displayOrder + " where IID = '" + EBIID + "'");
         }
 
-        public async Task<List<EntityButton>> GetEntityButtonsForNumberPad()
+        public async Task<List<CategoryItem>> GetEntityButtonsForNumberPad()
         {
-            return await repoEntityButton.GetDBContext().Database.SqlQuery<EntityButton>($"SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '{config.ActiveMenuIID}' Order by Entitybutton.EntityButtonName").ToListAsync();
+            return await repoCategoryItem.GetDBContext().Database.SqlQuery<CategoryItem>($"SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '{config.ActiveMenuIID}' Order by Entitybutton.EntityButtonName").ToListAsync();
         }
 
 
-        public async Task<bool> SaveJustEntityButton(EntityButton entityButton, string ParentMenuIID)
+        public async Task<bool> SaveJustEntityButton(CategoryItem entityButton)
         {
-
-            entityButton.ParentMenuIID = ParentMenuIID;
-            return (await repoEntityButton.Save(entityButton) != null);
+            return (await repoCategoryItem.Save(entityButton) != null);
 
             //CultureInfo dbci = GetDBCulture();
             //return
@@ -1003,9 +795,9 @@ namespace DTRMNS
         //    return GetDataTable("GetEntity", EntityIID);
         //}
 
-        public async Task<Entity> GetJustEntity(string EntityIID)
+        public async Task<Category> GetJustEntity(string EntityIID)
         {
-            return await repoEntity.Get(EntityIID);
+            return await repoCategory.Get(EntityIID);
             //return new Entity(GetEntityC(EntityIID));
         }
 
@@ -1017,7 +809,7 @@ namespace DTRMNS
             return await repoEmployee.Get(IID);
             //return new Employee(GetDataTable("GetEmployee", IID));
         }
-        public async Task<List<POSLayer.Models.Employee>> GetAllEmployeeList()
+        public async Task<List<Employee>> GetAllEmployeeList()
         {
             return await repoEmployee.GetAllAsync();
 
@@ -1135,12 +927,12 @@ namespace DTRMNS
         public async Task<TableGroup> GetTableGroup(string IID)
         {
             return await repoTableGroup.Get(IID);
-           // return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
+            // return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
         }
 
         public async Task<List<Table>> GetTableList(string GroupIID)
         {
-            return await repoTable.GetListByField("GroupIID",GroupIID);
+            return await repoTable.GetListByField("GroupIID", GroupIID);
             //List<Table> TableList = new List<Table>();
             //DataTable dt = GetDataTable("GetTablesByGroup '" + GroupIID + "'");
             //for (int i = 0; i < dt.Rows.Count; i++)
@@ -1202,7 +994,7 @@ namespace DTRMNS
 
         public async Task<string> GenerateSubTableName(Table mainTable)
         {
-            List<Table> subTableList =await GetTableAndSubTables(mainTable.IID);
+            List<Table> subTableList = await GetTableAndSubTables(mainTable.IID);
             bool blnFound;// = false;
 
             for (int i = 65; i < 70; i++)
@@ -1239,10 +1031,10 @@ namespace DTRMNS
                 return false;
             else
             {
-                Table mainTable =await GetParentTable(rootTableIID);
+                Table mainTable = await GetParentTable(rootTableIID);
                 Table subTable = mainTable.CreateSubTable();
-                subTable.TableName =await GenerateSubTableName(mainTable);
-                return SaveTable(subTable);
+                subTable.TableName = await GenerateSubTableName(mainTable);
+                return await SaveTable(subTable);
             }
         }
         public async Task<Table> AddSubTable(string rootTableIID)
@@ -1254,7 +1046,7 @@ namespace DTRMNS
                 Table mainTable = await GetParentTable(rootTableIID);
                 Table subTable = mainTable.CreateSubTable();
                 subTable.TableName = await GenerateSubTableName(mainTable);
-                if (SaveTable(subTable))
+                if (await SaveTable(subTable))
                     return subTable;
                 else
                     return null;
@@ -1297,7 +1089,7 @@ namespace DTRMNS
                     {
                         //if table has order attached to it
                         //set table ClientIP(busy), set table OrderIID(occupied) , set order tableIID, set order ClientIP (busy), 
-                        POSLayer.Models.Order order = await GetOrder(table.CurrentOrderIID);
+                        Order order = await GetOrder(table.CurrentOrderIID);
                         order.TableIID = table.IID;
                         order.TableName = table.TableName;
                         order.LockedClientIP = config.Terminal_Name;
@@ -1311,7 +1103,7 @@ namespace DTRMNS
                     } else
                     {
                         //create a new order
-                        POSLayer.Models.Order order = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.InHouse)
+                        Order order = new Order(OrderTypes.InHouse)
                         {
                             //order.customer = new Customer();
                             TableIID = table.IID,
@@ -1396,7 +1188,7 @@ namespace DTRMNS
         }
 
         ///Used to return an inhouse order , this function is ONLY CALLED BY RETURN ORDER
-        private async void ReturnTable(POSLayer.Models.Order order)
+        private async void ReturnTable(Order order)
         {
             Table table = await GetTable(order.TableIID);
             if (table == null)
@@ -1496,16 +1288,16 @@ namespace DTRMNS
                 sourceTable = await BarrowTable(sourceTableIID);
             else
                 return false;
-            Table targetTable =await GetTable(targetTableIID);
+            Table targetTable = await GetTable(targetTableIID);
             if (targetTable.HasActiveOrder())
                 targetTable = await BarrowTable(targetTableIID);
             blnSourcePrimary = sourceTable.TableType == TableTypes.StaticTable;
-            blnSourceHasSubTables =await HasSubTables(sourceTableIID);
+            blnSourceHasSubTables = await HasSubTables(sourceTableIID);
             blnTargetHasSubTables = await HasSubTables(targetTableIID);
             blnTargetPrimary = targetTable.TableType == TableTypes.StaticTable;
             blnTargetEmpty = !targetTable.HasActiveOrder();
 
-            POSLayer.Models.Order sourceOrder;
+            Order sourceOrder;
             //Order targetOrder;
             Table subTargetTable;
 
@@ -1679,7 +1471,7 @@ namespace DTRMNS
             return GetDataTable("Select DefaultName from Tables where DefaultName = '" + subName + "'").Rows.Count > 0;
         }
 
-        private POSLayer.Models.Order MakeOrderFreeFromTable(POSLayer.Models.Order order)
+        private Order MakeOrderFreeFromTable(Order order)
         {
             order.TableIID = "";
             order.TableName = "";
@@ -1687,7 +1479,7 @@ namespace DTRMNS
             return order;
         }
 
-        private POSLayer.Models.Order AttachOrderToTable(POSLayer.Models.Order order, Table table)
+        private Order AttachOrderToTable(Order order, Table table)
         {
             order.TableIID = table.IID;
             order.TableName = table.TableName;
@@ -1703,17 +1495,14 @@ namespace DTRMNS
             return table;
         }
 
-        public bool SetNewParentTableIIDForSubTables(string oldParentTableIID, string newParentTableIID)
+        public async Task<bool> SetNewParentTableIIDForSubTables(string oldParentTableIID, string newParentTableIID)
         {
-            return
-                RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where ParentTableIID ='" +
-                            oldParentTableIID + "'");
+            return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where ParentTableIID ='" + oldParentTableIID + "'");
         }
 
-        public bool ChangeParentTableIIDForSubTable(string subTableIID, string newParentTableIID)
+        public async Task<bool> ChangeParentTableIIDForSubTable(string subTableIID, string newParentTableIID)
         {
-            return RunQuery("update Tables set ParentTableIID ='" +
-                newParentTableIID + "' where IID ='" + subTableIID + "'");
+            return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where IID ='" + subTableIID + "'");
         }
 
         /// <summary>
@@ -1725,14 +1514,14 @@ namespace DTRMNS
         /// <returns></returns>
         public async Task<bool> MergeTable(string sourceTableIID, string targetTableIID)
         {
-            Table sourceTable =await BarrowTable(sourceTableIID);
+            Table sourceTable = await BarrowTable(sourceTableIID);
             if (sourceTable.TableType == TableTypes.StaticTable)
             {
                 ReturnTable(sourceTable);
                 return false;
             }
 
-            Table targetTable =await BarrowTable(targetTableIID);
+            Table targetTable = await BarrowTable(targetTableIID);
             targetTable.AttachedOrder.MergeOrder(sourceTable.AttachedOrder);
             DeleteOrder(sourceTable.CurrentOrderIID);
             if (sourceTable.TableType == TableTypes.TemporaryTable)
@@ -1763,11 +1552,11 @@ namespace DTRMNS
             //    return GetTable(testTable.ParentTableIID);
         }
 
-        public bool SaveTable(Table table)
+        public async Task<bool> SaveTable(Table table)
         {
             if (table.DefaultName == null)
                 table.DefaultName = table.TableName;
-            return RunQuery("SaveTable '" + table.IID + "'," + table.Number + ",'" +
+            return await RunQuery("SaveTable '" + table.IID + "'," + table.Number + ",'" +
                                table.TableName + "'," + table.TableCovers + ",'" + table.LockedClientIP + "','" +
                                table.CurrentOrderIID + "'," + (int)table.TableType + "," + table.XLocation + "," +
                                table.YLocation +
@@ -1786,7 +1575,7 @@ namespace DTRMNS
             Table table = await GetTable(TableIID);
             if (table != null)
             {
-                POSLayer.Models.Order order = await GetOrder(table.CurrentOrderIID);
+                Order order = await GetOrder(table.CurrentOrderIID);
                 if (order != null)
                 {
                     if (order.items.Count == 0)
@@ -1816,7 +1605,7 @@ namespace DTRMNS
 
         public async Task<List<Distribution>> GetDistributionList(string ActiveMenuIID)
         {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.ParentMenuIID == ActiveMenuIID).OrderBy(x => x.DisplayOrder).ToListAsync();
+            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == ActiveMenuIID).OrderBy(x => x.dorder).ToListAsync();
             //List<Distribution> DistributionList = new List<Distribution>();
             //DataTable dt = GetDataTable("GetDistributions", ActiveMenuIID);
             //for (int i = 0; i < dt.Rows.Count; i++)
@@ -1824,19 +1613,13 @@ namespace DTRMNS
             //return DistributionList;
         }
 
-        public async Task<List<Distribution>> GetDistributionList()
+        public async Task<List<Distribution>> GetAllDistributions()             
         {
-            return await repoDistribution.GetAllAsync();
-            //List<Distribution> DistributionList = new List<Distribution>();
-            //DataTable dt = GetDataTable("SELECT * FROM Distribution");
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    DistributionList.Add(new Distribution(dt.Rows[i]));
-            //return DistributionList;
+            return await repoDistribution.GetAllAsync("Printer");
         }
         public async Task<List<Distribution>> GetAllDistributionsForMenu(string ActiveMenuIID)
         {
-            return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID);
-            //return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
+            return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID,includeItems: "Printer") ?? new();
         }
 
         public async Task<List<DistributionView>> GetAllDistributionsAsView()
@@ -1851,9 +1634,9 @@ namespace DTRMNS
             // return new Distribution(GetDataTable("GetDistribution", DistributionIID).Rows[0]);
         }
 
-        public bool SaveDistribution(Distribution distribution)
+        public async  Task<bool> SaveDistribution(Distribution distribution)
         {
-            return (repoDistribution.Save(distribution) != null);
+            return (await repoDistribution.Save(distribution) != null);
             //try
             //{
             //    return RunQuery("SaveDistribution '" + ft.IID + "','" + ft.DistributionName + "','" +
@@ -1864,15 +1647,15 @@ namespace DTRMNS
             //}
         }
 
-        public bool DeleteDistribution(string DistributionIID)
+        public async Task<bool> DeleteDistribution(string DistributionIID)
         {
-            return (repoDistribution.Delete(DistributionIID).Result > 0);
+            return (await repoDistribution.Delete(DistributionIID) > 0);
             //return RunQuery("DeleteDistribution", DistributionIID);
         }
 
         public async Task<bool> DeleteAllDistributionsForMenu(string MenuIID)
         {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.ParentMenuIID == MenuIID).ExecuteDeleteAsync() > 0;
+            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == MenuIID).ExecuteDeleteAsync() > 0;
             //return RunQuery("DeleteAllDistributionsForMenu", MenuIID);
         }
 
@@ -1881,9 +1664,9 @@ namespace DTRMNS
         #region "ORDER FUNCTIONS"
         public async Task<List<XOrder>> GetXOrderList()
         {
-            return await repoXOrder.GetListByField("SessionIID", luv.CurrentSessionIID, OrderByField: "OrderDate");
+            return await repoXOrder.GetListByField("SessionIID", shop.CurrentSessionIID, OrderByField: "OrderDate");
             //List<Order> xOrderList = new List<Order>();
-            //DataTable dt = GetDataTable("SELECT * from XOrders where SessionIID = '" + luv.CurrentSessionIID + "' order by OrderDate");
+            //DataTable dt = GetDataTable("SELECT * from XOrders where SessionIID = '" + shop.CurrentSessionIID + "' order by OrderDate");
             //for (int i = 0; i < dt.Rows.Count; i++)
             //    xOrderList.Add(GetXOrder(dt.Rows[i]["IID"].ToString()));
             //return xOrderList;
@@ -1908,9 +1691,9 @@ namespace DTRMNS
 
         public async Task<List<Order>> GetOrderList()
         {
-            return await repoOrder.GetListByField("SessionIID", luv.CurrentSessionIID, includeItems: "items", "OrderDate");
-            //List<POSLayer.Models.Order> OrderList = new List<POSLayer.Models.Order>();
-            //DataTable dt = GetDataTable("GetSessionOrders", luv.CurrentSessionIID);
+            return await repoOrder.GetListByField("SessionIID", shop.CurrentSessionIID, includeItems: "items", "OrderDate");
+            //List<Order> OrderList = new List<Order>();
+            //DataTable dt = GetDataTable("GetSessionOrders", shop.CurrentSessionIID);
             //for (int i = 0; i < dt.Rows.Count; i++)
             //    OrderList.Add(GetOrder(dt.Rows[i]["IID"].ToString()));
             //return OrderList;
@@ -1918,18 +1701,18 @@ namespace DTRMNS
 
         public DataTable GetSessionOrdersByStatus(StatusFlags InclusiveStatus)
         {
-            return GetDataTable("GetSessionOrdersByStatus '" + luv.CurrentSessionIID + "'," +
+            return GetDataTable("GetSessionOrdersByStatus '" + shop.CurrentSessionIID + "'," +
                                 (int)InclusiveStatus);
         }
 
-        public async Task<POSLayer.Models.Order> GetOrder(string IID)
+        public async Task<Order> GetOrder(string IID)
         {
             return await repoOrder.Get(IID);
             //DataTable dt = GetDataTable("GetOrder", IID);
             //if (dt.Rows.Count > 0)
             //{
             //    //create order
-            //    POSLayer.Models.Order order = new POSLayer.Models.Order(dt);
+            //    Order order = new Order(dt);
             //    //add order items
             //    DataTable dtItems = this.GetAllOrderItems(order.IID);
 
@@ -1942,7 +1725,7 @@ namespace DTRMNS
 
         public async Task<OrdersView> GetOrderView(string IID)
         {
-            return repoOrder.GetOrdersView().Result.Where(x => x.IID == IID).FirstOrDefault();
+            return (await repoOrder.GetOrdersView()).Where(x => x.IID == IID).FirstOrDefault();
         }
 
         public bool isOrderPaid(string OrderIID)
@@ -1958,14 +1741,14 @@ namespace DTRMNS
                 return false;
             }
         }
-        public async Task<bool> SaveOrder(POSLayer.Models.Order order)
+        public async Task<bool> SaveOrder(Order order)
         {
             CultureInfo ci = GetDBCulture();
             try
             {
                 string OrderIID = order.IID;
                 if (order.SessionIID == "" || order.SessionIID == null)
-                    order.SessionIID = luv.CurrentSessionIID;
+                    order.SessionIID = shop.CurrentSessionIID;
 
                 if (await repoOrder.Save(order) != null)
                 //RunQuery("SaveOrder  '" + order.IID + "','" + order.TableIID + "'," +
@@ -1982,13 +1765,13 @@ namespace DTRMNS
                 {
 
                     //for (int i = 0; i < order.items.Count; i++)
-                    //    SaveOrderItem((POSLayer.Models.OrderItem)order.items[i]);
+                    //    SaveOrderItem((OrderItem)order.items[i]);
 
                     //DataTable dtItems = this.GetAllOrderItems(order.IID);
 
                     //for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
                     //{
-                    //    POSLayer.Models.OrderItem oi = order.GetOrderItem(dtItems.Rows[i]["IID"].ToString());
+                    //    OrderItem oi = order.GetOrderItem(dtItems.Rows[i]["IID"].ToString());
                     //    if (oi == null)
                     //        RunQuery("DeleteOrderItem", dtItems.Rows[i]["IID"].ToString());
 
@@ -2012,7 +1795,7 @@ namespace DTRMNS
         //This only deletes the order , most likely called from a function which checked the inhouse, 
         //TakeAwayB, delivery possibilities
         //and deleted the table already if any or freed it.
-        public async Task DeleteOrderOnly(POSLayer.Models.Order order)
+        public async Task DeleteOrderOnly(Order order)
         {
             await repoOrder.Delete(order.IID);
             //if (order != null)
@@ -2024,31 +1807,31 @@ namespace DTRMNS
 
         public bool ConfirmForSupervision()
         {
-            using (trmSupervisorLogin frm = new trmSupervisorLogin(this))
+            using (trmSupervisorLogin frm = ActivatorUtilities.CreateInstance<trmSupervisorLogin>(sp))
             {
                 return (frm.ShowDialog() == DialogResult.OK);
             }
         }
 
-        public async Task<POSLayer.Models.OrderItem> GetOrderItem(string IID)
+        public async Task<OrderItem> GetOrderItem(string IID)
         {
-                return await repoOrderItem.Get(IID);
+            return await repoOrderItem.Get(IID);
             //DataTable dt = GetDataTable("GetOrderItem", IID);
             //if (dt == null)
             //    return null;
 
-            //return new POSLayer.Models.OrderItem(dt.Rows[0]);
+            //return new OrderItem(dt.Rows[0]);
         }
-        public async Task SaveOrderItem(POSLayer.Models.OrderItem oi)
+        public async Task SaveOrderItem(OrderItem oi)
         {
             try
             {
-                 await repoOrderItem.Save(oi);
+                await repoOrderItem.Save(oi);
                 //CultureInfo ci = GetDBCulture();
                 //if (RunQuery("SaveOrderItem '" +
                 //                oi.IID + "','" + oi.EntityIID + "','" + oi.OrderItemText + "'," + oi.Quantity + ",'" +
                 //                oi.Price.ToString(ci) + "','" + oi.OrderGroupIID + "','" + oi.EntityButtonIID + "','" +
-                //                oi.DistributionIID + "','" + oi.ParentOrderIID + "'," + (int)oi.ItemType + "," +
+                //                oi.DistributionIID + "','" + oi.OrderIID + "'," + (int)oi.ItemType + "," +
                 //                oi.DisplayOrder + ",'" +
                 //                oi.EntityName + "'," + oi.EntityDisplayOrder + ",'" +
                 //                oi.TaxPercent.ToString(ci) + "'," + oi.CompletedQuantity))
@@ -2105,9 +1888,9 @@ namespace DTRMNS
 
 
 
-        public void ReturnOrder(POSLayer.Models.Order order)
+        public void ReturnOrder(Order order)
         {
-            if (order.OrderType == POSLayer.Library.OrderTypes.InHouse)
+            if (order.OrderType == OrderTypes.InHouse)
                 this.ReturnTable(order);
             else
             {
@@ -2123,7 +1906,7 @@ namespace DTRMNS
 
         public async Task<Order> BarrowOrder(string OrderIID, string ClientIP)
         {
-            POSLayer.Models.Order order =await GetOrder(OrderIID);
+            Order order = await GetOrder(OrderIID);
             if (order.IsBusy(ClientIP))
                 return null;
             else
@@ -2140,10 +1923,10 @@ namespace DTRMNS
         //}
 
 
-        public async Task<List<POSLayer.Models.Order>> GetOrderListForSession(string SessionIID)
+        public async Task<List<Order>> GetOrderListForSession(string SessionIID)
         {
             return await repoOrder.GetDBContext().Orders.Where(x => x.SessionIID == SessionIID).Include("items").ToListAsync();
-            //List<POSLayer.Models.Order> OrderList = new List<POSLayer.Models.Order>();
+            //List<Order> OrderList = new List<Order>();
             //DataTable dt = GetDataTable("GetSessionOrders", SessionIID);
             //for (int i = 0; i < dt.Rows.Count; i++)
             //    OrderList.Add(await GetOrder(dt.Rows[i]["IID"].ToString()));
@@ -2165,17 +1948,17 @@ namespace DTRMNS
         public bool SendEmailToCustomRecepient(string ToEmail, string subject, string body, Attachment attachment)
         {
 
-            if (luv == null)
+            if (shop == null)
             {
                 return false;
             }
 
-            MailMessage msg = new MailMessage(luv.SmtpEmailAddress,
+            MailMessage msg = new MailMessage(shop.SmtpEmailAddress,
                 ToEmail, subject, body);
             if (attachment != null)
                 msg.Attachments.Add(attachment);
 
-            SmtpClient smtp = DRSmtp.GetSmtp(luv.SmtpServer, luv.SmtpEmailAddress, luv.SmtpPassword);
+            SmtpClient smtp = DRSmtp.GetSmtp(shop.SmtpServer, shop.SmtpEmailAddress, shop.SmtpPassword);
             DRSmtp.SendEmail(smtp, msg);
             return true;
         }
@@ -2187,7 +1970,7 @@ namespace DTRMNS
             try
             {
                 return await repoDebug.GetByField("DebugNo", DebugNo);
-               // return new Debug(GetDataTable("Select * from Debug where DebugNo = " + DebugNo));
+                // return new Debug(GetDataTable("Select * from Debug where DebugNo = " + DebugNo));
             } catch
             {
                 return null;
@@ -2196,18 +1979,18 @@ namespace DTRMNS
         }
 
         //}
-        public bool SaveDebug(string data)
+        public async Task<bool> SaveDebug(string data)
         {
-            return RunQuery("Insert into Debug (Data) values ('" + data.Replace("'", "''") + "')");
+            return await RunQuery("Insert into Debug (Data) values ('" + data.Replace("'", "''") + "')");
         }
 
         #endregion
 
         #region "SERVER PRINTER FUNCTIONS"
 
-        public async Task<List<POSLayer.Models.ApplicationPrinter>> GetAllPrinters()
+        public async Task<List<Printer>> GetAllPrinters()
         {
-            return await repoAppPrinter.GetAllAsync();
+            return await repoPrinter.GetAllAsync();
 
             //List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
             //DataTable dt = GetDataTable("Select * from PrinterView");
@@ -2226,16 +2009,16 @@ namespace DTRMNS
         //    return GetDataTable("GetSystemPrinterList");
         //}
 
-        public async Task<List<ApplicationPrinter>> GetPrintersByPrinterType(PrinterTypes PrinterType)
+        public async Task<List<Printer>> GetPrintersByPrinterType(PrinterTypes PrinterType)
         {
-            return await repoApplicationPrinter.GetDBContext().ApplicationPrinters.Where(x => x.PrinterType == PrinterType).ToListAsync();
+            return await repoPrinter.GetDBContext().Printers.Where(x => x.PrinterType == PrinterType).ToListAsync();
             //return GetDataTable("GetPrintersByPrinterType " + (int)PrinterType + ",'" +
             //                       config.Terminal_Name + "'," + BoolToInt(LoggedUser.IsManagerOrMore()));
         }
 
-        public async Task<POSLayer.Models.ApplicationPrinter> GetPrinterForClient(string PrinterIID)
+        public async Task<Printer> GetPrinterForClient(string PrinterIID)
         {
-            return await repoApplicationPrinter.GetDBContext().ApplicationPrinters
+            return await repoPrinter.GetDBContext().Printers
                 .Where(x => x.IID == PrinterIID && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
             //DataTable dt = GetDataTable("GetPrinterForClient '" + PrinterIID + "','" + config.Terminal_Name + "'");
             //if (dt.Rows.Count > 0)
@@ -2243,19 +2026,19 @@ namespace DTRMNS
             //else
             //    return null;
         }
-        public async Task< POSLayer.Models.ApplicationPrinter> GetPrinter(string PrinterIID)
+        public async Task<Printer> GetPrinter(string PrinterIID)
         {
-            return await repoApplicationPrinter.GetDBContext().ApplicationPrinters
-        .Where(x => x.IID == PrinterIID ).FirstOrDefaultAsync();
+            return await repoPrinter.GetDBContext().Printers
+        .Where(x => x.IID == PrinterIID).FirstOrDefaultAsync();
 
             //DataTable dt = GetDataTable("GetPrinter '" + PrinterIID + "'");
             //if (dt.Rows.Count > 0)
-            //    return new POSLayer.Models.ApplicationPrinter(dt.Rows[0]);
+            //    return new ApplicationPrinter(dt.Rows[0]);
             //else
             //    return null;
         }
 
-        public async Task<POSLayer.Models.ApplicationPrinter> GetDefaultReceiptPrinter()
+        public async Task<Printer> GetDefaultReceiptPrinter()
         {
             if (config.DTClientLocalReceiptPrinterIID != null && config.DTClientLocalReceiptPrinterIID != "")
                 return await GetPrinterForClient(config.DTClientLocalReceiptPrinterIID);
@@ -2264,38 +2047,38 @@ namespace DTRMNS
 
         }
 
-        public async Task<POSLayer.Models.ApplicationPrinter> GetPrinterForOrderType(OrderTypes orderType)
+        public async Task<Printer> GetPrinterForOrderType(OrderTypes orderType)
         {
             switch (orderType)
             {
                 case OrderTypes.DirectSale:
                 case OrderTypes.InHouse:
-                    return await repoApplicationPrinter.Get(config.DTClientLocalReceiptPrinterIID);
+                    return await repoPrinter.Get(config.DTClientLocalReceiptPrinterIID);
                 case OrderTypes.Delivery:
                 case OrderTypes.InternetDelivery:
-                    return await repoApplicationPrinter.GetDBContext().ApplicationPrinters.Where(x => x.DeliveryPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
+                    return await repoPrinter.GetDBContext().Printers.Where(x => x.DeliveryPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
                 case OrderTypes.TakeAwayB:
                 case OrderTypes.InternetTakeAway:
-                    return await repoApplicationPrinter.GetDBContext().ApplicationPrinters.Where(x => x.TakeAwayPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
-                  default:
-                    return await repoApplicationPrinter.Get(config.DTClientLocalReceiptPrinterIID);
+                    return await repoPrinter.GetDBContext().Printers.Where(x => x.TakeAwayPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
+                default:
+                    return await repoPrinter.Get(config.DTClientLocalReceiptPrinterIID);
             }
         }
         public async Task<List<Distribution>> GetDistributionListForPrinter(string ApplicationPrinterIID)
         {
-            return await repoDistribution.GetDBContext().Distributions.Where(x=> x.PrinterIID == ApplicationPrinterIID).ToListAsync();                
+            return await repoDistribution.GetDBContext().Distributions.Where(x => x.PrinterIID == ApplicationPrinterIID).ToListAsync();
         }
 
-        public async Task<bool> SavePrinter(ApplicationPrinter ap)
+        public async Task<bool> SavePrinter(Printer ap)
         {
-            return await repoApplicationPrinter.Save(ap) != null;
+            return await repoPrinter.Save(ap) != null;
         }
         public async Task<bool> SaveUniquePrinter(string PrinterIID, OrderTypes orderType)
         {
-            ApplicationPrinter printer = await repoApplicationPrinter.Get(PrinterIID);
+            Printer printer = await repoPrinter.Get(PrinterIID);
             if (printer == null)
                 return false;
-            
+
             try
             {
                 switch (orderType)
@@ -2318,12 +2101,12 @@ namespace DTRMNS
 
         public async Task DeletePrinter(string PrinterIID)
         {
-            await repoApplicationPrinter.Delete(PrinterIID);
+            await repoPrinter.Delete(PrinterIID);
         }
 
-        public async Task<List<ApplicationPrinter>> GetReceiptPrinterList()
+        public async Task<List<Printer>> GetReceiptPrinterList()
         {
-            return await repoApplicationPrinter.GetAllAsync();
+            return await repoPrinter.GetAllAsync();
         }
 
         #endregion
@@ -2345,11 +2128,11 @@ namespace DTRMNS
         {
             try
             {
-                ApplicationPrinter ap = await GetPrinterForClient(config.DtPrinterCashDrawerIID);
+                Printer printer = await GetPrinterForClient(config.DtPrinterCashDrawerIID);
 
-                if (ap == null)
+                if (printer == null)
                     return false;
-                DRShell.SendOpenCashDrawerToPrinter(ap.NetworkName);
+                DRShell.SendOpenCashDrawerToPrinter(printer.NetworkName);
                 return true;
             } catch
             {
@@ -2378,22 +2161,22 @@ namespace DTRMNS
         {
             try
             {
-                ApplicationPrinter ap =await GetPrinterForClient(config.DtPrinterCashDrawerIID);
+                Printer printer = await GetPrinterForClient(config.DtPrinterCashDrawerIID);
 
-                if (ap == null)
+                if (printer == null)
                     return false;
-                DRShell.SendOpenCashDrawerToUSBPrinter(ap.NetworkName);
+                DRShell.SendOpenCashDrawerToUSBPrinter(printer.NetworkName);
                 return true;
             } catch
             {
                 return false;
             }
         }
-        public void EnsureSessionData()
+        public async Task EnsureSessionData()
         {
-            string SessionIID = GetCurrentSessionIID();
+            string SessionIID = (await repoShop.GetFirst())?.CurrentSessionIID;
             if (SessionIID == "" || !IsSessionExist(SessionIID))
-                StartNewSession();
+                await StartNewSession();
         }
 
         public bool IsSessionExist(string SessionIID)
@@ -2402,20 +2185,20 @@ namespace DTRMNS
             return (dt.Rows.Count > 0);
         }
 
-        public string GetCurrentSessionIID()
-        {
-            DataTable dt = GetDataTable("GetLuv");
-            if (dt.Rows.Count > 0)
-            {
-                if (dt.Rows[0]["CurrentSessionIID"] != null)
-                    return dt.Rows[0]["CurrentSessionIID"].ToString();
-            }
-            return "";
-        }
+        //public string GetCurrentSessionIID()
+        //{
+        //    DataTable dt = GetDataTable("GetLuv");
+        //    if (dt.Rows.Count > 0)
+        //    {
+        //        if (dt.Rows[0]["CurrentSessionIID"] != null)
+        //            return dt.Rows[0]["CurrentSessionIID"].ToString();
+        //    }
+        //    return "";
+        //}
 
         public async Task<SessionData> GetCurrentSession()
         {
-            return await GetSessionDataDynamic(luv.CurrentSessionIID);
+            return await GetSessionDataDynamic(shop.CurrentSessionIID);
         }
 
         #endregion
@@ -2426,10 +2209,10 @@ namespace DTRMNS
         {
             try
             {
-                POSLayer.Models.KitchenOrder korder = await GetKitchenOrderForOrder(orderIID);
+                KitchenOrder korder = await GetKitchenOrderForOrder(orderIID);
                 if (korder != null)
                 {
-                    List<POSLayer.Models.ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
+                    List<Printer> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
                         new ReportGenerator(this, printerList[i], 2).PrintKitchen(korder);
@@ -2441,13 +2224,13 @@ namespace DTRMNS
                 return false;
             }
         }
-        public bool PrintForKitchen(POSLayer.Models.KitchenOrder korder)
+        public bool PrintForKitchen(KitchenOrder korder)
         {
             try
             {
                 if (korder != null)
                 {
-                    List<POSLayer.Models.ApplicationPrinter> printerList = GetApplicationPrinterList(korder);
+                    List<Printer> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
                         new ReportGenerator(this, printerList[i], 2).PrintKitchen(korder);
@@ -2460,11 +2243,11 @@ namespace DTRMNS
             }
         }
 
-        public bool PrintForKitchen(POSLayer.Models.KitchenOrder korder, POSLayer.Models.ApplicationPrinter ap, bool blnWithDetail = false)
+        public bool PrintForKitchen(KitchenOrder korder, Printer printer, bool blnWithDetail = false)
         {
             try
             {
-                return new ReportGenerator(this, ap).PrintKitchen(korder, blnWithDetail);
+                return new ReportGenerator(this, printer).PrintKitchen(korder, blnWithDetail);
             } catch
             {
                 return false;
@@ -2487,18 +2270,18 @@ namespace DTRMNS
         /// </summary>
         /// <param name="korder"></param>
         /// <returns></returns>
-        public bool HasAnyNonCompleteItems(POSLayer.Models.KitchenOrder korder)
+        public bool HasAnyNonCompleteItems(KitchenOrder korder)
         {
-            foreach (POSLayer.Models.KitchenOrderItem item in korder.items)
+            foreach (KitchenOrderItem item in korder.items)
             {
-                if (item.Status != POSLayer.Library.KitchenOrderStatusTypes.Completed)
+                if (item.Status != KitchenOrderStatusTypes.Completed)
                     return true;
             }
             return false;
         }
 
 
-        public async Task<PrepDialogReturnTypes> CreateKitchenOrderForOrder(POSLayer.Models.Order order, POSLayer.Models.KitchenOrder korder)
+        public async Task<PrepDialogReturnTypes> CreateKitchenOrderForOrder(Order order, KitchenOrder korder)
         {
             korder = null;
             PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Cancel;
@@ -2509,11 +2292,12 @@ namespace DTRMNS
                 //Now Create Kitchen Order To Display
                 korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
-                if (order.OrderType == POSLayer.Library.OrderTypes.InHouse)
+                if (order.OrderType == OrderTypes.InHouse)
                     korder.Reference = order.TableName;
 
 
-                using (frmPrep frm = new frmPrep(this, korder))
+
+                using (frmPrep frm = ActivatorUtilities.CreateInstance<frmPrep>(sp, this, korder))
                 {
                     frm.ShowDialog();
                     prepDialogResult = frm.prepResult;
@@ -2556,11 +2340,11 @@ namespace DTRMNS
                     {
                         switch (order.OrderType)
                         {
-                            case POSLayer.Library.OrderTypes.DirectSale:
-                                if ((order.Status == POSLayer.Library.StatusFlags.NEW || order.Status == POSLayer.Library.StatusFlags.PENDING) && config.Hold_Order_Print_in_Kitchen)
+                            case OrderTypes.DirectSale:
+                                if ((order.Status == StatusFlags.NEW || order.Status == StatusFlags.PENDING) && config.Hold_Order_Print_in_Kitchen)
                                     PrintForKitchen(korder);
                                 break;
-                            case POSLayer.Library.OrderTypes.InHouse:
+                            case OrderTypes.InHouse:
                                 if (config.Table_Orders_Kitchen_Receipt_Count > 0)
                                     PrintForKitchen(korder);
                                 break;
@@ -2592,7 +2376,7 @@ namespace DTRMNS
         {
             try
             {
-                POSLayer.Models.OrderItem oi = AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                OrderItem oi = AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                 oi.CompletedQuantity += koi.Quantity;
                 //oi.OrderItemText = koi.ItemText;
                 SaveOrderItem(oi);
@@ -2619,7 +2403,7 @@ namespace DTRMNS
             await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == orderIID).ExecuteDeleteAsync();
             //RunQuery("DeleteKitchenOrdersForOrder", orderIID);
         }
-        public async Task<bool> ModifyOldKitchenOrder(POSLayer.Models.KitchenOrder newKOrder)
+        public async Task<bool> ModifyOldKitchenOrder(KitchenOrder newKOrder)
         {
             KitchenOrder oldKitchenOrder = await GetKitchenOrderForOrder(newKOrder.OrderIID);
             if (oldKitchenOrder != null)
@@ -2638,23 +2422,23 @@ namespace DTRMNS
                 return false;
         }
 
-        public async Task<bool> CreateKitchenOrderForTakeAwayAndDeliveryOrder(POSLayer.Models.Order order)
+        public async Task<bool> CreateKitchenOrderForTakeAwayAndDeliveryOrder(Order order)
         {
             if (order != null)
             {
                 //Now Create Kitchen Order To Display
-                POSLayer.Models.KitchenOrder korder = ConvertOrderToKitchenOrder(order);
+                KitchenOrder korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
-                korder.Reference = order.OrderType.ToString() + "  " + order.CName;
+                korder.Reference = order.OrderType.ToString() + "  " + order.Customer.CName;
                 SaveKitchenOrder(korder);
                 OnKitchenRequestOccured(await GetKitchenOrder(korder.IID));
             }
             return true;
         }
 
-        public async Task<List<POSLayer.Models.Distribution>> GetDistributionList(POSLayer.Models.KitchenOrder korder)
+        public async Task<List<Distribution>> GetDistributionList(KitchenOrder korder)
         {
-            List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
+            List<Distribution> theList = new List<Distribution>();
             for (int i = 0; i < korder.items.Count; i++)
             {
                 if (theList.Find(x => x.IID == korder.items[i].DistributionIID) == null)
@@ -2662,9 +2446,9 @@ namespace DTRMNS
             }
             return theList;
         }
-        public async Task<string> GetDistributionListAsCommaSeperatedSqlString(POSLayer.Models.KitchenOrder korder)
+        public async Task<string> GetDistributionListAsCommaSeperatedSqlString(KitchenOrder korder)
         {
-            List<POSLayer.Models.Distribution> theList = await GetDistributionList(korder);
+            List<Distribution> theList = await GetDistributionList(korder);
             string str = "";
             for (int i = 0; i < theList.Count; i++)
             {
@@ -2674,41 +2458,41 @@ namespace DTRMNS
                 str = str.Substring(0, str.Length - 1);
             return str;
         }
-        public async Task<List<POSLayer.Models.ApplicationPrinter>> GetApplicationPrinterList()
+        public async Task<List<Printer>> GetApplicationPrinterList()
         {
-            return await repoApplicationPrinter.GetAllAsync();
+            return await repoPrinter.GetAllAsync();
             //string sql = "select* from printerview";
             //DataTable dt = GetDataTable(sql);
-            //List<POSLayer.Models.ApplicationPrinter> theList = new List<POSLayer.Models.ApplicationPrinter>();
+            //List<ApplicationPrinter> theList = new List<ApplicationPrinter>();
             //for (int i = 0; i < dt.Rows.Count; i++)
             //{
-            //    theList.Add(new POSLayer.Models.ApplicationPrinter(dt.Rows[i]));
+            //    theList.Add(new ApplicationPrinter(dt.Rows[i]));
             //}
             //return theList;
         }
 
-        public List<POSLayer.Models.ApplicationPrinter> GetApplicationPrinterList(POSLayer.Models.KitchenOrder korder)
+        public List<Printer> GetApplicationPrinterList(KitchenOrder korder)
         {
             return null;
             //string sql = "select * from printerview where ClientIID = '" + config.Terminal_Name + "' and IID in (select distinct PrinterIID from distribution where IID in (" + GetDistributionListAsCommaSeperatedSqlString(korder) + "))";
             //DataTable dt = GetDataTable(sql);
-            //List<POSLayer.Models.ApplicationPrinter> theList = new List<POSLayer.Models.ApplicationPrinter>();
+            //List<ApplicationPrinter> theList = new List<ApplicationPrinter>();
             //for (int i = 0; i < dt.Rows.Count; i++)
             //{
-            //    theList.Add(new POSLayer.Models.ApplicationPrinter(dt.Rows[i]));
+            //    theList.Add(new ApplicationPrinter(dt.Rows[i]));
             //}
             //return theList;
         }
 
-        public async Task<bool> PrintEntireOrder(POSLayer.Models.Order order, bool blnOrderly, bool blnSetPrintFlags, int NumberOfCopy, string SelectedPrinterIID)
+        public async Task<bool> PrintEntireOrder(Order order, bool blnOrderly, bool blnSetPrintFlags, int NumberOfCopy, string SelectedPrinterIID)
         {
             try
             {
                 await SaveOrder(order);
                 if (SelectedPrinterIID != null)
-                {                         
+                {
                     PrintReceipt(order.IID, await GetPrinterForClient(SelectedPrinterIID), NumberOfCopy);
-                }  
+                }
                 return true;
             } catch
             {
@@ -2717,24 +2501,24 @@ namespace DTRMNS
         }
 
         /// NEW PRINT RECEIPT FUNCTIONS /////
-        public int PrintReceipt(string orderiid, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
+        public int PrintReceipt(string orderiid, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = new ReportGenerator(this, ap, 2);
+            ReportGenerator generator = new ReportGenerator(this, printer, 2);
             generator.PrintReceipt(orderiid);
             return generator.FinalLength;
         }
 
-        public int PrintKassaReport(List<string> report, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
+        public int PrintKassaReport(List<string> report, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = new ReportGenerator(this, ap, 2);
+            ReportGenerator generator = new ReportGenerator(this, printer, 2);
             generator.PrintKassaReport(report);
             return generator.FinalLength;
         }
 
 
-        public int ViewReceipt(Graphics g, string orderiid, POSLayer.Models.ApplicationPrinter ap, int NumberOfCopy)
+        public int ViewReceipt(Graphics g, string orderiid, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = new ReportGenerator(g, this, ap, 2);
+            ReportGenerator generator = ActivatorUtilities.CreateInstance<ReportGenerator>(sp, g, this, printer, 2);
             generator.PrintReceipt(orderiid);
             return generator.FinalLength;
         }
@@ -2763,7 +2547,7 @@ namespace DTRMNS
                 return await generator.PrintLateSessionReport(SessionIID, reportFormat);
             else
             {
-                bool blnresult =await generator.PrintSessionReport(SessionIID, reportFormat);
+                bool blnresult = await generator.PrintSessionReport(SessionIID, reportFormat);
                 imgReportSnapShot = generator.imgSnapShot;
                 return blnresult;
             }
@@ -2780,17 +2564,17 @@ namespace DTRMNS
             }
         }
 
-        public async  Task<bool> RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
+        public async Task<bool> RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
         {
             SessionData SessionToArchive;
             try
             {
-                SessionToArchive = await GetSessionDataDynamic(luv.CurrentSessionIID);
+                SessionToArchive = await GetSessionDataDynamic(shop.CurrentSessionIID);
 
                 //This is a second before where the current session to be archived
 
 
-                if (RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.SessionIID}' And Status = 3"))
+                if (await RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.SessionIID}' And Status = 3"))
                 {
 
                     //Handle start new session things
@@ -2803,7 +2587,7 @@ namespace DTRMNS
                         if (SessionToArchive.SessionIID == sd.SessionIID)
                         {
                             SessionToArchive.SessionEndDateTime = DateTime.Now;
-                            SaveSessionData(SessionToArchive);
+                            await SaveSessionData(SessionToArchive);
                             await StartNewSession();
                         }
                     }
@@ -2858,23 +2642,23 @@ namespace DTRMNS
         }
         public async Task<bool> SaveSessionData(string SessionIID)
         {
-            return SaveSessionData(await GetSessionDataDynamic(SessionIID));
+            return await SaveSessionData(await GetSessionDataDynamic(SessionIID));
         }
 
-        public bool SaveSessionData(SessionData ses)
+        public async Task<bool> SaveSessionData(SessionData ses)
         {
 
-            return RunQuery("SaveSessionData '" + ses.SessionIID + "'," +
+            return await RunQuery("SaveSessionData '" + ses.SessionIID + "'," +
                                DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime) +
                                "," + DRDateTime.DatetimeToMSSql(ses.SessionEndDateTime) + ",'" +
                                ses.GrossSessionTotal.ToString(ci) + "','" +
                                ses.X1Total.ToString(ci) + "','" + ses.X2Total.ToString(ci) + "','" + ses.X3Total.ToString(ci) + "'");
         }
 
-        public bool SaveDrawerSessionData(SessionData ses)
+        public async Task<bool> SaveDrawerSessionData(SessionData ses)
         {
             CultureInfo ci = GetDBCulture();
-            return RunQuery("SaveDrawerSessionData '" + ses.SessionIID + "','" + ses.peny1.ToString(ci) +
+            return await RunQuery("SaveDrawerSessionData '" + ses.SessionIID + "','" + ses.peny1.ToString(ci) +
                                "','" + ses.peny2.ToString(ci) +
                                "','" + ses.peny5.ToString(ci) +
                                "','" + ses.peny10.ToString(ci) +
@@ -2947,12 +2731,12 @@ namespace DTRMNS
             else
                 return false;
         }
-        public bool RefreshDatabase()
+        public async Task<bool> RefreshDatabase()
         {
             try
             {
                 string logfileName = GetDataTable("Select name from sys.database_files where type_desc = 'LOG'").Rows[0]["name"].ToString();
-                return RunQuery("CHECKPOINT;DBCC SHRINKFILE (N'" + logfileName + "', 1, TRUNCATEONLY);EXEC sp_cycle_errorlog;");
+                return await RunQuery("CHECKPOINT;DBCC SHRINKFILE (N'" + logfileName + "', 1, TRUNCATEONLY);EXEC sp_cycle_errorlog;");
             } catch
             {
                 return false;
@@ -2964,7 +2748,7 @@ namespace DTRMNS
             {
                 SessionFamily sf = new SessionFamily
                 {
-                    sessionData =await GetSessionDataDynamic(SessionIID)
+                    sessionData = await GetSessionDataDynamic(SessionIID)
                 };
 
                 string SessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
@@ -3014,7 +2798,7 @@ namespace DTRMNS
                     sf.sessionData.SessionEndDateTime = DateTime.Now;
                 }
                 SaveSessionData(sf.sessionData);
-                sf.Orders =await GetOrderListForSession(SessionIID);
+                sf.Orders = await GetOrderListForSession(SessionIID);
                 if (!DRFile.XmlSerialize(directoryPath + "\\" + SessionFileName, sf, typeof(SessionFamily), false))
                     return false;
 
@@ -3165,7 +2949,7 @@ namespace DTRMNS
                             else if (myReader.LocalName.Equals("SessionEndDateTime"))
                                 dr["EndDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
                             else if (myReader.LocalName.Equals("GrossSessionTotal"))
-                                dr["GrossSessionTotal"] = float.Parse(myReader.ReadString(), culture);
+                                dr["GrossSessionTotal"] = double.Parse(myReader.ReadString(), culture);
                             else if (myReader.LocalName.Equals("X1Total"))
                                 dr["X1Total"] = Convert.ToSingle(myReader.ReadString(), culture);
                             else if (myReader.LocalName.Equals("X2Total"))
@@ -3203,7 +2987,7 @@ namespace DTRMNS
                 //Also update order session numbers
                 //DO NOT MAKE THIS SINGLE DATABASE CALL
                 RunQuery("UpdateSessionIIDForOrders '" + TempSession.SessionIID + "'," + (int)StatusFlags.COMPLETED);
-                luv = await GetLuv();
+                shop = await repoShop.GetFirst();
                 return true;
             } catch
             {
@@ -3211,10 +2995,9 @@ namespace DTRMNS
             }
         }
 
-        public void ActivateSession(SessionData ses)
+        public async Task ActivateSession(SessionData ses)
         {
-            RunQuery("ActivateSession '" + ses.SessionIID + "'," +
-                        DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime));
+            await RunQuery("ActivateSession '" + ses.SessionIID + "'," + DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime));
         }
 
 
@@ -3223,16 +3006,16 @@ namespace DTRMNS
         /// </summary>
         /// <param name="SessionIID"></param>
         /// <returns></returns>
-        public bool PreserveSessionOrdesToX(string SessionIID)
+        public async Task<bool> PreserveSessionOrdesToX(string SessionIID)
         {
             //Move and delete Orders FROM orders and OrderItem table to xorders and xOrderItem table
-            return RunQuery("MoveOrdersToXOrdersForSession '" + SessionIID + "'");
+            return await RunQuery("MoveOrdersToXOrdersForSession '" + SessionIID + "'");
         }
 
-        public bool GetXOrdersBackForSession(string SessionIID)
+        public async Task<bool> GetXOrdersBackForSession(string SessionIID)
         {
             //Move and delete XOrders from xOrders and xOrderItem table to orders and orderitem table
-            return RunQuery("MoveXOrdersToOrdersForSession '" + SessionIID + "'");
+            return await RunQuery("MoveXOrdersToOrdersForSession '" + SessionIID + "'");
         }
 
         #endregion
@@ -3255,24 +3038,24 @@ namespace DTRMNS
 
             string dailysql =
                 "select StartDate, EndDate, TaxPercent, TotalNoTax, NetTaxValue, GrossTotal from TaxSummary  Where startdate >= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "' order by startdate asc, TaxPercent asc";
+                UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                UF.DatetimeToMSSqlDatetime(LastEndDate) + "' order by startdate asc, TaxPercent asc";
             DataTable dtdailysql = GetDataTable(dailysql);
             dtdailysql.TableName = "Daily";
             ds.Tables.Add(dtdailysql);
 
             string percentsumsql =
                 "select '', 'Sum of %', TaxPercent, sum(totalnotax) as TotalNoTax,  sum(nettaxvalue) as NetTaxValue,Payment, sum(grosstotal) as GrossTotal  from TaxSummary  Where startdate >= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "' group by taxpercent,payment order by taxpercent, payment";
+                UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                UF.DatetimeToMSSqlDatetime(LastEndDate) + "' group by taxpercent,payment order by taxpercent, payment";
             DataTable dtpercentsum = GetDataTable(percentsumsql);
             dtpercentsum.TableName = "Percent";
             ds.Tables.Add(dtpercentsum);
 
             string sumsql =
                 "select '', 'Total','', sum(totalnotax) as TotalNoTax ,sum(nettaxvalue) as NetTaxValue,Payment, sum(grosstotal) as GrossTotal  from TaxSummary   Where startdate >= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
-                POSLayer.Library.UF.DatetimeToMSSqlDatetime(LastEndDate) + "'  group by payment  order by  payment";
+                UF.DatetimeToMSSqlDatetime(FirstStartDate) + "' and enddate <= '" +
+                UF.DatetimeToMSSqlDatetime(LastEndDate) + "'  group by payment  order by  payment";
             DataTable dtsum = GetDataTable(sumsql);
             dtsum.TableName = "Sum";
             ds.Tables.Add(dtsum);
@@ -3311,40 +3094,40 @@ namespace DTRMNS
         #endregion
 
 
-        public async Task<POSLayer.Models.OrderItem> DirectCreateTopOrderItemForOrder(POSLayer.Models.Order order, string EntityButtonIID, bool blnSaveOrder = false)
+        public async Task<OrderItem> DirectCreateTopOrderItemForOrder(Order order, string EntityButtonIID, bool blnSaveOrder = false)
         {
-            POSLayer.Models.EntityButton eb = await GetJustEntityButton(EntityButtonIID);
-            POSLayer.Models.Entity entity = await GetEntity(eb.ParentEntityIID);
-            POSLayer.Models.OrderItem oi = new POSLayer.Models.OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
+            CategoryItem eb = await GetJustEntityButton(EntityButtonIID);
+            Category entity = await GetEntity(eb.CategoryIID);
+            OrderItem oi = new OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
-                EntityButtonIID, eb.EntityButtonName, entity.DistributionIID, POSLayer.Library.OrderItemTypes.NormalOrderItem, 0,
-                entity.EntityName, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
-            POSLayer.Models.OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
+                EntityButtonIID, eb.Name, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
+                entity.Name, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
+            OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
             if (thesameitem != null)
-                thesameitem.Increment();
+                thesameitem.Quantity++;
             else
                 order.AddIncrementOrderItem(oi);
             if (blnSaveOrder)
-               await SaveOrder(order);
+                await SaveOrder(order);
             return oi;
         }
-        public bool DirectDeleteOrderItem(string orderItemIID)
+        public async Task<bool> DirectDeleteOrderItem(string orderItemIID)
         {
-            return RunQuery("DeleteOrderItem '" + orderItemIID + "'");
+            return await RunQuery("DeleteOrderItem '" + orderItemIID + "'");
         }
-        public bool DirectIncrementOrderItem(string orderItemIID)
+        public async Task<bool> DirectIncrementOrderItem(string orderItemIID)
         {
-            return RunQuery("update orderitem set Quantity = Quantity + 1 where IID = '" + orderItemIID + "'");
+            return await RunQuery("update orderitem set Quantity = Quantity + 1 where IID = '" + orderItemIID + "'");
         }
-        public bool DirectDecrementOrderItem(string orderItemIID)
+        public async Task<bool> DirectDecrementOrderItem(string orderItemIID)
         {
-            RunQuery("update orderitem set Quantity = Quantity - 1 where IID = '" + orderItemIID + "'");
-            return RunQuery("delete orderitem where Quantity = 0 and IID ='" + orderItemIID + "'");
+            await RunQuery("update orderitem set Quantity = Quantity - 1 where IID = '" + orderItemIID + "'");
+            return await RunQuery("delete orderitem where Quantity = 0 and IID ='" + orderItemIID + "'");
         }
 
-        public float GetOrderTotal(string orderIID)
+        public double GetOrderTotal(string orderIID)
         {
-            return float.Parse(GetDataTable("Select CalculatedValue as Total from OrdersView where IID ='" +
+            return double.Parse(GetDataTable("Select CalculatedValue as Total from OrdersView where IID ='" +
                 orderIID + "'").Rows[0]["Total"].ToString());
         }
 
@@ -3362,28 +3145,28 @@ namespace DTRMNS
                 return false;
             }
         }
-        public float GetCurrentSessionXSum()
+        public double GetCurrentSessionXSum()
         {
             DataTable dt =
                 GetDataTable("Select isnull(Sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" +
-                                GetCurrentSessionIID() + "'");
-            return float.Parse(dt.Rows[0]["Total"].ToString());
+                                shop.CurrentSessionIID + "'");
+            return double.Parse(dt.Rows[0]["Total"].ToString());
         }
 
-        public float GetSessionOrderSum(string SessionIID)
+        public double GetSessionOrderSum(string SessionIID)
         {
             DataTable dt =
                 GetDataTable("Select Sum(CalculatedValue) as Total from OrdersView where SessionIID = '" + SessionIID +
                                 "'");
-            return float.Parse(dt.Rows[0]["Total"].ToString());
+            return double.Parse(dt.Rows[0]["Total"].ToString());
         }
 
-        public float GetSessionPaymentSum(string SessionIID, PaymentMethods paymentMethod)
+        public double GetSessionPaymentSum(string SessionIID, PaymentMethods paymentMethod)
         {
             DataTable dt =
                 GetDataTable("Select Sum(CalculatedValue) as Total from OrdersView where SessionIID = '" + SessionIID +
                                 "' and Payment = " + (int)paymentMethod);
-            return float.Parse(dt.Rows[0]["Total"].ToString());
+            return double.Parse(dt.Rows[0]["Total"].ToString());
         }
         public void PrintImage(Bitmap b, string printerNetworkName)
         {
@@ -3422,24 +3205,24 @@ namespace DTRMNS
             //    return theList;
             //}
         }
-        public async Task<List<POSLayer.Models.Distribution>> GetSecondDisplayTypeList()
+        public async Task<List<Distribution>> GetSecondDisplayTypeList()
         {
             return await repoDistribution.GetDBContext().Database.SqlQuery<Distribution>($"Select * from Distribution where IID in ({config.Secondary_Distribution_Terminal_Type_List})").ToListAsync();
-            //List<POSLayer.Models.Distribution> theList = new List<POSLayer.Models.Distribution>();
+            //List<Distribution> theList = new List<Distribution>();
             //try
             //{                   
             //    DataTable dt = GetDataTable("Select * from Distribution where IID in (" + config.Secondary_Distribution_Terminal_Type_List + ")");
             //    if (dt == null)
             //        return theList;
             //    for (int i = 0; i < dt.Rows.Count; i++)
-            //        theList.Add(new POSLayer.Models.Distribution(dt.Rows[i]));
+            //        theList.Add(new Distribution(dt.Rows[i]));
             //    return theList;
             //} catch
             //{
             //    return theList;
             //}
         }
-        public bool SaveKitchenOrder(POSLayer.Models.KitchenOrder order)
+        public bool SaveKitchenOrder(KitchenOrder order)
         {
             return repoKitchenOrder.Save(order) != null;
 
@@ -3450,7 +3233,7 @@ namespace DTRMNS
             //    bool test = true;
             //    for (int i = 0; i < order.items.Count; i++)
             //    {
-            //        POSLayer.Models.KitchenOrderItem koi = order.items[i];
+            //        KitchenOrderItem koi = order.items[i];
             //        test = test && RunQuery("SaveKitchenOrderItem '" + koi.IID + "'," + koi.Quantity + ",'" +
             //            koi.ItemText + "','" + koi.KitchenOrderIID + "','" + koi.DistributionIID + "','" +
             //            koi.EntityButtonIID + "'," + (int)koi.Status);
@@ -3553,7 +3336,7 @@ namespace DTRMNS
         /// </summary>
         /// <param name="theList"></param>
         /// <returns></returns>
-        public string GetCommaSeperatedDistributionIIDListForDatabase(List<POSLayer.Models.Distribution> theList)
+        public string GetCommaSeperatedDistributionIIDListForDatabase(List<Distribution> theList)
         {
             string str = "";
             for (int i = 0; i < theList.Count; i++)
@@ -3565,10 +3348,10 @@ namespace DTRMNS
 
             return str;
         }
-        public async Task<List<POSLayer.Models.KitchenOrder>> GetKitchenOrderList()
+        public async Task<List<KitchenOrder>> GetKitchenOrderList()
         {
             return await repoKitchenOrder.GetAllAsync();
-            //List<POSLayer.Models.KitchenOrder> korderList = new List<POSLayer.Models.KitchenOrder>();
+            //List<KitchenOrder> korderList = new List<KitchenOrder>();
             //DataTable dtKorder = GetDataTable("Select IID from KitchenOrders order by OrderNo");
 
             //for (int i = 0; i < dtKorder.Rows.Count; i++)
@@ -3577,14 +3360,14 @@ namespace DTRMNS
             //return korderList;
         }
 
-        public async Task<POSLayer.Models.KitchenOrder> GetKitchenOrder(string IID)
+        public async Task<KitchenOrder> GetKitchenOrder(string IID)
         {
             return await repoKitchenOrder.Get(IID, "Items");
 
             //DataTable dt = GetDataTable("Select * from KitchenOrders Where IID ='" + IID + "'");
             //try
             //{
-            //    POSLayer.Models.KitchenOrder korder = new POSLayer.Models.KitchenOrder(dt);
+            //    KitchenOrder korder = new KitchenOrder(dt);
             //    dt = GetDataTable("Select * from KitchenOrderItem where KitchenOrderIID = '" + IID + "'");
             //    for (int i = 0; i < dt.Rows.Count; i++)
             //        korder.items.Add(new KitchenOrderItem(dt.Rows[i]));
@@ -3635,9 +3418,9 @@ namespace DTRMNS
             return theList;
         }
 
-        public POSLayer.Models.KitchenOrder ConvertOrderToKitchenOrder(POSLayer.Models.Order order)
+        public KitchenOrder ConvertOrderToKitchenOrder(Order order)
         {
-            POSLayer.Models.KitchenOrder korder = new POSLayer.Models.KitchenOrder
+            KitchenOrder korder = new KitchenOrder
             {
                 Reference = order.Reference,
                 CreatedDateTime = DateTime.Now,
@@ -3646,7 +3429,7 @@ namespace DTRMNS
 
             for (int i = 0; i < order.items.Count; i++)
             {
-                POSLayer.Models.KitchenOrderItem korderitem = new POSLayer.Models.KitchenOrderItem
+                KitchenOrderItem korderitem = new KitchenOrderItem
                 {
                     EntityButtonIID = order.items[i].EntityButtonIID,
                     Quantity = (int)order.items[i].Quantity,
@@ -3663,11 +3446,11 @@ namespace DTRMNS
         {
             try
             {
-                if (((AttachedOrder.Status == POSLayer.Library.StatusFlags.DONE || AttachedOrder.Status == POSLayer.Library.StatusFlags.PENDING) &&
+                if (((AttachedOrder.Status == StatusFlags.DONE || AttachedOrder.Status == StatusFlags.PENDING) &&
                         (config.Table_Orders_Display_Kitchen_Orders || config.Hold_Order_Display_in_Kitchen)) ||
-                        (!blnBeingModified && AttachedOrder.Status == POSLayer.Library.StatusFlags.COMPLETED))
+                        (!blnBeingModified && AttachedOrder.Status == StatusFlags.COMPLETED))
                 {
-                    await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == AttachedOrder.IID).ForEachAsync(x => x.BeingModified =  blnBeingModified);
+                    await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == AttachedOrder.IID).ForEachAsync(x => x.BeingModified = blnBeingModified);
                     //RunQuery("Update KitchenOrders set BeingModified = " + BoolToInt(blnBeingModified) + " where OrderIID ='" + AttachedOrder.IID + "'");
                     SetKitchenModified();
                 }
@@ -3678,13 +3461,13 @@ namespace DTRMNS
         }
         public bool ShrinkKitchenOrderList()
         {
-            DataTable dt = GetDataTable("Select IID from KitchenOrders where Status = " + (int)POSLayer.Library.KitchenOrderStatusTypes.Completed);
+            DataTable dt = GetDataTable("Select IID from KitchenOrders where Status = " + (int)KitchenOrderStatusTypes.Completed);
             if (dt.Rows.Count <= config.Kitchen_Max_Completed_Order_Count)
                 return false;
 
             int topCount = dt.Rows.Count - config.Kitchen_Max_Completed_Order_Count;
             dt = GetDataTable("Select Top " + topCount + " IID from KitchenOrders where Status = " +
-                (int)POSLayer.Library.KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
+                (int)KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
             for (int i = 0; i < dt.Rows.Count; i++)
                 DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), false);
 
@@ -3699,15 +3482,15 @@ namespace DTRMNS
             } catch { }
             return DateTime.Now;
         }
-        public bool SetKitchenModified()
+        public async Task<bool> SetKitchenModified()
         {
             //return RunQuery("update Luv set KitchenModified = GETDATE()");
-            return RunQuery("UpdateKitchenModified");
+            return await RunQuery("UpdateKitchenModified");
         }
 
-        public bool CleanKitchenOrdersHasNoParentOrder()
+        public async Task<bool> CleanKitchenOrdersHasNoParentOrder()
         {
-            return RunQuery("CleanKitchenOrdersHasNoParentOrder");
+            return await RunQuery("CleanKitchenOrdersHasNoParentOrder");
         }
         #endregion
 
@@ -3739,22 +3522,22 @@ namespace DTRMNS
         /// <param name="IID"></param>
         /// <param name="blnForce">True: delete the supplier even it has stockitem in the list, False: will only delete if there is no entry in stockitem table in supplierIID column</param>
         /// <returns></returns>
-        public bool DeleteSupplier(string IID, bool blnForce)
+        public async Task<bool> DeleteSupplier(string IID, bool blnForce)
         {
             int count = int.Parse(GetDataTable("Select count(IID) as howmany from StockItem where SupplierIID = '" +
                 IID + "'").Rows[0]["howmany"].ToString());
             if (count > 0)
             {
                 if (blnForce)
-                    return RunQuery("Delete from Supplier where IID ='" + IID + "'");
+                    return await RunQuery("Delete from Supplier where IID ='" + IID + "'");
                 else
                     return false;
             } else
-                return RunQuery("Delete from Supplier where IID ='" + IID + "'");
+                return await RunQuery("Delete from Supplier where IID ='" + IID + "'");
         }
-        public bool SaveSupplier(Supplier supplier)
+        public async Task<bool> SaveSupplier(Supplier supplier)
         {
-            return RunQuery("SaveSupplier " +
+            return await RunQuery("SaveSupplier " +
                 "'" + supplier.IID + "','" + supplier.SupplierName.Replace("'", "''") + "','" +
                 supplier.Tel.Replace("'", "''") + "','" + supplier.Address.Replace("'", "''") + "','" +
                 supplier.Email1 + "','" + supplier.Email2 + "','" + supplier.Whatsup.Replace("'", "''") + "'");
@@ -3765,7 +3548,7 @@ namespace DTRMNS
         public async Task<StockItem> GetStockItem(string IID)
         {
             return await repoStockItem.Get(IID);
-           // return new StockItem(GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on Supplier.IID = StockItem.SupplierIID  where StockItem.IID = '" + IID + "'"));
+            // return new StockItem(GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on Supplier.IID = StockItem.SupplierIID  where StockItem.IID = '" + IID + "'"));
         }
         /// <summary>
         /// 
@@ -3773,24 +3556,24 @@ namespace DTRMNS
         /// <param name="IID"></param>
         /// <param name="blnForce">True: will delete the stock item regardless it has an entry in EBStockItemLookUp, False: it will only be deleted if no EBStockItemLookup Entry </param>
         /// <returns></returns>
-        public bool DeleteStockItem(string IID, bool blnForce)
+        public async Task<bool> DeleteStockItem(string IID, bool blnForce)
         {
             int count = int.Parse(GetDataTable("Select count(StockItemIID) as howmany from EntityButtonStockItemLookUp where StockItemIID = '" +
                 IID + "'").Rows[0]["howmany"].ToString());
             if (count > 0)
             {
                 if (blnForce)
-                    return RunQuery("Delete from StockItem where IID ='" + IID + "'");
+                    return await RunQuery("Delete from StockItem where IID ='" + IID + "'");
                 else
                     return false;
             } else
-                return RunQuery("Delete from StockItem where IID ='" + IID + "'");
+                return await RunQuery("Delete from StockItem where IID ='" + IID + "'");
         }
-        public bool SaveStockItem(StockItem stockitem)
+        public async Task<bool> SaveStockItem(StockItem stockitem)
         {
             string sql = "SaveStockItem " + "'" + stockitem.IID + "','" + stockitem.StockName.Replace("'", "''") + "'," +
         (int)stockitem.QuantityType + "," + (int)stockitem.OrderType + "," + stockitem.Conversion + ",'" + stockitem.SupplierIID + "'," + stockitem.UsedQuantity;
-            return RunQuery(sql);
+            return await RunQuery(sql);
         }
 
         /// <summary>
@@ -3799,9 +3582,9 @@ namespace DTRMNS
         /// <param name="StockItemIID"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
-        public bool UpdateStockItemUsedQuantity(string StockItemIID, int quantity)
+        public async Task<bool> UpdateStockItemUsedQuantity(string StockItemIID, int quantity)
         {
-            return RunQuery("update stockItem set UsedQuantity = UsedQuantity + " + quantity + " where IID = '" + StockItemIID + "'");
+            return await RunQuery("update stockItem set UsedQuantity = UsedQuantity + " + quantity + " where IID = '" + StockItemIID + "'");
         }
 
 
@@ -3812,14 +3595,14 @@ namespace DTRMNS
         /// <param name="stockItemIID"></param>
         /// <param name="Quantity">Create quantity 1 for 24 luk kasaya mesela</param>
         /// <returns></returns>
-        public bool BifileStockItem(string stockItemIID, int Quantity)
+        public async Task<bool> BifileStockItem(string stockItemIID, int Quantity)
         {
-            return RunQuery("update stockitem set UsedQuantity = (UsedQuantity - (" + Quantity + " * Conversion)) where IID = '" + stockItemIID + "'");
+            return await RunQuery("update stockitem set UsedQuantity = (UsedQuantity - (" + Quantity + " * Conversion)) where IID = '" + stockItemIID + "'");
         }
 
-        public bool SetStockItemQuantity(string stockItemIID, int Quantity)
+        public async Task<bool> SetStockItemQuantity(string stockItemIID, int Quantity)
         {
-            return RunQuery("update stockItem set UsedQuantity = " + Quantity + " where IID = '" + stockItemIID + "'");
+            return await RunQuery("update stockItem set UsedQuantity = " + Quantity + " where IID = '" + stockItemIID + "'");
         }
         public DataTable GetAllStockItems()
         {
@@ -3844,7 +3627,7 @@ namespace DTRMNS
         public async Task<List<StockItem>> SearchStockItems(string searchText, string SupplierIID)
         {
             return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%{searchText}%' and SupplierIID ='{SupplierIID}' order by StockName").ToListAsync();
-           // return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' and SupplierIID ='" + SupplierIID + "' order by StockName");
+            // return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' and SupplierIID ='" + SupplierIID + "' order by StockName");
         }
         public async Task<List<StockItem>> GetAllStockItemsShort()
         {
@@ -3869,7 +3652,7 @@ namespace DTRMNS
             sm.Suppliers = await repoSupplier.GetAllAsync();
             sm.EBStockItemLookups = await repoEntityButtonStockItemLookUp.GetAllAsync();
             sm.StockItems = await repoStockItem.GetAllAsync();
-            
+
             return sm;
         }
 
@@ -3920,7 +3703,7 @@ namespace DTRMNS
         public async Task<List<EntityButtonStockItemLookUp>> GetStockItemsForEB(string EBIID)
         {
             return await repoMenu.GetDBContext().Database.SqlQuery<EntityButtonStockItemLookUp>($"SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '{EBIID}' order by DisplayOrder asc").ToListAsync();
-           // return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
+            // return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
         }
 
         public async Task<EntityButtonStockItemLookUp> GetEntityButtonStockItemLookUp(string IID)
@@ -3949,10 +3732,10 @@ namespace DTRMNS
         /// </summary>
         /// <param name="blnIncrement"></param> UsedQuantity + newValue / if false just UsedQuantity
         /// <returns></returns>
-        public bool TransferStockItemUsageNow()
+        public async Task<bool> TransferStockItemUsageNow()
         {
             bool blnIncrement = true;
-            return RunQuery("update stockItem set UsedQuantity = (Select SessionQuantity from StockItemUsage where StockItem.IID = StockItemUsage.StockItemIID) " + (blnIncrement ? " + UsedQuantity" : "") +
+            return await RunQuery("update stockItem set UsedQuantity = (Select SessionQuantity from StockItemUsage where StockItem.IID = StockItemUsage.StockItemIID) " + (blnIncrement ? " + UsedQuantity" : "") +
                 " where stockItem.IID in (Select StockItemIID from StockItemUsage)");
         }
 
@@ -3972,7 +3755,7 @@ namespace DTRMNS
 
             if (OrderableOnly)
                 return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName);
-                //return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
+            //return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
             else
             {
                 return repoMenu.GetStockItemUsageView().Result.OrderBy(x => x.SupplierName);
@@ -4003,7 +3786,7 @@ namespace DTRMNS
         {
             if (OrderableOnly)
                 return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName).ToList();
-                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
+            //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
             else
             {
                 return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID).OrderBy(x => x.SupplierName).ToList();
@@ -4014,10 +3797,10 @@ namespace DTRMNS
         {
             if (OrderableOnly)
                 return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1 && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
-                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
+            //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
             else
             {
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID  && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
                 //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "'  and StockName Like '%" + searchText + "%' order by SupplierName asc");
             }
         }
@@ -4034,33 +3817,33 @@ namespace DTRMNS
         /// Call this function carefully. It is non-reversable.
         /// </summary>
         /// <returns></returns>
-        public bool RemoveOrderedStockUsage(bool blnConvertableOnly)
+        public async Task<bool> RemoveOrderedStockUsage(bool blnConvertableOnly)
         {
             if (blnConvertableOnly)
-                return RunQuery("update stockitem set UsedQuantity = (UsedQuantity % Conversion)");
+                return await RunQuery("update stockitem set UsedQuantity = (UsedQuantity % Conversion)");
             else
-                return RunQuery("Update StockItem set UsedQuantity =0");
+                return await RunQuery("Update StockItem set UsedQuantity =0");
         }
 
-        public async Task<bool> PrintStockUsage(POSLayer.Models.ApplicationPrinter ap)
+        public async Task<bool> PrintStockUsage(Printer printer)
         {
-            return new ReportGenerator(this, ap, 2).PrintStockUsage(await GetStockItemUsages(true), null);
+            return new ReportGenerator(this, printer, 2).PrintStockUsage(await GetStockItemUsages(true), null);
         }
-        public bool PrintStockUsage(POSLayer.Models.ApplicationPrinter ap,IEnumerable<StockItemUsage> stockUsages, string SupplierName)
+        public bool PrintStockUsage(Printer printer, IEnumerable<StockItemUsage> stockUsages, string SupplierName)
         {
-            return new ReportGenerator(this, ap, 2).PrintStockUsage(stockUsages, SupplierName);
+            return new ReportGenerator(this, printer, 2).PrintStockUsage(stockUsages, SupplierName);
         }
 
         public DataTable GetEntityButtonStockItemRecipeFromStockItem(string StockItemIID)
         {
             return GetDataTable("Select * from EntityButtonStockItemRecipe where StockItemIID ='" + StockItemIID + "'");
         }
-        public bool PrintDataTable(POSLayer.Models.ApplicationPrinter ap, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
+        public bool PrintDataTable(Printer printer, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
         {
 
-            if (ap != null)
+            if (printer != null)
             {
-                return new ReportGenerator(this, ap, 2).PrintDataTable(dt, CustomReportName, columnSize, blnIncludeHeaders);
+                return new ReportGenerator(this, printer, 2).PrintDataTable(dt, CustomReportName, columnSize, blnIncludeHeaders);
             }
 
             return false;
@@ -4146,7 +3929,7 @@ namespace DTRMNS
             string str = "";
             foreach (var item in lookupList)
             {
-                
+
                 //double val = double.Parse(dt.Rows[i]["Quantity"].ToString());
                 if (item.Quantity == 0)
                 {
@@ -4168,7 +3951,7 @@ namespace DTRMNS
             //string str = "";
             //for (int i = 0; i < dt.Rows.Count; i++)
             //{
-            //    float val = float.Parse(dt.Rows[i]["Quantity"].ToString());
+            //    double val = double.Parse(dt.Rows[i]["Quantity"].ToString());
             //    if (val == 0)
             //    {
             //        str += dt.Rows[i]["Comment"].ToString();
@@ -4189,7 +3972,7 @@ namespace DTRMNS
         //    return await repoImage.DeleteByField("ReferenceIID", ReferenceIID) > 0;
         //    //return RunQuery("Delete from Images where ReferenceIID ='" + ReferenceIID + "'");
         //}
-       
+
 
         //public DataTable GetAllImages()
         //{
@@ -4217,12 +4000,12 @@ namespace DTRMNS
         public async Task<bool> DeleteGenericImage(string referenceIID)
         {
             return await repoImage.DeleteByField("ReferenceIID", referenceIID) > 0;
-           // return RunQuery("Delete from Images where ReferenceIID = '" + referenceIID + "'");
+            // return RunQuery("Delete from Images where ReferenceIID = '" + referenceIID + "'");
         }
         public async Task<bool> SaveGenericImage(GenericImage gim)
         {
             return await repoImage.Save(gim) != null;
-           // return false;  
+            // return false;  
             // bu onemli
 
             //try
@@ -4270,7 +4053,7 @@ namespace DTRMNS
         {
             try
             {
-                List<POSLayer.Models.GenericImage> images = await repoImage.GetAllAsync();
+                List<GenericImage> images = await repoImage.GetAllAsync();
                 foreach (var item in images)
                 {
                     string filename = folderpath + "\\" + item.ReferenceIID + ".png";
@@ -4312,7 +4095,7 @@ namespace DTRMNS
         public bool HasCurrentSessionCompletedOrders()
         {
             DataTable dt = GetDataTable("Select count(IID) as howmany from Orders where status = " +
-                (int)StatusFlags.COMPLETED + " and SessionIID ='" + GetCurrentSessionIID() + "'");
+                (int)StatusFlags.COMPLETED + " and SessionIID ='" + shop.CurrentSessionIID + "'");
             return int.Parse(dt.Rows[0]["howmany"].ToString()) > 0;
         }
 
@@ -4333,15 +4116,15 @@ namespace DTRMNS
 
                 //Load Printer List
                 if (options.includePrinters)
-                    backup.printerList =await GetApplicationPrinterList();
+                    backup.printerList = await GetApplicationPrinterList();
 
-                if (options.includeLuv)
-                    backup.luv = GetLuv().Result;
+                if (options.includeShop)
+                    backup.shop = await repoShop.GetFirst();
 
                 if (options.includeCurrentSession)
                 {
-                    backup.currentSession = new SessionData(await repoSession.Get(luv.CurrentSessionIID));
-                    //DataTable dtCurrentSession = GetDataTable("Select * from Sessions where IID = '" + luv.CurrentSessionIID + "'");
+                    backup.currentSession = new SessionData(await repoSession.Get(shop.CurrentSessionIID));
+                    //DataTable dtCurrentSession = GetDataTable("Select * from Sessions where IID = '" + shop.CurrentSessionIID + "'");
                     //backup.currentSession = new SessionData(dtCurrentSession);
                 }
 
@@ -4384,28 +4167,28 @@ namespace DTRMNS
                 return null;
             }
         }
-        public bool ShrinkCustomer(string customerIID)
+        public async Task<bool> ShrinkCustomer(string customerIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
-            return RunQuery("Update Customer set IID = '" + newIID + "' where IID = '" + customerIID + "'");
+            return await RunQuery("Update Customer set IID = '" + newIID + "' where IID = '" + customerIID + "'");
         }
-        public bool ShrinkAllCustomers()
+        public async Task<bool> ShrinkAllCustomers()
         {
             try
             {
                 DataTable dt = GetDataTable("Select IID from Customer");
                 for (int i = 0; i < dt.Rows.Count; i++)
-                    ShrinkCustomer(dt.Rows[i]["IID"].ToString());
+                    await ShrinkCustomer(dt.Rows[i]["IID"].ToString());
                 return true;
             } catch
             {
                 return false;
             }
         }
-        public bool ShrinkUser(string userIID)
+        public async Task<bool> ShrinkUser(string userIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
-            return RunQuery("Update Users set IID = '" + newIID + "' where IID = '" + userIID + "'");
+            return await RunQuery("Update Users set IID = '" + newIID + "' where IID = '" + userIID + "'");
         }
         public bool ShrinkAllUsers()
         {
@@ -4420,12 +4203,12 @@ namespace DTRMNS
                 return false;
             }
         }
-        public bool ShrinkApplicationPrinter(string printerIID)
+        public async Task<bool> ShrinkApplicationPrinter(string printerIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
-            return RunQuery("Update ApplicationPrinter set IID = '" + newIID + "' where IID = '" + printerIID + "'") &&
-                    RunQuery("Update PrinterLookup set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'") &&
-                    RunQuery("Update Distribution set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'");
+            return await RunQuery("Update ApplicationPrinter set IID = '" + newIID + "' where IID = '" + printerIID + "'") &&
+                  await  RunQuery("Update PrinterLookup set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'") &&
+                  await  RunQuery("Update Distribution set PrinterIID = '" + newIID + "' where PrinterIID = '" + printerIID + "'");
         }
         public bool ShrinkAllApplicationPrinters()
         {
@@ -4440,10 +4223,10 @@ namespace DTRMNS
                 return false;
             }
         }
-        public bool ShrinkTable(string TableIID)
+        public async Task<bool> ShrinkTable(string TableIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
-            return RunQuery("Update Tables set IID = '" + newIID + "' where IID = '" + TableIID + "'");
+            return await RunQuery("Update Tables set IID = '" + newIID + "' where IID = '" + TableIID + "'");
         }
         public bool ShrinkAllTables()
         {
@@ -4458,21 +4241,21 @@ namespace DTRMNS
                 return false;
             }
         }
-        public bool ShrinkTableGroup(string tableGroupIID)
+        public async Task<bool> ShrinkTableGroup(string tableGroupIID)
         {
             try
             {
                 string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
                 //Update TableGroup IID
-                RunQuery("Update TableGroup set IID = '" + newIID + "' where IID = '" + tableGroupIID + "'");
+                await RunQuery("Update TableGroup set IID = '" + newIID + "' where IID = '" + tableGroupIID + "'");
                 //Update GroupIID in Tables
-                RunQuery("Update Tables set GroupIID = '" + newIID + "' where GroupIID = '" + tableGroupIID + "'");
+                await RunQuery("Update Tables set GroupIID = '" + newIID + "' where GroupIID = '" + tableGroupIID + "'");
                 //Update IID Fields of this table group tables
                 DataTable dt = GetDataTable("Select IID from Tables");
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     string oldTableIID = dt.Rows[i]["IID"].ToString();
-                    ShrinkTable(oldTableIID);
+                    await ShrinkTable(oldTableIID);
                 }
                 return true;
             } catch
@@ -4481,7 +4264,7 @@ namespace DTRMNS
             }
 
         }
-        public bool ShrinkAllTableGroups()
+        public async Task<bool> ShrinkAllTableGroups()
         {
             try
             {
@@ -4490,7 +4273,7 @@ namespace DTRMNS
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     string oldTableGroupIID = dt.Rows[i]["IID"].ToString();
-                    blnStatus = blnStatus && ShrinkTableGroup(oldTableGroupIID);
+                    blnStatus = blnStatus && await ShrinkTableGroup(oldTableGroupIID);
                 }
                 return blnStatus;
             } catch
@@ -4499,51 +4282,51 @@ namespace DTRMNS
             }
         }
 
-        public bool ShrinkDistribution(string DistributionIID)
+        public async Task<bool> ShrinkDistribution(string DistributionIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the distribution 
-            return RunQuery("Update Distribution set IID = '" + newIID + "' where IID = '" + DistributionIID + "'") &&
+            return await RunQuery("Update Distribution set IID = '" + newIID + "' where IID = '" + DistributionIID + "'") &&
             //Update DistributionIID of the EntityButtons
-            RunQuery("Update EntityButton set DistributionIID = '" + newIID + "' where DistributionIID = '" + DistributionIID + "'") &&
+           await RunQuery("Update EntityButton set DistributionIID = '" + newIID + "' where DistributionIID = '" + DistributionIID + "'") &&
             //Update DistributionIID of the Entities
-            RunQuery("Update Entity set DistributionIID = '" + newIID + "' where DistributionIID = '" + DistributionIID + "'");
+         await   RunQuery("Update Entity set DistributionIID = '" + newIID + "' where DistributionIID = '" + DistributionIID + "'");
         }
 
-        public bool ShrinkEntityButton(string ebIID)
+        public async Task<bool> ShrinkEntityButton(string ebIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Entity Button 
-            return RunQuery("Update EntityButton set IID = '" + newIID + "' where IID = '" + ebIID + "'") &&
+            return await RunQuery("Update EntityButton set IID = '" + newIID + "' where IID = '" + ebIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this entity button
-            RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + ebIID + "'") &&
+            await RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + ebIID + "'") &&
             //Update DistributionIID of the Entities
-            RunQuery("Update EntityButtonStockItemLookUp set EntityButtonIID = '" + newIID + "' where EntityButtonIID = '" + ebIID + "'");
+           await RunQuery("Update EntityButtonStockItemLookUp set EntityButtonIID = '" + newIID + "' where EntityButtonIID = '" + ebIID + "'");
         }
 
-        public bool ShrinkEntity(string eIID)
+        public async Task<bool> ShrinkEntity(string eIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Entity 
-            return RunQuery("Update Entity set IID = '" + newIID + "' where IID = '" + eIID + "'") &&
+            return await RunQuery("Update Entity set IID = '" + newIID + "' where IID = '" + eIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this entity
-            RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + eIID + "'") &&
+           await RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + eIID + "'") &&
             //Update DistributionIID of the Entities
-            RunQuery("Update EntityButton set ParentEntityIID = '" + newIID + "' where ParentEntityIID = '" + eIID + "'");
+          await  RunQuery("Update EntityButton set ParentEntityIID = '" + newIID + "' where ParentEntityIID = '" + eIID + "'");
 
         }
 
-        public bool ShrinkMenu(string menuIID)
+        public async Task<bool> ShrinkMenu(string menuIID)
         {
             string newMenuIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the Menu 
-            if (RunQuery("Update Menu set IID = '" + newMenuIID + "' where IID = '" + menuIID + "'") &&
+            if (await RunQuery("Update Menu set IID = '" + newMenuIID + "' where IID = '" + menuIID + "'") &&
                 //Update ParentMenuIID in Entity
-                RunQuery("Update Entity set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'") &&
+              await  RunQuery("Update Entity set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'") &&
                 //Update ParentMenuIID in EntityButton
-                RunQuery("Update EntityButton set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'") &&
+              await  RunQuery("Update EntityButton set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'") &&
                 //Update ParentMenuIID in Distribution
-                RunQuery("Update Distribution set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'"))
+             await   RunQuery("Update Distribution set ParentMenuIID = '" + newMenuIID + "' where ParentMenuIID = '" + menuIID + "'"))
             {
 
                 //Now shrink Entity List
@@ -4610,15 +4393,15 @@ namespace DTRMNS
             }
         }
 
-        public bool ShrinkStockItem(string itemIID)
+        public async Task<bool> ShrinkStockItem(string itemIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the StockItem 
-            return RunQuery("Update StockItem set IID = '" + newIID + "' where IID = '" + itemIID + "'") &&
+            return await RunQuery("Update StockItem set IID = '" + newIID + "' where IID = '" + itemIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this stockItem
-            RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + itemIID + "'") &&
+           await RunQuery("Update Images set ReferenceIID = '" + newIID + "' where ReferenceIID = '" + itemIID + "'") &&
             //Update StockItemIID in EntityButtonStockItemLookUp of the StockItem
-             RunQuery("Update EntityButtonStockItemLookUp set StockItemIID = '" + newIID + "' where StockItemIID = '" + itemIID + "'");
+          await   RunQuery("Update EntityButtonStockItemLookUp set StockItemIID = '" + newIID + "' where StockItemIID = '" + itemIID + "'");
         }
 
         public bool ShrinkAllStockItems()
@@ -4635,22 +4418,22 @@ namespace DTRMNS
             }
         }
 
-        public bool ShrinkSupplier(string suppIID)
+        public async Task<bool> ShrinkSupplier(string suppIID)
         {
             string newIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
             //Update IID of the StockItem 
-            return RunQuery("Update Supplier set IID = '" + newIID + "' where IID = '" + suppIID + "'") &&
+            return await RunQuery("Update Supplier set IID = '" + newIID + "' where IID = '" + suppIID + "'") &&
             //Update ReferenceIID in Images if any referenced to this stockItem
-            RunQuery("Update StockItem set SupplierIID = '" + newIID + "' where SupplierIID = '" + suppIID + "'");
+           await RunQuery("Update StockItem set SupplierIID = '" + newIID + "' where SupplierIID = '" + suppIID + "'");
         }
 
-        public bool ShrinkAllSuppliers()
+        public async Task<bool> ShrinkAllSuppliers()
         {
             try
             {
                 DataTable dt = GetDataTable("Select IID from Supplier");
                 for (int i = 0; i < dt.Rows.Count; i++)
-                    ShrinkSupplier(dt.Rows[i]["IID"].ToString());
+                   await ShrinkSupplier(dt.Rows[i]["IID"].ToString());
                 return true;
             } catch
             {
@@ -4658,11 +4441,11 @@ namespace DTRMNS
             }
         }
 
-        public bool ShrinkStockManager()
+        public async Task<bool> ShrinkStockManager()
         {
             try
             {
-                return ShrinkAllSuppliers() && ShrinkAllStockItems();
+                return await ShrinkAllSuppliers() && ShrinkAllStockItems();
             } catch
             {
                 return false;
@@ -4791,158 +4574,180 @@ namespace DTRMNS
 
         public DataTable GetIrrelevantUnpaidOrdersDB()
         {
-            return GetDataTable("Select * from OrdersView where Payment =0 and Status = 5 and SessionIID != '" + luv.CurrentSessionIID + "'");
+            return GetDataTable("Select * from OrdersView where Payment =0 and Status = 5 and SessionIID != '" + shop.CurrentSessionIID + "'");
         }
         public DataTable GetRelevantUnpaidCreatedOrNewOrdersDB()
         {
-            return GetDataTable("Select * from OrdersView where Payment =0 and (Status = 0 || Status = 1) and SessionIID == '" + luv.CurrentSessionIID + "'");
+            return GetDataTable("Select * from OrdersView where Payment =0 and (Status = 0 || Status = 1) and SessionIID == '" + shop.CurrentSessionIID + "'");
         }
-        public bool CreateDemoMenu(string menuName)
+        public async Task<bool> CreateDemoMenu(string menuName)
         {
-            FoodMenu fmenu = new FoodMenu()
+            TheMenu fmenu = new TheMenu()
             {
                 MenuName = menuName
             };
 
             //Create Distributions
-            Distribution dist1 = new Distribution("Hot Drinks", "");
-            dist1.ShortName = "HD";
-            dist1.DisplayOrder = 0;
-            dist1.ParentMenuIID = fmenu.IID;
-            fmenu.Distributions.Add(dist1);
+            Distribution dist1 = new Distribution()
+            {
+                Name = "Hot Drinks",
+                MenuIID = fmenu.IID
+            };
+            fmenu.distributions.Add(dist1);
 
-            Distribution dist2 = new Distribution("Cold Drinks", "");
-            dist2.ShortName = "CD";
-            dist2.DisplayOrder = 1;
-            dist2.ParentMenuIID = fmenu.IID;
-            fmenu.Distributions.Add(dist2);
+            Distribution dist2 = new Distribution()
+            {
+                Name = "Cold Drinks",
+                dorder = 1,
+                MenuIID = fmenu.IID
+            };
+            fmenu.distributions.Add(dist2);
 
             //Create Entities
-            Entity entity1 = new Entity()
+            Category entity1 = new Category()
             {
-                ParentMenuIID = fmenu.IID
+                MenuIID = fmenu.IID,
+                Name = "CoffeeAndTea",
+                DistributionIID = dist1.IID,
+                dorder = 0,
+                EntityType = EntityTypes.NormalEntity,
+                BgColour = Color.White.ToArgb(),
+                FgColour = Color.Red.ToArgb(),
+                Height = 50,
+                Width = 120,
+                FFamily = "Arial",
+                FSize = 10,
+                FStyle = "Bold"
             };
-            entity1.EntityName = "CoffeeAndTea";
-            entity1.DistributionIID = dist1.IID;
-            entity1.DistributionName = dist1.DistributionName;
-            entity1.DisplayOrder = 0;
-            entity1.EntityType = EntityTypes.NormalEntity;
-            entity1.BackColour = Color.White.ToArgb();
-            entity1.ForeColour = Color.Red.ToArgb();
-            entity1.ParentMenuIID = fmenu.IID;
-            entity1.ButtonHeight = 50;
-            entity1.ButtonWidth = 120;
-            entity1.FFamily = "Arial";
-            entity1.FSize = 10;
-            entity1.FStyle = "Bold";
-            fmenu.items.Add(entity1);
-
-            //Create EntityButtons for first entity
-            EntityButton eb1 = new EntityButton();
-            eb1.EntityButtonName = "Americano";
-            eb1.DisplayOrder = 0;
-            eb1.ButtonColor = Color.White.ToArgb();
-            eb1.ForeColor = Color.Black.ToArgb();
-            eb1.ButtonType = EntityButtonTypes.SimpleItem;
-            eb1.AvailableFor = 0;  //everything
-            eb1.ParentEntityIID = entity1.IID;
-            eb1.ParentMenuIID = fmenu.IID;
-            eb1.DirectSaleTaxPercent = eb1.InHouseTaxPercent = eb1.TakeAwayTaxPercent = eb1.DeliveryTaxPercent = 10;
-            eb1.DirectSalePrice = eb1.InHousePrice = eb1.TakeAwayPrice = eb1.DeliveryPrice = 4.50f;
-            eb1.ButtonWidth = 200;
-            eb1.ButtonHeight = 50;
-            eb1.FFamily = "Arial";
-            eb1.FSize = 9;
-            eb1.FStyle = "Regular";
-            eb1.DistributionIID = dist1.IID;
-            eb1.WithImage = false;
-            entity1.Buttons.Add(eb1);
-
-
-            EntityButton eb2 = new EntityButton();
-            eb2.EntityButtonName = "Ice Tea";
-            eb2.DisplayOrder = 0;
-            eb2.ButtonColor = Color.White.ToArgb();
-            eb2.ForeColor = Color.Black.ToArgb();
-            eb2.ButtonType = EntityButtonTypes.SimpleItem;
-            eb2.AvailableFor = 0;  //everything
-            eb2.ParentEntityIID = entity1.IID;
-            eb2.ParentMenuIID = fmenu.IID;
-            eb2.DirectSaleTaxPercent = eb2.InHouseTaxPercent = eb2.TakeAwayTaxPercent = eb2.DeliveryTaxPercent = 10;
-            eb2.DirectSalePrice = eb2.InHousePrice = eb2.TakeAwayPrice = eb2.DeliveryPrice = 6.50f;
-            eb2.ButtonWidth = 200;
-            eb2.ButtonHeight = 50;
-            eb2.FFamily = "Arial";
-            eb2.FSize = 9.75f;
-            eb2.FStyle = "Bold";
-            eb2.DistributionIID = dist2.IID;
-            eb2.WithImage = false;
-            entity1.Buttons.Add(eb2);
-
-
-            Entity entity2 = new Entity()
-            {
-                ParentMenuIID = fmenu.IID
-            };
-            entity2.EntityName = "Soda And Others";
-            entity2.DistributionIID = dist2.IID;
-            entity2.DistributionName = dist2.DistributionName;
-            entity2.DisplayOrder = 1;
-            entity2.EntityType = EntityTypes.NormalEntity;
-            entity2.BackColour = Color.Yellow.ToArgb();
-            entity2.ForeColour = Color.DarkBlue.ToArgb();
-            entity2.ParentMenuIID = fmenu.IID;
-
-            entity2.ButtonHeight = 50;
-            entity2.ButtonWidth = 150;
-            entity2.FFamily = "Microsoft Sans Serif";
-            entity2.FSize = 12;
-            entity2.FStyle = "Bold";
-            fmenu.items.Add(entity2);
+            fmenu.categories.Add(entity1);
 
 
             //Create EntityButtons for first entity
-            EntityButton eb3 = new EntityButton();
-            eb3.EntityButtonName = "Fanta";
-            eb3.DisplayOrder = 0;
-            eb3.ButtonColor = Color.Yellow.ToArgb();
-            eb3.ForeColor = Color.Black.ToArgb();
-            eb3.ButtonType = EntityButtonTypes.SimpleItem;
-            eb3.AvailableFor = 0;  //everything
-            eb3.ParentEntityIID = entity2.IID;
-            eb3.ParentMenuIID = fmenu.IID;
-            eb3.DirectSaleTaxPercent = eb3.InHouseTaxPercent = eb3.TakeAwayTaxPercent = eb3.DeliveryTaxPercent = 10;
-            eb3.DirectSalePrice = eb3.InHousePrice = eb3.TakeAwayPrice = eb3.DeliveryPrice = 4.50f;
-            eb3.ButtonWidth = 120;
-            eb3.ButtonHeight = 40;
-            eb3.FFamily = "Arial";
-            eb3.FSize = 11;
-            eb3.FStyle = "Regular";
-            eb3.DistributionIID = dist2.IID;
-            eb3.WithImage = false;
-            entity2.Buttons.Add(eb3);
+            entity1.Items.Add(new CategoryItem()
+            {
+                Name = "Americano",
+                dorder = 0,
+                BgColor = Color.White.ToArgb(),
+                FgColor = Color.Black.ToArgb(),
+                ButtonType = EntityButtonTypes.SimpleItem,
+                AvailableFor = 0,  //everything
+                CategoryIID = entity1.IID,
+                SaleTax = 10,
+                SitinTax = 10,
+                TaTax = 10,
+                DTax = 10,
+                SalePrice = 4.50,
+                SitinPrice = 4.50,
+                TaPrice = 4.50,
+                DPrice = 4.50,
+                Width = 200,
+                Height = 50,
+                FFamily = "Arial",
+                FSize = 9,
+                FStyle = "Regular",
+                DistributionIID = dist1.IID,
+                WithImage = false
+            });
 
-            EntityButton eb4 = new EntityButton();
-            eb4.EntityButtonName = "Whisky";
-            eb4.DisplayOrder = 0;
-            eb4.ButtonColor = Color.DarkOrange.ToArgb();
-            eb4.ForeColor = Color.Black.ToArgb();
-            eb4.ButtonType = EntityButtonTypes.SimpleItem;
-            eb4.AvailableFor = 0;  //everything
-            eb4.ParentEntityIID = entity2.IID;
-            eb4.ParentMenuIID = fmenu.IID;
-            eb4.DirectSaleTaxPercent = eb4.InHouseTaxPercent = eb4.TakeAwayTaxPercent = eb4.DeliveryTaxPercent = 19;
-            eb4.DirectSalePrice = eb4.InHousePrice = eb4.TakeAwayPrice = eb4.DeliveryPrice = 6.50f;
-            eb4.ButtonWidth = 150;
-            eb4.ButtonHeight = 50;
-            eb4.FFamily = "Arial";
-            eb4.FSize = 12;
-            eb4.FStyle = "Bold";
-            eb4.DistributionIID = dist2.IID;
-            eb4.WithImage = false;
-            entity2.Buttons.Add(eb4);
 
-            SaveMenuDB(fmenu);
+            entity1.Items.Add(new CategoryItem()
+            {
+                Name = "Ice Tea",
+                dorder = 0,
+                BgColor = Color.White.ToArgb(),
+                FgColor = Color.Black.ToArgb(),
+                ButtonType = EntityButtonTypes.SimpleItem,
+                AvailableFor = 0,  //everything
+                CategoryIID = entity1.IID,
+                SaleTax = 10,
+                SitinTax = 10,
+                TaTax = 10,
+                DTax = 10,
+                SalePrice = 6.50,
+                SitinPrice = 6.50,
+                TaPrice = 6.50,
+                DPrice = 6.50,
+                Width = 200,
+                Height = 50,
+                FFamily = "Arial",
+                FSize = 9.75f,
+                FStyle = "Bold",
+                DistributionIID = dist2.IID,
+                WithImage = false
+            });
+
+
+            Category entity2 = new Category()
+            {
+                MenuIID = fmenu.IID,
+                Name = "Soda And Others",
+                DistributionIID = dist2.IID,
+                dorder = 1,
+                EntityType = EntityTypes.NormalEntity,
+                BgColour = Color.Yellow.ToArgb(),
+                FgColour = Color.DarkBlue.ToArgb(),
+                Height = 50,
+                Width = 150,
+                FFamily = "Microsoft Sans Serif",
+                FSize = 12,
+                FStyle = "Bold"
+            };
+            fmenu.categories.Add(entity2);
+
+            //Create EntityButtons for first entity
+            entity2.Items.Add(new CategoryItem()
+            {
+                Name = "Fanta",
+                dorder = 0,
+                BgColor = Color.Yellow.ToArgb(),
+                FgColor = Color.Black.ToArgb(),
+                ButtonType = EntityButtonTypes.SimpleItem,
+                AvailableFor = 0,  //everything
+                CategoryIID = entity2.IID,
+                SaleTax = 10,
+                SitinTax = 10,
+                TaTax = 10,
+                DTax = 10,
+                SalePrice = 4.50,
+                SitinPrice = 4.50,
+                TaPrice = 4.50,
+                DPrice = 4.50,
+                Width = 120,
+                Height = 40,
+                FFamily = "Arial",
+                FSize = 11,
+                FStyle = "Regular",
+                DistributionIID = dist2.IID,
+                WithImage = false,
+            });
+
+            entity2.Items.Add(new CategoryItem()
+            {
+                Name = "Whisky",
+                dorder = 0,
+                BgColor = Color.DarkOrange.ToArgb(),
+                FgColor = Color.Black.ToArgb(),
+                ButtonType = EntityButtonTypes.SimpleItem,
+                AvailableFor = 0,  //everything
+                CategoryIID = entity2.IID,
+                SaleTax = 19,
+                SitinTax = 19,
+                TaTax = 19,
+                DTax = 19,
+                SalePrice = 6.50,
+                SitinPrice = 6.50,
+                TaPrice = 6.50,
+                DPrice = 6.50,
+                Width = 150,
+                Height = 50,
+                FFamily = "Arial",
+                FSize = 12,
+                FStyle = "Bold",
+                DistributionIID = dist2.IID,
+                WithImage = false,
+            });
+
+            await SaveMenuDB(fmenu);
 
             return true;
         }

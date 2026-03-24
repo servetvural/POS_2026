@@ -7,7 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using DTRMNS;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using POSLayer.Library;
 
@@ -29,10 +32,10 @@ namespace DTRM_Kassa_Calculator {
                     }
                 }
 
-                bslayer.CustomInitialize( UF.GetConfig());
-                if (bslayer != null) {
+                //bslayer.CustomInitialize( UF.GetConfig());
+                //if (bslayer != null) {
                    
-                }
+                //}
             } catch {
                 AskForConfig(null);
             }
@@ -46,9 +49,9 @@ namespace DTRM_Kassa_Calculator {
         }
 
         private bool AskForConfig(DTRMSimpleBusiness testbslayer) {
-            frmConfig frm = new frmConfig(testbslayer);
+            frmConfig frm = ActivatorUtilities.CreateInstance < frmConfig>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK) {
-                bslayer.CustomInitialize(UF.GetConfig());
+               // bslayer.CustomInitialize(UF.GetConfig());
                 return true;
             } else
                 return false;
@@ -56,7 +59,7 @@ namespace DTRM_Kassa_Calculator {
         }
 
         private void btnCalculator_Click(object sender, EventArgs e) {
-            frmKassaCalculator frm = new frmKassaCalculator(bslayer);
+            frmKassaCalculator frm = ActivatorUtilities.CreateInstance < frmKassaCalculator>(ServiceHelper.Services);
             frm.Show();
         }
     }
