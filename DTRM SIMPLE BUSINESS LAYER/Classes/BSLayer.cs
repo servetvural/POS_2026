@@ -1605,7 +1605,7 @@ namespace DTRMNS
 
         public async Task<List<Distribution>> GetDistributionList(string ActiveMenuIID)
         {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == ActiveMenuIID).OrderBy(x => x.dorder).ToListAsync();
+            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == ActiveMenuIID).OrderBy(x => x.DOrder).ToListAsync();
             //List<Distribution> DistributionList = new List<Distribution>();
             //DataTable dt = GetDataTable("GetDistributions", ActiveMenuIID);
             //for (int i = 0; i < dt.Rows.Count; i++)
@@ -2019,7 +2019,7 @@ namespace DTRMNS
         public async Task<Printer> GetPrinterForClient(string PrinterIID)
         {
             return await repoPrinter.GetDBContext().Printers
-                .Where(x => x.IID == PrinterIID && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
+                .Where(x => x.IID == PrinterIID && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
             //DataTable dt = GetDataTable("GetPrinterForClient '" + PrinterIID + "','" + config.Terminal_Name + "'");
             //if (dt.Rows.Count > 0)
             //    return new ApplicationPrinter(dt.Rows[0]);
@@ -2056,17 +2056,19 @@ namespace DTRMNS
                     return await repoPrinter.Get(config.DTClientLocalReceiptPrinterIID);
                 case OrderTypes.Delivery:
                 case OrderTypes.InternetDelivery:
-                    return await repoPrinter.GetDBContext().Printers.Where(x => x.DeliveryPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
+                    return await repoPrinter.GetDBContext().Printers.Where(x => x.DeliveryPrinter && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
                 case OrderTypes.TakeAwayB:
                 case OrderTypes.InternetTakeAway:
-                    return await repoPrinter.GetDBContext().Printers.Where(x => x.TakeAwayPrinter && x.ClientIID == config.Terminal_Name).FirstOrDefaultAsync();
+                    return await repoPrinter.GetDBContext().Printers.Where(x => x.TakeAwayPrinter && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
                 default:
                     return await repoPrinter.Get(config.DTClientLocalReceiptPrinterIID);
             }
         }
         public async Task<List<Distribution>> GetDistributionListForPrinter(string ApplicationPrinterIID)
         {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.PrinterIID == ApplicationPrinterIID).ToListAsync();
+            MessageBox.Show("bslayer GetDistributionListForPrinter");
+            return null;
+          //  return await repoDistribution.GetDBContext().Distributions.Where(x => x.PrinterIID == ApplicationPrinterIID).ToListAsync();
         }
 
         public async Task<bool> SavePrinter(Printer ap)
@@ -2084,11 +2086,11 @@ namespace DTRMNS
                 switch (orderType)
                 {
                     case OrderTypes.Delivery:
-                        printer.ClientIID = config.Terminal_Name;
+                        printer.LocalTerminal = config.Terminal_Name;
                         printer.DeliveryPrinter = true;
                         break;
                     case OrderTypes.TakeAwayB:
-                        printer.ClientIID = config.Terminal_Name;
+                        printer.LocalTerminal = config.Terminal_Name;
                         printer.TakeAwayPrinter = true;
                         break;
                 }
@@ -3100,8 +3102,8 @@ namespace DTRMNS
             Category entity = await GetEntity(eb.CategoryIID);
             OrderItem oi = new OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
-                EntityButtonIID, eb.Name, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
-                entity.Name, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
+                EntityButtonIID, eb.ItemName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
+                entity.CategoryName, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
             OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
             if (thesameitem != null)
                 thesameitem.Quantity++;
@@ -4582,172 +4584,30 @@ namespace DTRMNS
         }
         public async Task<bool> CreateDemoMenu(string menuName)
         {
-            TheMenu fmenu = new TheMenu()
+            TheMenu menu = new TheMenu()
             {
-                MenuName = menuName
+                MenuName = "New Menu",
+                IsActive = true,
+                distributions = new List<Distribution>()
+                {
+                        new Distribution() {DistributionName = "Distro 1"}
+                },
+                categories = new List<Category>()
+                {
+                    new      Category()
+                    {
+                        CategoryName = "First Category" ,
+                        Items = new List<CategoryItem>()
+                        {
+                            new   CategoryItem()
+                            {
+                                ItemName = "First Category Item"
+                            }
+                        }
+                    }
+                }
             };
-
-            //Create Distributions
-            Distribution dist1 = new Distribution()
-            {
-                Name = "Hot Drinks",
-                MenuIID = fmenu.IID
-            };
-            fmenu.distributions.Add(dist1);
-
-            Distribution dist2 = new Distribution()
-            {
-                Name = "Cold Drinks",
-                dorder = 1,
-                MenuIID = fmenu.IID
-            };
-            fmenu.distributions.Add(dist2);
-
-            //Create Entities
-            Category entity1 = new Category()
-            {
-                MenuIID = fmenu.IID,
-                Name = "CoffeeAndTea",
-                DistributionIID = dist1.IID,
-                dorder = 0,
-                EntityType = EntityTypes.NormalEntity,
-                BgColour = Color.White.ToArgb(),
-                FgColour = Color.Red.ToArgb(),
-                Height = 50,
-                Width = 120,
-                FFamily = "Arial",
-                FSize = 10,
-                FStyle = "Bold"
-            };
-            fmenu.categories.Add(entity1);
-
-
-            //Create EntityButtons for first entity
-            entity1.Items.Add(new CategoryItem()
-            {
-                Name = "Americano",
-                dorder = 0,
-                BgColor = Color.White.ToArgb(),
-                FgColor = Color.Black.ToArgb(),
-                ButtonType = EntityButtonTypes.SimpleItem,
-                AvailableFor = 0,  //everything
-                CategoryIID = entity1.IID,
-                SaleTax = 10,
-                SitinTax = 10,
-                TaTax = 10,
-                DTax = 10,
-                SalePrice = 4.50,
-                SitinPrice = 4.50,
-                TaPrice = 4.50,
-                DPrice = 4.50,
-                Width = 200,
-                Height = 50,
-                FFamily = "Arial",
-                FSize = 9,
-                FStyle = "Regular",
-                DistributionIID = dist1.IID,
-                WithImage = false
-            });
-
-
-            entity1.Items.Add(new CategoryItem()
-            {
-                Name = "Ice Tea",
-                dorder = 0,
-                BgColor = Color.White.ToArgb(),
-                FgColor = Color.Black.ToArgb(),
-                ButtonType = EntityButtonTypes.SimpleItem,
-                AvailableFor = 0,  //everything
-                CategoryIID = entity1.IID,
-                SaleTax = 10,
-                SitinTax = 10,
-                TaTax = 10,
-                DTax = 10,
-                SalePrice = 6.50,
-                SitinPrice = 6.50,
-                TaPrice = 6.50,
-                DPrice = 6.50,
-                Width = 200,
-                Height = 50,
-                FFamily = "Arial",
-                FSize = 9.75f,
-                FStyle = "Bold",
-                DistributionIID = dist2.IID,
-                WithImage = false
-            });
-
-
-            Category entity2 = new Category()
-            {
-                MenuIID = fmenu.IID,
-                Name = "Soda And Others",
-                DistributionIID = dist2.IID,
-                dorder = 1,
-                EntityType = EntityTypes.NormalEntity,
-                BgColour = Color.Yellow.ToArgb(),
-                FgColour = Color.DarkBlue.ToArgb(),
-                Height = 50,
-                Width = 150,
-                FFamily = "Microsoft Sans Serif",
-                FSize = 12,
-                FStyle = "Bold"
-            };
-            fmenu.categories.Add(entity2);
-
-            //Create EntityButtons for first entity
-            entity2.Items.Add(new CategoryItem()
-            {
-                Name = "Fanta",
-                dorder = 0,
-                BgColor = Color.Yellow.ToArgb(),
-                FgColor = Color.Black.ToArgb(),
-                ButtonType = EntityButtonTypes.SimpleItem,
-                AvailableFor = 0,  //everything
-                CategoryIID = entity2.IID,
-                SaleTax = 10,
-                SitinTax = 10,
-                TaTax = 10,
-                DTax = 10,
-                SalePrice = 4.50,
-                SitinPrice = 4.50,
-                TaPrice = 4.50,
-                DPrice = 4.50,
-                Width = 120,
-                Height = 40,
-                FFamily = "Arial",
-                FSize = 11,
-                FStyle = "Regular",
-                DistributionIID = dist2.IID,
-                WithImage = false,
-            });
-
-            entity2.Items.Add(new CategoryItem()
-            {
-                Name = "Whisky",
-                dorder = 0,
-                BgColor = Color.DarkOrange.ToArgb(),
-                FgColor = Color.Black.ToArgb(),
-                ButtonType = EntityButtonTypes.SimpleItem,
-                AvailableFor = 0,  //everything
-                CategoryIID = entity2.IID,
-                SaleTax = 19,
-                SitinTax = 19,
-                TaTax = 19,
-                DTax = 19,
-                SalePrice = 6.50,
-                SitinPrice = 6.50,
-                TaPrice = 6.50,
-                DPrice = 6.50,
-                Width = 150,
-                Height = 50,
-                FFamily = "Arial",
-                FSize = 12,
-                FStyle = "Bold",
-                DistributionIID = dist2.IID,
-                WithImage = false,
-            });
-
-            await SaveMenuDB(fmenu);
+            menu =  await repoMenu.SaveTree(menu);           
 
             return true;
         }

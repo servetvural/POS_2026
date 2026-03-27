@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Printing;
 
@@ -11,67 +6,80 @@ using DTRMNS;
 
 using POSLayer.Models;
 using POSLayer.Library;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmSinglePrinter : Form {
+    public partial class frmSinglePrinter : Form
+    {
         PosConfig config;
-        private DTRMSimpleBusiness bslayer;
+        IRepository<Printer> repoPrinter;
         public Printer printer;
-        public frmSinglePrinter(PosConfig configAsService, DTRMSimpleBusiness bslayer, Printer printer) {
+        public frmSinglePrinter(PosConfig configAsService, IRepository<Printer> _repoPrinter, Printer printer)
+        {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
-            this.printer= printer;
+            repoPrinter = _repoPrinter;
+            this.printer = printer;
         }
-        private void frmPrinterEditor_Load(object sender, EventArgs e) {
+        private void frmPrinterEditor_Load(object sender, EventArgs e)
+        {
             LoadLocalPrinters();
             PrinterToUI();
         }
-        private void PrinterToUI() {
-            txtSpecialName.Text = printer.ApplicationName;
-            cmbFunctionalPrinterType.SelectedIndex = (int)printer.PrinterType;
+        private void PrinterToUI()
+        {
+            txtApplicationName.Text = printer.ApplicationName;
+            cmbPrinterVisibility.SelectedIndex = (int)printer.PrinterVisibility;
+            txtLocalTerminal.Text = printer.LocalTerminal;
             cmbNetworkName.Text = printer.NetworkName;
-            chkAdminOnly.Checked = printer.AdminOnly;
+            cmbFunctionalPrinterType.SelectedIndex = (int)printer.PrinterType;
             chkDeliveryPrinter.Checked = printer.DeliveryPrinter;
             chkTakeAwayPrinter.Checked = printer.TakeAwayPrinter;
-            if (printer.ClientIID != null) 
-                lblExistingClientIID.Text = printer.ClientIID;
+            chkAdminOnly.Checked = printer.AdminOnly;
         }
-        private void LoadLocalPrinters() {
+        private void LoadLocalPrinters()
+        {
             cmbNetworkName.Items.Clear();
-            try {
+            try
+            {
                 for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++)
                     cmbNetworkName.Items.Add(PrinterSettings.InstalledPrinters[i]);
-            } catch {
+            } catch
+            {
             }
         }
- 
+        private void btnSetThis_Click(object sender, EventArgs e)
+        {
+            printer.LocalTerminal = txtLocalTerminal.Text = config.Terminal_Name;
+        }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        private async void btnSave_Click(object sender, EventArgs e) {
-            if (txtSpecialName.Text.Trim().Length == 0)
+        private async void btnSave_Click(object sender, EventArgs e)
+        {
+            if (txtApplicationName.Text.Trim().Length == 0)
                 return;
 
-            printer.ApplicationName = txtSpecialName.Text.Trim();
-            printer.PrinterType = (PrinterTypes)cmbFunctionalPrinterType.SelectedIndex;
+            printer.ApplicationName = txtApplicationName.Text.Trim();
+            printer.PrinterVisibility = (PrinterVisibilityTypes)cmbPrinterVisibility.SelectedIndex;
+            printer.LocalTerminal = txtLocalTerminal.Text.Trim();
             printer.NetworkName = cmbNetworkName.Text;
-            printer.AdminOnly = chkAdminOnly.Checked;
+            printer.PrinterType = (PrinterTypes)cmbFunctionalPrinterType.SelectedIndex;       
             printer.DeliveryPrinter = chkDeliveryPrinter.Checked;
             printer.TakeAwayPrinter = chkTakeAwayPrinter.Checked;
-            if (chkSetForThisTerminal.Checked)
-                printer.ClientIID = config.Terminal_Name;
+            printer.AdminOnly = chkAdminOnly.Checked;
 
-            if (await bslayer.SavePrinter(printer)) {
+            if (await repoPrinter.Save(printer) != null)
+            {
                 this.DialogResult = DialogResult.OK;
                 Close();
-            }           
+            }
         }
 
-
-        
+       
     }
 }

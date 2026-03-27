@@ -364,7 +364,7 @@ namespace DTRMSimpleBackOffice {
                 pnlEntitySample.Height = entity.Height;
                 btnEntitySample.Height = entity.Height;
                 btnEntitySample.Width = entity.Width;
-                btnEntitySample.Text = entity.Name;
+                btnEntitySample.Text = entity.CategoryName;
                 btnEntitySample.Font = new Font(entity.FFamily, (float)entity.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), entity.FStyle));
                 btnEntitySample.BackColor = Color.FromArgb(entity.BgColour);
                 btnEntitySample.ForeColor = Color.FromArgb(entity.FgColour);
@@ -473,7 +473,7 @@ namespace DTRMSimpleBackOffice {
             if (dgvEntityButton.Rows.Count > 0) {
                 CategoryItem eb =await bslayer.GetJustEntityButton(dgvEntityButton.Rows[0].Cells["colEntityButtonIID"].Value.ToString());
                 ebNew = eb.Duplicate();
-                ebNew.Name = "";
+                ebNew.ItemName = "";
                 ebNew.SalePrice = 0;
                 ebNew.SitinPrice = 0;
                 ebNew.TaPrice = 0;
@@ -487,7 +487,7 @@ namespace DTRMSimpleBackOffice {
 
                 if (ebNew == null) {
                     ebNew = new CategoryItem {
-                        Name = "New Button",
+                        ItemName = "New Button",
                         CategoryIID = entity.IID
                     };
                 }
@@ -664,7 +664,7 @@ namespace DTRMSimpleBackOffice {
         private async void ReOrderEntityButtons() {
             for (int i = 0; i < dgvEntityButton.Rows.Count; i++) {
                 CategoryItem eb = await bslayer.GetJustEntityButton(dgvEntityButton.Rows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.dorder = i;
+                eb.DOrder = i;
                 await bslayer.SaveJustEntityButton(eb);
             }
             DgvEntity_SelectionChanged(null, null);
@@ -688,7 +688,7 @@ namespace DTRMSimpleBackOffice {
                     CategoryItem eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                     CategoryItem eb2 = eb.Duplicate();
 
-                    eb2.Name = "";
+                    eb2.ItemName = "";
                     if (await bslayer.SaveJustEntityButton(eb2)) {
                         if (blnDuplicateStockItems) {
                             List<EntityButtonStockItemLookUp> lookupList = await bslayer.GetStockItemsForEB(eb.IID);
@@ -725,7 +725,7 @@ namespace DTRMSimpleBackOffice {
                     btnEBSample.Height = eb.Height;
                     btnEBSample.BackColor = Color.FromArgb(eb.BgColor);
                     btnEBSample.ForeColor = Color.FromArgb(eb.FgColor);
-                    btnEBSample.Text = eb.Name;
+                    btnEBSample.Text = eb.ItemName;
                 } catch {
                 }
 
@@ -865,7 +865,7 @@ namespace DTRMSimpleBackOffice {
                     CategoryItem eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
                     StockItem si = new StockItem()
                     {
-                        StockName = eb.Name
+                        StockName = eb.ItemName
                     };
                     bslayer.SaveStockItem(si);
                 }
@@ -930,7 +930,7 @@ namespace DTRMSimpleBackOffice {
         private async void BtnSetUpperCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
                 CategoryItem eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.Name = eb.Name.ToUpper();
+                eb.ItemName = eb.ItemName.ToUpper();
                 bslayer.SaveJustEntityButton(eb);
             }
             DgvEntity_SelectionChanged(null, null);
@@ -940,7 +940,7 @@ namespace DTRMSimpleBackOffice {
         private async void BtnSetSentenceCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
                 CategoryItem eb =await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(eb.Name);
+                eb.ItemName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(eb.ItemName);
                 bslayer.SaveJustEntityButton(eb);
             }
             DgvEntity_SelectionChanged(null, null);
@@ -951,7 +951,7 @@ namespace DTRMSimpleBackOffice {
         private async void BtnSetToLowerCase_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvEntityButton.SelectedRows.Count; i++) {
                 CategoryItem eb = await bslayer.GetJustEntityButton(dgvEntityButton.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.Name = eb.Name.ToLower();
+                eb.ItemName = eb.ItemName.ToLower();
                 await bslayer.SaveJustEntityButton(eb);
             }
             DgvEntity_SelectionChanged(null, null);

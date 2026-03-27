@@ -36,7 +36,7 @@ namespace DTRMNS {
 
             if (entitybutton.ButtonType == EntityButtonTypes.SpaceButton) {
                 BackgroundImage = null;
-                entitybutton.Name = "";
+                entitybutton.ItemName = "";
                 Enabled = false;
             } else {                
                 BackgroundImage = Properties.Resources.shadow;
@@ -57,8 +57,8 @@ namespace DTRMNS {
 
             this.Click += new System.EventHandler(this.UIEBEventHandler);
             this.Size = new System.Drawing.Size(entitybutton.Width, entitybutton.Height);
-            this.Text = entitybutton.Name;
-            this.PrintLabel = entitybutton.Name;
+            this.Text = entitybutton.ItemName;
+            this.PrintLabel = entitybutton.ItemName;
             this.BackColor = Color.FromArgb(entitybutton.BgColor);
             this.ForeColor = Color.FromArgb(entitybutton.FgColor);
             this.ButtonType = entitybutton.ButtonType;
@@ -123,9 +123,9 @@ namespace DTRMNS {
             oiNew.OrderItemText = geb.PrintLabel;
             oiNew.DistributionIID = geb.entitybutton.DistributionIID; //geb.ParentUIE.entity.DistributionIID;
             oiNew.ItemType = OrderItemTypes.NormalOrderItem;
-            oiNew.dorder = geb.entitybutton.dorder;
-            oiNew.EntityName = geb.ParentUIE.entity.Name;
-            oiNew.EntityDisplayOrder = geb.ParentUIE.entity.dorder;
+            oiNew.DOrder = geb.entitybutton.DOrder;
+            oiNew.EntityName = geb.ParentUIE.entity.CategoryName;
+            oiNew.EntityDisplayOrder = geb.ParentUIE.entity.DOrder;
             oiNew.TaxPercent = bslayer.GetEBTaxPercent(geb.entitybutton);
 
 
@@ -213,8 +213,8 @@ namespace DTRMNS {
 
                 bslayer.AttachedOrder.AddOrderItem(geb.ParentUIE.IID, POSLayer.Library.ShortGuid.NewDateBasedGuid2(), 1,
                    exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.entity.DistributionIID,
-                    UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.dorder, geb.ParentUIE.entity.Name,
-                   geb.ParentUIE.entity.dorder, bslayer.GetEBTaxPercent(geb.entitybutton));
+                    UF.EBTypeToOrderItemType(geb.ButtonType), geb.entitybutton.DOrder, geb.ParentUIE.entity.CategoryName,
+                   geb.ParentUIE.entity.DOrder, bslayer.GetEBTaxPercent(geb.entitybutton));
 
                 return true;
             } else

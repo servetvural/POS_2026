@@ -46,7 +46,7 @@ namespace DTRMNS {
         }
 
         private async Task LoadLookUp() {
-            txtEntityButton.Text = entityButton.Name;
+            txtEntityButton.Text = entityButton.ItemName;
             lblQuantityType.Text = lookup.QuantityType.ToString();
             incQuantity.Value = lookup.Quantity;
             incUsageAmount.Value = (int)lookup.Quantity;
@@ -128,7 +128,7 @@ namespace DTRMNS {
 
         private void btnAddStockItem_Click(object sender, EventArgs e) {
             StockItem si = new StockItem();
-            si.StockName = entityButton.Name;
+            si.StockName = entityButton.ItemName;
             frmStockItem frm = new frmStockItem(bslayer, si);
             if (frm.ShowDialog() == DialogResult.OK) {
                 LoadStockItemList();

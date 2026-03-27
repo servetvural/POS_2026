@@ -20,7 +20,8 @@ public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSuppor
 public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
 public enum PaymentMethods { Unknown, Cash, Card, Online }
 public enum AutoPaymentMethods { Selective, AutoCash }
-public enum PrinterTypes { Unknown, Kitchen, Receipt, Mutant }
+public enum PrinterTypes { Unknown, Kitchen, Receipt, Mutant }   
+public enum PrinterVisibilityTypes { Local, Global }
 public enum AvailabilityTypes
 {
     All = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8,

@@ -295,7 +295,7 @@ namespace DTRMNS {
             lblTerminalType.Text = "";
             terminalDistributionList = theNewList;
             for (int i =0; i < terminalDistributionList.Count; i++) {
-                lblTerminalType.Text += terminalDistributionList[i].Name + ", ";
+                lblTerminalType.Text += terminalDistributionList[i].DistributionName + ", ";
             }
             if (lblTerminalType.Text.EndsWith(", "))
                 lblTerminalType.Text = lblTerminalType.Text.Substring(0, lblTerminalType.Text.Length - 2);

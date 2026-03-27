@@ -12,8 +12,8 @@ using POSLayer.Models;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    [Migration("20260324194546_initial")]
-    partial class initial
+    [Migration("20260327120319_nameschanged")]
+    partial class nameschanged
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,9 +25,25 @@ namespace POSLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DistributionPrinter", b =>
+                {
+                    b.Property<string>("distributionsIID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("printersIID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("distributionsIID", "printersIID");
+
+                    b.HasIndex("printersIID");
+
+                    b.ToTable("DistributionPrinters", (string)null);
+                });
+
             modelBuilder.Entity("POSLayer.Models.Bonus", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Barrier0")
@@ -99,6 +115,9 @@ namespace POSLayer.Migrations
                     b.Property<TimeSpan>("BonusHiddenStartTime")
                         .HasColumnType("time");
 
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
                     b.Property<int>("DaysAvailable")
                         .HasColumnType("int");
 
@@ -122,9 +141,6 @@ namespace POSLayer.Migrations
                     b.Property<double>("StepValue")
                         .HasColumnType("float");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Bonus");
@@ -133,13 +149,21 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Category", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("BgColour")
                         .HasColumnType("int");
 
-                    b.Property<string>("DistributionIID")
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistributionIID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EntityType")
                         .HasColumnType("int");
@@ -165,17 +189,12 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
+
+                    b.HasIndex("DistributionIID");
 
                     b.HasIndex("MenuIID");
 
@@ -185,6 +204,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.CategoryItem", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AvailableFor")
@@ -206,6 +226,9 @@ namespace POSLayer.Migrations
                     b.Property<int>("Compulsary")
                         .HasColumnType("int");
 
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
                     b.Property<double>("DPrice")
                         .HasColumnType("float");
 
@@ -213,7 +236,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("DistributionIID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FFamily")
                         .IsRequired()
@@ -232,7 +255,7 @@ namespace POSLayer.Migrations
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ItemName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -263,12 +286,11 @@ namespace POSLayer.Migrations
                     b.Property<bool>("WithImage")
                         .HasColumnType("bit");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.HasIndex("CategoryIID");
+
+                    b.HasIndex("DistributionIID");
 
                     b.ToTable("CategoryItems");
                 });
@@ -276,6 +298,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Customer", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
@@ -289,6 +312,9 @@ namespace POSLayer.Migrations
                     b.Property<string>("CPassword")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -306,9 +332,6 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Customers");
@@ -317,7 +340,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Debug", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Data")
                         .IsRequired()
@@ -329,9 +356,6 @@ namespace POSLayer.Migrations
                     b.Property<DateTime>("EventDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Debugs");
@@ -340,27 +364,23 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Distribution", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistributionName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MenuIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrinterIID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.HasIndex("MenuIID");
-
-                    b.HasIndex("PrinterIID");
 
                     b.ToTable("Distributions");
                 });
@@ -368,7 +388,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Employee", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("EmployeeName")
                         .IsRequired()
@@ -380,9 +404,6 @@ namespace POSLayer.Migrations
                     b.Property<bool>("Shortable")
                         .HasColumnType("bit");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Employees");
@@ -391,7 +412,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.GenericImage", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("DisplayImage")
                         .HasColumnType("varbinary(max)");
@@ -406,9 +431,6 @@ namespace POSLayer.Migrations
                     b.Property<string>("ReferenceIID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Images");
@@ -417,6 +439,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.KitchenOrder", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("BeingModified")
@@ -427,6 +450,9 @@ namespace POSLayer.Migrations
 
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("OrderIID")
                         .IsRequired()
@@ -445,9 +471,6 @@ namespace POSLayer.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("KitchenOrders");
@@ -456,7 +479,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.KitchenOrderItem", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("DistributionIID")
                         .IsRequired()
@@ -480,9 +507,6 @@ namespace POSLayer.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.HasIndex("KitchenOrderIID");
@@ -493,10 +517,14 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.LogItem", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ComputerName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("EventDateTime")
                         .HasColumnType("datetime2");
@@ -519,9 +547,6 @@ namespace POSLayer.Migrations
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("LogItems");
@@ -530,6 +555,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Order", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Covers")
@@ -538,10 +564,8 @@ namespace POSLayer.Migrations
                     b.Property<string>("CustomerIID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Instruction")
                         .IsRequired()
@@ -589,32 +613,24 @@ namespace POSLayer.Migrations
                     b.Property<string>("Waiter")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.HasIndex("CustomerIID");
 
                     b.ToTable("Orders");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Order");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("POSLayer.Models.OrderItem", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("CompletedQuantity")
                         .HasColumnType("float");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("DistributionIID")
                         .HasColumnType("nvarchar(max)");
@@ -654,23 +670,17 @@ namespace POSLayer.Migrations
                     b.Property<double>("TaxPercent")
                         .HasColumnType("float");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.HasIndex("OrderIID");
 
                     b.ToTable("OrderItems");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("OrderItem");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("POSLayer.Models.Printer", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("AdminOnly")
@@ -680,11 +690,14 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClientIID")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<bool>("DeliveryPrinter")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LocalTerminal")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NetworkName")
                         .IsRequired()
@@ -693,11 +706,11 @@ namespace POSLayer.Migrations
                     b.Property<int>("PrinterType")
                         .HasColumnType("int");
 
+                    b.Property<int>("PrinterVisibility")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TakeAwayPrinter")
                         .HasColumnType("bit");
-
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
 
                     b.HasKey("IID");
 
@@ -707,6 +720,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Session", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("CardTotal")
@@ -714,6 +728,9 @@ namespace POSLayer.Migrations
 
                     b.Property<double>("CashTotal")
                         .HasColumnType("float");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
@@ -784,9 +801,6 @@ namespace POSLayer.Migrations
                     b.Property<double>("X3total")
                         .HasColumnType("float");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Sessions");
@@ -795,6 +809,7 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Shop", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
@@ -804,6 +819,9 @@ namespace POSLayer.Migrations
                     b.Property<string>("CurrentSessionIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<double>("DefaultTaxRate")
                         .HasColumnType("float");
@@ -818,10 +836,6 @@ namespace POSLayer.Migrations
 
                     b.Property<DateTime>("KitchenModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NotificationEmail")
                         .IsRequired()
@@ -861,6 +875,10 @@ namespace POSLayer.Migrations
                     b.Property<double>("ServiceChargeTaxRate")
                         .HasColumnType("float");
 
+                    b.Property<string>("ShopName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SmtpAccountName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -893,9 +911,6 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Shops");
@@ -904,9 +919,13 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Conversion")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DOrder")
                         .HasColumnType("int");
 
                     b.Property<int>("OrderType")
@@ -930,9 +949,6 @@ namespace POSLayer.Migrations
                     b.Property<double>("UsedQuantity")
                         .HasColumnType("float");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("StockItems");
@@ -941,11 +957,15 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Supplier", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email1")
                         .IsRequired()
@@ -967,9 +987,6 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Suppliers");
@@ -978,11 +995,15 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Table", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CurrentOrderIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("DefaultName")
                         .HasColumnType("nvarchar(max)");
@@ -1025,9 +1046,6 @@ namespace POSLayer.Migrations
                     b.Property<int>("YLocation")
                         .HasColumnType("int");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Tables");
@@ -1036,7 +1054,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.TableGroup", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
@@ -1048,9 +1070,6 @@ namespace POSLayer.Migrations
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("TableGroups");
@@ -1059,16 +1078,17 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.TheMenu", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("MenuName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
 
                     b.HasKey("IID");
 
@@ -1078,9 +1098,13 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.User", b =>
                 {
                     b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
@@ -1089,9 +1113,6 @@ namespace POSLayer.Migrations
                     b.Property<string>("UserPassword")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("dorder")
-                        .HasColumnType("int");
-
                     b.HasKey("IID");
 
                     b.ToTable("Users");
@@ -1099,25 +1120,158 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.XOrder", b =>
                 {
-                    b.HasBaseType("POSLayer.Models.Order");
+                    b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasDiscriminator().HasValue("XOrder");
+                    b.Property<int>("Covers")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerIID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Instruction")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LockedClientIP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MoneyPaid")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Payment")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentFlag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("ServiceChargeRate")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ServiceChargeTaxRate")
+                        .HasColumnType("float");
+
+                    b.Property<string>("SessionIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TableIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TableName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Waiter")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IID");
+
+                    b.HasIndex("CustomerIID");
+
+                    b.ToTable("Xorders");
                 });
 
             modelBuilder.Entity("POSLayer.Models.XOrderItem", b =>
                 {
-                    b.HasBaseType("POSLayer.Models.OrderItem");
+                    b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasDiscriminator().HasValue("XOrderItem");
+                    b.Property<double>("CompletedQuantity")
+                        .HasColumnType("float");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistributionIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityButtonIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntityDisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ItemType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderGroupIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("OrderItemText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TaxPercent")
+                        .HasColumnType("float");
+
+                    b.HasKey("IID");
+
+                    b.HasIndex("OrderIID");
+
+                    b.ToTable("XorderItems");
+                });
+
+            modelBuilder.Entity("DistributionPrinter", b =>
+                {
+                    b.HasOne("POSLayer.Models.Distribution", null)
+                        .WithMany()
+                        .HasForeignKey("distributionsIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("POSLayer.Models.Printer", null)
+                        .WithMany()
+                        .HasForeignKey("printersIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("POSLayer.Models.Category", b =>
                 {
+                    b.HasOne("POSLayer.Models.Distribution", "Distribution")
+                        .WithMany()
+                        .HasForeignKey("DistributionIID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("POSLayer.Models.TheMenu", "Menu")
                         .WithMany("categories")
                         .HasForeignKey("MenuIID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Distribution");
 
                     b.Navigation("Menu");
                 });
@@ -1126,10 +1280,16 @@ namespace POSLayer.Migrations
                 {
                     b.HasOne("POSLayer.Models.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("CategoryIID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryIID");
+
+                    b.HasOne("POSLayer.Models.Distribution", "Distribution")
+                        .WithMany()
+                        .HasForeignKey("DistributionIID")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
+
+                    b.Navigation("Distribution");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Distribution", b =>
@@ -1137,15 +1297,10 @@ namespace POSLayer.Migrations
                     b.HasOne("POSLayer.Models.TheMenu", "Menu")
                         .WithMany("distributions")
                         .HasForeignKey("MenuIID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("POSLayer.Models.Printer", "Printer")
-                        .WithMany()
-                        .HasForeignKey("PrinterIID");
-
                     b.Navigation("Menu");
-
-                    b.Navigation("Printer");
                 });
 
             modelBuilder.Entity("POSLayer.Models.KitchenOrderItem", b =>
@@ -1170,6 +1325,26 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.OrderItem", b =>
                 {
                     b.HasOne("POSLayer.Models.Order", "Order")
+                        .WithMany("items")
+                        .HasForeignKey("OrderIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.XOrder", b =>
+                {
+                    b.HasOne("POSLayer.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerIID");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.XOrderItem", b =>
+                {
+                    b.HasOne("POSLayer.Models.XOrder", "Order")
                         .WithMany("items")
                         .HasForeignKey("OrderIID")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1203,6 +1378,11 @@ namespace POSLayer.Migrations
                     b.Navigation("categories");
 
                     b.Navigation("distributions");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.XOrder", b =>
+                {
+                    b.Navigation("items");
                 });
 #pragma warning restore 612, 618
         }

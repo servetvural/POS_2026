@@ -403,7 +403,7 @@ namespace DTRMNS
                 ToolStripMenuItem btn = new ToolStripMenuItem();
                 btn.Image = global::DTRMNS.Properties.Resources.chef64;
                 btn.Tag = gt.IID;
-                btn.Text = gt.Name;
+                btn.Text = gt.DistributionName;
                 btn.Click += ViewBar_Click;
                 mnuViewBars.DropDownItems.Add(btn);
             }
@@ -2338,7 +2338,7 @@ namespace DTRMNS
 
                     RadioButton btn = new RadioButton();
                     btn.Appearance = Appearance.Button;
-                    btn.Text = upe.entity.Name;
+                    btn.Text = upe.entity.CategoryName;
                     btn.Click += new EventHandler(OrderPadButton_Click);
                     btn.BackColor = Color.FromArgb(upe.entity.BgColour);
                     btn.ForeColor = Color.FromArgb(upe.entity.FgColour);

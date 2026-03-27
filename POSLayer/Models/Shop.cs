@@ -9,7 +9,7 @@ public partial class Shop    : BaseClass
     #region 10.Shop Details
 
     [CategoryAttribute("10.Shop Details"), DisplayName("Name of this shop")]
-    public string Name { get; set; } = "New Shop";
+    public string ShopName { get; set; } = "New Shop";
 
     [CategoryAttribute("10.Shop Details"), DisplayName("Address of this shop")]
     public string Address { get; set; } = string.Empty;

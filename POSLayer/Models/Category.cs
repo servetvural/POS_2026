@@ -11,7 +11,7 @@ namespace POSLayer.Models;
 
 public partial class Category : BaseClass
 {
-    public string Name { get; set; } = string.Empty;
+    public string CategoryName { get; set; } = string.Empty;
     public int BgColour { get; set; } = SystemColors.Control.ToArgb();
     public int FgColour { get; set; } = SystemColors.ControlText.ToArgb();
     public int Height { get; set; } = 64;
@@ -22,8 +22,8 @@ public partial class Category : BaseClass
     public TheMenu? Menu { get; set; }
     public List<CategoryItem> Items { get; set; } = new();      
 
-    public string? DistributionIID { get; set; } 
-   // public Distribution? Distribution { get; set; }
+    public string? DistributionIID { get; set; }
+    public Distribution? Distribution { get; set; }
 
     public string FFamily { get; set; } = "Arial";
 

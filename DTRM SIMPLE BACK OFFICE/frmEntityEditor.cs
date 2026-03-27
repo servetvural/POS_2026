@@ -47,7 +47,7 @@ namespace DTRMSimpleBackOffice {
 
         private void LoadEntity() {
             if (en != null) {
-                txtEntityName.Text = en.Name;
+                txtEntityName.Text = en.CategoryName;
                 btnEntityPanelBackColor.BackColor = Color.FromArgb(en.BgColour);
                 try {
                     btnEntityForeColour.BackColor = Color.FromArgb(en.FgColour);
@@ -67,7 +67,7 @@ namespace DTRMSimpleBackOffice {
                 }
 
                 btnFont.Text = en.FFamily + "," + en.FSize.ToString() + "," + en.FStyle;
-                incDisplayOrder.Text = en.dorder.ToString();
+                incDisplayOrder.Text = en.DOrder.ToString();
             }
         }
 
@@ -85,7 +85,7 @@ namespace DTRMSimpleBackOffice {
 
         private void btnSave_Click(object sender, EventArgs e) {
             if (en != null) {
-                en.Name = txtEntityName.Text;
+                en.CategoryName = txtEntityName.Text;
                 en.BgColour = btnEntityPanelBackColor.BackColor.ToArgb();
                 en.FgColour = btnEntityForeColour.BackColor.ToArgb();
                 en.Width = incWidth.Value;
@@ -97,7 +97,7 @@ namespace DTRMSimpleBackOffice {
                     MessageBox.Show("Printable Category must be supplied!");
                     return;
                 }
-                en.dorder = (int)incDisplayOrder.Value;
+                en.DOrder = (int)incDisplayOrder.Value;
 
                 en.DistributionIID = cmbDistribution.SelectedValue.ToString(); 
                 bslayer.SaveEntityDB(en);

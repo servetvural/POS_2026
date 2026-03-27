@@ -1,5 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using System.ComponentModel;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -178,6 +180,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+
     /// <summary>
     /// 
     /// </summary>
@@ -234,6 +237,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+
     //public async Task<T> GetFirst(string includeItems = "")
     //{
     //    using var _db = GetDBContext();
@@ -260,10 +264,21 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         {
             IQueryable<T> query = _db.Set<T>().AsNoTracking();
 
-            if (string.IsNullOrEmpty(includeItems))
-                return await query.ToListAsync();
-            else
-                return await query.Include(includeItems).ToListAsync();
+            //if (string.IsNullOrEmpty(includeItems))
+            //    return await query.ToListAsync();
+            //else
+            //    return await query.Include(includeItems).ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(includeItems))
+            {
+                var includes = includeItems.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var include in includes)
+                {
+                    query = query.Include(include.Trim());
+                }
+            }
+            // List<T> theList = await query.ToListAsync();
+            return await query.ToListAsync();
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -297,93 +312,51 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             return null;
         }
     }
-    //public async Task SaveHierarchy<T>(T rootEntity) 
-    //{
-    //    using var _db = GetDBContext();
-    //    // Use TrackGraph to visit the Parent, Children, and Grandchildren
-    //    _db.ChangeTracker.TrackGraph(rootEntity, node =>
-    //    {
-    //        var entity = (BaseClass)node.Entry.Entity;
 
-    //        // 1. Check if this IID exists in the Database
-    //        // Use 'Any' for a fast check without loading the whole object
-    //        var exists = _db.Set(node.Entry.Metadata.ClrType)
-    //                             .Cast<BaseClass>()
-    //                             .Any(e => e.IID == entity.IID);
-
-    //        if (exists)
-    //        {
-    //            // If it exists, EF should UPDATE it
-    //            node.Entry.State = EntityState.Modified;
-    //        } else
-    //        {
-    //            // If it doesn't exist, EF should INSERT it
-    //            node.Entry.State = EntityState.Added;
-    //        }
-    //    });
-
-    //    await _db.SaveChangesAsync();
-    //}
-
-    public async Task SaveHierarchy<T>(T rootEntity)
+    public async Task<T> SaveTree(T rootEntity)
     {
         using var _db = GetDBContext();
-        // TrackGraph visits every entity in the object graph (children, grandchildren, etc.)
-        _db.ChangeTracker.TrackGraph(rootEntity, node =>
+
+        try
         {
-            var entry = node.Entry;
-            var entity = (BaseClass)entry.Entity;
-
-            // 1. If IID is missing, it's brand new
-            if (entity.IsNew)
+            // Step 1: Collect ALL IDs in the graph (Sync - No DB hits here)
+            var allIds = new HashSet<string>();
+            _db.ChangeTracker.TrackGraph(rootEntity, node =>
             {
-                entry.State = EntityState.Added;
-            } else
-            {
-                // 2. Check if this specific IID is already being tracked in the current context
-                var trackedEntry = _db.ChangeTracker.Entries<BaseClass>()
-                    .FirstOrDefault(e => e.Entity.IID == entity.IID);
+                var entity = (BaseClass)node.Entry.Entity;
+                if (!string.IsNullOrEmpty(entity.IID))
+                    allIds.Add(entity.IID);
+                node.Entry.State = EntityState.Detached; // Reset for next step
+            });
 
-                if (trackedEntry == null)
+            // Step 2: Single Async DB hit to find what exists
+            // We check against the Menu set because it's the root of your hierarchy
+            var existingIds = await _db.Set<T>()
+                .Where(x => allIds.Contains(x.IID))
+                .Select(x => x.IID)
+                .ToListAsync();
+
+            // Step 3: Final pass to set states
+            _db.ChangeTracker.TrackGraph(rootEntity, node =>
+            {
+                var entry = node.Entry;
+                var entity = (BaseClass)entry.Entity;
+
+                if (string.IsNullOrEmpty(entity.IID))
                 {
-                    // If it's not tracked, assume it's a new child being added with a manual ID
-                    // Alternatively, use 'entry.State = EntityState.Unchanged' if it's an existing reference
                     entry.State = EntityState.Added;
                 } else
                 {
-                    // 3. If it's already tracked, mark it as Modified to capture changes
                     entry.State = EntityState.Modified;
                 }
-            }
-        });
+            });
 
-        await _db.SaveChangesAsync();
-    }
-
-
-    public async Task SaveMenuHierarchy(TheMenu menu)
-    {
-        using var _db = GetDBContext();
-        _db.ChangeTracker.TrackGraph(menu, node =>
+            await _db.SaveChangesAsync();
+            return rootEntity;
+        } catch (Exception ex)
         {
-            // 1. Check if the entity is already being tracked
-            var alreadyTracked = _db.ChangeTracker.Entries()
-                .Any(e => e.Entity.GetType() == node.Entry.Entity.GetType()
-                     && ((BaseClass)e.Entity).IID == ((BaseClass)node.Entry.Entity).IID);
-
-            // 2. If it's not tracked, it's either NEW or needs to be ATTACHED
-            if (node.Entry.IsKeySet)
-            {
-                // If you know this is a mix of new and old, 
-                // you can check the DB or just force 'Added' if it's a new child
-                node.Entry.State = EntityState.Added;
-            } else
-            {
-                node.Entry.State = EntityState.Added;
-            }
-        });
-
-        await _db.SaveChangesAsync();
+            return null;
+        }
     }
 
     //public async Task<int> Delete(int Id)
@@ -700,63 +673,125 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             return await _db.Menus.Where(x => x.IID == IID)
                 .Include(m => m.categories).ThenInclude(c => c.Items)
                 .Include(m => m.distributions).FirstOrDefaultAsync();
-            
+
         } catch (Exception ex)
         {
             return null;
         }
 
     }
-    public async Task<TheMenu> SaveMenu(TheMenu menu)
+
+
+    #endregion
+
+
+    //public async Task UpdateDistributionPrinters(string distributionId, List<string> selectedPrinterIds)
+    //{
+    //    using var db = GetDBContext();
+
+    //    // 1. Load the Distribution WITH its current Printers
+    //    var distribution = await db.Distributions
+    //        .Include(d => d.Printers)
+    //        .FirstOrDefaultAsync(d => d.IID == distributionId);
+
+    //    // 2. Fetch the actual Printer entities for the new selection
+    //    var selectedPrinters = await db.Printers
+    //        .Where(p => selectedPrinterIds.Contains(p.IID))
+    //        .ToListAsync();
+
+    //    // 3. EF Core handles the diffing: it will remove old links and add new ones
+    //    distribution.Printers = selectedPrinters;
+
+    //    await db.SaveChangesAsync();
+    //}
+
+    //public async Task SavePrinterToDistribution(string distributionIid, string printerIid)
+    //{
+    //    // 1. Load the Distribution including its current printers
+    //    var distribution = await _context.Distributions
+    //        .Include(d => d.printers)
+    //        .FirstOrDefaultAsync(d => d.IID == distributionIid);
+
+    //    // 2. Load the Printer
+    //    var printer = await _context.Printers
+    //        .FirstOrDefaultAsync(p => p.IID == printerIid);
+
+    //    if (distribution != null && printer != null)
+    //    {
+    //        // 3. Add to collection if it doesn't already exist
+    //        if (!distribution.printers.Any(p => p.IID == printerIid))
+    //        {
+    //            distribution.printers.Add(printer);
+    //            await _context.SaveChangesAsync();
+    //        }
+    //    }
+    //}
+
+
+    public async Task<bool> AddPrinterToDistribution(string distributionIID, string printerIID)
     {
         using var _db = GetDBContext();
         try
         {
-            if (menu.IsNew)
-            {
-                await _db.Menus.AddAsync(menu);
-            } else
-            {
+            // 1. Include the 'printers' collection so EF knows current state
+            var distribution = await _db.Distributions
+                .Include(d => d.printers)
+                .FirstOrDefaultAsync(x => x.IID == distributionIID);
 
-                
-                foreach (var distro in menu.distributions)
-                {
-                    if (distro.IsNew)
-                        await _db.Distributions.AddAsync(distro);
-                    else
-                        _db.Distributions.Update(distro);
-                }
-                foreach (var cat in menu.categories)
-                {
-                    if (cat.IsNew)
-                    {
-                        await _db.Categories.AddAsync(cat);
-                    }                                      
-                    else
-                    {
-                        _db.Categories.Update(cat);
-                        
-                    }
-                    foreach (var item in cat.Items)
-                    {
-                        if (item.IsNew)
-                        {
-                            await _db.CategoryItems.AddAsync(item);
-                        } else
-                        {
-                            _db.CategoryItems.Update(item);
+            var printer = await _db.Printers
+                .FirstOrDefaultAsync(x => x.IID == printerIID);
 
-                        }
-                    }
-                }
-                _db.Menus.Update(menu);
+            if (distribution != null && printer != null)
+            {
+                // 2. Add if not already linked (prevents duplicates)
+                if (!distribution.printers.Any(p => p.IID == printerIID))
+                {
+                    distribution.printers.Add(printer);
+                    await _db.SaveChangesAsync();
+
+                    return true;
+                } else
+                    return true;
             }
-            await _db.SaveChangesAsync();
-            return menu;
+            return false;
         } catch (Exception ex)
         {
-            return null;
+            return false;
         }
     }
-    #endregion
+
+    public async Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            // 1. Load the Distribution AND its current printers (Many-to-Many)
+            var distribution = await _db.Distributions
+            .Include(d => d.printers)
+            .FirstOrDefaultAsync(d => d.IID == distributionIID);
+
+            if (distribution != null)
+            {
+                // 2. Find the specific printer within that distribution's list
+                var printerToRemove = distribution.printers
+                    .FirstOrDefault(p => p.IID == printerIID);
+
+                if (printerToRemove != null)
+                {
+                    // 3. Remove it from the collection
+                    // EF Core sees this and marks the Join Table entry for deletion
+                    distribution.printers.Remove(printerToRemove);
+
+                    // 4. Persist changes
+                    await _db.SaveChangesAsync();
+                    return true;
+                } else
+                    return true;
+            } else
+                return false;
+        } catch (Exception ex)
+        {
+            return false;
+        }
+    }
 }

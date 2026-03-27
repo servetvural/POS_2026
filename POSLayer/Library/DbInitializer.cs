@@ -82,123 +82,38 @@ public class DbInitializer
         }
 
         if (!await repoMenu.Any())
-        {
-            //TheMenu menu = new TheMenu()
-            //{
-            //    MenuName = "New Menu",
-            //    IsActive = true
-            //};
-            //Category firstCategory = new Category()
-            //{
-            //    Name = "First Category",
-            //    MenuIID = menu.IID
-            //};
-            //menu.categories.Add(firstCategory);
-
-            //CategoryItem firstItem = new CategoryItem()
-            //{
-            //    Name = "First Category Item",
-            //    CategoryIID = firstCategory.IID
-            //};
-            //firstCategory.Items.Add(firstItem);
-            //menu = await repoMenu.Save(menu);
-
-            //Category secondCategory = new Category()
-            //{
-            //    Name = "Second Category",
-            //    MenuIID = menu.IID
-            //};
-            //menu.categories.Add(secondCategory);
-            //menu = await repoMenu.Save(menu);
-
-            //config.ActiveMenuIID = menu.IID;
-            //UF.SaveConfig(config);
-
-
+        {   
             TheMenu menu = new TheMenu()
             {
                 MenuName = "New Menu",
                 IsActive = true,
-                //distributions = new List<Distribution>()
-                //{
-                //        new Distribution() {Name = "Distro 1"}
-                //} ,
+                distributions = new List<Distribution>()
+                {
+                        new Distribution() {DistributionName = "Distro 1"}
+                },
                 categories = new List<Category>()
                 {
                     new      Category()
                     {
-                        Name = "First Category" ,
+                        CategoryName = "First Category" ,
                         Items = new List<CategoryItem>()
                         {
                             new   CategoryItem()
                             {
-                                Name = "First Category Item"
+                                ItemName = "First Category Item"
                             }
                         }
                     }
                 }
             };
-            await repoMenu.Save(menu);
+            await repoMenu.SaveTree(menu);
 
             menu = await repoMenu.GetMenu(menu.IID);
-
-            menu.categories.Add( 
-                new Category() {
-                    Name = "Second CAtegory"
-                });
-
-            // menu = await repoMenu.Save(menu);
-
-            //Category secondCategory = new Category()
-            //{
-            //    Name = "Second Category"
-            //};
-            //menu.categories.Add(secondCategory);
-
-            //menu = await repoMenu.Save(menu);
-            // menu = await repoMenu.Save(menu);
-            // await repoMenu.SaveHierarchy(menu);
-            await repoMenu.SaveMenu(menu);
 
             config.ActiveMenuIID = menu.IID;
             UF.SaveConfig(config);
 
 
-
-
-
-            //TheMenu menu = await repoMenu.Save(new TheMenu()
-            //{
-            //    MenuName = "New Menu",
-            //    IsActive = true
-            //});
-            //if (menu != null)
-            //{
-            //    menu.categories.Add(new Category()
-            //    {
-            //        Name = "First Category"
-            //       // MenuIID = menu.IID
-            //    });
-            //    menu = await repoMenu.Save(menu);
-            //    Category firstCategory = menu.categories.First();
-
-            //    firstCategory.Items.Add(new CategoryItem()
-            //    {
-            //        Name = "First Category Item"
-            //       // CategoryIID = firstCategory.IID
-            //    });
-
-            //    menu = await repoMenu.Save(menu);
-            //    await repoMenu.SaveHierarchy(menu);
-
-            //    config.ActiveMenuIID = menu.IID;
-            //    UF.SaveConfig(config);
-            //}
-
-
-            // PosConfig config = ServiceHelper.GetService<PosConfig>();
-            // config.ActiveMenuIID = menus.FirstOrDefault().IID;
-            //   UF.SaveConfig(config);
         }
     }
 }

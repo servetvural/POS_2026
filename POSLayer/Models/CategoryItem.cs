@@ -12,7 +12,7 @@ public partial class CategoryItem : BaseClass
     public Category? Category { get; set; }
 
 
-    public string Name { get; set; }
+    public string ItemName { get; set; }
     public int BgColor { get; set; } = SystemColors.Control.ToArgb();
     public int FgColor { get; set; } = Color.Black.ToArgb();
     public EntityButtonTypes ButtonType { get; set; } = EntityButtonTypes.SimpleItem;
@@ -28,7 +28,7 @@ public partial class CategoryItem : BaseClass
     public PadFlags PadFlag { get; set; } = PadFlags.EBOnly;
 
     public string? DistributionIID { get; set; }
-
+    public Distribution? Distribution { get; set; }
     public double SalePrice { get; set; }
     public double SitinPrice { get; set; }
     public double TaPrice { get; set; }
@@ -49,8 +49,8 @@ public partial class CategoryItem : BaseClass
         CategoryItem eb = new CategoryItem()
         {
             IID = IID,
-            Name = Name,
-            dorder = dorder,
+            ItemName = ItemName,
+            DOrder = DOrder,
             BgColor = BgColor,
             FgColor = FgColor,
             ButtonType = ButtonType,

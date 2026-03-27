@@ -225,7 +225,7 @@ namespace DTRMNS {
 
         private async void btnEmail_Click(object sender, EventArgs e) {
             if (bslayer.shop.SmtpEmailAddress != null && bslayer.shop.SmtpEmailAddress.Length > 0 && bslayer.shop.PurchaseEmail != null && bslayer.shop.PurchaseEmail.Length > 0)
-                bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, bslayer.shop.Name + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
+                bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, bslayer.shop.ShopName + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
 
 
             //Now time to remove the ordered items from stockitem table if true

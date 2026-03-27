@@ -27,7 +27,7 @@ namespace DTRMSimpleBackOffice {
             label8 = new System.Windows.Forms.Label();
             label7 = new System.Windows.Forms.Label();
             cmbFunctionalPrinterType = new System.Windows.Forms.ComboBox();
-            txtSpecialName = new System.Windows.Forms.TextBox();
+            txtApplicationName = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
             cmbNetworkName = new System.Windows.Forms.ComboBox();
             btnSave = new System.Windows.Forms.Button();
@@ -35,8 +35,11 @@ namespace DTRMSimpleBackOffice {
             chkAdminOnly = new System.Windows.Forms.CheckBox();
             chkDeliveryPrinter = new System.Windows.Forms.CheckBox();
             chkTakeAwayPrinter = new System.Windows.Forms.CheckBox();
-            chkSetForThisTerminal = new System.Windows.Forms.CheckBox();
-            lblExistingClientIID = new System.Windows.Forms.Label();
+            cmbPrinterVisibility = new System.Windows.Forms.ComboBox();
+            label2 = new System.Windows.Forms.Label();
+            label3 = new System.Windows.Forms.Label();
+            txtLocalTerminal = new System.Windows.Forms.TextBox();
+            btnSetThis = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
             // label8
@@ -46,15 +49,15 @@ namespace DTRMSimpleBackOffice {
             label8.Location = new System.Drawing.Point(36, 37);
             label8.Margin = new System.Windows.Forms.Padding(4, 3, 4, 0);
             label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(130, 16);
+            label8.Size = new System.Drawing.Size(109, 16);
             label8.TabIndex = 52;
-            label8.Text = "Printer Special Name";
+            label8.Text = "Application Name";
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label7.Location = new System.Drawing.Point(306, 37);
+            label7.Location = new System.Drawing.Point(36, 241);
             label7.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(140, 16);
@@ -67,45 +70,45 @@ namespace DTRMSimpleBackOffice {
             cmbFunctionalPrinterType.Font = new System.Drawing.Font("Arial", 12F);
             cmbFunctionalPrinterType.FormattingEnabled = true;
             cmbFunctionalPrinterType.Items.AddRange(new object[] { "Unknown", "Kitchen Printer", "Receipt Printer", "Mutant Printer" });
-            cmbFunctionalPrinterType.Location = new System.Drawing.Point(306, 58);
+            cmbFunctionalPrinterType.Location = new System.Drawing.Point(230, 236);
             cmbFunctionalPrinterType.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
             cmbFunctionalPrinterType.Name = "cmbFunctionalPrinterType";
             cmbFunctionalPrinterType.Size = new System.Drawing.Size(206, 26);
             cmbFunctionalPrinterType.TabIndex = 56;
             // 
-            // txtSpecialName
+            // txtApplicationName
             // 
-            txtSpecialName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            txtSpecialName.Location = new System.Drawing.Point(36, 57);
-            txtSpecialName.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
-            txtSpecialName.Name = "txtSpecialName";
-            txtSpecialName.Size = new System.Drawing.Size(206, 26);
-            txtSpecialName.TabIndex = 53;
+            txtApplicationName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            txtApplicationName.Location = new System.Drawing.Point(230, 31);
+            txtApplicationName.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            txtApplicationName.Name = "txtApplicationName";
+            txtApplicationName.Size = new System.Drawing.Size(206, 26);
+            txtApplicationName.TabIndex = 53;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            label1.Location = new System.Drawing.Point(36, 118);
+            label1.Location = new System.Drawing.Point(36, 164);
             label1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(130, 16);
+            label1.Size = new System.Drawing.Size(92, 16);
             label1.TabIndex = 60;
-            label1.Text = "Mapped Local Printer";
+            label1.Text = "Network Name";
             // 
             // cmbNetworkName
             // 
             cmbNetworkName.Font = new System.Drawing.Font("Arial", 12F);
             cmbNetworkName.FormattingEnabled = true;
-            cmbNetworkName.Location = new System.Drawing.Point(36, 141);
+            cmbNetworkName.Location = new System.Drawing.Point(36, 184);
             cmbNetworkName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             cmbNetworkName.Name = "cmbNetworkName";
-            cmbNetworkName.Size = new System.Drawing.Size(475, 26);
+            cmbNetworkName.Size = new System.Drawing.Size(400, 26);
             cmbNetworkName.TabIndex = 61;
             // 
             // btnSave
             // 
-            btnSave.Location = new System.Drawing.Point(419, 283);
+            btnSave.Location = new System.Drawing.Point(343, 412);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSave.Name = "btnSave";
             btnSave.Size = new System.Drawing.Size(93, 45);
@@ -117,7 +120,7 @@ namespace DTRMSimpleBackOffice {
             // btnCancel
             // 
             btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btnCancel.Location = new System.Drawing.Point(306, 283);
+            btnCancel.Location = new System.Drawing.Point(230, 412);
             btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(93, 45);
@@ -129,71 +132,105 @@ namespace DTRMSimpleBackOffice {
             // chkAdminOnly
             // 
             chkAdminOnly.AutoSize = true;
-            chkAdminOnly.Location = new System.Drawing.Point(36, 232);
+            chkAdminOnly.Location = new System.Drawing.Point(230, 367);
             chkAdminOnly.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             chkAdminOnly.Name = "chkAdminOnly";
-            chkAdminOnly.Size = new System.Drawing.Size(118, 19);
+            chkAdminOnly.Size = new System.Drawing.Size(183, 19);
             chkAdminOnly.TabIndex = 138;
-            chkAdminOnly.Text = "Admin View Only";
+            chkAdminOnly.Text = "Only Visible to Administrators";
             chkAdminOnly.UseVisualStyleBackColor = true;
             // 
             // chkDeliveryPrinter
             // 
             chkDeliveryPrinter.AutoSize = true;
-            chkDeliveryPrinter.Location = new System.Drawing.Point(36, 270);
+            chkDeliveryPrinter.Location = new System.Drawing.Point(230, 289);
             chkDeliveryPrinter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             chkDeliveryPrinter.Name = "chkDeliveryPrinter";
-            chkDeliveryPrinter.Size = new System.Drawing.Size(106, 19);
+            chkDeliveryPrinter.Size = new System.Drawing.Size(161, 19);
             chkDeliveryPrinter.TabIndex = 139;
-            chkDeliveryPrinter.Text = "Delivery Printer";
+            chkDeliveryPrinter.Text = "Assign AS Delivery Printer";
             chkDeliveryPrinter.UseVisualStyleBackColor = true;
             // 
             // chkTakeAwayPrinter
             // 
             chkTakeAwayPrinter.AutoSize = true;
-            chkTakeAwayPrinter.Location = new System.Drawing.Point(36, 308);
+            chkTakeAwayPrinter.Location = new System.Drawing.Point(230, 329);
             chkTakeAwayPrinter.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             chkTakeAwayPrinter.Name = "chkTakeAwayPrinter";
-            chkTakeAwayPrinter.Size = new System.Drawing.Size(120, 19);
+            chkTakeAwayPrinter.Size = new System.Drawing.Size(177, 19);
             chkTakeAwayPrinter.TabIndex = 140;
-            chkTakeAwayPrinter.Text = "Take Away Printer";
+            chkTakeAwayPrinter.Text = "Assign AS Take-Away Printer";
             chkTakeAwayPrinter.UseVisualStyleBackColor = true;
             // 
-            // chkSetForThisTerminal
+            // cmbPrinterVisibility
             // 
-            chkSetForThisTerminal.AutoSize = true;
-            chkSetForThisTerminal.ForeColor = System.Drawing.Color.Red;
-            chkSetForThisTerminal.Location = new System.Drawing.Point(36, 193);
-            chkSetForThisTerminal.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            chkSetForThisTerminal.Name = "chkSetForThisTerminal";
-            chkSetForThisTerminal.Size = new System.Drawing.Size(199, 19);
-            chkSetForThisTerminal.TabIndex = 141;
-            chkSetForThisTerminal.Text = "Set This Printer For This Terminal";
-            chkSetForThisTerminal.UseVisualStyleBackColor = true;
+            cmbPrinterVisibility.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbPrinterVisibility.Font = new System.Drawing.Font("Arial", 12F);
+            cmbPrinterVisibility.FormattingEnabled = true;
+            cmbPrinterVisibility.Items.AddRange(new object[] { "Local", "Global" });
+            cmbPrinterVisibility.Location = new System.Drawing.Point(230, 74);
+            cmbPrinterVisibility.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            cmbPrinterVisibility.Name = "cmbPrinterVisibility";
+            cmbPrinterVisibility.Size = new System.Drawing.Size(206, 26);
+            cmbPrinterVisibility.TabIndex = 143;
             // 
-            // lblExistingClientIID
+            // label2
             // 
-            lblExistingClientIID.ForeColor = System.Drawing.Color.Blue;
-            lblExistingClientIID.Location = new System.Drawing.Point(255, 189);
-            lblExistingClientIID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblExistingClientIID.Name = "lblExistingClientIID";
-            lblExistingClientIID.Size = new System.Drawing.Size(257, 27);
-            lblExistingClientIID.TabIndex = 142;
-            lblExistingClientIID.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            label2.AutoSize = true;
+            label2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label2.Location = new System.Drawing.Point(36, 79);
+            label2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 1);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(98, 16);
+            label2.TabIndex = 144;
+            label2.Text = "Printer Visibility";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            label3.Location = new System.Drawing.Point(36, 121);
+            label3.Margin = new System.Windows.Forms.Padding(4, 3, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(90, 16);
+            label3.TabIndex = 145;
+            label3.Text = "Local Terminal";
+            // 
+            // txtLocalTerminal
+            // 
+            txtLocalTerminal.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            txtLocalTerminal.Location = new System.Drawing.Point(230, 115);
+            txtLocalTerminal.Margin = new System.Windows.Forms.Padding(4, 1, 4, 3);
+            txtLocalTerminal.Name = "txtLocalTerminal";
+            txtLocalTerminal.Size = new System.Drawing.Size(206, 26);
+            txtLocalTerminal.TabIndex = 146;
+            // 
+            // btnSetThis
+            // 
+            btnSetThis.Location = new System.Drawing.Point(142, 115);
+            btnSetThis.Name = "btnSetThis";
+            btnSetThis.Size = new System.Drawing.Size(75, 26);
+            btnSetThis.TabIndex = 147;
+            btnSetThis.Text = "Set This";
+            btnSetThis.UseVisualStyleBackColor = true;
+            btnSetThis.Click += btnSetThis_Click;
             // 
             // frmSinglePrinter
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(548, 375);
+            ClientSize = new System.Drawing.Size(471, 494);
             ControlBox = false;
-            Controls.Add(lblExistingClientIID);
-            Controls.Add(chkSetForThisTerminal);
+            Controls.Add(btnSetThis);
+            Controls.Add(label3);
+            Controls.Add(txtLocalTerminal);
+            Controls.Add(cmbPrinterVisibility);
+            Controls.Add(label2);
             Controls.Add(chkTakeAwayPrinter);
             Controls.Add(chkDeliveryPrinter);
             Controls.Add(chkAdminOnly);
             Controls.Add(label8);
-            Controls.Add(txtSpecialName);
+            Controls.Add(txtApplicationName);
             Controls.Add(cmbNetworkName);
             Controls.Add(label1);
             Controls.Add(cmbFunctionalPrinterType);
@@ -203,7 +240,7 @@ namespace DTRMSimpleBackOffice {
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             Name = "frmSinglePrinter";
-            Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            Padding = new System.Windows.Forms.Padding(12);
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "PRINTER EDITOR";
             Load += frmPrinterEditor_Load;
@@ -217,7 +254,7 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ComboBox cmbFunctionalPrinterType;
-        private System.Windows.Forms.TextBox txtSpecialName;
+        private System.Windows.Forms.TextBox txtApplicationName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cmbNetworkName;
         private System.Windows.Forms.Button btnSave;
@@ -225,7 +262,10 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.CheckBox chkAdminOnly;
         private System.Windows.Forms.CheckBox chkDeliveryPrinter;
         private System.Windows.Forms.CheckBox chkTakeAwayPrinter;
-        private System.Windows.Forms.CheckBox chkSetForThisTerminal;
-        private System.Windows.Forms.Label lblExistingClientIID;
+        private System.Windows.Forms.ComboBox cmbPrinterVisibility;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtLocalTerminal;
+        private System.Windows.Forms.Button btnSetThis;
     }
 }

@@ -1,26 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Newtonsoft.Json;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using POSLayer.Views;
-
 using PosLibrary;
-
 using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
@@ -28,7 +16,6 @@ namespace DTRMSimpleBackOffice {
 
         DTRMSimpleBusiness bslayer;
         IRepository<Distribution> repoDistribution;
-
 
         public frmDistributionList(DTRMSimpleBusiness bslayer, IRepository<Distribution> _repoDistribution) {
             InitializeComponent();
@@ -41,20 +28,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private async Task LoadDistributions() {
-            //dgv.DataSource = bslayer.db.GetDataTable("Select * from DistributionView Where ParentMenuIID ='" + bslayer.config.CurrentMenuIID + "'");
-            List<Distribution> distList = await repoDistribution.GetAllAsync("Printer");
-            dgv.DataSource = distList.Select(d => new DistributionView
-            {
-                DistributionName = d.Name,
-                PrinterIID = d.PrinterIID,
-                PrinterName = d.Printer.ApplicationName,
-                PrinterNetworkName = d.Printer.NetworkName,
-                dorder = d.dorder,
-                IID = d.IID,
-                MenuIID = d.MenuIID,
-                MenuName = d.Menu?.MenuName
-            }).ToList().ToBindingList();
-
+            dgv.DataSource = (await repoDistribution.GetAllAsync("Menu, printers")).ToBindingList();     
         }
 
         private async void btnAdd_Click(object sender, EventArgs e) {
@@ -81,28 +55,12 @@ namespace DTRMSimpleBackOffice {
             }
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
-
-        }
-
         private void btnClose_Click(object sender, EventArgs e) {
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
         private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {
-            //if (e.RowIndex >= 0) {
-            //    switch (e.ColumnIndex) {
-            //        case 9:
-            //            e.CellStyle.BackColor = Color.FromArgb(int.Parse(e.Value.ToString()));
-            //            break;
-            //        case 10:
-            //            e.CellStyle.BackColor = Color.FromArgb(int.Parse(e.Value.ToString()));
-            //            break;
-            //        default:
-            //            break;
 
-            //    }
-            //}
         }
 
         private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {

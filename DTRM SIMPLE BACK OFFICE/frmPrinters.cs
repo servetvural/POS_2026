@@ -15,22 +15,25 @@ using POSLayer.Models;
 using POSLayer.Library;
 using POSWinFormLayer.Library;
 using Microsoft.Extensions.DependencyInjection;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice
 {
     public partial class frmPrinters : Form
     {
         PosConfig config;
+        IRepository<Printer> repoPrinter;
         private DTRMSimpleBusiness bslayer;
         private bool blnasModal;
         public frmPrinters()
         {
             InitializeComponent();
         }
-        public frmPrinters(PosConfig configAsService, DTRMSimpleBusiness bslayer, bool asModal = false)
+        public frmPrinters(PosConfig configAsService,IRepository<Printer> _repoPrinter, DTRMSimpleBusiness bslayer, bool asModal = false)
         {
             InitializeComponent();
             config = configAsService;
+            repoPrinter = _repoPrinter;
             this.bslayer = bslayer;
             this.blnasModal = asModal;
             if (asModal)
@@ -122,48 +125,8 @@ namespace DTRMSimpleBackOffice
         private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             btnEdit_Click(null, null);
-        }
+        }              
 
-
-
-
-        private async void cmbTakeAwayPrinter_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            await bslayer.SaveUniquePrinter(cmbTakeAwayPrinter.SelectedValue.ToString(), OrderTypes.TakeAwayB);
-        }
-
-        private async void cmbDeliveryPrinter_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            await bslayer.SaveUniquePrinter(cmbDeliveryPrinter.SelectedValue.ToString(), OrderTypes.Delivery);
-        }
-
-        private void cmbCashDrawerPrinter_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
-        }
-
-        private void cmbLocalReceiptPrinter_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
-        }
-
-        private async void btnSave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await bslayer.SaveUniquePrinter(cmbTakeAwayPrinter.SelectedValue.ToString(), OrderTypes.TakeAwayB);
-                await bslayer.SaveUniquePrinter(cmbDeliveryPrinter.SelectedValue.ToString(), OrderTypes.Delivery);
-                config.DtPrinterCashDrawerIID = cmbCashDrawerPrinter.SelectedValue.ToString();
-                config.DTClientLocalReceiptPrinterIID = cmbLocalReceiptPrinter.SelectedValue.ToString();
-            } catch { }
-            UF.SaveConfig(config);
-            if (blnasModal)
-            {
-                this.DialogResult = DialogResult.OK;
-                Close();
-            }
-
-        }
 
         private void chkAllPrinters_Click(object sender, EventArgs e)
         {

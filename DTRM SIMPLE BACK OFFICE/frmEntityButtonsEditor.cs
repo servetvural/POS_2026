@@ -114,7 +114,7 @@ namespace DTRMSimpleBackOffice {
             this.entity = bslayer.GetJustEntity(entityButton.CategoryIID).Result;
             this.entityButton = entityButton;
 
-            this.Text = this.Text + "  -- " + entityButton.Name;
+            this.Text = this.Text + "  -- " + entityButton.ItemName;
         }
         public FrmEntityButtonsEditor(PosConfig configAsService, DTRMSimpleBusiness bslayer, Category entity, CategoryItem entityButton) {
             InitializeComponent();
@@ -123,7 +123,7 @@ namespace DTRMSimpleBackOffice {
             this.entity = entity;
             this.entityButton = entityButton;
 
-            this.Text = this.Text + "  -- " + entityButton.Name;
+            this.Text = this.Text + "  -- " + entityButton.ItemName;
         }
 
         /// <summary>
@@ -1358,7 +1358,7 @@ namespace DTRMSimpleBackOffice {
                     //parentEntityButton.SyncronizePriceItems();
                 CultureInfo ci = bslayer.GetUICulture(); 
 
-                txtEntityButtonName.Text = entityButton.Name;
+                txtEntityButtonName.Text = entityButton.ItemName;
                 btnButtonColor.BackColor = Color.FromArgb(entityButton.BgColor);
                 btnForeColor.BackColor = Color.FromArgb(entityButton.FgColor);
                 cmbButtonType.SelectedIndex = (int)entityButton.ButtonType;
@@ -1429,7 +1429,7 @@ namespace DTRMSimpleBackOffice {
                 chkWithImage.Checked = entityButton.WithImage;
 
                 btnFont.Text = entityButton.FFamily + "," + entityButton.FSize.ToString() + "," + entityButton.FStyle;
-                incDisplayOrder.Value = entityButton.dorder;
+                incDisplayOrder.Value = entityButton.DOrder;
 
                 LoadGenericImage();
                 
@@ -1496,7 +1496,7 @@ namespace DTRMSimpleBackOffice {
                 entityButton.DPrice = (float)txtDeliveryPrice.Value; // float.Parse(txtDeliveryPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
 
 
-                entityButton.Name = txtEntityButtonName.Text;
+                entityButton.ItemName = txtEntityButtonName.Text;
 
                 entityButton.BgColor = btnButtonColor.BackColor.ToArgb();
                 entityButton.FgColor = btnForeColor.BackColor.ToArgb();
@@ -1544,7 +1544,7 @@ namespace DTRMSimpleBackOffice {
                 entityButton.Height = incHeight.Value;
 
                 //entityButton.ImageFileName = txtImageFile.Text;
-                entityButton.dorder = (int)incDisplayOrder.Value;
+                entityButton.DOrder = (int)incDisplayOrder.Value;
 
                 entityButton.WithImage = chkWithImage.Checked;
 

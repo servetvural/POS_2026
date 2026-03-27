@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel;
+
 using Microsoft.EntityFrameworkCore;
 
 using POSLayer.Library;
@@ -11,26 +13,21 @@ public interface IRepository<T> where T : BaseClass
 {
     PosDbContext GetDBContext();
     Task<bool> IsDatabaseExist();
-    // Task<T> Get(int Id, string includeItems = "");
-
     Task<bool> Any();
     Task<T> Get(string IID, string includeItems = "");
-
     Task<T> GetFirst(string includeItems = "");
-
     Task<T> GetByField(string fieldName, object value, string includeItems = "");       
     Task<List<T>> GetListByField(string fieldName, object value, string includeItems = "", string OrderByField = "");
-    //Task<T> GetFirst(string includeItems = "");
+
     Task<List<T>> GetAllAsync(string includeItems = "");
     Task<T> Save(T obj);
-    Task SaveHierarchy<T>(T rootEntity);
-
-Task SaveMenuHierarchy(TheMenu menu);
-   // Task<int> Delete(int Id);
+    Task<T> SaveTree(T rootEntity);
     Task<int> Delete(string IID);
     Task<int> DeleteAll();
     Task<int> DeleteByField(string fieldName, object value);
-    //Task EnsureDisplayOrder();
+
+
+
 
 
 
@@ -51,7 +48,10 @@ Task SaveMenuHierarchy(TheMenu menu);
     #region MENU FUNCTIONS
     Task<TheMenu> GetMenu(string IID);
 
-    Task<TheMenu> SaveMenu(TheMenu menu);
+
 
     #endregion
+
+    Task<bool> AddPrinterToDistribution(string distributionId, string printerId);
+    Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID);
 }

@@ -32,7 +32,7 @@ public partial class OrderItem   : BaseClass
 
     public OrderItem(string OrderIID, string EntityIID, string OrderGroupIID,
     double Quantity, double SizeButtonOrEntityButtonPrice, string EntityButtonIID, string OrderItemText,
-     string distributioniid, OrderItemTypes ItemType, int dorder,
+     string distributioniid, OrderItemTypes ItemType, int DOrder,
        string EntityName, int EntityDisplayOrder, double TaxPercent)
     {
         this.OrderIID = OrderIID;
@@ -45,7 +45,7 @@ public partial class OrderItem   : BaseClass
         this.EntityButtonIID = EntityButtonIID;
         this.DistributionIID = distributioniid;
         this.ItemType = ItemType;
-        this.dorder = dorder;
+        this.DOrder = DOrder;
 
         this.EntityName = EntityName;
         this.EntityDisplayOrder = EntityDisplayOrder;
@@ -57,7 +57,7 @@ public partial class OrderItem   : BaseClass
         OrderItem oi = new OrderItem(this.OrderIID, this.EntityIID,
              blnNewGroup ? ShortGuid.NewGuid().ToString() : this.OrderGroupIID, this.Quantity,
              this.Price, this.EntityButtonIID, this.OrderItemText,
-             this.DistributionIID, this.ItemType, this.dorder, this.EntityName, this.EntityDisplayOrder,
+             this.DistributionIID, this.ItemType, this.DOrder, this.EntityName, this.EntityDisplayOrder,
             this.TaxPercent);
         oi.CompletedQuantity = this.CompletedQuantity;
         return oi;
@@ -67,7 +67,7 @@ public partial class OrderItem   : BaseClass
         OrderItem oi = new OrderItem(newParentOrderIID, this.EntityIID,
              blnNewGroup ? ShortGuid.NewGuid().ToString() : this.OrderGroupIID, this.Quantity,
              this.Price, this.EntityButtonIID, this.OrderItemText,
-             this.DistributionIID, this.ItemType, this.dorder, this.EntityName, this.EntityDisplayOrder,
+             this.DistributionIID, this.ItemType, this.DOrder, this.EntityName, this.EntityDisplayOrder,
             this.TaxPercent);
         oi.CompletedQuantity = this.CompletedQuantity;
         return oi;

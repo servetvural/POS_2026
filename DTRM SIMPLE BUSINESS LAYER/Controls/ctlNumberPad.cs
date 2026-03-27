@@ -859,11 +859,11 @@ namespace DTRMNS {
                 btn.ForeColor = Color.FromArgb(entitybutton.FgColor);
                 btn.MinimumSize = new Size(132, 76);
                 btn.AutoSize = true;
-                btn.Text = entitybutton.Name;
+                btn.Text = entitybutton.ItemName;
                 btn.Font = new Font("Arial", 9f, FontStyle.Bold);
                 btn.Tag = entitybutton;
                 btn.PrintableTypeIID = parentEntity.DistributionIID;
-                btn.EntityName = parentEntity.Name; // dt.Rows[i]["EntityName"].ToString();
+                btn.EntityName = parentEntity.CategoryName; // dt.Rows[i]["EntityName"].ToString();
                 pnlDistributions.Controls.Add(btn);
                 btn.Click += new EventHandler(btnEntityButton_Click);
             }
@@ -895,7 +895,7 @@ namespace DTRMNS {
                     return;
 
                 bslayer.AttachedOrder.AddOrderItem(entitybutton.CategoryIID, "", 1, 
-                   Reg2, "", entitybutton.Name,  btn.PrintableTypeIID /*DistributionIID*/, 
+                   Reg2, "", entitybutton.ItemName,  btn.PrintableTypeIID /*DistributionIID*/, 
                    OrderItemTypes.NormalOrderItem, 0, btn.EntityName, 0, bslayer.GetEBTaxPercent(entitybutton));
                 bslayer.OnDisplayOrder();
 

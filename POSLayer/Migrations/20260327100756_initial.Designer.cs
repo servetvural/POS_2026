@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Models;
 
@@ -11,9 +12,11 @@ using POSLayer.Models;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260327100756_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,10 +155,6 @@ namespace POSLayer.Migrations
                     b.Property<int>("BgColour")
                         .HasColumnType("int");
 
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("DOrder")
                         .HasColumnType("int");
 
@@ -185,6 +184,10 @@ namespace POSLayer.Migrations
                     b.Property<string>("MenuIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Width")
                         .HasColumnType("int");
@@ -252,7 +255,7 @@ namespace POSLayer.Migrations
                     b.Property<int>("Height")
                         .HasColumnType("int");
 
-                    b.Property<string>("ItemName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -367,13 +370,13 @@ namespace POSLayer.Migrations
                     b.Property<int>("DOrder")
                         .HasColumnType("int");
 
-                    b.Property<string>("DistributionName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MenuIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IID");
 
@@ -834,6 +837,10 @@ namespace POSLayer.Migrations
                     b.Property<DateTime>("KitchenModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NotificationEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -871,10 +878,6 @@ namespace POSLayer.Migrations
 
                     b.Property<double>("ServiceChargeTaxRate")
                         .HasColumnType("float");
-
-                    b.Property<string>("ShopName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SmtpAccountName")
                         .IsRequired()
