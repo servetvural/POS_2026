@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using DTRMNS;
 
+using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class frmAppPrinterDialog : Form {
-        private DTRMSimpleBusiness bslayer;
+        PosConfig config;
+        IRepository<Printer> repoPrinter;
         public string SelectedPrinterIID="";
         public Printer SelectedPrinter;
         public string SelectedPrinterNetworkName="";
@@ -16,25 +21,26 @@ namespace DTRMNS {
         public frmAppPrinterDialog() {
             InitializeComponent();
         }
-        public frmAppPrinterDialog(DTRMSimpleBusiness bslayer) {
+        public frmAppPrinterDialog(PosConfig configAsService, IRepository<Printer> _repoPrinter) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            config = configAsService;
+            repoPrinter = _repoPrinter;
         }
 
-        private void frmAppPrinterDialog_Load(object sender, EventArgs e) {
-            LoadPrinters();
+        private async void frmAppPrinterDialog_Load(object sender, EventArgs e) {
+           await LoadPrinters();
         }
 
 
-        private void LoadPrinters() {
-            List<Printer> PrinterList = bslayer.GetReceiptPrinterList().Result;
+        private async Task LoadPrinters() {
+            List<Printer> PrinterList = (await repoPrinter.GetAllAsync()).Where(x => x.PrinterType == PrinterTypes.Receipt && x.LocalTerminal == config.Terminal_Name).ToList();
 
             ListViewItem lvi;
-            Printer printer;
             for (int i = 0; i < PrinterList.Count; i++) {
-                printer = (Printer)PrinterList[i];
+                Printer printer = (Printer)PrinterList[i];
                 string[] plist = { printer.ApplicationName, printer.IID };
                 lvi = new ListViewItem(plist, 0);
+                lvi.Tag = printer;
                 lvwPrinters.Items.Add(lvi);
             }
         }
@@ -48,7 +54,7 @@ namespace DTRMNS {
             if (lvwPrinters.SelectedIndices.Count > 0) {
                 ListViewItem lvi = lvwPrinters.SelectedItems[0];
                 this.SelectedPrinterIID = lvi.SubItems[1].Text;
-                this.SelectedPrinter =await bslayer.GetPrinterForClient(SelectedPrinterIID);
+                this.SelectedPrinter = (Printer)lvi.Tag;  //await bslayer.GetPrinterForClient(SelectedPrinterIID);
                 this.SelectedPrinterNetworkName = SelectedPrinter.NetworkName;
                 this.DialogResult = DialogResult.OK;
                 this.Close();

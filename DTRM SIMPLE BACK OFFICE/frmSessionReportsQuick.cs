@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 
 using PosLibrary;
@@ -440,7 +442,7 @@ namespace DTRMSimpleBackOffice
                    "\r\nThe print process will continue running in the background.",
                    "REPORT CONFIRMATION", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                    frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                     if (fsp.ShowDialog() == DialogResult.OK)
                     {
                         List<CustomReportPrintJob> jobList = new();

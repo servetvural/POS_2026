@@ -308,7 +308,7 @@ namespace DTRMSimpleBackOffice {
         }
         private void BtnPrintMenu_Click(object sender, EventArgs e) {
             if (MessageBox.Show("You are about to print the entire menu price list.\nDo you want to continue?", "PRINT PRICE LIST", MessageBoxButtons.YesNoCancel) == DialogResult.Yes) {
-                using (frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer)) {
+                using (frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services)) {
                     if (frm.ShowDialog() == DialogResult.OK) {
                         string catalogIID = dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString();
                         bslayer.PrintPriceList(catalogIID, frm.SelectedPrinterIID);

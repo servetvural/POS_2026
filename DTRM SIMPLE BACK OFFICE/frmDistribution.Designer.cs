@@ -33,25 +33,21 @@ namespace DTRMSimpleBackOffice {
             label1 = new System.Windows.Forms.Label();
             btnSave = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
-            applicationPrinterBindingSource = new System.Windows.Forms.BindingSource(components);
             cmbPrimaryPrinter = new System.Windows.Forms.ComboBox();
+            printerBindingSource = new System.Windows.Forms.BindingSource(components);
             cmbMenu = new System.Windows.Forms.ComboBox();
             label3 = new System.Windows.Forms.Label();
             btnNewPrinter = new System.Windows.Forms.Button();
             dgv = new System.Windows.Forms.DataGridView();
+            distributionPrinterBindingSource = new System.Windows.Forms.BindingSource(components);
             btnDeletePrinter = new System.Windows.Forms.Button();
-            colPrinterIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            applicationNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            PrinterVisibility = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            LocalTerminal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            networkNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colPrinterType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            deliveryPrinterDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            takeAwayPrinterDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            adminOnlyDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             groupBox1 = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)applicationPrinterBindingSource).BeginInit();
+            colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            PrinterName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)printerBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)distributionPrinterBindingSource).BeginInit();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -97,13 +93,9 @@ namespace DTRMSimpleBackOffice {
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
-            // applicationPrinterBindingSource
-            // 
-            applicationPrinterBindingSource.DataSource = typeof(Printer);
-            // 
             // cmbPrimaryPrinter
             // 
-            cmbPrimaryPrinter.DataSource = applicationPrinterBindingSource;
+            cmbPrimaryPrinter.DataSource = printerBindingSource;
             cmbPrimaryPrinter.DisplayMember = "ApplicationName";
             cmbPrimaryPrinter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             cmbPrimaryPrinter.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
@@ -114,6 +106,10 @@ namespace DTRMSimpleBackOffice {
             cmbPrimaryPrinter.Size = new System.Drawing.Size(327, 32);
             cmbPrimaryPrinter.TabIndex = 153;
             cmbPrimaryPrinter.ValueMember = "IID";
+            // 
+            // printerBindingSource
+            // 
+            printerBindingSource.DataSource = typeof(Printer);
             // 
             // cmbMenu
             // 
@@ -163,8 +159,8 @@ namespace DTRMSimpleBackOffice {
             dgv.AutoGenerateColumns = false;
             dgv.BackgroundColor = System.Drawing.Color.White;
             dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colPrinterIID, applicationNameDataGridViewTextBoxColumn, PrinterVisibility, LocalTerminal, networkNameDataGridViewTextBoxColumn, colPrinterType, deliveryPrinterDataGridViewCheckBoxColumn, takeAwayPrinterDataGridViewCheckBoxColumn, adminOnlyDataGridViewCheckBoxColumn });
-            dgv.DataSource = applicationPrinterBindingSource;
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colIID, PrinterName, dOrderDataGridViewTextBoxColumn });
+            dgv.DataSource = distributionPrinterBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
@@ -184,6 +180,10 @@ namespace DTRMSimpleBackOffice {
             dgv.Size = new System.Drawing.Size(766, 164);
             dgv.TabIndex = 157;
             // 
+            // distributionPrinterBindingSource
+            // 
+            distributionPrinterBindingSource.DataSource = typeof(DistributionPrinter);
+            // 
             // btnDeletePrinter
             // 
             btnDeletePrinter.Image = Properties.Resources.eksi32;
@@ -195,73 +195,6 @@ namespace DTRMSimpleBackOffice {
             btnDeletePrinter.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             btnDeletePrinter.UseVisualStyleBackColor = true;
             btnDeletePrinter.Click += btnDeletePrinter_Click;
-            // 
-            // colPrinterIID
-            // 
-            colPrinterIID.DataPropertyName = "IID";
-            colPrinterIID.HeaderText = "IID";
-            colPrinterIID.Name = "colPrinterIID";
-            colPrinterIID.ReadOnly = true;
-            colPrinterIID.Visible = false;
-            // 
-            // applicationNameDataGridViewTextBoxColumn
-            // 
-            applicationNameDataGridViewTextBoxColumn.DataPropertyName = "ApplicationName";
-            applicationNameDataGridViewTextBoxColumn.HeaderText = "Printer Name";
-            applicationNameDataGridViewTextBoxColumn.Name = "applicationNameDataGridViewTextBoxColumn";
-            applicationNameDataGridViewTextBoxColumn.ReadOnly = true;
-            applicationNameDataGridViewTextBoxColumn.Width = 200;
-            // 
-            // PrinterVisibility
-            // 
-            PrinterVisibility.DataPropertyName = "PrinterVisibility";
-            PrinterVisibility.HeaderText = "Visibility";
-            PrinterVisibility.Name = "PrinterVisibility";
-            PrinterVisibility.ReadOnly = true;
-            // 
-            // LocalTerminal
-            // 
-            LocalTerminal.DataPropertyName = "LocalTerminal";
-            LocalTerminal.HeaderText = "LocalTerminal";
-            LocalTerminal.Name = "LocalTerminal";
-            LocalTerminal.ReadOnly = true;
-            LocalTerminal.Width = 120;
-            // 
-            // networkNameDataGridViewTextBoxColumn
-            // 
-            networkNameDataGridViewTextBoxColumn.DataPropertyName = "NetworkName";
-            networkNameDataGridViewTextBoxColumn.HeaderText = "NetworkName";
-            networkNameDataGridViewTextBoxColumn.Name = "networkNameDataGridViewTextBoxColumn";
-            networkNameDataGridViewTextBoxColumn.ReadOnly = true;
-            networkNameDataGridViewTextBoxColumn.Width = 300;
-            // 
-            // colPrinterType
-            // 
-            colPrinterType.DataPropertyName = "PrinterType";
-            colPrinterType.HeaderText = "Printer Type";
-            colPrinterType.Name = "colPrinterType";
-            colPrinterType.ReadOnly = true;
-            // 
-            // deliveryPrinterDataGridViewCheckBoxColumn
-            // 
-            deliveryPrinterDataGridViewCheckBoxColumn.DataPropertyName = "DeliveryPrinter";
-            deliveryPrinterDataGridViewCheckBoxColumn.HeaderText = "Delivery";
-            deliveryPrinterDataGridViewCheckBoxColumn.Name = "deliveryPrinterDataGridViewCheckBoxColumn";
-            deliveryPrinterDataGridViewCheckBoxColumn.ReadOnly = true;
-            // 
-            // takeAwayPrinterDataGridViewCheckBoxColumn
-            // 
-            takeAwayPrinterDataGridViewCheckBoxColumn.DataPropertyName = "TakeAwayPrinter";
-            takeAwayPrinterDataGridViewCheckBoxColumn.HeaderText = "TakeAway";
-            takeAwayPrinterDataGridViewCheckBoxColumn.Name = "takeAwayPrinterDataGridViewCheckBoxColumn";
-            takeAwayPrinterDataGridViewCheckBoxColumn.ReadOnly = true;
-            // 
-            // adminOnlyDataGridViewCheckBoxColumn
-            // 
-            adminOnlyDataGridViewCheckBoxColumn.DataPropertyName = "AdminOnly";
-            adminOnlyDataGridViewCheckBoxColumn.HeaderText = "Admin Only";
-            adminOnlyDataGridViewCheckBoxColumn.Name = "adminOnlyDataGridViewCheckBoxColumn";
-            adminOnlyDataGridViewCheckBoxColumn.ReadOnly = true;
             // 
             // groupBox1
             // 
@@ -275,6 +208,29 @@ namespace DTRMSimpleBackOffice {
             groupBox1.TabIndex = 159;
             groupBox1.TabStop = false;
             groupBox1.Text = "Distribution Printers";
+            // 
+            // colIID
+            // 
+            colIID.DataPropertyName = "IID";
+            colIID.HeaderText = "IID";
+            colIID.Name = "colIID";
+            colIID.ReadOnly = true;
+            colIID.Visible = false;
+            // 
+            // PrinterName
+            // 
+            PrinterName.DataPropertyName = "PrinterName";
+            PrinterName.HeaderText = "PrinterName";
+            PrinterName.Name = "PrinterName";
+            PrinterName.ReadOnly = true;
+            PrinterName.Width = 300;
+            // 
+            // dOrderDataGridViewTextBoxColumn
+            // 
+            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
+            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
+            dOrderDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // frmDistribution
             // 
@@ -297,8 +253,9 @@ namespace DTRMSimpleBackOffice {
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "DISTRIBUTION";
             Load += frmDistribution_Load;
-            ((System.ComponentModel.ISupportInitialize)applicationPrinterBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)printerBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            ((System.ComponentModel.ISupportInitialize)distributionPrinterBindingSource).EndInit();
             groupBox1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -311,22 +268,18 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.BindingSource applicationPrinterBindingSource;
         private System.Windows.Forms.ComboBox cmbPrimaryPrinter;
         private System.Windows.Forms.ComboBox cmbMenu;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnNewPrinter;
         private System.Windows.Forms.DataGridView dgv;
         private System.Windows.Forms.Button btnDeletePrinter;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPrinterIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn applicationNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PrinterVisibility;
-        private System.Windows.Forms.DataGridViewTextBoxColumn LocalTerminal;
-        private System.Windows.Forms.DataGridViewTextBoxColumn networkNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPrinterType;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn deliveryPrinterDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn takeAwayPrinterDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn adminOnlyDataGridViewCheckBoxColumn;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.BindingSource distributionPrinterBindingSource;
+        private System.Windows.Forms.BindingSource printerBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PrinterName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn;
     }
 }

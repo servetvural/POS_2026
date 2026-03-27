@@ -20,8 +20,8 @@ public interface IRepository<T> where T : BaseClass
     Task<List<T>> GetListByField(string fieldName, object value, string includeItems = "", string OrderByField = "");
 
     Task<List<T>> GetAllAsync(string includeItems = "");
-    Task<T> Save(T obj);
-    Task<T> SaveTree(T rootEntity);
+    Task<T> Save(T obj,string includeItemsOnReturn = "");
+    Task<T> SaveTree(T rootEntity, string includeItemsOnReturn = "");
     Task<int> Delete(string IID);
     Task<int> DeleteAll();
     Task<int> DeleteByField(string fieldName, object value);
@@ -51,7 +51,6 @@ public interface IRepository<T> where T : BaseClass
 
 
     #endregion
-
-    Task<bool> AddPrinterToDistribution(string distributionId, string printerId);
-    Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID);
+    //Task<bool> AddPrinterToDistribution(Distribution dist, Printer printer);
+    //Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID);
 }

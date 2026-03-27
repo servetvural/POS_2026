@@ -12,4 +12,6 @@ public class DistributionPrinter : BaseClass
     public string PrinterIID { get; set; }
     public Printer Printer { get; set; }
 
+    public string PrinterName => Printer?.ApplicationName;
+
 }

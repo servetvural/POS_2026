@@ -12,6 +12,8 @@ using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using POSLayer.Views;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace PosLayer.Repository;
 
 
@@ -286,7 +288,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
-    public async Task<T> Save(T obj)
+    public async Task<T> Save(T obj, string includeItemsOnReturn = "")
     {
         using var _db = GetDBContext();
         try
@@ -305,7 +307,11 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 _db.Entry(existing).CurrentValues.SetValues(obj);
             }
             await _db.SaveChangesAsync();
-            return obj;
+
+            if (obj == null)
+                return null;
+            else 
+                return await Get(obj.IID, includeItemsOnReturn);           
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -313,7 +319,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
-    public async Task<T> SaveTree(T rootEntity)
+    public async Task<T> SaveTree(T rootEntity, string includeItemsOnReturn = "")
     {
         using var _db = GetDBContext();
 
@@ -352,7 +358,11 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             });
 
             await _db.SaveChangesAsync();
-            return rootEntity;
+
+            if (rootEntity == null)
+                return null;
+            else
+                return await Get(rootEntity.IID, includeItemsOnReturn);
         } catch (Exception ex)
         {
             return null;
@@ -684,114 +694,140 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
-
-    //public async Task UpdateDistributionPrinters(string distributionId, List<string> selectedPrinterIds)
+    //public async Task<bool> AddPrinterToDistribution(Distribution dist, Printer printer)
     //{
-    //    using var db = GetDBContext();
-
-    //    // 1. Load the Distribution WITH its current Printers
-    //    var distribution = await db.Distributions
-    //        .Include(d => d.Printers)
-    //        .FirstOrDefaultAsync(d => d.IID == distributionId);
-
-    //    // 2. Fetch the actual Printer entities for the new selection
-    //    var selectedPrinters = await db.Printers
-    //        .Where(p => selectedPrinterIds.Contains(p.IID))
-    //        .ToListAsync();
-
-    //    // 3. EF Core handles the diffing: it will remove old links and add new ones
-    //    distribution.Printers = selectedPrinters;
-
-    //    await db.SaveChangesAsync();
-    //}
-
-    //public async Task SavePrinterToDistribution(string distributionIid, string printerIid)
-    //{
-    //    // 1. Load the Distribution including its current printers
-    //    var distribution = await _context.Distributions
-    //        .Include(d => d.printers)
-    //        .FirstOrDefaultAsync(d => d.IID == distributionIid);
-
-    //    // 2. Load the Printer
-    //    var printer = await _context.Printers
-    //        .FirstOrDefaultAsync(p => p.IID == printerIid);
-
-    //    if (distribution != null && printer != null)
+    //    using var _db = GetDBContext();
+    //    try
     //    {
-    //        // 3. Add to collection if it doesn't already exist
-    //        if (!distribution.printers.Any(p => p.IID == printerIid))
+    //        var nextOrder = dist.DistributionPrinters.Any()
+    //            ? dist.DistributionPrinters.Max(x => x.DOrder) + 1
+    //            : 0;
+
+    //        var link = new DistributionPrinter
     //        {
-    //            distribution.printers.Add(printer);
-    //            await _context.SaveChangesAsync();
-    //        }
+    //            DistributionIID = dist.IID,
+    //            PrinterIID = printer.IID,
+    //            DOrder = nextOrder
+    //        };
+
+    //        dist.DistributionPrinters.Add(link);
+    //        await _db.SaveChangesAsync();
+    //        return true;
+    //    } catch (Exception ex)
+    //    {
+    //        return false;
+    //    }
+    //}
+    //public async Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        // 1. Load the Distribution including the Join Table entries
+    //        var distribution = await _db.Distributions
+    //        .Include(d => d.DistributionPrinters)
+    //        .FirstOrDefaultAsync(d => d.IID == distributionIID);
+
+    //        if (distribution != null)
+    //        {
+    //            // 2. Find the specific link in the Join Table
+    //            var linkToRemove = distribution.DistributionPrinters
+    //                .FirstOrDefault(dp => dp.PrinterIID == printerIID);
+
+    //            if (linkToRemove != null)
+    //            {
+    //                // 3. Remove the link object from the collection
+    //                // EF Core identifies this as a request to delete that row from the join table
+    //                distribution.DistributionPrinters.Remove(linkToRemove);
+
+    //                // 4. Update the SortOrder for remaining items (Optional but recommended)
+    //                var remaining = distribution.DistributionPrinters
+    //                    .OrderBy(x => x.DOrder)
+    //                    .ToList();
+
+    //                for (int i = 0; i < remaining.Count; i++)
+    //                {
+    //                    remaining[i].DOrder = i;
+    //                }
+
+    //                await _db.SaveChangesAsync();
+    //                return true;
+    //            }
+    //            return true;
+    //        } else
+    //            return false;
+
+    //    } catch (Exception ex)
+    //    {
+    //        return false;
     //    }
     //}
 
 
-    public async Task<bool> AddPrinterToDistribution(string distributionIID, string printerIID)
-    {
-        using var _db = GetDBContext();
-        try
-        {
-            // 1. Include the 'printers' collection so EF knows current state
-            var distribution = await _db.Distributions
-                .Include(d => d.printers)
-                .FirstOrDefaultAsync(x => x.IID == distributionIID);
+    //public async Task<bool> AddPrinterToDistribution(string distributionIID, string printerIID)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        // 1. Include the 'printers' collection so EF knows current state
+    //        var distribution = await _db.Distributions
+    //            .Include(d => d.printers)
+    //            .FirstOrDefaultAsync(x => x.IID == distributionIID);
 
-            var printer = await _db.Printers
-                .FirstOrDefaultAsync(x => x.IID == printerIID);
+    //        var printer = await _db.Printers
+    //            .FirstOrDefaultAsync(x => x.IID == printerIID);
 
-            if (distribution != null && printer != null)
-            {
-                // 2. Add if not already linked (prevents duplicates)
-                if (!distribution.printers.Any(p => p.IID == printerIID))
-                {
-                    distribution.printers.Add(printer);
-                    await _db.SaveChangesAsync();
+    //        if (distribution != null && printer != null)
+    //        {
+    //            // 2. Add if not already linked (prevents duplicates)
+    //            if (!distribution.printers.Any(p => p.IID == printerIID))
+    //            {
+    //                distribution.printers.Add(printer);
+    //                await _db.SaveChangesAsync();
 
-                    return true;
-                } else
-                    return true;
-            }
-            return false;
-        } catch (Exception ex)
-        {
-            return false;
-        }
-    }
+    //                return true;
+    //            } else
+    //                return true;
+    //        }
+    //        return false;
+    //    } catch (Exception ex)
+    //    {
+    //        return false;
+    //    }
+    //}
 
-    public async Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID)
-    {
-        using var _db = GetDBContext();
-        try
-        {
-            // 1. Load the Distribution AND its current printers (Many-to-Many)
-            var distribution = await _db.Distributions
-            .Include(d => d.printers)
-            .FirstOrDefaultAsync(d => d.IID == distributionIID);
+    //public async Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        // 1. Load the Distribution AND its current printers (Many-to-Many)
+    //        var distribution = await _db.Distributions
+    //        .Include(d => d.printers)
+    //        .FirstOrDefaultAsync(d => d.IID == distributionIID);
 
-            if (distribution != null)
-            {
-                // 2. Find the specific printer within that distribution's list
-                var printerToRemove = distribution.printers
-                    .FirstOrDefault(p => p.IID == printerIID);
+    //        if (distribution != null)
+    //        {
+    //            // 2. Find the specific printer within that distribution's list
+    //            var printerToRemove = distribution.printers
+    //                .FirstOrDefault(p => p.IID == printerIID);
 
-                if (printerToRemove != null)
-                {
-                    // 3. Remove it from the collection
-                    // EF Core sees this and marks the Join Table entry for deletion
-                    distribution.printers.Remove(printerToRemove);
+    //            if (printerToRemove != null)
+    //            {
+    //                // 3. Remove it from the collection
+    //                // EF Core sees this and marks the Join Table entry for deletion
+    //                distribution.printers.Remove(printerToRemove);
 
-                    // 4. Persist changes
-                    await _db.SaveChangesAsync();
-                    return true;
-                } else
-                    return true;
-            } else
-                return false;
-        } catch (Exception ex)
-        {
-            return false;
-        }
-    }
+    //                // 4. Persist changes
+    //                await _db.SaveChangesAsync();
+    //                return true;
+    //            } else
+    //                return true;
+    //        } else
+    //            return false;
+    //    } catch (Exception ex)
+    //    {
+    //        return false;
+    //    }
+    //}
 }

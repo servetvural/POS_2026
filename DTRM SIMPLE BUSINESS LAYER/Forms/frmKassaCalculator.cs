@@ -212,7 +212,7 @@ namespace DTRMNS {
 
         private void cmdPrint_Click(object sender, EventArgs e) {
             int rightmax = 10;
-            frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+            frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
             if (fsp.ShowDialog() == DialogResult.OK) {
                 List<string> report = new List<string>();
                 //report.Add("yayayaya ");

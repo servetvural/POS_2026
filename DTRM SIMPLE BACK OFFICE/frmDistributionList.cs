@@ -12,14 +12,11 @@ using PosLibrary;
 using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmDistributionList : Form {
-
-        DTRMSimpleBusiness bslayer;
+    public partial class frmDistributionList : Form {         
         IRepository<Distribution> repoDistribution;
 
-        public frmDistributionList(DTRMSimpleBusiness bslayer, IRepository<Distribution> _repoDistribution) {
+        public frmDistributionList(IRepository<Distribution> _repoDistribution) {
             InitializeComponent();
-            this.bslayer = bslayer;
             repoDistribution = _repoDistribution;
         }        
 
@@ -28,7 +25,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private async Task LoadDistributions() {
-            dgv.DataSource = (await repoDistribution.GetAllAsync("Menu, printers")).ToBindingList();     
+            dgv.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ToBindingList();     
         }
 
         private async void btnAdd_Click(object sender, EventArgs e) {
@@ -39,7 +36,7 @@ namespace DTRMSimpleBackOffice {
 
         private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Distribution distribution =await bslayer.GetDistribution(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                Distribution distribution =await repoDistribution.Get(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 frmDistribution frm = ActivatorUtilities.CreateInstance < frmDistribution>(ServiceHelper.Services, distribution);
                 if (frm.ShowDialog() == DialogResult.OK)
                    await  LoadDistributions();
@@ -49,7 +46,7 @@ namespace DTRMSimpleBackOffice {
         private async void btnDelete_Click(object sender, EventArgs e) {
             if (MessageBox.Show("Not good Idea", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes) {
                 if (dgv.SelectedRows.Count > 0) {
-                   await bslayer.DeleteDistribution(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                   await repoDistribution.Delete(dgv.SelectedRows[0].Cells[0].Value.ToString());
                    await LoadDistributions();
                 }
             }
@@ -74,8 +71,8 @@ namespace DTRMSimpleBackOffice {
         private void btnPrintList_Click(object sender, EventArgs e) {
             DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgv);
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -4, -18, -10 })) {
-                frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
-                if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
+                frmAppPrinterDialog frm = ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
+                if (frm.ShowDialog() == DialogResult.OK) {
                     PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services, exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
                 }
@@ -86,7 +83,7 @@ namespace DTRMSimpleBackOffice {
 
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Distribution> theList =await bslayer.GetAllDistributions();
+            List<Distribution> theList = await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer");
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -122,7 +119,7 @@ namespace DTRMSimpleBackOffice {
                             List<Distribution> theList = JsonConvert.DeserializeObject<List<Distribution>>(content);
                             foreach (var item in theList)
                             {
-                              await  bslayer.SaveDistribution(item);
+                                await repoDistribution.Save(item);
                             }
                             MessageBox.Show("Saved Distribution List");
                         } else

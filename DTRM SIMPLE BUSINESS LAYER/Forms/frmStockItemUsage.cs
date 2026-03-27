@@ -4,6 +4,8 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Views;
@@ -61,7 +63,7 @@ namespace DTRMNS {
 
         private void btnPrint_Click(object sender, EventArgs e) {
             if (dgv.Rows.Count > 0) {
-                frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK) {
                     // bslayer.PrintStockUsage(fsp.SelectedPrinterIID, bslayer.GetDataTableFromGridVisible(dgv, true));
                     if (chkViewDetails.Checked)

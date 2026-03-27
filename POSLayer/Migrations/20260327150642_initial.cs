@@ -177,14 +177,14 @@ namespace POSLayer.Migrations
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PrinterVisibility = table.Column<int>(type: "int", nullable: false),
                     LocalTerminal = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrinterType = table.Column<int>(type: "int", nullable: false),
                     DeliveryPrinter = table.Column<bool>(type: "bit", nullable: false),
                     TakeAwayPrinter = table.Column<bool>(type: "bit", nullable: false),
                     AdminOnly = table.Column<bool>(type: "bit", nullable: false),
-                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ApplicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PrinterType = table.Column<int>(type: "int", nullable: false),
                     DOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -234,7 +234,7 @@ namespace POSLayer.Migrations
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShopName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Tel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Vat = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -457,7 +457,7 @@ namespace POSLayer.Migrations
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistributionName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MenuIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DOrder = table.Column<int>(type: "int", nullable: false)
                 },
@@ -539,7 +539,7 @@ namespace POSLayer.Migrations
                 columns: table => new
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BgColour = table.Column<int>(type: "int", nullable: false),
                     FgColour = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<int>(type: "int", nullable: false),
@@ -572,21 +572,23 @@ namespace POSLayer.Migrations
                 name: "DistributionPrinters",
                 columns: table => new
                 {
-                    distributionsIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    printersIID = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DistributionIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PrinterIID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DOrder = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DistributionPrinters", x => new { x.distributionsIID, x.printersIID });
+                    table.PrimaryKey("PK_DistributionPrinters", x => x.IID);
                     table.ForeignKey(
-                        name: "FK_DistributionPrinters_Distributions_distributionsIID",
-                        column: x => x.distributionsIID,
+                        name: "FK_DistributionPrinters_Distributions_DistributionIID",
+                        column: x => x.DistributionIID,
                         principalTable: "Distributions",
                         principalColumn: "IID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DistributionPrinters_Printers_printersIID",
-                        column: x => x.printersIID,
+                        name: "FK_DistributionPrinters_Printers_PrinterIID",
+                        column: x => x.PrinterIID,
                         principalTable: "Printers",
                         principalColumn: "IID",
                         onDelete: ReferentialAction.Cascade);
@@ -598,7 +600,7 @@ namespace POSLayer.Migrations
                 {
                     IID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryIID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ItemName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BgColor = table.Column<int>(type: "int", nullable: false),
                     FgColor = table.Column<int>(type: "int", nullable: false),
                     ButtonType = table.Column<int>(type: "int", nullable: false),
@@ -660,9 +662,14 @@ namespace POSLayer.Migrations
                 column: "DistributionIID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DistributionPrinters_printersIID",
+                name: "IX_DistributionPrinters_DistributionIID",
                 table: "DistributionPrinters",
-                column: "printersIID");
+                column: "DistributionIID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DistributionPrinters_PrinterIID",
+                table: "DistributionPrinters",
+                column: "PrinterIID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Distributions_MenuIID",

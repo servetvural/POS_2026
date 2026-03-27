@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 
 using PosLibrary;
@@ -67,7 +69,7 @@ namespace DTRMNS.Forms
                    "\r\nThe print process will continue running in the background.",
                    "REPORT CONFIRMATION", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                    frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                     if (fsp.ShowDialog() == DialogResult.OK)
                     {
                         List<CustomReportPrintJob> jobList = new List<CustomReportPrintJob>();

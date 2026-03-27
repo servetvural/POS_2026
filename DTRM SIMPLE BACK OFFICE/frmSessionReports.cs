@@ -455,7 +455,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                    " sessions!\nThis will take several minutes!\nDo you want to continue?\r\n\r\n" + 
                    "\r\nThe print process will continue running in the background.",
                    "REPORT CONFIRMATION", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                    frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                    frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                     if (fsp.ShowDialog() == DialogResult.OK) {
                         List<CustomReportPrintJob> jobList = new List<CustomReportPrintJob>();
                         for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++) {
@@ -524,7 +524,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private void btnGroupPrint_Click(object sender, EventArgs e) {
             DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvSessionAllOrderItems);
             if (exporter.GenerateAsTabular(true, true,new int[]{-4,-21,5,8})) {
-                frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     PrintHandler printer = new PrintHandler(config,exporter.csvText, frm.SelectedPrinterNetworkName );
                     printer.PrintNow();
@@ -551,7 +551,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private void btnSessionDBPrint_Click(object sender, EventArgs e) {
             DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvDatabase);
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
-                frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
@@ -580,7 +580,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private void btnSessionARCPrint_Click(object sender, EventArgs e) {
             DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvArchive);
             if (exporter.GenerateAsTabular(true, true, new int[] { -15, -15, 10 })) {
-                frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services,exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();

@@ -13,6 +13,7 @@ using POSLayer.Library;
 using System.Threading.Tasks;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmCurrentSessionDisplay : Form {
@@ -117,7 +118,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void btnPrintReport_Click(object sender, EventArgs e) {
-             frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+             frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
              if (fsp.ShowDialog() == DialogResult.OK) {
                  bslayer.PrintReport(ReportFormatTypes.YReport, bslayer.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
              }
@@ -127,7 +128,7 @@ namespace DTRMSimpleBackOffice {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
                 Order order =await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
-                frmAppPrinterDialog frm = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
                     bslayer.PrintReceipt(OrderIID, frm.SelectedPrinter, 1);
                 }

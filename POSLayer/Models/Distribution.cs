@@ -23,23 +23,29 @@ public partial class Distribution : BaseClass
         }
     }
 
-    [NotMapped]
-    public List<Printer> printers { get; set; } = new();
+    //[NotMapped]
+    //public List<Printer> printers { get; set; } = new();
 
   
-    public string FlatPrinterList { 
-        get
-        {
-            if (!printers.Any())
-                return string.Empty;
-            else
-            {
-                return string.Join(", ", printers.Select(x => x.ApplicationName));
-            }
-        }
-    }
+    //public string FlatPrinterList { 
+    //    get
+    //    {
+    //        if (!printers.Any())
+    //            return string.Empty;
+    //        else
+    //        {
+    //            return string.Join(", ", printers.Select(x => x.ApplicationName));
+    //        }
+    //    }
+    //}
 
 
+    public List<DistributionPrinter> DistributionPrinters { get; set; } = new();
 
+    [NotMapped]
+    public string FlatPrinterList => string.Join(", ",
+        DistributionPrinters
+            .OrderBy(x => x.DOrder)
+            .Select(x => x.Printer?.ApplicationName ?? "Unknown"));
 
 }

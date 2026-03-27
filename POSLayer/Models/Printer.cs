@@ -45,14 +45,14 @@ public partial class Printer : BaseClass
     /// <summary>
     /// Ensure only admins can see these printers
     /// </summary>
-    public bool AdminOnly { get; set; } 
-                 
+    public bool AdminOnly { get; set; }
 
 
 
-                           
+
+
     /// <summary>
     /// Distributions which are using this printer
     /// </summary>
-    public List<Distribution> distributions { get; set; } = new();
+    public List<DistributionPrinter> DistributionPrinters { get; set; } = new();
 }

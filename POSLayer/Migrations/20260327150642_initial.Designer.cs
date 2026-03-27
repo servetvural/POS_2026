@@ -12,8 +12,8 @@ using POSLayer.Models;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    [Migration("20260327120319_nameschanged")]
-    partial class nameschanged
+    [Migration("20260327150642_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace POSLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DistributionPrinter", b =>
-                {
-                    b.Property<string>("distributionsIID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("printersIID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("distributionsIID", "printersIID");
-
-                    b.HasIndex("printersIID");
-
-                    b.ToTable("DistributionPrinters", (string)null);
-                });
 
             modelBuilder.Entity("POSLayer.Models.Bonus", b =>
                 {
@@ -383,6 +368,32 @@ namespace POSLayer.Migrations
                     b.HasIndex("MenuIID");
 
                     b.ToTable("Distributions");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.DistributionPrinter", b =>
+                {
+                    b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistributionIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PrinterIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("IID");
+
+                    b.HasIndex("DistributionIID");
+
+                    b.HasIndex("PrinterIID");
+
+                    b.ToTable("DistributionPrinters", (string)null);
                 });
 
             modelBuilder.Entity("POSLayer.Models.Employee", b =>
@@ -1243,21 +1254,6 @@ namespace POSLayer.Migrations
                     b.ToTable("XorderItems");
                 });
 
-            modelBuilder.Entity("DistributionPrinter", b =>
-                {
-                    b.HasOne("POSLayer.Models.Distribution", null)
-                        .WithMany()
-                        .HasForeignKey("distributionsIID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("POSLayer.Models.Printer", null)
-                        .WithMany()
-                        .HasForeignKey("printersIID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("POSLayer.Models.Category", b =>
                 {
                     b.HasOne("POSLayer.Models.Distribution", "Distribution")
@@ -1301,6 +1297,25 @@ namespace POSLayer.Migrations
                         .IsRequired();
 
                     b.Navigation("Menu");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.DistributionPrinter", b =>
+                {
+                    b.HasOne("POSLayer.Models.Distribution", "Distribution")
+                        .WithMany("DistributionPrinters")
+                        .HasForeignKey("DistributionIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("POSLayer.Models.Printer", "Printer")
+                        .WithMany("DistributionPrinters")
+                        .HasForeignKey("PrinterIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Distribution");
+
+                    b.Navigation("Printer");
                 });
 
             modelBuilder.Entity("POSLayer.Models.KitchenOrderItem", b =>
@@ -1363,6 +1378,11 @@ namespace POSLayer.Migrations
                     b.Navigation("Orders");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.Distribution", b =>
+                {
+                    b.Navigation("DistributionPrinters");
+                });
+
             modelBuilder.Entity("POSLayer.Models.KitchenOrder", b =>
                 {
                     b.Navigation("items");
@@ -1371,6 +1391,11 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Order", b =>
                 {
                     b.Navigation("items");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.Printer", b =>
+                {
+                    b.Navigation("DistributionPrinters");
                 });
 
             modelBuilder.Entity("POSLayer.Models.TheMenu", b =>

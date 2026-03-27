@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Newtonsoft.Json;
 
 using POSLayer.Library;
@@ -367,7 +369,7 @@ namespace DTRMNS
         {
             if (dgv.Rows.Count > 0)
             {
-                frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
                     int[] arrcols = null;

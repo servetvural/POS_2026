@@ -6,6 +6,8 @@ using PosLibrary;
 using POSLayer.Library;
 using POSLayer.Models;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionAnalysis : Form {
         private DTRMSimpleBusiness bslayer;
@@ -210,7 +212,7 @@ namespace DTRMSimpleBackOffice {
 
         private void btnPrintStockItems_Click(object sender, EventArgs e) {
             if (dgvStockItems.Rows.Count > 0) {
-                frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK) {
                     bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
                             "Stock Usage Report", bslayer.GetColumnPrintRatio(dgvStockItems), true);
@@ -220,7 +222,7 @@ namespace DTRMSimpleBackOffice {
 
         private void btnOrderItemPrint_Click(object sender, EventArgs e) {
             if (dgvOrderItems.Rows.Count > 0) {
-                frmAppPrinterDialog fsp = new frmAppPrinterDialog(bslayer);
+                frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK) {
                     bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems,true, true),
                             "Order Item List", bslayer.GetColumnPrintRatio(dgvOrderItems), true);
