@@ -1,7 +1,7 @@
 ﻿using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
-   partial class frmEntityEditor {
+   partial class frmCategoryEditor {
       /// <summary>
       /// Required designer variable.
       /// </summary>

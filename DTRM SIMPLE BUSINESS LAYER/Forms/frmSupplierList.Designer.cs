@@ -24,285 +24,330 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSupplierList));
-            this.dgv = new System.Windows.Forms.DataGridView();
-            this.colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.supplierNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.telDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.addressDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.email1DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.email2DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.whatsupDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.supplierBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.barMain = new System.Windows.Forms.ToolStrip();
-            this.btnAdd = new System.Windows.Forms.ToolStripButton();
-            this.btnEdit = new System.Windows.Forms.ToolStripButton();
-            this.btnDelete = new System.Windows.Forms.ToolStripButton();
-            this.btnReload = new System.Windows.Forms.ToolStripButton();
-            this.btnExportAsJson = new System.Windows.Forms.ToolStripButton();
-            this.btnImportFromJson = new System.Windows.Forms.ToolStripButton();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.barMain.SuspendLayout();
-            this.SuspendLayout();
+            dgv = new System.Windows.Forms.DataGridView();
+            colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            supplierNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            telDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            addressDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            email1DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            email2DataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            whatsupDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            supplierBindingSource = new System.Windows.Forms.BindingSource(components);
+            panel1 = new System.Windows.Forms.Panel();
+            btnSelect = new System.Windows.Forms.Button();
+            btnClose = new System.Windows.Forms.Button();
+            btnSave = new System.Windows.Forms.Button();
+            barMain = new System.Windows.Forms.ToolStrip();
+            btnAdd = new System.Windows.Forms.ToolStripButton();
+            btnEdit = new System.Windows.Forms.ToolStripButton();
+            btnDelete = new System.Windows.Forms.ToolStripButton();
+            btnReload = new System.Windows.Forms.ToolStripButton();
+            btnExportAsJson = new System.Windows.Forms.ToolStripButton();
+            btnImportFromJson = new System.Windows.Forms.ToolStripButton();
+            tsSort = new System.Windows.Forms.ToolStripButton();
+            tsMoveUp = new System.Windows.Forms.ToolStripButton();
+            tsMoveDown = new System.Windows.Forms.ToolStripButton();
+            ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)supplierBindingSource).BeginInit();
+            panel1.SuspendLayout();
+            barMain.SuspendLayout();
+            SuspendLayout();
             // 
             // dgv
             // 
-            this.dgv.AllowUserToAddRows = false;
-            this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AutoGenerateColumns = false;
-            this.dgv.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colIID,
-            this.supplierNameDataGridViewTextBoxColumn,
-            this.telDataGridViewTextBoxColumn,
-            this.addressDataGridViewTextBoxColumn,
-            this.email1DataGridViewTextBoxColumn,
-            this.email2DataGridViewTextBoxColumn,
-            this.whatsupDataGridViewTextBoxColumn});
-            this.dgv.DataSource = this.supplierBindingSource;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv.Location = new System.Drawing.Point(0, 54);
-            this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
-            this.dgv.RowHeadersWidth = 25;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(886, 523);
-            this.dgv.TabIndex = 6;
-            this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AutoGenerateColumns = false;
+            dgv.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colIID, supplierNameDataGridViewTextBoxColumn, telDataGridViewTextBoxColumn, addressDataGridViewTextBoxColumn, email1DataGridViewTextBoxColumn, email2DataGridViewTextBoxColumn, whatsupDataGridViewTextBoxColumn, DOrder });
+            dgv.DataSource = supplierBindingSource;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle2;
+            dgv.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgv.Location = new System.Drawing.Point(0, 54);
+            dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgv.Name = "dgv";
+            dgv.ReadOnly = true;
+            dgv.RowHeadersWidth = 25;
+            dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgv.Size = new System.Drawing.Size(1034, 612);
+            dgv.TabIndex = 6;
+            dgv.CellDoubleClick += dgv_CellDoubleClick;
             // 
             // colIID
             // 
-            this.colIID.DataPropertyName = "IID";
-            this.colIID.HeaderText = "IID";
-            this.colIID.Name = "colIID";
-            this.colIID.ReadOnly = true;
-            this.colIID.Visible = false;
+            colIID.DataPropertyName = "IID";
+            colIID.HeaderText = "IID";
+            colIID.Name = "colIID";
+            colIID.ReadOnly = true;
+            colIID.Visible = false;
             // 
             // supplierNameDataGridViewTextBoxColumn
             // 
-            this.supplierNameDataGridViewTextBoxColumn.DataPropertyName = "SupplierName";
-            this.supplierNameDataGridViewTextBoxColumn.HeaderText = "SupplierName";
-            this.supplierNameDataGridViewTextBoxColumn.Name = "supplierNameDataGridViewTextBoxColumn";
-            this.supplierNameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.supplierNameDataGridViewTextBoxColumn.Width = 200;
+            supplierNameDataGridViewTextBoxColumn.DataPropertyName = "SupplierName";
+            supplierNameDataGridViewTextBoxColumn.HeaderText = "SupplierName";
+            supplierNameDataGridViewTextBoxColumn.Name = "supplierNameDataGridViewTextBoxColumn";
+            supplierNameDataGridViewTextBoxColumn.ReadOnly = true;
+            supplierNameDataGridViewTextBoxColumn.Width = 200;
             // 
             // telDataGridViewTextBoxColumn
             // 
-            this.telDataGridViewTextBoxColumn.DataPropertyName = "Tel";
-            this.telDataGridViewTextBoxColumn.HeaderText = "Tel";
-            this.telDataGridViewTextBoxColumn.Name = "telDataGridViewTextBoxColumn";
-            this.telDataGridViewTextBoxColumn.ReadOnly = true;
-            this.telDataGridViewTextBoxColumn.Width = 130;
+            telDataGridViewTextBoxColumn.DataPropertyName = "Tel";
+            telDataGridViewTextBoxColumn.HeaderText = "Tel";
+            telDataGridViewTextBoxColumn.Name = "telDataGridViewTextBoxColumn";
+            telDataGridViewTextBoxColumn.ReadOnly = true;
+            telDataGridViewTextBoxColumn.Width = 130;
             // 
             // addressDataGridViewTextBoxColumn
             // 
-            this.addressDataGridViewTextBoxColumn.DataPropertyName = "Address";
-            this.addressDataGridViewTextBoxColumn.HeaderText = "Address";
-            this.addressDataGridViewTextBoxColumn.Name = "addressDataGridViewTextBoxColumn";
-            this.addressDataGridViewTextBoxColumn.ReadOnly = true;
-            this.addressDataGridViewTextBoxColumn.Width = 250;
+            addressDataGridViewTextBoxColumn.DataPropertyName = "Address";
+            addressDataGridViewTextBoxColumn.HeaderText = "Address";
+            addressDataGridViewTextBoxColumn.Name = "addressDataGridViewTextBoxColumn";
+            addressDataGridViewTextBoxColumn.ReadOnly = true;
+            addressDataGridViewTextBoxColumn.Width = 250;
             // 
             // email1DataGridViewTextBoxColumn
             // 
-            this.email1DataGridViewTextBoxColumn.DataPropertyName = "Email1";
-            this.email1DataGridViewTextBoxColumn.HeaderText = "Email1";
-            this.email1DataGridViewTextBoxColumn.Name = "email1DataGridViewTextBoxColumn";
-            this.email1DataGridViewTextBoxColumn.ReadOnly = true;
-            this.email1DataGridViewTextBoxColumn.Width = 200;
+            email1DataGridViewTextBoxColumn.DataPropertyName = "Email1";
+            email1DataGridViewTextBoxColumn.HeaderText = "Email1";
+            email1DataGridViewTextBoxColumn.Name = "email1DataGridViewTextBoxColumn";
+            email1DataGridViewTextBoxColumn.ReadOnly = true;
+            email1DataGridViewTextBoxColumn.Width = 200;
             // 
             // email2DataGridViewTextBoxColumn
             // 
-            this.email2DataGridViewTextBoxColumn.DataPropertyName = "Email2";
-            this.email2DataGridViewTextBoxColumn.HeaderText = "Email2";
-            this.email2DataGridViewTextBoxColumn.Name = "email2DataGridViewTextBoxColumn";
-            this.email2DataGridViewTextBoxColumn.ReadOnly = true;
-            this.email2DataGridViewTextBoxColumn.Width = 200;
+            email2DataGridViewTextBoxColumn.DataPropertyName = "Email2";
+            email2DataGridViewTextBoxColumn.HeaderText = "Email2";
+            email2DataGridViewTextBoxColumn.Name = "email2DataGridViewTextBoxColumn";
+            email2DataGridViewTextBoxColumn.ReadOnly = true;
+            email2DataGridViewTextBoxColumn.Width = 200;
             // 
             // whatsupDataGridViewTextBoxColumn
             // 
-            this.whatsupDataGridViewTextBoxColumn.DataPropertyName = "Whatsup";
-            this.whatsupDataGridViewTextBoxColumn.HeaderText = "Whatsup";
-            this.whatsupDataGridViewTextBoxColumn.Name = "whatsupDataGridViewTextBoxColumn";
-            this.whatsupDataGridViewTextBoxColumn.ReadOnly = true;
-            this.whatsupDataGridViewTextBoxColumn.Width = 130;
+            whatsupDataGridViewTextBoxColumn.DataPropertyName = "Whatsup";
+            whatsupDataGridViewTextBoxColumn.HeaderText = "Whatsup";
+            whatsupDataGridViewTextBoxColumn.Name = "whatsupDataGridViewTextBoxColumn";
+            whatsupDataGridViewTextBoxColumn.ReadOnly = true;
+            whatsupDataGridViewTextBoxColumn.Width = 130;
+            // 
+            // DOrder
+            // 
+            DOrder.DataPropertyName = "DOrder";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            DOrder.DefaultCellStyle = dataGridViewCellStyle1;
+            DOrder.HeaderText = "DOrder";
+            DOrder.Name = "DOrder";
+            DOrder.ReadOnly = true;
+            DOrder.Width = 70;
             // 
             // supplierBindingSource
             // 
-            this.supplierBindingSource.DataSource = typeof(Supplier);
+            supplierBindingSource.DataSource = typeof(Supplier);
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnSelect);
-            this.panel1.Controls.Add(this.btnClose);
-            this.panel1.Controls.Add(this.btnSave);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 577);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(10);
-            this.panel1.Size = new System.Drawing.Size(886, 70);
-            this.panel1.TabIndex = 45;
+            panel1.Controls.Add(btnSelect);
+            panel1.Controls.Add(btnClose);
+            panel1.Controls.Add(btnSave);
+            panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panel1.Location = new System.Drawing.Point(0, 666);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Padding = new System.Windows.Forms.Padding(12);
+            panel1.Size = new System.Drawing.Size(1034, 81);
+            panel1.TabIndex = 45;
             // 
             // btnSelect
             // 
-            this.btnSelect.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnSelect.FlatAppearance.BorderSize = 0;
-            this.btnSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnSelect.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSelect.Location = new System.Drawing.Point(501, 10);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(125, 50);
-            this.btnSelect.TabIndex = 44;
-            this.btnSelect.Text = "SELECT";
-            this.btnSelect.UseVisualStyleBackColor = false;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            btnSelect.Dock = System.Windows.Forms.DockStyle.Right;
+            btnSelect.FlatAppearance.BorderSize = 0;
+            btnSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnSelect.ForeColor = System.Drawing.SystemColors.ControlText;
+            btnSelect.Location = new System.Drawing.Point(584, 12);
+            btnSelect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSelect.Name = "btnSelect";
+            btnSelect.Size = new System.Drawing.Size(146, 57);
+            btnSelect.TabIndex = 44;
+            btnSelect.Text = "SELECT";
+            btnSelect.UseVisualStyleBackColor = false;
+            btnSelect.Click += btnSelect_Click;
             // 
             // btnClose
             // 
-            this.btnClose.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnClose.FlatAppearance.BorderSize = 0;
-            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnClose.Location = new System.Drawing.Point(626, 10);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(125, 50);
-            this.btnClose.TabIndex = 42;
-            this.btnClose.Text = "CANCEL";
-            this.btnClose.UseVisualStyleBackColor = false;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            btnClose.Dock = System.Windows.Forms.DockStyle.Right;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
+            btnClose.Location = new System.Drawing.Point(730, 12);
+            btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new System.Drawing.Size(146, 57);
+            btnClose.TabIndex = 42;
+            btnClose.Text = "CANCEL";
+            btnClose.UseVisualStyleBackColor = false;
+            btnClose.Click += btnClose_Click;
             // 
             // btnSave
             // 
-            this.btnSave.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnSave.FlatAppearance.BorderSize = 0;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnSave.Location = new System.Drawing.Point(751, 10);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(125, 50);
-            this.btnSave.TabIndex = 43;
-            this.btnSave.Text = "SAVE";
-            this.btnSave.UseVisualStyleBackColor = false;
-            this.btnSave.Visible = false;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Dock = System.Windows.Forms.DockStyle.Right;
+            btnSave.FlatAppearance.BorderSize = 0;
+            btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnSave.Location = new System.Drawing.Point(876, 12);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(146, 57);
+            btnSave.TabIndex = 43;
+            btnSave.Text = "SAVE";
+            btnSave.UseVisualStyleBackColor = false;
+            btnSave.Visible = false;
+            btnSave.Click += btnSave_Click;
             // 
             // barMain
             // 
-            this.barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnAdd,
-            this.btnEdit,
-            this.btnDelete,
-            this.btnReload,
-            this.btnExportAsJson,
-            this.btnImportFromJson});
-            this.barMain.Location = new System.Drawing.Point(0, 0);
-            this.barMain.Name = "barMain";
-            this.barMain.Size = new System.Drawing.Size(886, 54);
-            this.barMain.TabIndex = 54;
-            this.barMain.Text = "toolStrip1";
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnEdit, btnDelete, btnReload, btnExportAsJson, btnImportFromJson, tsSort, tsMoveUp, tsMoveDown });
+            barMain.Location = new System.Drawing.Point(0, 0);
+            barMain.Name = "barMain";
+            barMain.Size = new System.Drawing.Size(1034, 54);
+            barMain.TabIndex = 54;
+            barMain.Text = "toolStrip1";
             // 
             // btnAdd
             // 
-            this.btnAdd.Image = global::DTRMNS.Properties.Resources.arti32;
-            this.btnAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(67, 51);
-            this.btnAdd.Text = "ADD  NEW";
-            this.btnAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            btnAdd.Image = Properties.Resources.arti32;
+            btnAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new System.Drawing.Size(67, 51);
+            btnAdd.Text = "ADD  NEW";
+            btnAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnAdd.Click += btnAdd_Click;
             // 
             // btnEdit
             // 
-            this.btnEdit.Image = global::DTRMNS.Properties.Resources.MatReport_32;
-            this.btnEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(52, 51);
-            this.btnEdit.Text = "   EDIT   ";
-            this.btnEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            btnEdit.Image = Properties.Resources.MatReport_32;
+            btnEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new System.Drawing.Size(53, 51);
+            btnEdit.Text = "   EDIT   ";
+            btnEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnEdit.Click += btnEdit_Click;
             // 
             // btnDelete
             // 
-            this.btnDelete.Image = global::DTRMNS.Properties.Resources.eksi32;
-            this.btnDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(67, 51);
-            this.btnDelete.Text = "   DELETE   ";
-            this.btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            btnDelete.Image = Properties.Resources.eksi32;
+            btnDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new System.Drawing.Size(68, 51);
+            btnDelete.Text = "   DELETE   ";
+            btnDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnDelete.Click += btnDelete_Click;
             // 
             // btnReload
             // 
-            this.btnReload.Image = global::DTRMNS.Properties.Resources.Reload_32;
-            this.btnReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(70, 51);
-            this.btnReload.Text = "   RELOAD  ";
-            this.btnReload.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
+            btnReload.Image = Properties.Resources.Reload_32;
+            btnReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnReload.Name = "btnReload";
+            btnReload.Size = new System.Drawing.Size(70, 51);
+            btnReload.Text = "   RELOAD  ";
+            btnReload.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnReload.Click += btnReload_Click;
             // 
             // btnExportAsJson
             // 
-            this.btnExportAsJson.Image = global::DTRMNS.Properties.Resources.SquareArrowRightExpander32;
-            this.btnExportAsJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnExportAsJson.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnExportAsJson.Name = "btnExportAsJson";
-            this.btnExportAsJson.Size = new System.Drawing.Size(76, 51);
-            this.btnExportAsJson.Text = "JSON Export";
-            this.btnExportAsJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnExportAsJson.Click += new System.EventHandler(this.btnExportAsJson_Click);
+            btnExportAsJson.Image = Properties.Resources.SquareArrowRightExpander32;
+            btnExportAsJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnExportAsJson.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnExportAsJson.Name = "btnExportAsJson";
+            btnExportAsJson.Size = new System.Drawing.Size(75, 51);
+            btnExportAsJson.Text = "JSON Export";
+            btnExportAsJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnExportAsJson.Click += btnExportAsJson_Click;
             // 
             // btnImportFromJson
             // 
-            this.btnImportFromJson.Image = global::DTRMNS.Properties.Resources.SquareArrowLeftNarrower32;
-            this.btnImportFromJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnImportFromJson.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnImportFromJson.Name = "btnImportFromJson";
-            this.btnImportFromJson.Size = new System.Drawing.Size(78, 51);
-            this.btnImportFromJson.Text = "JSON Import";
-            this.btnImportFromJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnImportFromJson.Click += new System.EventHandler(this.btnImportFromJson_Click);
+            btnImportFromJson.Image = Properties.Resources.SquareArrowLeftNarrower32;
+            btnImportFromJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnImportFromJson.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnImportFromJson.Name = "btnImportFromJson";
+            btnImportFromJson.Size = new System.Drawing.Size(78, 51);
+            btnImportFromJson.Text = "JSON Import";
+            btnImportFromJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnImportFromJson.Click += btnImportFromJson_Click;
+            // 
+            // tsSort
+            // 
+            tsSort.AutoSize = false;
+            tsSort.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsSort.Image = Properties.Resources.updown;
+            tsSort.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsSort.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsSort.Name = "tsSort";
+            tsSort.Size = new System.Drawing.Size(60, 51);
+            tsSort.Text = "toolStripButton1";
+            tsSort.Click += tsSort_Click;
+            // 
+            // tsMoveUp
+            // 
+            tsMoveUp.AutoSize = false;
+            tsMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveUp.Image = Properties.Resources.up2;
+            tsMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveUp.Name = "tsMoveUp";
+            tsMoveUp.Size = new System.Drawing.Size(60, 51);
+            tsMoveUp.Text = "toolStripButton1";
+            tsMoveUp.Click += tsMoveUp_Click;
+            // 
+            // tsMoveDown
+            // 
+            tsMoveDown.AutoSize = false;
+            tsMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveDown.Image = Properties.Resources.down2;
+            tsMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveDown.Name = "tsMoveDown";
+            tsMoveDown.Size = new System.Drawing.Size(60, 51);
+            tsMoveDown.Text = "toolStripButton1";
+            tsMoveDown.Click += tsMoveDown_Click;
             // 
             // frmSupplierList
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(886, 647);
-            this.Controls.Add(this.dgv);
-            this.Controls.Add(this.barMain);
-            this.Controls.Add(this.panel1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmSupplierList";
-            this.Text = "SUPPLIERS";
-            this.Load += new System.EventHandler(this.frmSupplierList_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.barMain.ResumeLayout(false);
-            this.barMain.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1034, 747);
+            Controls.Add(dgv);
+            Controls.Add(barMain);
+            Controls.Add(panel1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmSupplierList";
+            Text = "SUPPLIERS";
+            Load += frmSupplierList_Load;
+            ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            ((System.ComponentModel.ISupportInitialize)supplierBindingSource).EndInit();
+            panel1.ResumeLayout(false);
+            barMain.ResumeLayout(false);
+            barMain.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -313,13 +358,6 @@ namespace DTRMNS {
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.BindingSource supplierBindingSource;
         private System.Windows.Forms.Button btnSelect;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn supplierNameDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn telDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn addressDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn email1DataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn email2DataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn whatsupDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStrip barMain;
         private System.Windows.Forms.ToolStripButton btnAdd;
         private System.Windows.Forms.ToolStripButton btnEdit;
@@ -327,5 +365,16 @@ namespace DTRMNS {
         private System.Windows.Forms.ToolStripButton btnReload;
         private System.Windows.Forms.ToolStripButton btnExportAsJson;
         private System.Windows.Forms.ToolStripButton btnImportFromJson;
+        private System.Windows.Forms.ToolStripButton tsSort;
+        private System.Windows.Forms.ToolStripButton tsMoveUp;
+        private System.Windows.Forms.ToolStripButton tsMoveDown;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn supplierNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn telDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn addressDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn email1DataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn email2DataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn whatsupDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DOrder;
     }
 }

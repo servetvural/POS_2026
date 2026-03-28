@@ -219,7 +219,37 @@ namespace DTRMNS.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap updown
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("updown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap up2
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("up2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        internal static System.Drawing.Bitmap down2
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("down2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

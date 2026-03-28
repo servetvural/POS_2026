@@ -1400,7 +1400,7 @@ namespace DTRMSimpleBackOffice {
                     txtDeliveryPrice.Value = entityButton.DPrice;
 
                     string format = "c2";
-                    if (entityButton.ButtonType == EntityButtonTypes.PercentAddition || entityButton.ButtonType == EntityButtonTypes.PercentDeduction) 
+                    if (entityButton.ButtonType == CategoryItemTypes.PercentAddition || entityButton.ButtonType == CategoryItemTypes.PercentDeduction) 
                         format = "0\" %\"";
                     txtDirectSalePrice.CustomFormat = txtInHousePrice.CustomFormat = txtTakeAwayPrice.CustomFormat = txtDeliveryPrice.CustomFormat = format;
                     
@@ -1486,7 +1486,7 @@ namespace DTRMSimpleBackOffice {
             System.Globalization.CultureInfo ci = bslayer.GetCulture(config.Terminal_Currency_Culture);
             if (entityButton != null) {
 
-                entityButton.ButtonType = (EntityButtonTypes)cmbButtonType.SelectedIndex;
+                entityButton.ButtonType = (CategoryItemTypes)cmbButtonType.SelectedIndex;
 
 
 
@@ -1572,27 +1572,27 @@ namespace DTRMSimpleBackOffice {
 
         private void cmbButtonType_SelectedIndexChanged(object sender, System.EventArgs e) {
             if (entityButton != null) {
-                if (entity.EntityType == EntityTypes.SpecialEntity &&
+                if (entity.CategoryType == CategoryTypes.SpecialCategory &&
                     cmbButtonType.SelectedIndex < 7)
                     cmbButtonType.SelectedIndex = (int)entityButton.ButtonType;
             }
 
             switch (cmbButtonType.SelectedIndex) {
-                case (int)EntityButtonTypes.SimpleItem:
+                case (int)CategoryItemTypes.SimpleItem:
                     break;
-                case (int)EntityButtonTypes.AmountAddition:
+                case (int)CategoryItemTypes.AmountAddition:
                     break;
-                case (int)EntityButtonTypes.AmountDeduction:
+                case (int)CategoryItemTypes.AmountDeduction:
                     break;
-                case (int)EntityButtonTypes.PercentAddition:
+                case (int)CategoryItemTypes.PercentAddition:
                     break;
-                case (int)EntityButtonTypes.PercentDeduction:
+                case (int)CategoryItemTypes.PercentDeduction:
                     break;
-                case (int)EntityButtonTypes.CustomAddition:
+                case (int)CategoryItemTypes.CustomAddition:
                     break;
-                case (int)EntityButtonTypes.CustomDeduction:
+                case (int)CategoryItemTypes.CustomDeduction:
                     break;
-                case (int)EntityButtonTypes.SpaceButton:
+                case (int)CategoryItemTypes.SpaceButton:
                     ResetAndLockForSpaceButton();
                     break;
             }

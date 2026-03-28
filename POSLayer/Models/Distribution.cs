@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 
 using Microsoft.IdentityModel.Tokens;
@@ -40,7 +41,7 @@ public partial class Distribution : BaseClass
     //}
 
 
-    public List<DistributionPrinter> DistributionPrinters { get; set; } = new();
+    public BindingList<DistributionPrinter> DistributionPrinters { get; set; } = new();
 
     [NotMapped]
     public string FlatPrinterList => string.Join(", ",
@@ -48,4 +49,8 @@ public partial class Distribution : BaseClass
             .OrderBy(x => x.DOrder)
             .Select(x => x.Printer?.ApplicationName ?? "Unknown"));
 
+    public override string ToString()
+    {
+        return DistributionName;
+    }
 }

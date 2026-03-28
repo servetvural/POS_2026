@@ -27,6 +27,7 @@ namespace DTRMSimpleBackOffice {
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUserEditor));
             dgv = new System.Windows.Forms.DataGridView();
@@ -39,7 +40,10 @@ namespace DTRMSimpleBackOffice {
             userNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             userPasswordDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colAccessLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colAccessLevelAsString = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            tsSort = new System.Windows.Forms.ToolStripButton();
+            tsMoveUp = new System.Windows.Forms.ToolStripButton();
+            tsMoveDown = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             ((System.ComponentModel.ISupportInitialize)userBindingSource).BeginInit();
             barMain.SuspendLayout();
@@ -52,25 +56,25 @@ namespace DTRMSimpleBackOffice {
             dgv.AutoGenerateColumns = false;
             dgv.BackgroundColor = System.Drawing.Color.White;
             dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colIID, userNameDataGridViewTextBoxColumn, userPasswordDataGridViewTextBoxColumn, colAccessLevel, colAccessLevelAsString });
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colIID, userNameDataGridViewTextBoxColumn, userPasswordDataGridViewTextBoxColumn, colAccessLevel, DOrder });
             dgv.DataSource = userBindingSource;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgv.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle2;
             dgv.Dock = System.Windows.Forms.DockStyle.Fill;
             dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
-            dgv.Location = new System.Drawing.Point(0, 39);
+            dgv.Location = new System.Drawing.Point(0, 54);
             dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 25;
             dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(945, 687);
+            dgv.Size = new System.Drawing.Size(945, 672);
             dgv.TabIndex = 0;
             dgv.CellDoubleClick += dgv_CellDoubleClick;
             // 
@@ -80,44 +84,44 @@ namespace DTRMSimpleBackOffice {
             // 
             // barMain
             // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete });
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete, tsSort, tsMoveUp, tsMoveDown });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(945, 39);
+            barMain.Size = new System.Drawing.Size(945, 54);
             barMain.TabIndex = 5;
             barMain.Text = "toolStrip1";
             // 
             // cmdAdd
             // 
-            cmdAdd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             cmdAdd.Image = Properties.Resources.arti32;
             cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             cmdAdd.Name = "cmdAdd";
-            cmdAdd.Size = new System.Drawing.Size(36, 36);
-            cmdAdd.Text = "toolStripButton1";
+            cmdAdd.Size = new System.Drawing.Size(59, 51);
+            cmdAdd.Text = "Add User";
+            cmdAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             cmdAdd.Click += btnAddUser_Click;
             // 
             // cmdEdit
             // 
-            cmdEdit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             cmdEdit.Image = Properties.Resources.MatReport_32;
             cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             cmdEdit.Name = "cmdEdit";
-            cmdEdit.Size = new System.Drawing.Size(36, 36);
-            cmdEdit.Text = "toolStripButton2";
+            cmdEdit.Size = new System.Drawing.Size(57, 51);
+            cmdEdit.Text = "Edit User";
+            cmdEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             cmdEdit.Click += btnEditUser_Click;
             // 
             // cmdDelete
             // 
-            cmdDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             cmdDelete.Image = Properties.Resources.eksi32;
             cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             cmdDelete.Name = "cmdDelete";
-            cmdDelete.Size = new System.Drawing.Size(36, 36);
-            cmdDelete.Text = "toolStripButton3";
+            cmdDelete.Size = new System.Drawing.Size(70, 51);
+            cmdDelete.Text = "Delete User";
+            cmdDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             cmdDelete.Click += btnDeleteUser_Click;
             // 
             // colIID
@@ -150,13 +154,51 @@ namespace DTRMSimpleBackOffice {
             colAccessLevel.Name = "colAccessLevel";
             colAccessLevel.ReadOnly = true;
             // 
-            // colAccessLevelAsString
+            // DOrder
             // 
-            colAccessLevelAsString.DataPropertyName = "AccessLevelAsString";
-            colAccessLevelAsString.HeaderText = "Access Level";
-            colAccessLevelAsString.Name = "colAccessLevelAsString";
-            colAccessLevelAsString.ReadOnly = true;
-            colAccessLevelAsString.Width = 150;
+            DOrder.DataPropertyName = "DOrder";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            DOrder.DefaultCellStyle = dataGridViewCellStyle1;
+            DOrder.HeaderText = "DOrder";
+            DOrder.Name = "DOrder";
+            DOrder.ReadOnly = true;
+            DOrder.Width = 70;
+            // 
+            // tsSort
+            // 
+            tsSort.AutoSize = false;
+            tsSort.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsSort.Image = Properties.Resources.updown;
+            tsSort.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsSort.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsSort.Name = "tsSort";
+            tsSort.Size = new System.Drawing.Size(60, 51);
+            tsSort.Text = "toolStripButton1";
+            tsSort.Click += tsSort_Click;
+            // 
+            // tsMoveUp
+            // 
+            tsMoveUp.AutoSize = false;
+            tsMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveUp.Image = Properties.Resources.up2;
+            tsMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveUp.Name = "tsMoveUp";
+            tsMoveUp.Size = new System.Drawing.Size(60, 51);
+            tsMoveUp.Text = "toolStripButton1";
+            tsMoveUp.Click += tsMoveUp_Click;
+            // 
+            // tsMoveDown
+            // 
+            tsMoveDown.AutoSize = false;
+            tsMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveDown.Image = Properties.Resources.down2;
+            tsMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveDown.Name = "tsMoveDown";
+            tsMoveDown.Size = new System.Drawing.Size(60, 51);
+            tsMoveDown.Text = "toolStripButton1";
+            tsMoveDown.Click += tsMoveDown_Click;
             // 
             // frmUserEditor
             // 
@@ -189,10 +231,14 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripButton cmdAdd;
         private System.Windows.Forms.ToolStripButton cmdEdit;
         private System.Windows.Forms.ToolStripButton cmdDelete;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colAccessLevelAsString;
         private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
         private System.Windows.Forms.DataGridViewTextBoxColumn userNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn userPasswordDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn colAccessLevel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colAccessLevelAsString;
+        private System.Windows.Forms.DataGridViewTextBoxColumn DOrder;
+        private System.Windows.Forms.ToolStripButton tsSort;
+        private System.Windows.Forms.ToolStripButton tsMoveUp;
+        private System.Windows.Forms.ToolStripButton tsMoveDown;
     }
 }

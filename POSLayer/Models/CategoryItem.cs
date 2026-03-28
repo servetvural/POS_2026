@@ -15,7 +15,7 @@ public partial class CategoryItem : BaseClass
     public string ItemName { get; set; }
     public int BgColor { get; set; } = SystemColors.Control.ToArgb();
     public int FgColor { get; set; } = Color.Black.ToArgb();
-    public EntityButtonTypes ButtonType { get; set; } = EntityButtonTypes.SimpleItem;
+    public CategoryItemTypes ButtonType { get; set; } = CategoryItemTypes.SimpleItem;
     public int AvailableFor { get; set; } = (int)AvailabilityTypes.All;
 
 
@@ -29,6 +29,9 @@ public partial class CategoryItem : BaseClass
 
     public string? DistributionIID { get; set; }
     public Distribution? Distribution { get; set; }
+
+    public string? DistributionName => Distribution?.DistributionName ?? "";
+
     public double SalePrice { get; set; }
     public double SitinPrice { get; set; }
     public double TaPrice { get; set; }

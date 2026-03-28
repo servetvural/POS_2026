@@ -23,18 +23,18 @@ namespace DTRMSimpleBackOffice
     {
         PosConfig config;
         IRepository<Printer> repoPrinter;
-        private DTRMSimpleBusiness bslayer;
         private bool blnasModal;
+
+        private BindingSource _printerSource = new BindingSource();
         public frmPrinters()
         {
             InitializeComponent();
         }
-        public frmPrinters(PosConfig configAsService,IRepository<Printer> _repoPrinter, DTRMSimpleBusiness bslayer, bool asModal = false)
+        public frmPrinters(PosConfig configAsService, IRepository<Printer> _repoPrinter, bool asModal = false)
         {
             InitializeComponent();
             config = configAsService;
             repoPrinter = _repoPrinter;
-            this.bslayer = bslayer;
             this.blnasModal = asModal;
             if (asModal)
             {
@@ -48,10 +48,11 @@ namespace DTRMSimpleBackOffice
             LoadPrinters();
         }
 
-        private async void LoadPrinters()
+        private async Task LoadPrinters()
         {
 
-            dgv.DataSource = (await bslayer.GetAllPrinters()).ToBindingList();
+            _printerSource.DataSource = await repoPrinter.GetAllAsync();
+            dgv.DataSource = _printerSource;
 
 
             //try
@@ -95,7 +96,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            frmSinglePrinter frm = ActivatorUtilities.CreateInstance< frmSinglePrinter>(ServiceHelper.Services, new Printer());
+            frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, new Printer());
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadPrinters();
         }
@@ -104,10 +105,7 @@ namespace DTRMSimpleBackOffice
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                string PrinterIID = dgv.SelectedRows[0].Cells["colPrinterIID"].Value.ToString();
-                Printer printer = await bslayer.GetPrinter(PrinterIID);
-
-                frmSinglePrinter frm = ActivatorUtilities.CreateInstance < frmSinglePrinter>(ServiceHelper.Services, printer);
+                frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, (Printer)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadPrinters();
             }
@@ -117,15 +115,18 @@ namespace DTRMSimpleBackOffice
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                await bslayer.DeletePrinter(dgv.SelectedRows[0].Cells["colPrinterIID"].Value.ToString());
-                LoadPrinters();
+                if (MessageBox.Show("You are about to delete Printer from the system", "Delete Printer", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
+                {
+                    await repoPrinter.Delete(((Printer)dgv.SelectedRows[0].DataBoundItem).IID);
+                    LoadPrinters();
+                }
             }
         }
 
         private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             btnEdit_Click(null, null);
-        }              
+        }
 
 
         private void chkAllPrinters_Click(object sender, EventArgs e)
@@ -138,7 +139,7 @@ namespace DTRMSimpleBackOffice
             if (dgv.SelectedRows.Count > 0)
             {
                 string PrinterIID = dgv.SelectedRows[0].Cells["colPrinterIID"].Value.ToString();
-                Printer printer = await bslayer.GetPrinterForClient(PrinterIID);
+                Printer printer = await repoPrinter.GetByField("LocalTerminal", config.Terminal_Name);
                 if (printer == null)
                 {
                     MessageBox.Show("Configuration Eror: Printer Null");
@@ -150,7 +151,7 @@ namespace DTRMSimpleBackOffice
                     "===========================================";
 
 
-                PrintHandler pHand = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services, str, printer.NetworkName);
+                PrintHandler pHand = ActivatorUtilities.CreateInstance<PrintHandler>(ServiceHelper.Services, str, printer.NetworkName);
                 pHand.PrintNow();
 
             }
@@ -165,7 +166,7 @@ namespace DTRMSimpleBackOffice
 
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Printer> printerList = await bslayer.GetAllPrinters();
+            List<Printer> printerList = await repoPrinter.GetAllAsync();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -202,7 +203,7 @@ namespace DTRMSimpleBackOffice
                             List<Printer> printerList = JsonConvert.DeserializeObject<List<Printer>>(content);
                             foreach (Printer printer in printerList)
                             {
-                                await bslayer.SavePrinter(printer);
+                                await repoPrinter.Save(printer);
                             }
 
                             MessageBox.Show("Saved Printer List");
@@ -213,6 +214,30 @@ namespace DTRMSimpleBackOffice
                         LoadPrinters();
                     }
                 }
+            }
+        }
+
+        private async void tsSort_Click(object sender, EventArgs e)
+        {
+            await repoPrinter.Sort();
+            await LoadPrinters();
+        }
+
+        private async void tsMoveUp_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoPrinter.MoveUp((Printer)dgv.SelectedRows[0].DataBoundItem);
+                await LoadPrinters();
+            }
+        }
+
+        private async void tsMoveDown_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoPrinter.MoveDown((Printer)dgv.SelectedRows[0].DataBoundItem);
+                await LoadPrinters();
             }
         }
     }

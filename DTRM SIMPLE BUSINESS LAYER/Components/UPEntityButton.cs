@@ -17,7 +17,7 @@ namespace DTRMNS {
         public string IID;
         public CategoryItem entitybutton;
         public string PrintLabel;
-        public EntityButtonTypes ButtonType;
+        public CategoryItemTypes ButtonType;
         public UPEntity ParentUIE;
         public float Price = 0f;
         private DTRMSimpleBusiness bslayer;
@@ -34,7 +34,7 @@ namespace DTRMNS {
             config = configAsService;
             //new button type construction
 
-            if (entitybutton.ButtonType == EntityButtonTypes.SpaceButton) {
+            if (entitybutton.ButtonType == CategoryItemTypes.SpaceButton) {
                 BackgroundImage = null;
                 entitybutton.ItemName = "";
                 Enabled = false;
@@ -82,7 +82,7 @@ namespace DTRMNS {
         private void UIEBEventHandler(object sender, System.EventArgs e) {
 
             UPEntityButton geb = this;
-            if (geb.entitybutton.ButtonType == EntityButtonTypes.SpaceButton)
+            if (geb.entitybutton.ButtonType == CategoryItemTypes.SpaceButton)
                 return;
 
             if (bslayer.AttachedOrder == null)
@@ -171,9 +171,9 @@ namespace DTRMNS {
 
         private bool HandleExtraDiscoManagerItems(DTRMSimpleBusiness bslayer, UPEntityButton geb)
         {
-            if (geb.ButtonType == EntityButtonTypes.AmountAddition || geb.ButtonType == EntityButtonTypes.AmountDeduction ||
-               geb.ButtonType == EntityButtonTypes.PercentAddition || geb.ButtonType == EntityButtonTypes.PercentDeduction ||
-               geb.ButtonType == EntityButtonTypes.CustomAddition || geb.ButtonType == EntityButtonTypes.CustomDeduction)
+            if (geb.ButtonType == CategoryItemTypes.AmountAddition || geb.ButtonType == CategoryItemTypes.AmountDeduction ||
+               geb.ButtonType == CategoryItemTypes.PercentAddition || geb.ButtonType == CategoryItemTypes.PercentDeduction ||
+               geb.ButtonType == CategoryItemTypes.CustomAddition || geb.ButtonType == CategoryItemTypes.CustomDeduction)
             {
 
                 TrmGetValue fgv = null;
@@ -183,26 +183,26 @@ namespace DTRMNS {
 
                 switch (geb.ButtonType)
                 {
-                    case EntityButtonTypes.AmountAddition:
+                    case CategoryItemTypes.AmountAddition:
                         exprice = GetEBRelatedPrice(bslayer, geb);
                         break;
-                    case EntityButtonTypes.AmountDeduction:
+                    case CategoryItemTypes.AmountDeduction:
                         exprice = GetEBRelatedPrice(bslayer, geb);
                         break;
-                    case EntityButtonTypes.PercentAddition:
+                    case CategoryItemTypes.PercentAddition:
                         exprice = bslayer.AttachedOrder.GetFullTotal() * (GetEBRelatedPrice(bslayer, geb) / 100);
                         break;
-                    case EntityButtonTypes.PercentDeduction:
+                    case CategoryItemTypes.PercentDeduction:
                         exprice = -1 * (bslayer.AttachedOrder.GetFullTotal() * (GetEBRelatedPrice(bslayer, geb) / 100));
                         break;
-                    case EntityButtonTypes.CustomAddition:
+                    case CategoryItemTypes.CustomAddition:
                         fgv = new TrmGetValue(NumberModes.FloatMode);
                         if (fgv.ShowDialog() == DialogResult.OK)
                             exprice = fgv.ReturnValue;
                         else
                             return true;
                         break;
-                    case EntityButtonTypes.CustomDeduction:
+                    case CategoryItemTypes.CustomDeduction:
                         fgv = new TrmGetValue(NumberModes.FloatMode);
                         if (fgv.ShowDialog() == DialogResult.OK)
                             exprice = System.Math.Abs(fgv.ReturnValue) * -1;

@@ -2,78 +2,106 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using DTRMNS;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using Newtonsoft.Json;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
+
 using PosLibrary;
+
 using POSWinFormLayer.Library;
 
-namespace DTRMSimpleBackOffice {
-    public partial class frmDistributionList : Form {         
+namespace DTRMSimpleBackOffice
+{
+    public partial class frmDistributionList : Form
+    {
         IRepository<Distribution> repoDistribution;
 
-        public frmDistributionList(IRepository<Distribution> _repoDistribution) {
+        private BindingSource _distributionSource = new BindingSource();
+        public frmDistributionList(IRepository<Distribution> _repoDistribution)
+        {
             InitializeComponent();
             repoDistribution = _repoDistribution;
-        }        
+        }
 
-        private async void frmDistributionList_Load(object sender, EventArgs e) {
+        private async void frmDistributionList_Load(object sender, EventArgs e)
+        {
             await LoadDistributions();
         }
 
-        private async Task LoadDistributions() {
-            dgv.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ToBindingList();     
+        private async Task LoadDistributions(bool blnSort = false)
+        {
+            if (blnSort)
+                _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ReOrder().ToBindingList();
+            else
+                _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ToBindingList();
+            dgv.DataSource = _distributionSource;
         }
 
-        private async void btnAdd_Click(object sender, EventArgs e) {
-            frmDistribution frm = ActivatorUtilities.CreateInstance< frmDistribution>(ServiceHelper.Services, new Distribution());
+        private async void btnAdd_Click(object sender, EventArgs e)
+        {
+            frmDistribution frm = ActivatorUtilities.CreateInstance<frmDistribution>(ServiceHelper.Services, new Distribution());
             if (frm.ShowDialog() == DialogResult.OK)
-              await  LoadDistributions();
+                await LoadDistributions();
         }
 
-        private async void btnEdit_Click(object sender, EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-                Distribution distribution =await repoDistribution.Get(dgv.SelectedRows[0].Cells[0].Value.ToString());
-                frmDistribution frm = ActivatorUtilities.CreateInstance < frmDistribution>(ServiceHelper.Services, distribution);
+        private async void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                frmDistribution frm = ActivatorUtilities.CreateInstance<frmDistribution>(ServiceHelper.Services, (Distribution)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
-                   await  LoadDistributions();
+                    await LoadDistributions();
             }
         }
 
-        private async void btnDelete_Click(object sender, EventArgs e) {
-            if (MessageBox.Show("Not good Idea", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes) {
-                if (dgv.SelectedRows.Count > 0) {
-                   await repoDistribution.Delete(dgv.SelectedRows[0].Cells[0].Value.ToString());
-                   await LoadDistributions();
+        private async void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Not a good Idea. Do you want to continue to delete?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes)
+            {
+                if (dgv.SelectedRows.Count > 0)
+                {
+                    await repoDistribution.Delete(((Distribution)dgv.SelectedRows[0].DataBoundItem).IID);
+                    await LoadDistributions();
                 }
             }
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
-        private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e) {
+        private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
 
         }
 
-        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
             btnEdit_Click(null, null);
         }
 
-        private async void btnReload_Click(object sender, EventArgs e) {
+        private async void btnReload_Click(object sender, EventArgs e)
+        {
             await LoadDistributions();
         }
 
-        private void btnPrintList_Click(object sender, EventArgs e) {
+        private void btnPrintList_Click(object sender, EventArgs e)
+        {
             DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgv);
-            if (exporter.GenerateAsTabular(true, true, new int[] { -15, -4, -18, -10 })) {
-                frmAppPrinterDialog frm = ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
-                if (frm.ShowDialog() == DialogResult.OK) {
-                    PrintHandler printer = ActivatorUtilities.CreateInstance < PrintHandler>(ServiceHelper.Services, exporter.csvText, frm.SelectedPrinterNetworkName);
+            if (exporter.GenerateAsTabular(true, true, new int[] { -15, -4, -18, -10 }))
+            {
+                frmAppPrinterDialog frm = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    PrintHandler printer = ActivatorUtilities.CreateInstance<PrintHandler>(ServiceHelper.Services, exporter.csvText, frm.SelectedPrinterNetworkName);
                     printer.PrintNow();
                 }
             }
@@ -126,9 +154,33 @@ namespace DTRMSimpleBackOffice {
                         {
                             MessageBox.Show("Failed to Get Distribution List");
                         }
-                       await  LoadDistributions();
+                        await LoadDistributions();
                     }
                 }
+            }
+        }
+
+        private async void tsSort_Click(object sender, EventArgs e)
+        {
+            await repoDistribution.Sort();
+            await LoadDistributions();
+        }
+
+        private async void tsMoveUp_Click(object sender, EventArgs e)
+        {
+             if (dgv.SelectedRows.Count > 0)
+            {
+                await repoDistribution.MoveUp((Distribution)dgv.SelectedRows[0].DataBoundItem);
+                await LoadDistributions();
+            }
+        }
+
+        private async void tsMoveDown_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoDistribution.MoveDown((Distribution)dgv.SelectedRows[0].DataBoundItem);
+                await LoadDistributions();
             }
         }
     }

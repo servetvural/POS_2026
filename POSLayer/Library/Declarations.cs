@@ -15,7 +15,7 @@ public enum ReportFormatTypes { XReport = 0, ZReport = 1, YReport = 2 }
 public enum WeekDays { NoDay = 0, Monday = 1, Tuesday = 2, Wednesday = 4, Thursday = 8, Friday = 16, Saturday = 32, Sunday = 64 }
 
 public enum OrderTypes { Unknown = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, DirectSale = 256, Pad = 512 };
-public enum EntityButtonTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
+public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
 public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
 public enum PaymentMethods { Unknown, Cash, Card, Online }
@@ -38,7 +38,7 @@ public enum MessageLocations { Inbox, Outbox, Sentbox, Archivebox }
 public enum MessageFlags { UnRead, Read }
 public enum SignalTypes { AttentionPlease, SignalStarters, SignalSideDishes, SignalMainCourses, SignalDesserts, SignalDrinks }
 public enum OrderItemTypes { NormalOrderItem = 0, AmountAddition = 7, PercentAddition = 8, CustomAddition = 9, AmountDeduction = 10, PercentDeduction = 11, CustomDeduction = 12, Refund = 13 }
-public enum EntityTypes { NormalEntity = 0, SpecialEntity = 1 }
+public enum CategoryTypes { NormalCategory= 0, SpecialCategory = 1 }
 public enum CashDrawerTypes { None, LocalAttached, PrinterAttached, USBPrinterAttached }
 public enum DirectionalDeliveryTypes { IncomingDelivery, OutgoingDelivery }
 public enum DeliveryTypes { FromSupplier, FromBranch, FromOthers, RefundToSupplier, ToBranch, ToOthers }

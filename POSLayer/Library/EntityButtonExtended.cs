@@ -11,7 +11,7 @@ public class EntityButtonExtended :BaseClass
     public int DisplayOrder { get; set; }
     public int ButtonColor { get; set; } = SystemColors.Control.ToArgb();
     public int ForeColor { get; set; } = Color.Black.ToArgb();
-    public EntityButtonTypes ButtonType { get; set; } = EntityButtonTypes.SimpleItem;
+    public CategoryItemTypes ButtonType { get; set; } = CategoryItemTypes.SimpleItem;
     public int AvailableFor { get; set; } = (int)AvailabilityTypes.All;
     public string PEIID { get; set; }      =string.Empty;
     public string ParentMenuIID { get; set; }

@@ -232,7 +232,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             }
 
 
-            return await query.ToListAsync();
+            return await query.OrderBy(x => x.DOrder).ToListAsync();
         } catch (Exception ex)
         {
             return null;
@@ -280,7 +280,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 }
             }
             // List<T> theList = await query.ToListAsync();
-            return await query.ToListAsync();
+            return await query.OrderBy(x => x.DOrder).ToListAsync();
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -488,25 +488,118 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     }
 
 
-    //public async Task EnsureDisplayOrder()
-    //{
-    //    using var _db = GetDBContext();
-    //    try
-    //    {
-    //        IEnumerable<T> theList = await GetAllAsync();
-    //        int count = 0;
-    //        foreach (var item in theList)
-    //        {
-    //            item.DisplayOrder = count++;
-    //            _db.Entry(item).State = EntityState.Modified;
-    //        }
-    //        await _db.SaveChangesAsync();
+    public async Task Sort()
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            IEnumerable<T> theList = await GetAllAsync();
+            int count = 1;
+            foreach (var item in theList)
+            {
+                item.DOrder = count++;
+                _db.Entry(item).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
 
-    //    } catch (Exception ex)
-    //    {
+        } catch (Exception ex)
+        {
 
-    //    }
-    //}
+        }
+    }
+    public async Task SortByField(string fieldName, object value)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            IEnumerable<T> theList = await GetListByField(fieldName, value);
+            int count = 1;
+            foreach (var item in theList)
+            {
+                item.DOrder = count++;
+                _db.Entry(item).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
+
+        } catch (Exception ex)
+        {
+
+        }
+    }
+    public async  Task MoveUp(T item)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<T> theList = await GetAllAsync();
+             theList.MoveUp(item);             
+
+            foreach (var li in theList)
+            {
+                _db.Entry(li).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
+
+        } catch (Exception ex)
+        {
+
+        }
+    }
+    public async Task MoveUpByField(T item,string fieldName, object value)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<T> theList = await GetListByField(fieldName, value);
+            theList.MoveUp(item);
+
+            foreach (var li in theList)
+            {
+                _db.Entry(li).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
+
+        } catch (Exception ex)
+        {
+
+        }
+    }
+    public async Task MoveDown(T item)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<T> theList = await GetAllAsync();
+            theList.MoveDown(item);
+
+            foreach (var li in theList)
+            {
+                _db.Entry(li).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
+        } catch (Exception ex)
+        {
+
+        }
+    }
+    public async Task MoveDownByField(T item, string fieldName, object value)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<T> theList = await GetListByField(fieldName, value);
+            theList.MoveDown(item);
+
+            foreach (var li in theList)
+            {
+                _db.Entry(li).State = EntityState.Modified;
+            }
+            await _db.SaveChangesAsync();
+        } catch (Exception ex)
+        {
+
+        }
+    }
     #endregion
 
 

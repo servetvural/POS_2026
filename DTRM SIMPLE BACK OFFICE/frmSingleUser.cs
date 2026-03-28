@@ -10,28 +10,33 @@ using DTRMNS;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
-namespace DTRMSimpleBackOffice {
-    public partial class frmSingleUser : Form {
-        
-
-        private DTRMSimpleBusiness bslayer;
+namespace DTRMSimpleBackOffice
+{
+    public partial class frmSingleUser : Form
+    {
+        IRepository<User> repoUser;
         public User user;
 
-        public frmSingleUser() {
+        public frmSingleUser()
+        {
             InitializeComponent();
         }
-        public frmSingleUser(DTRMSimpleBusiness bslayer, User user) {
+        public frmSingleUser(IRepository<User> _repoUser, User user = null)
+        {
             InitializeComponent();
-            this.bslayer = bslayer;
-            this.user= user;
+            repoUser = _repoUser;
+            this.user = user ?? new User();
         }
-        private void frmSingleUser_Load(object sender, EventArgs e) {
-           // LoadAccessLevels();
+        private void frmSingleUser_Load(object sender, EventArgs e)
+        {
+
             LoadUser();
-            
+
         }
-        private void LoadUser() {
+        private void LoadUser()
+        {
             txtUserName.Text = user.UserName;
             txtPassword.Text = user.UserPassword;
             cmbAccessLevels.Text = user.AccessLevel.ToString();
@@ -58,18 +63,21 @@ namespace DTRMSimpleBackOffice {
         //            break;
         //    }
         //}
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
 
-        private async void btnSave_Click(object sender, EventArgs e) {
+        private async void btnSave_Click(object sender, EventArgs e)
+        {
             if (txtUserName.Text.Trim().Length == 0)
                 return;
             if (cmbAccessLevels.Text == "")
                 return;
 
-            if (txtPassword.Text == "0") {
+            if (txtPassword.Text == "0")
+            {
                 MessageBox.Show("Password must be a pin number.", "Invalid Password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtPassword.SelectAll();
                 return;
@@ -79,10 +87,11 @@ namespace DTRMSimpleBackOffice {
             user.UserPassword = txtPassword.Text.Trim();
             user.AccessLevel = (AccessLevels)Enum.Parse(typeof(AccessLevels), cmbAccessLevels.Text); // (AccessLevels)cmbAccessLevels.SelectedIndex;
 
-            if (await bslayer.SaveUser(user)) {
+            if (await repoUser.Save(user) != null)
+            {
                 this.DialogResult = DialogResult.OK;
                 Close();
-            }           
+            }
         }
 
     }

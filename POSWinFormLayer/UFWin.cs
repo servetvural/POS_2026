@@ -171,21 +171,21 @@ public static class UFWin
     //    }
     //}
 
-    //public static OrderItemTypes EBTypeToOrderItemType(EntityButtonTypes ebtype)
+    //public static OrderItemTypes EBTypeToOrderItemType(CategoryItemTypes ebtype)
     //{
     //    switch (ebtype)
     //    {
-    //        case EntityButtonTypes.AmountAddition:
+    //        case CategoryItemTypes.AmountAddition:
     //            return OrderItemTypes.AmountAddition;
-    //        case EntityButtonTypes.PercentAddition:
+    //        case CategoryItemTypes.PercentAddition:
     //            return OrderItemTypes.PercentAddition;
-    //        case EntityButtonTypes.CustomAddition:
+    //        case CategoryItemTypes.CustomAddition:
     //            return OrderItemTypes.CustomAddition;
-    //        case EntityButtonTypes.AmountDeduction:
+    //        case CategoryItemTypes.AmountDeduction:
     //            return OrderItemTypes.AmountDeduction;
-    //        case EntityButtonTypes.PercentDeduction:
+    //        case CategoryItemTypes.PercentDeduction:
     //            return OrderItemTypes.PercentDeduction;
-    //        case EntityButtonTypes.CustomDeduction:
+    //        case CategoryItemTypes.CustomDeduction:
     //            return OrderItemTypes.CustomDeduction;
     //        default:
     //            return OrderItemTypes.NormalOrderItem;

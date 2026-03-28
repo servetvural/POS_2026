@@ -3,83 +3,104 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Newtonsoft.Json;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
-    public partial class frmSupplierList : Form {
-        DTRMSimpleBusiness bslayer;
+    public partial class frmSupplierList : Form
+    {
+        IRepository<Supplier> repoSupplier;
         Supplier selectedSupplier;
-        public frmSupplierList() {
+
+        private BindingSource _supplierSource = new BindingSource();
+        public frmSupplierList()
+        {
             InitializeComponent();
         }
-        public frmSupplierList(DTRMSimpleBusiness bslayer) {
+        public frmSupplierList(IRepository<Supplier> _repoSupplier)
+        {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoSupplier = _repoSupplier;
         }
 
-        private void frmSupplierList_Load(object sender, EventArgs e) {
-            LoadSuppliers();
+        private async void frmSupplierList_Load(object sender, EventArgs e)
+        {
+            await LoadSuppliers();
         }
 
-        private void LoadSuppliers() {
-            dgv.DataSource = bslayer.GetAllSuppliersAsList();
+        private async Task LoadSuppliers()
+        {
+            _supplierSource.DataSource = await repoSupplier.GetAllAsync();
+            dgv.DataSource = _supplierSource;
         }
 
-        private void btnAdd_Click(object sender, EventArgs e) {
-            frmSupplier frm = new frmSupplier(bslayer, new Supplier());
+        private async void btnAdd_Click(object sender, EventArgs e)
+        {
+            frmSupplier frm = ActivatorUtilities.CreateInstance<frmSupplier>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
-                LoadSuppliers();
+                await LoadSuppliers();
         }
 
-        private async void btnEdit_Click(object sender, EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-                Supplier supplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
-                frmSupplier frm = new frmSupplier(bslayer, supplier);
+        private async void btnEdit_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                frmSupplier frm = ActivatorUtilities.CreateInstance<frmSupplier>(ServiceHelper.Services, (Supplier)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
-                    LoadSuppliers();
+                    await LoadSuppliers();
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e) {
-            if (MessageBox.Show("Not good Idea", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes) {
-                for (int i =0; i < dgv.SelectedRows.Count; i++) {
-                    bslayer.DeleteSupplier(dgv.SelectedRows[i].Cells[0].Value.ToString(), false);
+        private async void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Not good Idea. Do you still want to delete the supplier?", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes)
+            {
+                for (int i = 0; i < dgv.SelectedRows.Count; i++)
+                {
+                    await repoSupplier.Delete(((Supplier)dgv.SelectedRows[0].DataBoundItem).IID);
                 }
-                LoadSuppliers();
+                await LoadSuppliers();
             }
         }
 
-        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
             btnEdit_Click(null, null);
         }
 
-        private void btnClose_Click(object sender, EventArgs e) {
+        private void btnClose_Click(object sender, EventArgs e)
+        {
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e) {
+        private void btnSave_Click(object sender, EventArgs e)
+        {
 
         }
 
-        private async void btnSelect_Click(object sender, EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-                selectedSupplier =await bslayer.GetSupplier(dgv.SelectedRows[0].Cells[0].Value.ToString());
+        private async void btnSelect_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                selectedSupplier = (Supplier)dgv.SelectedRows[0].DataBoundItem;
                 this.DialogResult = DialogResult.OK;
                 Close();
             }
         }
 
-        private void btnReload_Click(object sender, EventArgs e) {
-            LoadSuppliers();
+        private async void btnReload_Click(object sender, EventArgs e)
+        {
+            await LoadSuppliers();
         }
 
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Supplier> itemList =await bslayer.GetAllSuppliersAsList();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -89,7 +110,7 @@ namespace DTRMNS {
                     if (sfd.FileName != null && sfd.FileName != "")
                     {
 
-                        var jsonString = JsonConvert.SerializeObject(itemList, Newtonsoft.Json.Formatting.Indented);
+                        var jsonString = JsonConvert.SerializeObject(await repoSupplier.GetAllAsync(), Newtonsoft.Json.Formatting.Indented);
                         if (UF.SaveTextFile(sfd.FileName, jsonString))
                             MessageBox.Show("Saved Supplier List");
                         else
@@ -99,7 +120,7 @@ namespace DTRMNS {
             }
         }
 
-        private void btnImportFromJson_Click(object sender, EventArgs e)
+        private async void btnImportFromJson_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
@@ -116,16 +137,40 @@ namespace DTRMNS {
                             List<Supplier> itemList = JsonConvert.DeserializeObject<List<Supplier>>(content);
                             foreach (Supplier item in itemList)
                             {
-                                bslayer.SaveSupplier(item);
+                                await repoSupplier.Save(item);
                             }
                             MessageBox.Show("Saved Supplier List");
                         } else
                         {
                             MessageBox.Show("Failed to Get Supplier List");
                         }
-                        LoadSuppliers();
+                        await LoadSuppliers();
                     }
                 }
+            }
+        }
+
+        private async void tsSort_Click(object sender, EventArgs e)
+        {
+            await repoSupplier.Sort();
+            await LoadSuppliers();
+        }
+
+        private async void tsMoveUp_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoSupplier.MoveUp((Supplier)dgv.SelectedRows[0].DataBoundItem);
+                await LoadSuppliers();
+            }
+        }
+
+        private async void tsMoveDown_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoSupplier.MoveDown((Supplier)dgv.SelectedRows[0].DataBoundItem);
+                await LoadSuppliers();
             }
         }
     }

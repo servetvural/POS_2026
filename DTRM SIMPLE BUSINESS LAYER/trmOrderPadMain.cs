@@ -2360,7 +2360,7 @@ namespace DTRMNS
 
                     pnlOrderPad.Controls.Add(btn);
 
-                    if (((Category)bslayer.ActiveMenu.categories[i]).EntityType == EntityTypes.SpecialEntity)
+                    if (((Category)bslayer.ActiveMenu.categories[i]).CategoryType == CategoryTypes.SpecialCategory)
                         pnlSpecial = upe;
                 }
             }

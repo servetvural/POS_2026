@@ -16,7 +16,7 @@ public partial class Category : BaseClass
     public int FgColour { get; set; } = SystemColors.ControlText.ToArgb();
     public int Height { get; set; } = 64;
     public int Width { get; set; } = 64;
-    public EntityTypes EntityType { get; set; } = EntityTypes.NormalEntity;
+    public CategoryTypes CategoryType { get; set; } = CategoryTypes.NormalCategory;
 
     public string MenuIID { get; set; } = string.Empty;
     public TheMenu? Menu { get; set; }
@@ -24,12 +24,15 @@ public partial class Category : BaseClass
 
     public string? DistributionIID { get; set; }
     public Distribution? Distribution { get; set; }
+    public string? DistributionName => Distribution?.DistributionName ?? "";
 
     public string FFamily { get; set; } = "Arial";
 
     public double FSize { get; set; } = 10f;
 
     public string FStyle { get; set; } = "Bold";
+
+    public string Font => FFamily + ", " + FStyle + ", " + FSize;
 
 
     public CategoryItem GetEntityButton(string EntityButtonId)

@@ -61,8 +61,13 @@ namespace DTRMSimpleBackOffice
             if (distribution.IID != null)
                 distribution = await repoDistribution.Get(distribution.IID, "Menu,DistributionPrinters.Printer");
             txtPrintableCategoryName.Text = distribution.DistributionName;
+            intOrder.Value = distribution.DOrder;
+            distribution.DistributionPrinters.ReOrder();
 
-            _printerSource.DataSource = distribution.DistributionPrinters.ToBindingList();
+
+            _printerSource.DataSource = distribution.DistributionPrinters; //.ToList().ToBindingList();
+
+
             dgv.DataSource = _printerSource;
         }
 
@@ -87,13 +92,22 @@ namespace DTRMSimpleBackOffice
         private async void btnSave_Click(object sender, EventArgs e)
         {
             distribution.DistributionName = txtPrintableCategoryName.Text;
+            distribution.DOrder = (int)intOrder.Value;
 
             if (distribution.DistributionName.Trim().Length == 0)
+            {
+                MessageBox.Show("Distribution Name Required");
                 return;
+            }
+               if ( cmbMenu.SelectedValue == null)
+            {
+                MessageBox.Show("Menu is not Selected");
+                return;
+            }
 
-            distribution.MenuIID = cmbMenu.SelectedValue.ToString();       
+            distribution.MenuIID = cmbMenu.SelectedValue.ToString();
 
-            if (await repoDistribution.Save(distribution) != null)
+            if (await repoDistribution.SaveTree(distribution) != null)
             {
                 this.DialogResult = DialogResult.OK;
                 Close();
@@ -105,6 +119,14 @@ namespace DTRMSimpleBackOffice
 
         private async void btnNewPrinter_Click(object sender, EventArgs e)
         {
+            if (cmbPrimaryPrinter.SelectedValue == null)
+                return;
+
+            if (distribution.IID.IsNullOrEmpty())
+            {
+                MessageBox.Show("Distribution must be saved before adding any printer to it.");
+                return;
+            }
 
             string newPrinterIID = cmbPrimaryPrinter.SelectedValue.ToString();
             if (distribution.DistributionPrinters.Any(x => x.PrinterIID == newPrinterIID))
@@ -112,11 +134,12 @@ namespace DTRMSimpleBackOffice
                 MessageBox.Show("Printer Already Added");
             } else
             {
+                distribution.DistributionPrinters.ReOrder();
                 DistributionPrinter dprinter = await repoDistributionPrinter.Save(new DistributionPrinter()
                 {
                     PrinterIID = newPrinterIID,
                     DistributionIID = distribution.IID,
-                    DOrder = distribution.DistributionPrinters.Count()
+                    DOrder = distribution.DistributionPrinters.Count() + 1
                 }, "Printer");
                 if (dprinter != null)
                 {
@@ -129,13 +152,42 @@ namespace DTRMSimpleBackOffice
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                DistributionPrinter distprinterToDelete = distribution.DistributionPrinters.Where(x => x.IID == dgv.SelectedRows[0].Cells["colIID"].Value.ToString()).FirstOrDefault();
+                DistributionPrinter distprinterToDelete = (DistributionPrinter)dgv.SelectedRows[0].DataBoundItem;
 
                 if (distprinterToDelete != null)
                 {
                     _printerSource.List.Remove(distprinterToDelete);
+                    distribution.DistributionPrinters.ReOrder();
                     await repoDistributionPrinter.Delete(distprinterToDelete.IID);
                 }
+            }
+        }
+
+        private void btnMoveUp_Click(object sender, EventArgs e)
+        {
+            if (!distribution.DistributionPrinters.IsNullOrEmpty() && dgv.SelectedRows.Count > 0)
+            {
+                DistributionPrinter distPrinterToMoveUp = (DistributionPrinter)dgv.SelectedRows[0].DataBoundItem;
+                distribution.DistributionPrinters.MoveUp(distPrinterToMoveUp);
+                 _printerSource.DataSource = distribution.DistributionPrinters.ToBindingList();
+            }
+        }
+
+        private void btnMoveDown_Click(object sender, EventArgs e)
+        {
+            if (!distribution.DistributionPrinters.IsNullOrEmpty() && dgv.SelectedRows.Count > 0)
+            {
+                DistributionPrinter distPrinterToMoveDown = (DistributionPrinter)dgv.SelectedRows[0].DataBoundItem;
+                distribution.DistributionPrinters.MoveDown(distPrinterToMoveDown);
+                _printerSource.DataSource = distribution.DistributionPrinters.ToBindingList();
+            }
+        }
+
+        private void btnSort_Click(object sender, EventArgs e)
+        {
+            if (!distribution.DistributionPrinters.IsNullOrEmpty())
+            {
+                _printerSource.DataSource = distribution.DistributionPrinters.ReOrder().ToBindingList();
             }
         }
     }

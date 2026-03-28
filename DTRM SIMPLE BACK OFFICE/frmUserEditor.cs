@@ -9,65 +9,90 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
+using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmUserEditor : Form {
-        private DTRMSimpleBusiness bslayer;
-        
-        
-        public frmUserEditor() {
+    public partial class frmUserEditor : Form
+    {
+
+        IRepository<User> repoUser;
+
+        private BindingSource _userSource = new BindingSource();
+        public frmUserEditor()
+        {
             InitializeComponent();
         }
-        public frmUserEditor(DTRMSimpleBusiness bslayer) {
+        public frmUserEditor(IRepository<User> _repoUser)
+        {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoUser = _repoUser;
         }
-        private void frmUserEditor_Load(object sender, EventArgs e) {
-            LoadUsers();
+        private async void frmUserEditor_Load(object sender, EventArgs e)
+        {
+            await LoadUsers();
         }
 
-        private void LoadUsers() {
-            // DataTable dt =  bslayer.db.GetDataTable("Select * from Users where AccessLevel < " + (int)bslayer.LoggedUser.AccessLevel + " order by AccessLevel desc");
-            DataTable dt = bslayer.GetDataTable("Select * from Users");
-            // dgv.DataSource = UF.StringifyEnumInDataTable(dt, "AccessLevel", "AccessLevelAsString", typeof(AccessLevels));
-            dgv.DataSource = dt;
+        private async Task LoadUsers()
+        {
+            _userSource.DataSource = await repoUser.GetAllAsync();
+            dgv.DataSource = _userSource;
         }
-        //private void dgv_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e) {
-        //    for (int i = 0; i < dgv.Rows.Count; i++) {
-        //        dgv.Rows[i].Cells["colAccessLevelAsString"].Value = (AccessLevels)int.Parse(dgv.Rows[i].Cells["colAccessLevel"].Value.ToString());
-        //    }
-        //}
 
-        private void btnAddUser_Click(object sender, System.EventArgs e) {
-            frmSingleUser frm = new frmSingleUser(bslayer, new User());
+        private async void btnAddUser_Click(object sender, System.EventArgs e)
+        {
+            frmSingleUser frm = ActivatorUtilities.CreateInstance<frmSingleUser>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
-                LoadUsers();
+                await LoadUsers();
         }
-        private async void btnEditUser_Click(object sender, System.EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-                User user =await bslayer.GetUser(GetUserIID());
-                frmSingleUser frm = new frmSingleUser(bslayer, user);
-                if (frm.ShowDialog() == DialogResult.OK)
-                    LoadUsers();
-            }
-        }
-        private async void btnDeleteUser_Click(object sender, System.EventArgs e) {
-            if (dgv.SelectedRows.Count > 0) {
-               await bslayer.DeleteUser(GetUserIID());
-                LoadUsers();
-            }
-        }
-        
-        private string GetUserIID() {
+        private async void btnEditUser_Click(object sender, System.EventArgs e)
+        {
             if (dgv.SelectedRows.Count > 0)
-                return dgv.SelectedRows[0].Cells[0].Value.ToString();
-            else
-                return "";
+            {
+                frmSingleUser frm = ActivatorUtilities.CreateInstance<frmSingleUser>(ServiceHelper.Services, (User)dgv.SelectedRows[0].DataBoundItem);
+                if (frm.ShowDialog() == DialogResult.OK)
+                    await LoadUsers();
+            }
+        }
+        private async void btnDeleteUser_Click(object sender, System.EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoUser.Delete(((User)dgv.SelectedRows[0].DataBoundItem).IID);
+                await LoadUsers();
+            }
         }
 
-        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+        private void dgv_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
             btnEditUser_Click(null, null);
+        }
+
+        private async void tsSort_Click(object sender, EventArgs e)
+        {
+            await repoUser.Sort();
+            await LoadUsers();
+        }
+
+        private async void tsMoveUp_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoUser.MoveUp((User)dgv.SelectedRows[0].DataBoundItem);
+                await LoadUsers();
+            }
+        }
+
+        private async void tsMoveDown_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoUser.MoveDown((User)dgv.SelectedRows[0].DataBoundItem);
+                await LoadUsers();
+            }
         }
     }
 }

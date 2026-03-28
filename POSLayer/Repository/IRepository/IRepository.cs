@@ -26,6 +26,13 @@ public interface IRepository<T> where T : BaseClass
     Task<int> DeleteAll();
     Task<int> DeleteByField(string fieldName, object value);
 
+    Task Sort();
+    Task SortByField(string fieldName, object value);
+    Task MoveUp(T item);
+    Task MoveUpByField(T item, string fieldName, object value);
+    Task MoveDown(T item);
+    Task MoveDownByField(T item, string fieldName, object value);
+
 
 
 

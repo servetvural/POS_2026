@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Runtime.CompilerServices;
@@ -185,21 +186,21 @@ public static class UF
         }
     }
 
-    public static OrderItemTypes EBTypeToOrderItemType(EntityButtonTypes ebtype)
+    public static OrderItemTypes EBTypeToOrderItemType(CategoryItemTypes ebtype)
     {
         switch (ebtype)
         {
-            case EntityButtonTypes.AmountAddition:
+            case CategoryItemTypes.AmountAddition:
                 return OrderItemTypes.AmountAddition;
-            case EntityButtonTypes.PercentAddition:
+            case CategoryItemTypes.PercentAddition:
                 return OrderItemTypes.PercentAddition;
-            case EntityButtonTypes.CustomAddition:
+            case CategoryItemTypes.CustomAddition:
                 return OrderItemTypes.CustomAddition;
-            case EntityButtonTypes.AmountDeduction:
+            case CategoryItemTypes.AmountDeduction:
                 return OrderItemTypes.AmountDeduction;
-            case EntityButtonTypes.PercentDeduction:
+            case CategoryItemTypes.PercentDeduction:
                 return OrderItemTypes.PercentDeduction;
-            case EntityButtonTypes.CustomDeduction:
+            case CategoryItemTypes.CustomDeduction:
                 return OrderItemTypes.CustomDeduction;
             default:
                 return OrderItemTypes.NormalOrderItem;
@@ -450,6 +451,81 @@ public static class UF
     //var bindingList = new BindingList<POSLayer.Models.TheMenu>(await bslayer.GetMenuList());
     public static BindingList<T> ToBindingList<T>(this IList<T>? source) {
         return new BindingList<T>(source);
+    }
+
+    public static List<T> ReOrder<T>(this IList<T>? source) where T : BaseClass
+    {
+        if (source == null || source.Count == 0)
+            return new List<T>();
+
+        // 1. Sort the items in memory based on current DOrder
+        var sortedList = source.OrderBy(item => item.DOrder).ToList();
+
+        // 2. Re-assign DOrder values sequentially
+        for (int i = 0; i < sortedList.Count; i++)
+        {
+            sortedList[i].DOrder = i + 1;
+        }
+
+        // 3. Update the ORIGINAL caller list by clearing and re-adding
+        // This ensures the caller's reference now contains the sorted items
+        source.Clear();
+        foreach (var item in sortedList)
+        {
+            source.Add(item);
+        }
+
+        return sortedList;
+    }
+
+    public static void MoveUp<T>(this IList<T> source, T item) where T : BaseClass
+    {
+        // 1. Sync current state first
+       // source.ReOrder();
+
+        // 2. Find the index in the current source
+        int currentIndex = source.Select((val, index) => new { val, index })
+                         .FirstOrDefault(x => x.val.IID == item.IID)?.index ?? -1;
+
+
+        // 3. Boundary check
+        if (currentIndex <= 0)
+            return;
+
+        // 4. Physical Swap
+        source.RemoveAt(currentIndex);
+        source.Insert(currentIndex - 1, item);
+
+        // 3. Re-assign DisplayOrder starting from 1 to close any gaps
+        for (int i = 0; i < source.Count; i++)
+        {
+            source[i].DOrder = i + 1;
+        }
+
+        // 5. Final sync of DOrder values
+        //source.ReOrder();
+    }
+
+    public static void MoveDown<T>(this IList<T> source, T item) where T : BaseClass
+    {
+       // source.ReOrder();
+
+        int currentIndex = source.Select((val, index) => new { val, index })
+                         .FirstOrDefault(x => x.val.IID == item.IID)?.index ?? -1;
+
+        if (currentIndex == -1 || currentIndex >= source.Count - 1)
+            return;
+
+        source.RemoveAt(currentIndex);
+        source.Insert(currentIndex + 1, item);
+
+        // 3. Re-assign DisplayOrder starting from 1 to close any gaps
+        for (int i = 0; i < source.Count; i++)
+        {
+            source[i].DOrder = i + 1;
+        }
+
+       // source.ReOrder();
     }
 
     #region DRNumeric functions
