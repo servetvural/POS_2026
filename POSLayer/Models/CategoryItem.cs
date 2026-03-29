@@ -42,10 +42,12 @@ public partial class CategoryItem : BaseClass
     public string FFamily { get; set; } = "Arial";
     public double FSize { get; set; } = 10;
     public string FStyle { get; set; } = "Regular";
+
+    public string Font => FFamily + ", " + FStyle + ", " + FSize;
     public bool WithImage { get; set; }
 
-
-
+    public ButtonStyleTypes ItemStyle { get; set; }    // { Text, Image, TextAndImage }
+    public ImagePositionTypes ImagePosition { get; set; } // { Left, Center, Right }
 
     public CategoryItem Clone()
     {
@@ -80,6 +82,9 @@ public partial class CategoryItem : BaseClass
             FFamily = FFamily,
             FSize = FSize,
             FStyle = FStyle,
+
+            ItemStyle = ItemStyle,
+            ImagePosition = ImagePosition,
         };
 
         return eb;

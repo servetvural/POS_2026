@@ -18,7 +18,7 @@ using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmCategoryEditor : Form {
+    public partial class frmCategoryUpsert : Form {
         PosConfig config;
         IRepository<Category> repoCategory;
         IRepository<Distribution> repoDistribution;
@@ -27,7 +27,7 @@ namespace DTRMSimpleBackOffice {
         bool blnEdit;
         private BindingSource _distributionSource = new BindingSource();
 
-        public frmCategoryEditor(PosConfig configAsService,IRepository<Category> _repoCategory, IRepository<Distribution> _repoDistribution, Category _category)
+        public frmCategoryUpsert(PosConfig configAsService,IRepository<Category> _repoCategory, IRepository<Distribution> _repoDistribution, Category _category)
         {
             InitializeComponent();
             config = configAsService;

@@ -7,6 +7,14 @@ namespace DTRMNS {
         public frmStringInput() {
             InitializeComponent();
         }
+
+        public frmStringInput(string Caption, string initialValue)
+        {
+            InitializeComponent();
+            this.Text = Caption;
+            text = initialValue;
+        }
+
         public frmStringInput(string initialValue) {
             InitializeComponent();
             text = initialValue;

@@ -16,6 +16,8 @@ public enum WeekDays { NoDay = 0, Monday = 1, Tuesday = 2, Wednesday = 4, Thursd
 
 public enum OrderTypes { Unknown = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, DirectSale = 256, Pad = 512 };
 public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
+public enum ButtonStyleTypes { Text, Image, TextAndImage }
+public enum ImagePositionTypes { Left, Center,  Right }
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
 public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
 public enum PaymentMethods { Unknown, Cash, Card, Online }

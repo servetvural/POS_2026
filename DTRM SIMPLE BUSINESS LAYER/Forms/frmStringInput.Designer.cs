@@ -22,61 +22,64 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.btnOK = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.txt = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            btnOK = new System.Windows.Forms.Button();
+            btnCancel = new System.Windows.Forms.Button();
+            txt = new System.Windows.Forms.TextBox();
+            SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(368, 64);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(72, 39);
-            this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            btnOK.Location = new System.Drawing.Point(429, 74);
+            btnOK.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnOK.Name = "btnOK";
+            btnOK.Size = new System.Drawing.Size(84, 45);
+            btnOK.TabIndex = 1;
+            btnOK.Text = "OK";
+            btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(275, 64);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(72, 39);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "CANCEL";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(321, 74);
+            btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(84, 45);
+            btnCancel.TabIndex = 2;
+            btnCancel.Text = "CANCEL";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // txt
             // 
-            // 
-            // 
-            // 
-            this.txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.txt.Location = new System.Drawing.Point(18, 19);
-            this.txt.Name = "txt";
-            this.txt.Size = new System.Drawing.Size(422, 29);
-            this.txt.TabIndex = 0;
+            txt.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            txt.Location = new System.Drawing.Point(21, 22);
+            txt.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txt.Name = "txt";
+            txt.Size = new System.Drawing.Size(492, 29);
+            txt.TabIndex = 0;
             // 
             // frmStringInput
             // 
-            this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(459, 120);
-            this.ControlBox = false;
-            this.Controls.Add(this.txt);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.btnCancel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "frmStringInput";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "String Input";
-            this.Load += new System.EventHandler(this.frmIntegerInput_Load);
-            this.ResumeLayout(false);
+            AcceptButton = btnOK;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            CancelButton = btnCancel;
+            ClientSize = new System.Drawing.Size(536, 148);
+            ControlBox = false;
+            Controls.Add(txt);
+            Controls.Add(btnOK);
+            Controls.Add(btnCancel);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmStringInput";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "String Input";
+            Load += frmIntegerInput_Load;
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

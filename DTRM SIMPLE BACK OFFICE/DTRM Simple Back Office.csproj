@@ -85,6 +85,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup Label="Compile items now included by globbing that were not in the original project file">
+    <Compile Remove="frmMenuEditorOld.cs" />
+    <Compile Remove="frmMenuEditorOld.Designer.cs" />
     <Compile Remove="frmVersion.Designer.cs" />
     <Compile Remove="frmVersion.cs" />
     <Compile Remove="frmScreenSaver.Designer.cs" />
@@ -98,6 +100,7 @@
     <Compile Remove="frmConfig.cs" />
   </ItemGroup>
   <ItemGroup Label="EmbeddedResource items now included by globbing that were not in the original project file">
+    <EmbeddedResource Remove="frmMenuEditorOld.resx" />
     <EmbeddedResource Remove="frmVersion.resx" />
     <EmbeddedResource Remove="frmScreenSaver.resx" />
     <EmbeddedResource Remove="frmEntityButtonStockItemLookUp.resx" />

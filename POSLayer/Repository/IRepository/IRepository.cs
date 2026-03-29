@@ -21,6 +21,7 @@ public interface IRepository<T> where T : BaseClass
 
     Task<List<T>> GetAllAsync(string includeItems = "");
     Task<T> Save(T obj,string includeItemsOnReturn = "");
+    Task<T> SaveByField(string fieldName, object value, T obj, string includeItemsOnReturn = "");
     Task<T> SaveTree(T rootEntity, string includeItemsOnReturn = "");
     Task<int> Delete(string IID);
     Task<int> DeleteAll();
@@ -53,7 +54,7 @@ public interface IRepository<T> where T : BaseClass
 
 
     #region MENU FUNCTIONS
-    Task<TheMenu> GetMenu(string IID);
+    Task<bool> SetMenuIsActive(string IID);
 
 
 

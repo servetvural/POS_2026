@@ -16,7 +16,7 @@ public partial class GenericImage     : BaseClass
 
     public string ImageFileName { get; set; }
 
-    [NotMapped]
+
     public long ImageSizeinKB { get; set; }
 
     public void SetImage(string FileName)

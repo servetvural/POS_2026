@@ -108,7 +108,7 @@ public class DbInitializer
             };
             await repoMenu.SaveTree(menu);
 
-            menu = await repoMenu.GetMenu(menu.IID);
+            menu = await repoMenu.Get(menu.IID);
 
             config.ActiveMenuIID = menu.IID;
             UF.SaveConfig(config);

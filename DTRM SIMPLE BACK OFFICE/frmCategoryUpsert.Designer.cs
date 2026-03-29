@@ -1,7 +1,7 @@
 ﻿using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
-   partial class frmCategoryEditor {
+   partial class frmCategoryUpsert {
       /// <summary>
       /// Required designer variable.
       /// </summary>
