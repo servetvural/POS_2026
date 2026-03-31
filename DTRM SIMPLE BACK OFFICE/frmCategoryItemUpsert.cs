@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using POSLayer.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
+using System.Drawing.Configuration;
 
 namespace DTRMSimpleBackOffice
 {
@@ -48,25 +49,20 @@ namespace DTRMSimpleBackOffice
         private CheckBox chkAvailableDirect;
         private CheckBox chkCompulsary;
         private CheckBox chkAvailableInternetTakeAway;
-        private Label label14;
         private DoubleTextBox txtDeliveryTaxRate;
-        private Label label6;
         private DoubleTextBox txtTakeAwayTaxRate;
-        private Label label3;
         private DoubleTextBox txtInHouseTaxRate;
-        private Label label1;
         private DoubleTextBox txtDirectSaleTaxRate;
         private Label label15;
         private ComboBox cmbPadFlag;
         private Button btnSetTaxToDefault;
         private Button btnSetTaxToZero;
-        private TextBox txtEntityButtonName;
+        private TextBox txtCategoryItemName;
         private PosLibrary.IntegerTextBox incWidth;
         private PosLibrary.IntegerTextBox incHeight;
         private Label label16;
         private Label label17;
         private TextBox txtImageFile;
-        private Label label18;
         private Label lblFont;
         private Button btnFont;
         private PosLibrary.IntegerTextBox incDisplayOrder;
@@ -78,12 +74,9 @@ namespace DTRMSimpleBackOffice
         private Button btnDeletePrepImage;
         private TextBox txtExtraText;
         private Button btnLoadPrepImageFromDatabase;
-        private CheckBox chkWithImage;
-        private GroupBox groupBox2;
         private CheckBox chkAvailableNone;
         private ToolTip toolTip1;
         private System.ComponentModel.IContainer components;
-        private Label label10;
         private Label lblImageSize;
         private GenericImage gim;
 
@@ -94,23 +87,27 @@ namespace DTRMSimpleBackOffice
         IRepository<CategoryItem> repoCategoryItem;
         IRepository<Distribution> repoDistribution;
         IRepository<GenericImage> repoImage;
-
-        private DTRMSimpleBusiness bslayer;
+        IRepository<Shop> repoShop;
 
         public Category category;
         public CategoryItem categoryItem;
         string CategoryIID;
-        private ComboBox cmbItemStyle;
-        private ComboBox cmbImagePosition;
+        private ComboBox cmbButtonDisplayStyle;
+        private ComboBox cmbImageAlign;
         private Label label11;
         private Label label12;
         private ToolStrip toolStrip1;
         private ToolStripButton btnSample;
         private BindingSource _distributionSource = new BindingSource();
+        private Label label1;
+        private ComboBox cmbTextAlign;
+        private Label label3;
+        private ComboBox cmbTextImageRelation;
+        Shop currentShop;
 
         public frmCategoryItemUpsert(PosConfig configAsService, IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
             IRepository<Distribution> _repoDistribution, IRepository<GenericImage> _repoImage,
-            DTRMSimpleBusiness bslayer, CategoryItem categoryItem, string CategoryIID = null)
+            IRepository<Shop> _repoShop, CategoryItem categoryItem, string CategoryIID = null)
         {
             InitializeComponent();
             config = configAsService;
@@ -118,13 +115,13 @@ namespace DTRMSimpleBackOffice
             repoCategoryItem = _repoCategoryItem;
             repoDistribution = _repoDistribution;
             repoImage = _repoImage;
-
-            this.bslayer = bslayer;
+            repoShop = _repoShop;
 
             this.CategoryIID = CategoryIID;
             this.categoryItem = categoryItem;
 
-            Thread.CurrentThread.CurrentUICulture = bslayer.GetUICulture();
+            Thread.CurrentThread.CurrentUICulture = UF.GetCulture(config.Terminal_Currency_Culture);
+
         }
 
 
@@ -157,13 +154,9 @@ namespace DTRMSimpleBackOffice
             btnSetTaxToZero = new Button();
             label15 = new Label();
             cmbPadFlag = new ComboBox();
-            label14 = new Label();
             txtDeliveryTaxRate = new DoubleTextBox();
-            label6 = new Label();
             txtTakeAwayTaxRate = new DoubleTextBox();
-            label3 = new Label();
             txtInHouseTaxRate = new DoubleTextBox();
-            label1 = new Label();
             txtDirectSaleTaxRate = new DoubleTextBox();
             chkCompulsary = new CheckBox();
             groupBox1 = new GroupBox();
@@ -186,14 +179,12 @@ namespace DTRMSimpleBackOffice
             btnButtonColor = new Button();
             btnUpdateButtonDetails = new Button();
             btnClose = new Button();
-            txtEntityButtonName = new TextBox();
-            groupBox2 = new GroupBox();
+            txtCategoryItemName = new TextBox();
             incWidth = new IntegerTextBox();
             incHeight = new IntegerTextBox();
             label16 = new Label();
             label17 = new Label();
             txtImageFile = new TextBox();
-            label18 = new Label();
             lblFont = new Label();
             btnFont = new Button();
             incDisplayOrder = new IntegerTextBox();
@@ -205,19 +196,20 @@ namespace DTRMSimpleBackOffice
             btnLoadPrepImageFromDirectory = new Button();
             pBox = new PictureBox();
             btnLoadPrepImageFromDatabase = new Button();
-            chkWithImage = new CheckBox();
             toolTip1 = new ToolTip(components);
-            label10 = new Label();
             lblImageSize = new Label();
-            cmbItemStyle = new ComboBox();
-            cmbImagePosition = new ComboBox();
+            cmbButtonDisplayStyle = new ComboBox();
+            cmbImageAlign = new ComboBox();
             label11 = new Label();
             label12 = new Label();
             toolStrip1 = new ToolStrip();
             btnSample = new ToolStripButton();
+            label1 = new Label();
+            cmbTextAlign = new ComboBox();
+            label3 = new Label();
+            cmbTextImageRelation = new ComboBox();
             groupBox1.SuspendLayout();
             groupBox3.SuspendLayout();
-            groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pBox).BeginInit();
             toolStrip1.SuspendLayout();
             SuspendLayout();
@@ -226,12 +218,12 @@ namespace DTRMSimpleBackOffice
             // 
             label5.AutoSize = true;
             label5.BackColor = SystemColors.Control;
-            label5.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label5.Font = new Font("Microsoft Sans Serif", 11F);
             label5.ForeColor = SystemColors.ControlText;
-            label5.Location = new Point(6, 63);
+            label5.Location = new Point(19, 63);
             label5.Margin = new Padding(3, 3, 1, 3);
             label5.Name = "label5";
-            label5.Size = new Size(27, 13);
+            label5.Size = new Size(36, 18);
             label5.TabIndex = 42;
             label5.Text = "Sitin";
             label5.TextAlign = ContentAlignment.MiddleRight;
@@ -240,14 +232,14 @@ namespace DTRMSimpleBackOffice
             // 
             txtInHousePrice.CustomFormat = "C2";
             txtInHousePrice.CustomUICulture = "en-US";
-            txtInHousePrice.Font = new Font("Arial", 14F);
+            txtInHousePrice.Font = new Font("Microsoft Sans Serif", 11F);
             txtInHousePrice.Increment = 1D;
-            txtInHousePrice.Location = new Point(65, 57);
+            txtInHousePrice.Location = new Point(114, 57);
             txtInHousePrice.Margin = new Padding(1, 3, 3, 3);
             txtInHousePrice.MaxValue = 100000D;
             txtInHousePrice.MinValue = -100000D;
             txtInHousePrice.Name = "txtInHousePrice";
-            txtInHousePrice.Size = new Size(84, 29);
+            txtInHousePrice.Size = new Size(84, 24);
             txtInHousePrice.TabIndex = 3;
             txtInHousePrice.Text = "$0.00";
             txtInHousePrice.TextAlign = HorizontalAlignment.Right;
@@ -258,26 +250,26 @@ namespace DTRMSimpleBackOffice
             // 
             label2.AutoSize = true;
             label2.BackColor = SystemColors.Control;
-            label2.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label2.Font = new Font("Microsoft Sans Serif", 11F);
             label2.ForeColor = SystemColors.ControlText;
-            label2.Location = new Point(38, 26);
+            label2.Location = new Point(31, 14);
             label2.Name = "label2";
-            label2.Size = new Size(35, 13);
+            label2.Size = new Size(68, 18);
             label2.TabIndex = 34;
-            label2.Text = "Name";
+            label2.Text = "Item Text";
             label2.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.BackColor = SystemColors.Control;
-            label4.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label4.Font = new Font("Microsoft Sans Serif", 11F);
             label4.ForeColor = SystemColors.ControlText;
-            label4.Location = new Point(400, 26);
+            label4.Location = new Point(31, 47);
             label4.Name = "label4";
-            label4.Size = new Size(31, 13);
+            label4.Size = new Size(112, 18);
             label4.TabIndex = 37;
-            label4.Text = "Type";
+            label4.Text = "Functional Type";
             label4.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // cmbButtonType
@@ -287,7 +279,7 @@ namespace DTRMSimpleBackOffice
             cmbButtonType.FormattingEnabled = true;
             cmbButtonType.ItemHeight = 18;
             cmbButtonType.Items.AddRange(new object[] { "Simple Item", "Extra Item", "Ex & Disco Amount Addition", "Ex & Disco Percent Addition", "Ex & Disco Custom Addition", "Ex & Disco Amount Deduction", "Ex & Disco Percent Deduction", "Ex & Disco Custom Deduction", "Space Button" });
-            cmbButtonType.Location = new Point(451, 19);
+            cmbButtonType.Location = new Point(176, 44);
             cmbButtonType.MaxDropDownItems = 40;
             cmbButtonType.Name = "cmbButtonType";
             cmbButtonType.Size = new Size(246, 26);
@@ -300,15 +292,15 @@ namespace DTRMSimpleBackOffice
             btnSetTaxToDefault.BackColor = SystemColors.Control;
             btnSetTaxToDefault.BackgroundImageLayout = ImageLayout.Stretch;
             btnSetTaxToDefault.FlatAppearance.BorderSize = 0;
-            btnSetTaxToDefault.Font = new Font("Microsoft Sans Serif", 8.25F);
+            btnSetTaxToDefault.Font = new Font("Microsoft Sans Serif", 11F);
             btnSetTaxToDefault.ForeColor = SystemColors.ControlText;
-            btnSetTaxToDefault.Location = new Point(193, 97);
+            btnSetTaxToDefault.Location = new Point(307, 647);
             btnSetTaxToDefault.Margin = new Padding(3, 2, 3, 3);
             btnSetTaxToDefault.Name = "btnSetTaxToDefault";
-            btnSetTaxToDefault.Size = new Size(81, 65);
+            btnSetTaxToDefault.Size = new Size(120, 50);
             btnSetTaxToDefault.TabIndex = 82;
             btnSetTaxToDefault.Text = "Set Tax Default";
-            btnSetTaxToDefault.UseVisualStyleBackColor = false;
+            btnSetTaxToDefault.UseVisualStyleBackColor = true;
             btnSetTaxToDefault.Click += btnSetTaxToDefault_Click;
             // 
             // btnSetTaxToZero
@@ -316,155 +308,100 @@ namespace DTRMSimpleBackOffice
             btnSetTaxToZero.BackColor = SystemColors.Control;
             btnSetTaxToZero.BackgroundImageLayout = ImageLayout.Stretch;
             btnSetTaxToZero.FlatAppearance.BorderSize = 0;
-            btnSetTaxToZero.Font = new Font("Microsoft Sans Serif", 7F);
+            btnSetTaxToZero.Font = new Font("Microsoft Sans Serif", 11F);
             btnSetTaxToZero.ForeColor = SystemColors.ControlText;
-            btnSetTaxToZero.Location = new Point(193, 23);
+            btnSetTaxToZero.Location = new Point(172, 647);
             btnSetTaxToZero.Margin = new Padding(3, 2, 3, 3);
             btnSetTaxToZero.Name = "btnSetTaxToZero";
-            btnSetTaxToZero.Size = new Size(81, 63);
+            btnSetTaxToZero.Size = new Size(120, 50);
             btnSetTaxToZero.TabIndex = 81;
             btnSetTaxToZero.Text = "Set Tax 0% ";
-            btnSetTaxToZero.UseVisualStyleBackColor = false;
+            btnSetTaxToZero.UseVisualStyleBackColor = true;
             btnSetTaxToZero.Click += btnSetTaxToZero_Click;
             // 
             // label15
             // 
             label15.AutoSize = true;
-            label15.Location = new Point(191, 238);
+            label15.Font = new Font("Microsoft Sans Serif", 11F);
+            label15.Location = new Point(31, 222);
             label15.Name = "label15";
-            label15.Size = new Size(52, 15);
+            label15.Size = new Size(89, 18);
             label15.TabIndex = 80;
-            label15.Text = "Pad Flag";
+            label15.Text = "Available On";
             // 
             // cmbPadFlag
             // 
             cmbPadFlag.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbPadFlag.Font = new Font("Microsoft Sans Serif", 12F);
+            cmbPadFlag.Font = new Font("Microsoft Sans Serif", 11F);
             cmbPadFlag.FormattingEnabled = true;
-            cmbPadFlag.Items.AddRange(new object[] { "EBOnly", "PadOnly", "EBAndPad" });
-            cmbPadFlag.Location = new Point(194, 256);
+            cmbPadFlag.Items.AddRange(new object[] { "Normal Sale Panel Only", "Order Pad Only", "ALL" });
+            cmbPadFlag.Location = new Point(176, 219);
             cmbPadFlag.Name = "cmbPadFlag";
-            cmbPadFlag.Size = new Size(185, 28);
+            cmbPadFlag.Size = new Size(246, 26);
             cmbPadFlag.TabIndex = 79;
-            // 
-            // label14
-            // 
-            label14.AutoSize = true;
-            label14.BackColor = SystemColors.Control;
-            label14.Font = new Font("Arial", 8.25F);
-            label14.ForeColor = SystemColors.ControlText;
-            label14.Location = new Point(14, 137);
-            label14.Margin = new Padding(3, 3, 1, 3);
-            label14.Name = "label14";
-            label14.Size = new Size(46, 14);
-            label14.TabIndex = 78;
-            label14.Text = "Delivery";
-            label14.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // txtDeliveryTaxRate
             // 
             txtDeliveryTaxRate.CustomFormat = "0.00";
             txtDeliveryTaxRate.CustomUICulture = "en-US";
-            txtDeliveryTaxRate.Font = new Font("Arial", 14F);
+            txtDeliveryTaxRate.Font = new Font("Microsoft Sans Serif", 11F);
             txtDeliveryTaxRate.Increment = 1D;
-            txtDeliveryTaxRate.Location = new Point(64, 129);
+            txtDeliveryTaxRate.Location = new Point(242, 127);
             txtDeliveryTaxRate.MaxValue = 100000D;
             txtDeliveryTaxRate.MinValue = -100000D;
             txtDeliveryTaxRate.Name = "txtDeliveryTaxRate";
-            txtDeliveryTaxRate.Size = new Size(80, 29);
+            txtDeliveryTaxRate.Size = new Size(80, 24);
             txtDeliveryTaxRate.TabIndex = 77;
             txtDeliveryTaxRate.Text = "0.00";
             txtDeliveryTaxRate.TextAlign = HorizontalAlignment.Right;
             txtDeliveryTaxRate.Value = 0D;
             txtDeliveryTaxRate.KeyDown += Tax_KeyDown;
             // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.BackColor = SystemColors.Control;
-            label6.Font = new Font("Arial", 8.25F);
-            label6.ForeColor = SystemColors.ControlText;
-            label6.Location = new Point(14, 103);
-            label6.Margin = new Padding(3, 3, 1, 3);
-            label6.Name = "label6";
-            label6.Size = new Size(46, 14);
-            label6.TabIndex = 76;
-            label6.Text = "T-Away";
-            label6.TextAlign = ContentAlignment.MiddleLeft;
-            // 
             // txtTakeAwayTaxRate
             // 
             txtTakeAwayTaxRate.CustomFormat = "0.00";
             txtTakeAwayTaxRate.CustomUICulture = "en-US";
-            txtTakeAwayTaxRate.Font = new Font("Arial", 14F);
+            txtTakeAwayTaxRate.Font = new Font("Microsoft Sans Serif", 11F);
             txtTakeAwayTaxRate.Increment = 1D;
-            txtTakeAwayTaxRate.Location = new Point(64, 93);
+            txtTakeAwayTaxRate.Location = new Point(242, 93);
             txtTakeAwayTaxRate.MaxValue = 100000D;
             txtTakeAwayTaxRate.MinValue = -100000D;
             txtTakeAwayTaxRate.Name = "txtTakeAwayTaxRate";
-            txtTakeAwayTaxRate.Size = new Size(80, 29);
+            txtTakeAwayTaxRate.Size = new Size(80, 24);
             txtTakeAwayTaxRate.TabIndex = 75;
             txtTakeAwayTaxRate.Text = "0.00";
             txtTakeAwayTaxRate.TextAlign = HorizontalAlignment.Right;
             txtTakeAwayTaxRate.Value = 0D;
             txtTakeAwayTaxRate.KeyDown += Tax_KeyDown;
             // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.BackColor = SystemColors.Control;
-            label3.Font = new Font("Arial", 8.25F);
-            label3.ForeColor = SystemColors.ControlText;
-            label3.Location = new Point(14, 66);
-            label3.Margin = new Padding(3, 3, 1, 3);
-            label3.Name = "label3";
-            label3.Size = new Size(27, 14);
-            label3.TabIndex = 74;
-            label3.Text = "Sitin";
-            label3.TextAlign = ContentAlignment.MiddleLeft;
-            // 
             // txtInHouseTaxRate
             // 
             txtInHouseTaxRate.CustomFormat = "0.00";
             txtInHouseTaxRate.CustomUICulture = "en-US";
-            txtInHouseTaxRate.Font = new Font("Arial", 14F);
+            txtInHouseTaxRate.Font = new Font("Microsoft Sans Serif", 11F);
             txtInHouseTaxRate.Increment = 1D;
-            txtInHouseTaxRate.Location = new Point(64, 57);
+            txtInHouseTaxRate.Location = new Point(242, 56);
             txtInHouseTaxRate.MaxValue = 100000D;
             txtInHouseTaxRate.MinValue = -100000D;
             txtInHouseTaxRate.Name = "txtInHouseTaxRate";
-            txtInHouseTaxRate.Size = new Size(80, 29);
+            txtInHouseTaxRate.Size = new Size(80, 24);
             txtInHouseTaxRate.TabIndex = 73;
             txtInHouseTaxRate.Text = "0.00";
             txtInHouseTaxRate.TextAlign = HorizontalAlignment.Right;
             txtInHouseTaxRate.Value = 0D;
             txtInHouseTaxRate.KeyDown += Tax_KeyDown;
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.BackColor = SystemColors.Control;
-            label1.Font = new Font("Arial", 8.25F);
-            label1.ForeColor = SystemColors.ControlText;
-            label1.Location = new Point(14, 30);
-            label1.Margin = new Padding(3, 3, 1, 3);
-            label1.Name = "label1";
-            label1.Size = new Size(28, 14);
-            label1.TabIndex = 72;
-            label1.Text = "Sale";
-            label1.TextAlign = ContentAlignment.MiddleLeft;
-            // 
             // txtDirectSaleTaxRate
             // 
             txtDirectSaleTaxRate.CustomFormat = "0.00";
             txtDirectSaleTaxRate.CustomUICulture = "en-US";
-            txtDirectSaleTaxRate.Font = new Font("Arial", 14F);
+            txtDirectSaleTaxRate.Font = new Font("Microsoft Sans Serif", 11F);
             txtDirectSaleTaxRate.Increment = 1D;
-            txtDirectSaleTaxRate.Location = new Point(64, 23);
+            txtDirectSaleTaxRate.Location = new Point(242, 23);
             txtDirectSaleTaxRate.MaxValue = 100000D;
             txtDirectSaleTaxRate.MinValue = -100000D;
             txtDirectSaleTaxRate.Name = "txtDirectSaleTaxRate";
-            txtDirectSaleTaxRate.Size = new Size(80, 29);
+            txtDirectSaleTaxRate.Size = new Size(80, 24);
             txtDirectSaleTaxRate.TabIndex = 71;
             txtDirectSaleTaxRate.Text = "0.00";
             txtDirectSaleTaxRate.TextAlign = HorizontalAlignment.Right;
@@ -476,12 +413,12 @@ namespace DTRMSimpleBackOffice
             chkCompulsary.AutoSize = true;
             chkCompulsary.BackgroundImageLayout = ImageLayout.Stretch;
             chkCompulsary.FlatAppearance.BorderSize = 0;
-            chkCompulsary.Font = new Font("Arial", 8F, FontStyle.Bold);
+            chkCompulsary.Font = new Font("Microsoft Sans Serif", 11F);
             chkCompulsary.ForeColor = SystemColors.ControlText;
-            chkCompulsary.Location = new Point(49, 541);
+            chkCompulsary.Location = new Point(176, 430);
             chkCompulsary.Margin = new Padding(3, 3, 3, 0);
             chkCompulsary.Name = "chkCompulsary";
-            chkCompulsary.Size = new Size(93, 18);
+            chkCompulsary.Size = new Size(107, 22);
             chkCompulsary.TabIndex = 68;
             chkCompulsary.Text = "Compulsary";
             chkCompulsary.UseVisualStyleBackColor = false;
@@ -490,6 +427,10 @@ namespace DTRMSimpleBackOffice
             // groupBox1
             // 
             groupBox1.Controls.Add(label9);
+            groupBox1.Controls.Add(txtInHouseTaxRate);
+            groupBox1.Controls.Add(txtDirectSaleTaxRate);
+            groupBox1.Controls.Add(txtTakeAwayTaxRate);
+            groupBox1.Controls.Add(txtDeliveryTaxRate);
             groupBox1.Controls.Add(txtDirectSalePrice);
             groupBox1.Controls.Add(label5);
             groupBox1.Controls.Add(txtDeliveryPrice);
@@ -497,24 +438,25 @@ namespace DTRMSimpleBackOffice
             groupBox1.Controls.Add(txtTakeAwayPrice);
             groupBox1.Controls.Add(label7);
             groupBox1.Controls.Add(txtInHousePrice);
-            groupBox1.Location = new Point(38, 60);
+            groupBox1.Font = new Font("Microsoft Sans Serif", 11F);
+            groupBox1.Location = new Point(64, 462);
             groupBox1.Margin = new Padding(3, 3, 1, 3);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(246, 169);
+            groupBox1.Size = new Size(362, 169);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Price";
+            groupBox1.Text = "Price && Tax Rates";
             // 
             // label9
             // 
             label9.AutoSize = true;
             label9.BackColor = SystemColors.Control;
-            label9.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label9.Font = new Font("Microsoft Sans Serif", 11F);
             label9.ForeColor = SystemColors.ControlText;
-            label9.Location = new Point(6, 28);
+            label9.Location = new Point(19, 28);
             label9.Margin = new Padding(3, 3, 1, 3);
             label9.Name = "label9";
-            label9.Size = new Size(28, 13);
+            label9.Size = new Size(37, 18);
             label9.TabIndex = 65;
             label9.Text = "Sale";
             label9.TextAlign = ContentAlignment.MiddleRight;
@@ -523,14 +465,14 @@ namespace DTRMSimpleBackOffice
             // 
             txtDirectSalePrice.CustomFormat = "C2";
             txtDirectSalePrice.CustomUICulture = "en-US";
-            txtDirectSalePrice.Font = new Font("Arial", 14F);
+            txtDirectSalePrice.Font = new Font("Microsoft Sans Serif", 11F);
             txtDirectSalePrice.Increment = 1D;
-            txtDirectSalePrice.Location = new Point(66, 23);
+            txtDirectSalePrice.Location = new Point(115, 23);
             txtDirectSalePrice.Margin = new Padding(1, 2, 3, 3);
             txtDirectSalePrice.MaxValue = 100000D;
             txtDirectSalePrice.MinValue = -100000D;
             txtDirectSalePrice.Name = "txtDirectSalePrice";
-            txtDirectSalePrice.Size = new Size(84, 29);
+            txtDirectSalePrice.Size = new Size(84, 24);
             txtDirectSalePrice.TabIndex = 1;
             txtDirectSalePrice.Text = "$0.00";
             txtDirectSalePrice.TextAlign = HorizontalAlignment.Right;
@@ -541,14 +483,14 @@ namespace DTRMSimpleBackOffice
             // 
             txtDeliveryPrice.CustomFormat = "C2";
             txtDeliveryPrice.CustomUICulture = "en-US";
-            txtDeliveryPrice.Font = new Font("Arial", 14F);
+            txtDeliveryPrice.Font = new Font("Microsoft Sans Serif", 11F);
             txtDeliveryPrice.Increment = 1D;
-            txtDeliveryPrice.Location = new Point(66, 129);
+            txtDeliveryPrice.Location = new Point(115, 129);
             txtDeliveryPrice.Margin = new Padding(1, 3, 3, 3);
             txtDeliveryPrice.MaxValue = 100000D;
             txtDeliveryPrice.MinValue = -100000D;
             txtDeliveryPrice.Name = "txtDeliveryPrice";
-            txtDeliveryPrice.Size = new Size(84, 29);
+            txtDeliveryPrice.Size = new Size(84, 24);
             txtDeliveryPrice.TabIndex = 4;
             txtDeliveryPrice.Text = "$0.00";
             txtDeliveryPrice.TextAlign = HorizontalAlignment.Right;
@@ -559,12 +501,12 @@ namespace DTRMSimpleBackOffice
             // 
             label8.AutoSize = true;
             label8.BackColor = SystemColors.Control;
-            label8.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label8.Font = new Font("Microsoft Sans Serif", 11F);
             label8.ForeColor = SystemColors.ControlText;
-            label8.Location = new Point(6, 134);
+            label8.Location = new Point(19, 134);
             label8.Margin = new Padding(3, 3, 1, 3);
             label8.Name = "label8";
-            label8.Size = new Size(45, 13);
+            label8.Size = new Size(60, 18);
             label8.TabIndex = 60;
             label8.Text = "Delivery";
             label8.TextAlign = ContentAlignment.MiddleRight;
@@ -573,14 +515,14 @@ namespace DTRMSimpleBackOffice
             // 
             txtTakeAwayPrice.CustomFormat = "C2";
             txtTakeAwayPrice.CustomUICulture = "en-US";
-            txtTakeAwayPrice.Font = new Font("Arial", 14F);
+            txtTakeAwayPrice.Font = new Font("Microsoft Sans Serif", 11F);
             txtTakeAwayPrice.Increment = 1D;
-            txtTakeAwayPrice.Location = new Point(66, 93);
+            txtTakeAwayPrice.Location = new Point(115, 93);
             txtTakeAwayPrice.Margin = new Padding(1, 3, 3, 3);
             txtTakeAwayPrice.MaxValue = 100000D;
             txtTakeAwayPrice.MinValue = -100000D;
             txtTakeAwayPrice.Name = "txtTakeAwayPrice";
-            txtTakeAwayPrice.Size = new Size(85, 29);
+            txtTakeAwayPrice.Size = new Size(85, 24);
             txtTakeAwayPrice.TabIndex = 2;
             txtTakeAwayPrice.Text = "$0.00";
             txtTakeAwayPrice.TextAlign = HorizontalAlignment.Right;
@@ -591,14 +533,14 @@ namespace DTRMSimpleBackOffice
             // 
             label7.AutoSize = true;
             label7.BackColor = SystemColors.Control;
-            label7.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label7.Font = new Font("Microsoft Sans Serif", 11F);
             label7.ForeColor = SystemColors.ControlText;
-            label7.Location = new Point(6, 97);
+            label7.Location = new Point(19, 97);
             label7.Margin = new Padding(3, 3, 1, 3);
             label7.Name = "label7";
-            label7.Size = new Size(43, 13);
+            label7.Size = new Size(80, 18);
             label7.TabIndex = 58;
-            label7.Text = "T-Away";
+            label7.Text = "Take Away";
             label7.TextAlign = ContentAlignment.MiddleRight;
             // 
             // groupBox3
@@ -611,10 +553,11 @@ namespace DTRMSimpleBackOffice
             groupBox3.Controls.Add(chkAvailableTakeAway);
             groupBox3.Controls.Add(chkAvailableInHouse);
             groupBox3.Controls.Add(chkAvailableDirect);
-            groupBox3.Location = new Point(38, 240);
+            groupBox3.Font = new Font("Microsoft Sans Serif", 11F);
+            groupBox3.Location = new Point(462, 325);
             groupBox3.Margin = new Padding(1, 3, 3, 3);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(133, 262);
+            groupBox3.Size = new Size(230, 306);
             groupBox3.TabIndex = 1;
             groupBox3.TabStop = false;
             groupBox3.Text = "Available For";
@@ -623,12 +566,12 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableNone.AutoSize = true;
             chkAvailableNone.FlatAppearance.BorderSize = 0;
-            chkAvailableNone.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableNone.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableNone.ForeColor = SystemColors.ControlText;
-            chkAvailableNone.Location = new Point(11, 232);
+            chkAvailableNone.Location = new Point(16, 260);
             chkAvailableNone.Margin = new Padding(3, 1, 3, 3);
             chkAvailableNone.Name = "chkAvailableNone";
-            chkAvailableNone.Size = new Size(72, 17);
+            chkAvailableNone.Size = new Size(91, 22);
             chkAvailableNone.TabIndex = 7;
             chkAvailableNone.Text = "NO SALE";
             chkAvailableNone.UseVisualStyleBackColor = false;
@@ -638,11 +581,11 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableInternetTakeAway.AutoSize = true;
             chkAvailableInternetTakeAway.FlatAppearance.BorderSize = 0;
-            chkAvailableInternetTakeAway.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableInternetTakeAway.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableInternetTakeAway.ForeColor = SystemColors.ControlText;
-            chkAvailableInternetTakeAway.Location = new Point(11, 145);
+            chkAvailableInternetTakeAway.Location = new Point(16, 161);
             chkAvailableInternetTakeAway.Name = "chkAvailableInternetTakeAway";
-            chkAvailableInternetTakeAway.Size = new Size(119, 17);
+            chkAvailableInternetTakeAway.Size = new Size(151, 22);
             chkAvailableInternetTakeAway.TabIndex = 6;
             chkAvailableInternetTakeAway.Text = "Internet Take Away";
             chkAvailableInternetTakeAway.UseVisualStyleBackColor = false;
@@ -652,12 +595,12 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableAll.AutoSize = true;
             chkAvailableAll.FlatAppearance.BorderSize = 0;
-            chkAvailableAll.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableAll.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableAll.ForeColor = SystemColors.ControlText;
-            chkAvailableAll.Location = new Point(11, 203);
+            chkAvailableAll.Location = new Point(16, 227);
             chkAvailableAll.Margin = new Padding(3, 1, 3, 3);
             chkAvailableAll.Name = "chkAvailableAll";
-            chkAvailableAll.Size = new Size(105, 17);
+            chkAvailableAll.Size = new Size(136, 22);
             chkAvailableAll.TabIndex = 4;
             chkAvailableAll.Text = "All Type of Sales";
             chkAvailableAll.UseVisualStyleBackColor = false;
@@ -667,11 +610,11 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableInternetDelivery.AutoSize = true;
             chkAvailableInternetDelivery.FlatAppearance.BorderSize = 0;
-            chkAvailableInternetDelivery.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableInternetDelivery.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableInternetDelivery.ForeColor = SystemColors.ControlText;
-            chkAvailableInternetDelivery.Location = new Point(11, 174);
+            chkAvailableInternetDelivery.Location = new Point(16, 194);
             chkAvailableInternetDelivery.Name = "chkAvailableInternetDelivery";
-            chkAvailableInternetDelivery.Size = new Size(103, 17);
+            chkAvailableInternetDelivery.Size = new Size(131, 22);
             chkAvailableInternetDelivery.TabIndex = 3;
             chkAvailableInternetDelivery.Text = "Internet Delivery";
             chkAvailableInternetDelivery.UseVisualStyleBackColor = false;
@@ -681,11 +624,11 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableDelivery.AutoSize = true;
             chkAvailableDelivery.FlatAppearance.BorderSize = 0;
-            chkAvailableDelivery.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableDelivery.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableDelivery.ForeColor = SystemColors.ControlText;
-            chkAvailableDelivery.Location = new Point(11, 116);
+            chkAvailableDelivery.Location = new Point(16, 128);
             chkAvailableDelivery.Name = "chkAvailableDelivery";
-            chkAvailableDelivery.Size = new Size(64, 17);
+            chkAvailableDelivery.Size = new Size(79, 22);
             chkAvailableDelivery.TabIndex = 2;
             chkAvailableDelivery.Text = "Delivery";
             chkAvailableDelivery.UseVisualStyleBackColor = false;
@@ -695,12 +638,12 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableTakeAway.AutoSize = true;
             chkAvailableTakeAway.FlatAppearance.BorderSize = 0;
-            chkAvailableTakeAway.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableTakeAway.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableTakeAway.ForeColor = SystemColors.ControlText;
-            chkAvailableTakeAway.Location = new Point(11, 87);
+            chkAvailableTakeAway.Location = new Point(16, 95);
             chkAvailableTakeAway.Margin = new Padding(3, 3, 3, 1);
             chkAvailableTakeAway.Name = "chkAvailableTakeAway";
-            chkAvailableTakeAway.Size = new Size(80, 17);
+            chkAvailableTakeAway.Size = new Size(99, 22);
             chkAvailableTakeAway.TabIndex = 1;
             chkAvailableTakeAway.Text = "Take Away";
             chkAvailableTakeAway.UseVisualStyleBackColor = false;
@@ -710,13 +653,13 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableInHouse.AutoSize = true;
             chkAvailableInHouse.FlatAppearance.BorderSize = 0;
-            chkAvailableInHouse.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableInHouse.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableInHouse.ForeColor = SystemColors.ControlText;
-            chkAvailableInHouse.Location = new Point(11, 58);
+            chkAvailableInHouse.Location = new Point(16, 62);
             chkAvailableInHouse.Name = "chkAvailableInHouse";
-            chkAvailableInHouse.Size = new Size(58, 17);
+            chkAvailableInHouse.Size = new Size(62, 22);
             chkAvailableInHouse.TabIndex = 0;
-            chkAvailableInHouse.Text = "Tables";
+            chkAvailableInHouse.Text = "Sit IN";
             chkAvailableInHouse.UseVisualStyleBackColor = false;
             chkAvailableInHouse.CheckedChanged += chkAvailableOthers_CheckedChanged;
             // 
@@ -724,13 +667,13 @@ namespace DTRMSimpleBackOffice
             // 
             chkAvailableDirect.AutoSize = true;
             chkAvailableDirect.FlatAppearance.BorderSize = 0;
-            chkAvailableDirect.Font = new Font("Microsoft Sans Serif", 8.25F);
+            chkAvailableDirect.Font = new Font("Microsoft Sans Serif", 11F);
             chkAvailableDirect.ForeColor = SystemColors.ControlText;
-            chkAvailableDirect.Location = new Point(11, 29);
+            chkAvailableDirect.Location = new Point(16, 29);
             chkAvailableDirect.Name = "chkAvailableDirect";
-            chkAvailableDirect.Size = new Size(78, 17);
+            chkAvailableDirect.Size = new Size(56, 22);
             chkAvailableDirect.TabIndex = 5;
-            chkAvailableDirect.Text = "Direct Sale";
+            chkAvailableDirect.Text = "Sale";
             chkAvailableDirect.UseVisualStyleBackColor = false;
             chkAvailableDirect.CheckedChanged += chkAvailableOthers_CheckedChanged;
             // 
@@ -739,14 +682,14 @@ namespace DTRMSimpleBackOffice
             btnForeColor.BackColor = SystemColors.Control;
             btnForeColor.FlatAppearance.BorderSize = 0;
             btnForeColor.ForeColor = SystemColors.ControlText;
-            btnForeColor.Location = new Point(615, 157);
+            btnForeColor.Location = new Point(558, 190);
             btnForeColor.Margin = new Padding(1, 3, 3, 3);
             btnForeColor.Name = "btnForeColor";
-            btnForeColor.Size = new Size(82, 66);
+            btnForeColor.Size = new Size(82, 36);
             btnForeColor.TabIndex = 51;
             btnForeColor.TabStop = false;
             btnForeColor.Text = "Text Colour";
-            btnForeColor.UseVisualStyleBackColor = false;
+            btnForeColor.UseVisualStyleBackColor = true;
             btnForeColor.Click += btnForeColor_Click;
             // 
             // btnButtonColor
@@ -754,13 +697,13 @@ namespace DTRMSimpleBackOffice
             btnButtonColor.BackColor = SystemColors.Control;
             btnButtonColor.FlatAppearance.BorderSize = 0;
             btnButtonColor.ForeColor = SystemColors.ControlText;
-            btnButtonColor.Location = new Point(614, 80);
+            btnButtonColor.Location = new Point(464, 190);
             btnButtonColor.Name = "btnButtonColor";
-            btnButtonColor.Size = new Size(83, 66);
+            btnButtonColor.Size = new Size(83, 36);
             btnButtonColor.TabIndex = 2;
             btnButtonColor.TabStop = false;
             btnButtonColor.Text = "Back Colour";
-            btnButtonColor.UseVisualStyleBackColor = false;
+            btnButtonColor.UseVisualStyleBackColor = true;
             btnButtonColor.Click += btnButtonColor_Click;
             // 
             // btnUpdateButtonDetails
@@ -770,7 +713,7 @@ namespace DTRMSimpleBackOffice
             btnUpdateButtonDetails.FlatAppearance.BorderSize = 0;
             btnUpdateButtonDetails.Font = new Font("Arial", 9F, FontStyle.Bold);
             btnUpdateButtonDetails.ForeColor = SystemColors.ControlText;
-            btnUpdateButtonDetails.Location = new Point(591, 558);
+            btnUpdateButtonDetails.Location = new Point(586, 647);
             btnUpdateButtonDetails.Name = "btnUpdateButtonDetails";
             btnUpdateButtonDetails.Size = new Size(106, 50);
             btnUpdateButtonDetails.TabIndex = 2;
@@ -784,7 +727,7 @@ namespace DTRMSimpleBackOffice
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.Font = new Font("Arial", 9F, FontStyle.Bold);
             btnClose.ForeColor = SystemColors.ControlText;
-            btnClose.Location = new Point(467, 558);
+            btnClose.Location = new Point(462, 647);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(106, 50);
             btnClose.TabIndex = 9;
@@ -792,110 +735,84 @@ namespace DTRMSimpleBackOffice
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
             // 
-            // txtEntityButtonName
+            // txtCategoryItemName
             // 
-            txtEntityButtonName.Font = new Font("Microsoft Sans Serif", 11F);
-            txtEntityButtonName.Location = new Point(93, 19);
-            txtEntityButtonName.Name = "txtEntityButtonName";
-            txtEntityButtonName.Size = new Size(246, 24);
-            txtEntityButtonName.TabIndex = 83;
-            txtEntityButtonName.TextChanged += txtEntityButtonName_TextChanged;
-            // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(label1);
-            groupBox2.Controls.Add(txtDirectSaleTaxRate);
-            groupBox2.Controls.Add(txtInHouseTaxRate);
-            groupBox2.Controls.Add(btnSetTaxToDefault);
-            groupBox2.Controls.Add(label3);
-            groupBox2.Controls.Add(txtTakeAwayTaxRate);
-            groupBox2.Controls.Add(label6);
-            groupBox2.Controls.Add(txtDeliveryTaxRate);
-            groupBox2.Controls.Add(btnSetTaxToZero);
-            groupBox2.Controls.Add(label14);
-            groupBox2.Location = new Point(299, 60);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(286, 169);
-            groupBox2.TabIndex = 84;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Tax Percentages";
+            txtCategoryItemName.Font = new Font("Microsoft Sans Serif", 11F);
+            txtCategoryItemName.Location = new Point(176, 11);
+            txtCategoryItemName.Name = "txtCategoryItemName";
+            txtCategoryItemName.Size = new Size(246, 24);
+            txtCategoryItemName.TabIndex = 83;
+            txtCategoryItemName.TextChanged += txtEntityButtonName_TextChanged;
             // 
             // incWidth
             // 
-            incWidth.Font = new Font("Microsoft Sans Serif", 16F);
+            incWidth.Font = new Font("Microsoft Sans Serif", 11F);
             incWidth.Increment = 10;
-            incWidth.Location = new Point(468, 257);
+            incWidth.Location = new Point(176, 254);
             incWidth.MaxValue = 500;
             incWidth.MinValue = 20;
             incWidth.Name = "incWidth";
-            incWidth.Size = new Size(80, 32);
+            incWidth.Size = new Size(80, 24);
             incWidth.TabIndex = 85;
             incWidth.Text = "20";
-            incWidth.TextAlign = HorizontalAlignment.Right;
+            incWidth.TextAlign = HorizontalAlignment.Center;
             incWidth.Value = 20;
             incWidth.ValueChanged += txtButtonWidth_ValueChanged;
             // 
             // incHeight
             // 
-            incHeight.Font = new Font("Microsoft Sans Serif", 16F);
+            incHeight.Font = new Font("Microsoft Sans Serif", 11F);
             incHeight.Increment = 10;
-            incHeight.Location = new Point(617, 255);
+            incHeight.Location = new Point(176, 287);
             incHeight.MaxValue = 200;
             incHeight.MinValue = 20;
             incHeight.Name = "incHeight";
-            incHeight.Size = new Size(80, 32);
+            incHeight.Size = new Size(80, 24);
             incHeight.TabIndex = 86;
             incHeight.Text = "20";
-            incHeight.TextAlign = HorizontalAlignment.Right;
+            incHeight.TextAlign = HorizontalAlignment.Center;
             incHeight.Value = 20;
             incHeight.ValueChanged += txtButtonHeight_ValueChanged;
             // 
             // label16
             // 
             label16.AutoSize = true;
-            label16.Location = new Point(417, 266);
+            label16.Font = new Font("Microsoft Sans Serif", 11F);
+            label16.Location = new Point(31, 257);
             label16.Name = "label16";
-            label16.Size = new Size(44, 15);
+            label16.Size = new Size(93, 18);
             label16.TabIndex = 87;
-            label16.Text = "WIDTH";
+            label16.Text = "Button Width";
             // 
             // label17
             // 
             label17.AutoSize = true;
-            label17.Location = new Point(562, 265);
+            label17.Font = new Font("Microsoft Sans Serif", 11F);
+            label17.Location = new Point(31, 290);
             label17.Name = "label17";
-            label17.Size = new Size(49, 15);
+            label17.Size = new Size(97, 18);
             label17.TabIndex = 88;
-            label17.Text = "HEIGHT";
+            label17.Text = "Button Height";
             // 
             // txtImageFile
             // 
-            txtImageFile.BackColor = SystemColors.Window;
-            txtImageFile.Font = new Font("Microsoft Sans Serif", 10F);
-            txtImageFile.Location = new Point(47, 585);
+            txtImageFile.BackColor = Color.FromArgb(250, 250, 250);
+            txtImageFile.Font = new Font("Microsoft Sans Serif", 11F);
+            txtImageFile.Location = new Point(464, 149);
             txtImageFile.Name = "txtImageFile";
             txtImageFile.ReadOnly = true;
-            txtImageFile.Size = new Size(395, 23);
+            txtImageFile.Size = new Size(175, 24);
             txtImageFile.TabIndex = 89;
             txtImageFile.TextChanged += txtImageFile_TextChanged;
-            // 
-            // label18
-            // 
-            label18.AutoSize = true;
-            label18.Location = new Point(44, 569);
-            label18.Name = "label18";
-            label18.Size = new Size(96, 15);
-            label18.TabIndex = 91;
-            label18.Text = "Image File Name";
             // 
             // lblFont
             // 
             lblFont.AutoSize = true;
-            lblFont.Font = new Font("Microsoft Sans Serif", 8.25F);
+            lblFont.Font = new Font("Microsoft Sans Serif", 11F);
             lblFont.ForeColor = SystemColors.ControlText;
-            lblFont.Location = new Point(191, 290);
+            lblFont.Location = new Point(31, 393);
             lblFont.Name = "lblFont";
-            lblFont.Size = new Size(28, 13);
+            lblFont.Size = new Size(38, 18);
             lblFont.TabIndex = 94;
             lblFont.Text = "Font";
             // 
@@ -904,57 +821,58 @@ namespace DTRMSimpleBackOffice
             btnFont.BackColor = SystemColors.Control;
             btnFont.FlatAppearance.BorderSize = 0;
             btnFont.ForeColor = SystemColors.ControlText;
-            btnFont.Location = new Point(194, 306);
+            btnFont.Location = new Point(176, 388);
             btnFont.Name = "btnFont";
-            btnFont.Size = new Size(185, 30);
+            btnFont.Size = new Size(247, 30);
             btnFont.TabIndex = 95;
-            btnFont.UseVisualStyleBackColor = false;
+            btnFont.UseVisualStyleBackColor = true;
             btnFont.Click += btnFont_Click;
             // 
             // incDisplayOrder
             // 
-            incDisplayOrder.Font = new Font("Microsoft Sans Serif", 16F);
+            incDisplayOrder.Font = new Font("Microsoft Sans Serif", 11F);
             incDisplayOrder.Increment = 1;
-            incDisplayOrder.Location = new Point(467, 303);
+            incDisplayOrder.Location = new Point(176, 355);
             incDisplayOrder.MaxValue = 1000;
             incDisplayOrder.MinValue = 0;
             incDisplayOrder.Name = "incDisplayOrder";
-            incDisplayOrder.Size = new Size(80, 32);
+            incDisplayOrder.Size = new Size(80, 24);
             incDisplayOrder.TabIndex = 96;
             incDisplayOrder.Text = "0";
-            incDisplayOrder.TextAlign = HorizontalAlignment.Right;
+            incDisplayOrder.TextAlign = HorizontalAlignment.Center;
             incDisplayOrder.Value = 0;
             // 
             // label20
             // 
             label20.AutoSize = true;
-            label20.Location = new Point(408, 307);
+            label20.Font = new Font("Microsoft Sans Serif", 11F);
+            label20.Location = new Point(31, 358);
             label20.Name = "label20";
-            label20.Size = new Size(51, 30);
+            label20.Size = new Size(98, 18);
             label20.TabIndex = 97;
-            label20.Text = "DISPLAY\r\n ORDER";
+            label20.Text = "Display Order";
             // 
             // cmbDistributions
             // 
             cmbDistributions.DisplayMember = "DistributionName";
             cmbDistributions.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbDistributions.Font = new Font("Microsoft Sans Serif", 12F);
+            cmbDistributions.Font = new Font("Microsoft Sans Serif", 11F);
             cmbDistributions.FormattingEnabled = true;
-            cmbDistributions.Location = new Point(194, 361);
+            cmbDistributions.Location = new Point(176, 320);
             cmbDistributions.Name = "cmbDistributions";
-            cmbDistributions.Size = new Size(185, 28);
+            cmbDistributions.Size = new Size(247, 26);
             cmbDistributions.TabIndex = 100;
             cmbDistributions.ValueMember = "IID";
             // 
             // label21
             // 
             label21.AutoSize = true;
-            label21.Font = new Font("Microsoft Sans Serif", 8.25F);
+            label21.Font = new Font("Microsoft Sans Serif", 11F);
             label21.ForeColor = SystemColors.ControlText;
-            label21.Location = new Point(194, 344);
+            label21.Location = new Point(31, 323);
             label21.Margin = new Padding(3, 3, 3, 1);
             label21.Name = "label21";
-            label21.Size = new Size(59, 13);
+            label21.Size = new Size(82, 18);
             label21.TabIndex = 101;
             label21.Text = "Distribution";
             label21.TextAlign = ContentAlignment.MiddleCenter;
@@ -963,16 +881,17 @@ namespace DTRMSimpleBackOffice
             // 
             txtExtraText.AcceptsReturn = true;
             txtExtraText.AcceptsTab = true;
-            txtExtraText.Location = new Point(468, 500);
+            txtExtraText.Font = new Font("Microsoft Sans Serif", 11F);
+            txtExtraText.Location = new Point(262, 254);
             txtExtraText.Multiline = true;
             txtExtraText.Name = "txtExtraText";
-            txtExtraText.Size = new Size(229, 52);
+            txtExtraText.Size = new Size(161, 57);
             txtExtraText.TabIndex = 105;
             // 
             // btnDeletePrepImage
             // 
             btnDeletePrepImage.Image = Properties.Resources.Cancel;
-            btnDeletePrepImage.Location = new Point(386, 466);
+            btnDeletePrepImage.Location = new Point(591, 86);
             btnDeletePrepImage.Name = "btnDeletePrepImage";
             btnDeletePrepImage.Size = new Size(48, 48);
             btnDeletePrepImage.TabIndex = 104;
@@ -982,7 +901,7 @@ namespace DTRMSimpleBackOffice
             // btnLoadPrepImageFromDirectory
             // 
             btnLoadPrepImageFromDirectory.Image = Properties.Resources.FolderOpen_32;
-            btnLoadPrepImageFromDirectory.Location = new Point(386, 412);
+            btnLoadPrepImageFromDirectory.Location = new Point(592, 28);
             btnLoadPrepImageFromDirectory.Name = "btnLoadPrepImageFromDirectory";
             btnLoadPrepImageFromDirectory.Size = new Size(48, 48);
             btnLoadPrepImageFromDirectory.TabIndex = 103;
@@ -994,9 +913,9 @@ namespace DTRMSimpleBackOffice
             pBox.BackColor = Color.White;
             pBox.BackgroundImageLayout = ImageLayout.Zoom;
             pBox.BorderStyle = BorderStyle.FixedSingle;
-            pBox.Location = new Point(194, 412);
+            pBox.Location = new Point(464, 28);
             pBox.Name = "pBox";
-            pBox.Size = new Size(185, 168);
+            pBox.Size = new Size(122, 106);
             pBox.TabIndex = 102;
             pBox.TabStop = false;
             pBox.DoubleClick += pBox_DoubleClick;
@@ -1004,7 +923,7 @@ namespace DTRMSimpleBackOffice
             // btnLoadPrepImageFromDatabase
             // 
             btnLoadPrepImageFromDatabase.Image = Properties.Resources.DBSource32;
-            btnLoadPrepImageFromDatabase.Location = new Point(385, 532);
+            btnLoadPrepImageFromDatabase.Location = new Point(646, 28);
             btnLoadPrepImageFromDatabase.Name = "btnLoadPrepImageFromDatabase";
             btnLoadPrepImageFromDatabase.Size = new Size(48, 48);
             btnLoadPrepImageFromDatabase.TabIndex = 106;
@@ -1012,84 +931,63 @@ namespace DTRMSimpleBackOffice
             btnLoadPrepImageFromDatabase.UseVisualStyleBackColor = true;
             btnLoadPrepImageFromDatabase.Click += btnLoadPrepImageFromDatabase_Click;
             // 
-            // chkWithImage
-            // 
-            chkWithImage.AutoSize = true;
-            chkWithImage.Location = new Point(49, 508);
-            chkWithImage.Name = "chkWithImage";
-            chkWithImage.Size = new Size(100, 19);
-            chkWithImage.TabIndex = 107;
-            chkWithImage.Text = "Display Image";
-            chkWithImage.UseVisualStyleBackColor = true;
-            chkWithImage.CheckedChanged += chkWithImage_CheckedChanged;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.ImeMode = ImeMode.NoControl;
-            label10.Location = new Point(194, 395);
-            label10.Name = "label10";
-            label10.Size = new Size(167, 15);
-            label10.TabIndex = 114;
-            label10.Text = "W : 300px H : 600px | 300K max";
-            // 
             // lblImageSize
             // 
             lblImageSize.AutoSize = true;
-            lblImageSize.Location = new Point(363, 397);
+            lblImageSize.Location = new Point(464, 10);
             lblImageSize.Name = "lblImageSize";
             lblImageSize.Size = new Size(30, 15);
             lblImageSize.TabIndex = 115;
             lblImageSize.Text = "0 KB";
             // 
-            // cmbItemStyle
+            // cmbButtonDisplayStyle
             // 
-            cmbItemStyle.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbItemStyle.Font = new Font("Microsoft Sans Serif", 11F);
-            cmbItemStyle.FormattingEnabled = true;
-            cmbItemStyle.Items.AddRange(new object[] { "Text", "Image", "TextAndImage" });
-            cmbItemStyle.Location = new Point(562, 321);
-            cmbItemStyle.Name = "cmbItemStyle";
-            cmbItemStyle.Size = new Size(143, 26);
-            cmbItemStyle.TabIndex = 116;
-            cmbItemStyle.SelectionChangeCommitted += cmbItemStyle_SelectionChangeCommitted;
+            cmbButtonDisplayStyle.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbButtonDisplayStyle.Font = new Font("Microsoft Sans Serif", 11F);
+            cmbButtonDisplayStyle.FormattingEnabled = true;
+            cmbButtonDisplayStyle.Location = new Point(176, 79);
+            cmbButtonDisplayStyle.Name = "cmbButtonDisplayStyle";
+            cmbButtonDisplayStyle.Size = new Size(247, 26);
+            cmbButtonDisplayStyle.TabIndex = 116;
+            cmbButtonDisplayStyle.SelectionChangeCommitted += cmbButtonDisplayStyle_SelectionChangeCommitted;
             // 
-            // cmbImagePosition
+            // cmbImageAlign
             // 
-            cmbImagePosition.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbImagePosition.Font = new Font("Microsoft Sans Serif", 11F);
-            cmbImagePosition.FormattingEnabled = true;
-            cmbImagePosition.Items.AddRange(new object[] { "Left", "Center", "Right" });
-            cmbImagePosition.Location = new Point(562, 376);
-            cmbImagePosition.Name = "cmbImagePosition";
-            cmbImagePosition.Size = new Size(143, 26);
-            cmbImagePosition.TabIndex = 117;
-            cmbImagePosition.SelectionChangeCommitted += cmbImagePosition_SelectionChangeCommitted;
+            cmbImageAlign.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbImageAlign.Font = new Font("Microsoft Sans Serif", 11F);
+            cmbImageAlign.FormattingEnabled = true;
+            cmbImageAlign.Location = new Point(176, 114);
+            cmbImageAlign.Name = "cmbImageAlign";
+            cmbImageAlign.Size = new Size(246, 26);
+            cmbImageAlign.TabIndex = 117;
+            cmbImageAlign.SelectionChangeCommitted += cmbImageAlign_SelectionChangeCommitted;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(562, 304);
+            label11.Font = new Font("Microsoft Sans Serif", 11F);
+            label11.Location = new Point(31, 82);
             label11.Name = "label11";
-            label11.Size = new Size(59, 15);
+            label11.Size = new Size(87, 18);
             label11.TabIndex = 118;
-            label11.Text = "Item Style";
+            label11.Text = "Button Style";
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(562, 358);
+            label12.Font = new Font("Microsoft Sans Serif", 11F);
+            label12.Location = new Point(31, 117);
             label12.Name = "label12";
-            label12.Size = new Size(86, 15);
+            label12.Size = new Size(83, 18);
             label12.TabIndex = 119;
-            label12.Text = "Image Position";
+            label12.Text = "Image Align";
             // 
             // toolStrip1
             // 
             toolStrip1.Dock = DockStyle.None;
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip1.Items.AddRange(new ToolStripItem[] { btnSample });
-            toolStrip1.Location = new Point(468, 414);
+            toolStrip1.Location = new Point(464, 235);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(103, 56);
             toolStrip1.TabIndex = 120;
@@ -1103,20 +1001,67 @@ namespace DTRMSimpleBackOffice
             btnSample.Name = "btnSample";
             btnSample.Size = new Size(100, 53);
             btnSample.Text = "Sample";
+            btnSample.Paint += btnSample_Paint;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Microsoft Sans Serif", 11F);
+            label1.Location = new Point(31, 152);
+            label1.Name = "label1";
+            label1.Size = new Size(71, 18);
+            label1.TabIndex = 122;
+            label1.Text = "Text Align";
+            // 
+            // cmbTextAlign
+            // 
+            cmbTextAlign.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTextAlign.Font = new Font("Microsoft Sans Serif", 11F);
+            cmbTextAlign.FormattingEnabled = true;
+            cmbTextAlign.Location = new Point(176, 149);
+            cmbTextAlign.Name = "cmbTextAlign";
+            cmbTextAlign.Size = new Size(246, 26);
+            cmbTextAlign.TabIndex = 121;
+            cmbTextAlign.SelectionChangeCommitted += cmbTextAlign_SelectionChangeCommitted;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Microsoft Sans Serif", 11F);
+            label3.Location = new Point(31, 187);
+            label3.Name = "label3";
+            label3.Size = new Size(138, 18);
+            label3.TabIndex = 124;
+            label3.Text = "Text Image Relation";
+            // 
+            // cmbTextImageRelation
+            // 
+            cmbTextImageRelation.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTextImageRelation.Font = new Font("Microsoft Sans Serif", 11F);
+            cmbTextImageRelation.FormattingEnabled = true;
+            cmbTextImageRelation.Location = new Point(177, 184);
+            cmbTextImageRelation.Name = "cmbTextImageRelation";
+            cmbTextImageRelation.Size = new Size(246, 26);
+            cmbTextImageRelation.TabIndex = 123;
+            cmbTextImageRelation.SelectionChangeCommitted += cmbTextImageRelation_SelectionChangeCommitted;
             // 
             // frmCategoryItemUpsert
             // 
             BackColor = SystemColors.Control;
-            ClientSize = new Size(974, 626);
+            ClientSize = new Size(725, 718);
             ControlBox = false;
+            Controls.Add(label3);
+            Controls.Add(cmbTextImageRelation);
+            Controls.Add(label1);
+            Controls.Add(cmbTextAlign);
             Controls.Add(toolStrip1);
+            Controls.Add(btnSetTaxToDefault);
             Controls.Add(label12);
             Controls.Add(label11);
-            Controls.Add(cmbImagePosition);
-            Controls.Add(cmbItemStyle);
+            Controls.Add(cmbImageAlign);
+            Controls.Add(cmbButtonDisplayStyle);
+            Controls.Add(btnSetTaxToZero);
             Controls.Add(lblImageSize);
-            Controls.Add(label10);
-            Controls.Add(chkWithImage);
             Controls.Add(btnLoadPrepImageFromDatabase);
             Controls.Add(txtExtraText);
             Controls.Add(btnDeletePrepImage);
@@ -1128,14 +1073,12 @@ namespace DTRMSimpleBackOffice
             Controls.Add(incDisplayOrder);
             Controls.Add(lblFont);
             Controls.Add(btnFont);
-            Controls.Add(label18);
             Controls.Add(txtImageFile);
             Controls.Add(label17);
             Controls.Add(label16);
             Controls.Add(incHeight);
             Controls.Add(incWidth);
-            Controls.Add(groupBox2);
-            Controls.Add(txtEntityButtonName);
+            Controls.Add(txtCategoryItemName);
             Controls.Add(groupBox3);
             Controls.Add(label2);
             Controls.Add(cmbButtonType);
@@ -1151,14 +1094,12 @@ namespace DTRMSimpleBackOffice
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "frmCategoryItemUpsert";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "CATEGORY ITEM";
+            Text = "CATEGORY ITEM DETAILS";
             Load += frmEntityButtonsEditor_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pBox).EndInit();
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
@@ -1170,7 +1111,12 @@ namespace DTRMSimpleBackOffice
 
         private async void frmEntityButtonsEditor_Load(object sender, System.EventArgs e)
         {
+            cmbButtonDisplayStyle.DataSource = Enum.GetValues(typeof(ButtonDisplayStyles));
+            cmbImageAlign.DataSource = Enum.GetValues(typeof(ContentAlignmentX));
+            cmbTextAlign.DataSource = Enum.GetValues(typeof(ContentAlignmentX));
+            cmbTextImageRelation.DataSource = Enum.GetValues(typeof(TextImageRelationX));
 
+            currentShop = await repoShop.GetFirst();
 
             if (!CategoryIID.IsNullOrEmpty())
             {
@@ -1223,15 +1169,15 @@ namespace DTRMSimpleBackOffice
                 //if (parentEntityButton != null)    //This is a subbutton editor
                 //Make sure all the sub buttons of this categoryItem have a priceitem for each sizebarbutton and correctly ordered
                 //parentEntityButton.SyncronizePriceItems();
-                CultureInfo ci = bslayer.GetUICulture();
+                CultureInfo ci = UF.GetCulture(config.Terminal_Currency_Culture);
 
-                txtEntityButtonName.Text = categoryItem.ItemName;
+                txtCategoryItemName.Text = categoryItem.ItemName;
                 btnButtonColor.BackColor = Color.FromArgb(categoryItem.BgColor);
                 btnForeColor.BackColor = Color.FromArgb(categoryItem.FgColor);
                 cmbButtonType.SelectedIndex = (int)categoryItem.ButtonType;
 
 
-                txtDirectSaleTaxRate.CustomUICulture = txtInHouseTaxRate.CustomUICulture = txtTakeAwayTaxRate.CustomUICulture = txtDeliveryTaxRate.CustomUICulture = bslayer.GetUICulture().ToString();
+                txtDirectSaleTaxRate.CustomUICulture = txtInHouseTaxRate.CustomUICulture = txtTakeAwayTaxRate.CustomUICulture = txtDeliveryTaxRate.CustomUICulture = UF.GetCulture(config.Terminal_Currency_Culture).ToString();
                 txtDirectSaleTaxRate.Value = categoryItem.SaleTax; //.ToString("f2",CultureInfo.CurrentUICulture);
                 txtInHouseTaxRate.Value = categoryItem.SitinTax; //.ToString("f2", CultureInfo.CurrentUICulture);
                 txtTakeAwayTaxRate.Value = categoryItem.TaTax; //.ToString("f2", CultureInfo.CurrentUICulture);
@@ -1263,7 +1209,7 @@ namespace DTRMSimpleBackOffice
                 try
                 {
 
-                    txtDirectSalePrice.CustomUICulture = txtInHousePrice.CustomUICulture = txtTakeAwayPrice.CustomUICulture = txtDeliveryPrice.CustomUICulture = bslayer.GetUICulture().ToString();
+                    txtDirectSalePrice.CustomUICulture = txtInHousePrice.CustomUICulture = txtTakeAwayPrice.CustomUICulture = txtDeliveryPrice.CustomUICulture = UF.GetCulture(config.Terminal_Currency_Culture).ToString();
                     txtDirectSalePrice.Value = categoryItem.SalePrice;
                     txtInHousePrice.Value = categoryItem.SitinPrice;
                     txtTakeAwayPrice.Value = categoryItem.TaPrice;
@@ -1295,17 +1241,18 @@ namespace DTRMSimpleBackOffice
 
                 incWidth.Value = categoryItem.Width;
                 incHeight.Value = categoryItem.Height;
-                chkWithImage.Checked = categoryItem.WithImage;
 
-                cmbItemStyle.SelectedIndex = (int)categoryItem.ItemStyle;
-                cmbImagePosition.SelectedIndex = (int)categoryItem.ImagePosition;
+                cmbButtonDisplayStyle.SelectedItem = categoryItem.ButtonDisplayStyle;
+                cmbImageAlign.SelectedItem = categoryItem.ImageAlign;
+                cmbTextAlign.SelectedItem = categoryItem.TextAlign;
+                cmbTextImageRelation.SelectedItem = categoryItem.TextImageRelation;
 
                 btnFont.Text = categoryItem.FFamily + "," + categoryItem.FSize.ToString() + "," + categoryItem.FStyle;
                 incDisplayOrder.Value = categoryItem.DOrder;
 
                 await LoadGenericImage();
 
-                DisplayButton();
+                DisplaySample();
 
             }
         }
@@ -1330,7 +1277,7 @@ namespace DTRMSimpleBackOffice
 
         private void UnloadButtonDetails()
         {
-            txtEntityButtonName.Clear();
+            txtCategoryItemName.Clear();
             btnButtonColor.BackColor = SystemColors.Control;
             btnForeColor.BackColor = Color.Transparent;
             cmbButtonType.SelectedIndex = -1;
@@ -1349,7 +1296,6 @@ namespace DTRMSimpleBackOffice
             incDisplayOrder.Value = 0;
 
             cmbPadFlag.SelectedIndex = 0;
-            chkWithImage.Checked = false;
         }
 
 
@@ -1362,7 +1308,7 @@ namespace DTRMSimpleBackOffice
 
         private async void btnUpdateButtonDetails_Click(object sender, System.EventArgs e)
         {
-            CultureInfo ci = bslayer.GetCulture(config.Terminal_Currency_Culture);
+            CultureInfo ci = UF.GetCulture(config.Terminal_Currency_Culture);
             if (categoryItem != null)
             {
 
@@ -1376,7 +1322,7 @@ namespace DTRMSimpleBackOffice
                 categoryItem.DPrice = (double)txtDeliveryPrice.Value; // double.Parse(txtDeliveryPrice.Text, CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci); //AllowCurrencySymbol | System.Globalization.NumberStyles.AllowDecimalPoint);					 
 
 
-                categoryItem.ItemName = txtEntityButtonName.Text;
+                categoryItem.ItemName = txtCategoryItemName.Text;
 
                 categoryItem.BgColor = btnButtonColor.BackColor.ToArgb();
                 categoryItem.FgColor = btnForeColor.BackColor.ToArgb();
@@ -1427,18 +1373,17 @@ namespace DTRMSimpleBackOffice
                 categoryItem.Width = incWidth.Value;
                 categoryItem.Height = incHeight.Value;
 
-                //categoryItem.ImageFileName = txtImageFile.Text;
                 categoryItem.DOrder = (int)incDisplayOrder.Value;
 
-                categoryItem.WithImage = chkWithImage.Checked;
-                categoryItem.ItemStyle = (ButtonStyleTypes)cmbItemStyle.SelectedIndex;
-                categoryItem.ImagePosition = (ImagePositionTypes)cmbImagePosition.SelectedIndex;
+                categoryItem.ButtonDisplayStyle = (ButtonDisplayStyles)cmbButtonDisplayStyle.SelectedItem;
+                categoryItem.ImageAlign = (ContentAlignmentX)cmbImageAlign.SelectedItem;
+                categoryItem.TextAlign = (ContentAlignmentX)cmbTextAlign.SelectedItem;
+                categoryItem.TextImageRelation = (TextImageRelationX)cmbTextImageRelation.SelectedItem;
 
                 await repoCategoryItem.Save(categoryItem);
 
-                if (pBox.BackgroundImage != null)
+                if ((categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.Image || categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText) && pBox.BackgroundImage != null)
                 {
-                    ;
                     byte[] imgBytes = UFWin.ReSizeImageTo(pBox.BackgroundImage, 200, 200, true).ToByteArray();
 
                     GenericImage gim = new GenericImage()
@@ -1491,7 +1436,7 @@ namespace DTRMSimpleBackOffice
                     ResetAndLockForSpaceButton();
                     break;
             }
-            txtEntityButtonName.Enabled = true;
+            txtCategoryItemName.Enabled = true;
         }
 
         private void ResetAndLockForSpaceButton()
@@ -1501,22 +1446,6 @@ namespace DTRMSimpleBackOffice
 
         }
 
-
-
-        private void btnInHouseOthersSame_Click(object sender, System.EventArgs e)
-        {
-            txtTakeAwayPrice.Value = txtDeliveryPrice.Value = txtDirectSalePrice.Value = txtInHousePrice.Value;
-        }
-
-        private void btnTakeAwayOthersSame_Click(object sender, System.EventArgs e)
-        {
-            txtDeliveryPrice.Value = txtDirectSalePrice.Value = txtInHousePrice.Value = txtTakeAwayPrice.Value;
-        }
-
-        private void btnDeliveryOthersSame_Click(object sender, System.EventArgs e)
-        {
-            txtDirectSalePrice.Value = txtInHousePrice.Value = txtTakeAwayPrice.Value = txtDeliveryPrice.Value;
-        }
 
         private void chkAvailableAll_CheckedChanged(object sender, System.EventArgs e)
         {
@@ -1593,43 +1522,49 @@ namespace DTRMSimpleBackOffice
 
         private async void btnSetTaxToDefault_Click(object sender, EventArgs e)
         {
-            txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = bslayer.shop.DefaultTaxRate;
+            txtDirectSaleTaxRate.Value = txtInHouseTaxRate.Value = txtTakeAwayTaxRate.Value = txtDeliveryTaxRate.Value = currentShop.DefaultTaxRate;
         }
-
-
 
         private void btnButtonColor_Click(object sender, System.EventArgs e)
         {
+            Button btn = sender as Button;
             ColorDialog cdlg = new ColorDialog
             {
-                Color = ((Button)sender).BackColor
+                Color = btn.BackColor
             };
             cdlg.ShowDialog();
-            ((Button)sender).BackColor = cdlg.Color;
-            btnSample.BackColor = btnButtonColor.BackColor;
+            btn.BackColor = cdlg.Color;
+
+            categoryItem.BgColor = btnButtonColor.BackColor.ToArgb();
+            DisplaySample();
         }
         private void btnForeColor_Click(object sender, System.EventArgs e)
         {
+            Button btn = sender as Button;
             ColorDialog cdlg = new ColorDialog();
-            cdlg.Color = ((Button)sender).BackColor;
+            cdlg.Color = btn.BackColor;
             cdlg.ShowDialog();
-            ((Button)sender).BackColor = cdlg.Color;
-            btnSample.ForeColor = btnForeColor.BackColor;
+            btn.BackColor = cdlg.Color;
+            categoryItem.FgColor = btnForeColor.BackColor.ToArgb();
+            DisplaySample();
         }
 
         private void txtEntityButtonName_TextChanged(object sender, EventArgs e)
         {
-            btnSample.Text = txtEntityButtonName.Text;
+            categoryItem.ItemName = txtCategoryItemName.Text;
+            DisplaySample();
         }
 
         private void txtButtonWidth_ValueChanged(object sender, EventArgs e)
         {
-            btnSample.Width = incWidth.Value;
+           categoryItem.Width = incWidth.Value;
+            DisplaySample();
         }
 
         private void txtButtonHeight_ValueChanged(object sender, EventArgs e)
         {
-            btnSample.Height = incHeight.Value;
+            categoryItem.Height = incHeight.Value;
+            DisplaySample();
         }
 
         private void txtImageFile_TextChanged(object sender, EventArgs e)
@@ -1641,25 +1576,37 @@ namespace DTRMSimpleBackOffice
             } catch { }
         }
 
-        private async void DisplayButton()
+        private async void DisplaySample()
         {
             btnSample.Width = categoryItem.Width;
+            btnSample.Height = categoryItem.Height;
             btnSample.Text = categoryItem.ItemName;
-            btnSample.Font = new Font(category.FFamily, (float)categoryItem.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), category.FStyle));
+            btnSample.Font = new Font(categoryItem.FFamily, (float)categoryItem.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), categoryItem.FStyle));
             btnSample.BackColor = Color.FromArgb(categoryItem.BgColor);
             btnSample.ForeColor = Color.FromArgb(categoryItem.FgColor);
-            if (categoryItem.WithImage)
+
+            btnSample.DisplayStyle = (ToolStripItemDisplayStyle)categoryItem.ButtonDisplayStyle;
+            btnSample.TextAlign = (ContentAlignment)categoryItem.TextAlign;
+            btnSample.ImageAlign = (ContentAlignment)categoryItem.ImageAlign;
+            btnSample.TextImageRelation = (TextImageRelation)categoryItem.TextImageRelation;
+
+            if (categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.Image || categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
             {
                 if (gim != null && gim.DisplayImage != null)
                 {
                     Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);
                     btnSample.Image = UFWin.ReSizeImageTo(btnImage, btnSample.Height - 5, btnSample.Height - 5);
                     btnSample.ImageScaling = ToolStripItemImageScaling.None;
-                    btnSample.DisplayStyle = UFWin.GetToolStripItemDisplayStyle((ButtonStyleTypes)cmbItemStyle.SelectedIndex);
-                    btnSample.ImageAlign = UFWin.GetContentAlignment((ImagePositionTypes)cmbImagePosition.SelectedIndex);
                     btnSample.Invalidate();
                 }
             }
+        }
+        private void btnSample_Paint(object sender, PaintEventArgs e)
+        {
+            ToolStripButton btn = (ToolStripButton)sender;
+            // Draw a solid red border around the button's content area
+            ControlPaint.DrawBorder(e.Graphics, btn.ContentRectangle,
+                Color.Red, ButtonBorderStyle.Solid);
         }
 
         private void btnFont_Click(object sender, EventArgs e)
@@ -1704,7 +1651,7 @@ namespace DTRMSimpleBackOffice
                     ImageSizeinKB = imgArray?.Length / 1024 ?? 0,
                 };
 
-                DisplayButton();
+                DisplaySample();
             }
         }
 
@@ -1723,22 +1670,22 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private void chkWithImage_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkWithImage.Checked)
-            {
-                if (gim != null && gim.DisplayImage != null)
-                {
-                    try
-                    {
-                        btnSample.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
-                    } catch { }
-                }
-            } else
-            {
-                btnSample.Image = null;
-            }
-        }
+        //private void chkWithImage_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if (chkWithImage.Checked)
+        //    {
+        //        if (gim != null && gim.DisplayImage != null)
+        //        {
+        //            try
+        //            {
+        //                btnSample.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
+        //            } catch { }
+        //        }
+        //    } else
+        //    {
+        //        btnSample.Image = null;
+        //    }
+        //}
 
 
 
@@ -1751,16 +1698,28 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private void cmbItemStyle_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmbButtonDisplayStyle_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            DisplayButton();
-           // btnSample.DisplayStyle = UFWin.GetToolStripItemDisplayStyle(cmbItemStyle.sel);
+              categoryItem.ButtonDisplayStyle = (ButtonDisplayStyles)cmbButtonDisplayStyle.SelectedItem;
+            DisplaySample();
         }
 
-        private void cmbImagePosition_SelectionChangeCommitted(object sender, EventArgs e)
+        private void cmbImageAlign_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            DisplayButton();
-           // btnSample.ImageAlign = UFWin.GetContentAlignment(categoryItem.ImagePosition);
+            categoryItem.ImageAlign = (ContentAlignmentX)cmbImageAlign.SelectedItem;
+            DisplaySample();
+        }
+
+        private void cmbTextAlign_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            categoryItem.TextAlign = (ContentAlignmentX)cmbTextAlign.SelectedItem;
+            DisplaySample();
+        }
+
+        private void cmbTextImageRelation_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            categoryItem.TextImageRelation = (TextImageRelationX)cmbTextImageRelation.SelectedItem;
+            DisplaySample();
         }
     }
 }

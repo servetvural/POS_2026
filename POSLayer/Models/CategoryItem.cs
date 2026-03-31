@@ -37,17 +37,23 @@ public partial class CategoryItem : BaseClass
     public double TaPrice { get; set; }
     public double DPrice { get; set; }
 
-    public int Width { get; set; } = 50;
+    public int Width { get; set; } = 150;
     public int Height { get; set; } = 50;
     public string FFamily { get; set; } = "Arial";
     public double FSize { get; set; } = 10;
     public string FStyle { get; set; } = "Regular";
 
     public string Font => FFamily + ", " + FStyle + ", " + FSize;
-    public bool WithImage { get; set; }
 
-    public ButtonStyleTypes ItemStyle { get; set; }    // { Text, Image, TextAndImage }
-    public ImagePositionTypes ImagePosition { get; set; } // { Left, Center, Right }
+
+    public ButtonDisplayStyles ButtonDisplayStyle { get; set; } = ButtonDisplayStyles.Text;
+    public ContentAlignmentX TextAlign { get; set; } = ContentAlignmentX.MiddleCenter;
+    public TextImageRelationX TextImageRelation { get; set; } = TextImageRelationX.ImageBeforeText;
+    public ContentAlignmentX ImageAlign { get; set; } = ContentAlignmentX.MiddleCenter;
+
+
+    //public ButtonStyleTypes ItemStyle { get; set; }    // { Text, Image, TextAndImage }
+    //public ImagePositionTypes ImagePosition { get; set; } // { Left, Center, Right }
 
     public CategoryItem Clone()
     {
@@ -83,8 +89,10 @@ public partial class CategoryItem : BaseClass
             FSize = FSize,
             FStyle = FStyle,
 
-            ItemStyle = ItemStyle,
-            ImagePosition = ImagePosition,
+            ButtonDisplayStyle = ButtonDisplayStyle,
+            TextAlign = TextAlign,
+            TextImageRelation = TextImageRelation,
+            ImageAlign = ImageAlign
         };
 
         return eb;

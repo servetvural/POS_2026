@@ -304,35 +304,35 @@ public static class UFWin
 
     //}
 
-    public static ContentAlignment GetContentAlignment(ImagePositionTypes imgPosition)
-    {
-        switch (imgPosition)
-        {
-            case ImagePositionTypes.Left:
-                return ContentAlignment.MiddleLeft;
-            case ImagePositionTypes.Center:
-                return ContentAlignment.MiddleCenter;
-            case ImagePositionTypes.Right:
-                return ContentAlignment.MiddleRight;
-            default:
-                return ContentAlignment.MiddleCenter;
-        }
-    }
+    //public static ContentAlignment GetContentAlignment(ImagePositionTypes imgPosition)
+    //{
+    //    switch (imgPosition)
+    //    {
+    //        case ImagePositionTypes.Left:
+    //            return ContentAlignment.MiddleLeft;
+    //        case ImagePositionTypes.Center:
+    //            return ContentAlignment.MiddleCenter;
+    //        case ImagePositionTypes.Right:
+    //            return ContentAlignment.MiddleRight;
+    //        default:
+    //            return ContentAlignment.MiddleCenter;
+    //    }
+    //}
 
-    public static ToolStripItemDisplayStyle GetToolStripItemDisplayStyle(ButtonStyleTypes itemStyle)
-    {
-        switch (itemStyle)
-        {
-            case ButtonStyleTypes.Text:
-                return ToolStripItemDisplayStyle.Text;
-            case ButtonStyleTypes.Image:
-                return ToolStripItemDisplayStyle.Image;
-            case ButtonStyleTypes.TextAndImage:
-                return ToolStripItemDisplayStyle.ImageAndText;
-            default:
-                return ToolStripItemDisplayStyle.Text;                   
-        }
-    }
+    //public static ToolStripItemDisplayStyle GetToolStripItemDisplayStyle(ButtonStyleTypes itemStyle)
+    //{
+    //    switch (itemStyle)
+    //    {
+    //        case ButtonStyleTypes.Text:
+    //            return ToolStripItemDisplayStyle.Text;
+    //        case ButtonStyleTypes.Image:
+    //            return ToolStripItemDisplayStyle.Image;
+    //        case ButtonStyleTypes.TextAndImage:
+    //            return ToolStripItemDisplayStyle.ImageAndText;
+    //        default:
+    //            return ToolStripItemDisplayStyle.Text;                   
+    //    }
+    //}
 
 
     public static System.Drawing.Image ReSizeImageTo(System.Drawing.Image imgPhoto, int Width, int Height, bool KeepAspectRatio = true)

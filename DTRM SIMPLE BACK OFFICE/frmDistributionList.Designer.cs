@@ -31,6 +31,11 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDistributionList));
             dgv = new System.Windows.Forms.DataGridView();
+            iIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            FlatPrinterList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            MenuNameReadOnly = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             distributionBindingSource = new System.Windows.Forms.BindingSource(components);
             distributionViewBindingSource = new System.Windows.Forms.BindingSource(components);
             globalTypeViewBindingSource = new System.Windows.Forms.BindingSource(components);
@@ -46,16 +51,16 @@ namespace DTRMSimpleBackOffice {
             tsSort = new System.Windows.Forms.ToolStripButton();
             tsMoveUp = new System.Windows.Forms.ToolStripButton();
             tsMoveDown = new System.Windows.Forms.ToolStripButton();
-            iIDDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            DistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            FlatPrinterList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            MenuNameReadOnly = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            panel1 = new System.Windows.Forms.Panel();
+            chkAllMenus = new System.Windows.Forms.CheckBox();
+            label1 = new System.Windows.Forms.Label();
+            cmbMenu = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             ((System.ComponentModel.ISupportInitialize)distributionBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)distributionViewBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)globalTypeViewBindingSource).BeginInit();
             barMain.SuspendLayout();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // dgv
@@ -77,17 +82,59 @@ namespace DTRMSimpleBackOffice {
             dgv.DefaultCellStyle = dataGridViewCellStyle2;
             dgv.Dock = System.Windows.Forms.DockStyle.Fill;
             dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
-            dgv.Location = new System.Drawing.Point(0, 54);
+            dgv.Location = new System.Drawing.Point(0, 109);
             dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             dgv.MultiSelect = false;
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 25;
             dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(1147, 645);
+            dgv.Size = new System.Drawing.Size(1147, 590);
             dgv.TabIndex = 0;
             dgv.CellDoubleClick += dgv_CellDoubleClick;
             dgv.CellPainting += dgv_CellPainting;
+            // 
+            // iIDDataGridViewTextBoxColumn
+            // 
+            iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
+            iIDDataGridViewTextBoxColumn.HeaderText = "IID";
+            iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
+            iIDDataGridViewTextBoxColumn.ReadOnly = true;
+            iIDDataGridViewTextBoxColumn.Visible = false;
+            // 
+            // DistributionName
+            // 
+            DistributionName.DataPropertyName = "DistributionName";
+            DistributionName.HeaderText = "Distribution Name";
+            DistributionName.Name = "DistributionName";
+            DistributionName.ReadOnly = true;
+            DistributionName.Width = 200;
+            // 
+            // FlatPrinterList
+            // 
+            FlatPrinterList.DataPropertyName = "FlatPrinterList";
+            FlatPrinterList.HeaderText = "Assigned Printers";
+            FlatPrinterList.Name = "FlatPrinterList";
+            FlatPrinterList.ReadOnly = true;
+            FlatPrinterList.Width = 600;
+            // 
+            // MenuNameReadOnly
+            // 
+            MenuNameReadOnly.DataPropertyName = "MenuNameReadOnly";
+            MenuNameReadOnly.HeaderText = "Menu";
+            MenuNameReadOnly.Name = "MenuNameReadOnly";
+            MenuNameReadOnly.ReadOnly = true;
+            MenuNameReadOnly.Width = 200;
+            // 
+            // DOrder
+            // 
+            DOrder.DataPropertyName = "DOrder";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            DOrder.DefaultCellStyle = dataGridViewCellStyle1;
+            DOrder.HeaderText = "DOrder";
+            DOrder.Name = "DOrder";
+            DOrder.ReadOnly = true;
+            DOrder.Width = 70;
             // 
             // distributionBindingSource
             // 
@@ -242,47 +289,53 @@ namespace DTRMSimpleBackOffice {
             tsMoveDown.Text = "toolStripButton1";
             tsMoveDown.Click += tsMoveDown_Click;
             // 
-            // iIDDataGridViewTextBoxColumn
+            // panel1
             // 
-            iIDDataGridViewTextBoxColumn.DataPropertyName = "IID";
-            iIDDataGridViewTextBoxColumn.HeaderText = "IID";
-            iIDDataGridViewTextBoxColumn.Name = "iIDDataGridViewTextBoxColumn";
-            iIDDataGridViewTextBoxColumn.ReadOnly = true;
-            iIDDataGridViewTextBoxColumn.Visible = false;
+            panel1.BackColor = System.Drawing.SystemColors.Window;
+            panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panel1.Controls.Add(chkAllMenus);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(cmbMenu);
+            panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(0, 54);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(1147, 55);
+            panel1.TabIndex = 46;
             // 
-            // DistributionName
+            // chkAllMenus
             // 
-            DistributionName.DataPropertyName = "DistributionName";
-            DistributionName.HeaderText = "Distribution Name";
-            DistributionName.Name = "DistributionName";
-            DistributionName.ReadOnly = true;
-            DistributionName.Width = 200;
+            chkAllMenus.AutoSize = true;
+            chkAllMenus.Font = new System.Drawing.Font("Segoe UI", 11F);
+            chkAllMenus.Location = new System.Drawing.Point(467, 15);
+            chkAllMenus.Name = "chkAllMenus";
+            chkAllMenus.Size = new System.Drawing.Size(93, 24);
+            chkAllMenus.TabIndex = 2;
+            chkAllMenus.Text = "All Menus";
+            chkAllMenus.UseVisualStyleBackColor = true;
+            chkAllMenus.CheckedChanged += chkAllMenus_CheckedChanged;
             // 
-            // FlatPrinterList
+            // label1
             // 
-            FlatPrinterList.DataPropertyName = "FlatPrinterList";
-            FlatPrinterList.HeaderText = "Assigned Printers";
-            FlatPrinterList.Name = "FlatPrinterList";
-            FlatPrinterList.ReadOnly = true;
-            FlatPrinterList.Width = 600;
+            label1.AutoSize = true;
+            label1.Font = new System.Drawing.Font("Segoe UI", 11F);
+            label1.Location = new System.Drawing.Point(12, 15);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(46, 20);
+            label1.TabIndex = 1;
+            label1.Text = "Menu";
             // 
-            // MenuNameReadOnly
+            // cmbMenu
             // 
-            MenuNameReadOnly.DataPropertyName = "MenuNameReadOnly";
-            MenuNameReadOnly.HeaderText = "Menu";
-            MenuNameReadOnly.Name = "MenuNameReadOnly";
-            MenuNameReadOnly.ReadOnly = true;
-            MenuNameReadOnly.Width = 200;
-            // 
-            // DOrder
-            // 
-            DOrder.DataPropertyName = "DOrder";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            DOrder.DefaultCellStyle = dataGridViewCellStyle1;
-            DOrder.HeaderText = "DOrder";
-            DOrder.Name = "DOrder";
-            DOrder.ReadOnly = true;
-            DOrder.Width = 70;
+            cmbMenu.DisplayMember = "IID";
+            cmbMenu.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbMenu.Font = new System.Drawing.Font("Segoe UI", 11F);
+            cmbMenu.FormattingEnabled = true;
+            cmbMenu.Location = new System.Drawing.Point(79, 12);
+            cmbMenu.Name = "cmbMenu";
+            cmbMenu.Size = new System.Drawing.Size(346, 28);
+            cmbMenu.TabIndex = 0;
+            cmbMenu.ValueMember = "IID";
+            cmbMenu.SelectionChangeCommitted += cmbMenu_SelectionChangeCommitted;
             // 
             // frmDistributionList
             // 
@@ -290,6 +343,7 @@ namespace DTRMSimpleBackOffice {
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             ClientSize = new System.Drawing.Size(1147, 699);
             Controls.Add(dgv);
+            Controls.Add(panel1);
             Controls.Add(barMain);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -304,6 +358,8 @@ namespace DTRMSimpleBackOffice {
             ((System.ComponentModel.ISupportInitialize)globalTypeViewBindingSource).EndInit();
             barMain.ResumeLayout(false);
             barMain.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
 
@@ -335,5 +391,9 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn FlatPrinterList;
         private System.Windows.Forms.DataGridViewTextBoxColumn MenuNameReadOnly;
         private System.Windows.Forms.DataGridViewTextBoxColumn DOrder;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox chkAllMenus;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cmbMenu;
     }
 }

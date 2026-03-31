@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,26 +22,46 @@ namespace DTRMSimpleBackOffice
 {
     public partial class frmDistributionList : Form
     {
+        IRepository<TheMenu> repoMenu;
         IRepository<Distribution> repoDistribution;
 
+        private BindingSource _menuSource = new BindingSource();
         private BindingSource _distributionSource = new BindingSource();
-        public frmDistributionList(IRepository<Distribution> _repoDistribution)
+        public frmDistributionList(IRepository<Distribution> _repoDistribution, IRepository<TheMenu> _repoMenu)
         {
             InitializeComponent();
+            repoMenu = _repoMenu;
             repoDistribution = _repoDistribution;
         }
 
         private async void frmDistributionList_Load(object sender, EventArgs e)
         {
+            await LoadMenus();
             await LoadDistributions();
+        }
+        private async Task LoadMenus()
+        {
+            _menuSource.DataSource = (await repoMenu.GetAllAsync()).ToBindingList();
+            cmbMenu.DataSource = _menuSource;
+            cmbMenu.DisplayMember = "MenuName";
         }
 
         private async Task LoadDistributions(bool blnSort = false)
         {
-            if (blnSort)
-                _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ReOrder().ToBindingList();
-            else
-                _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ToBindingList();
+            if (chkAllMenus.Checked)
+            {
+                if (blnSort)
+                    _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ReOrder().ToBindingList();
+                else
+                    _distributionSource.DataSource = (await repoDistribution.GetAllAsync("Menu, DistributionPrinters.Printer")).ToBindingList();
+            } else
+            {
+                if (cmbMenu.SelectedItem != null)
+                {
+                    TheMenu menu = (TheMenu)cmbMenu.SelectedItem;
+                    _distributionSource.DataSource = (await repoDistribution.GetListByField("MenuIID", menu.IID, "Menu, DistributionPrinters.Printer")).ToBindingList();
+                }
+            }
             dgv.DataSource = _distributionSource;
         }
 
@@ -168,7 +189,7 @@ namespace DTRMSimpleBackOffice
 
         private async void tsMoveUp_Click(object sender, EventArgs e)
         {
-             if (dgv.SelectedRows.Count > 0)
+            if (dgv.SelectedRows.Count > 0)
             {
                 await repoDistribution.MoveUp((Distribution)dgv.SelectedRows[0].DataBoundItem);
                 await LoadDistributions();
@@ -182,6 +203,17 @@ namespace DTRMSimpleBackOffice
                 await repoDistribution.MoveDown((Distribution)dgv.SelectedRows[0].DataBoundItem);
                 await LoadDistributions();
             }
+        }
+
+        private async void chkAllMenus_CheckedChanged(object sender, EventArgs e)
+        {
+            cmbMenu.Enabled = !chkAllMenus.Checked;
+            await LoadDistributions();
+        }
+
+        private async void cmbMenu_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            await LoadDistributions();
         }
     }
 }

@@ -34,6 +34,12 @@ public partial class Category : BaseClass
 
     public string Font => FFamily + ", " + FStyle + ", " + FSize;
 
+    //public bool WithImage { get; set; }   //=> Image 
+    public ButtonDisplayStyles ButtonDisplayStyle { get; set; } = ButtonDisplayStyles.Text;
+    public ContentAlignmentX TextAlign { get; set; } = ContentAlignmentX.MiddleCenter;
+    public TextImageRelationX TextImageRelation { get; set; } = TextImageRelationX.ImageBeforeText;
+    public ContentAlignmentX ImageAlign { get; set; }    = ContentAlignmentX.MiddleCenter;
+
 
     public CategoryItem GetEntityButton(string EntityButtonId)
     {

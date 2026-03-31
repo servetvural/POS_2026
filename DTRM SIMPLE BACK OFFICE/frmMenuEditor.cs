@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,6 +18,8 @@ using POSLayer.Repository.IRepository;
 
 using PosLibrary;
 using PosLibrary.Forms;
+
+using POSWinFormLayer;
 
 
 namespace DTRMSimpleBackOffice
@@ -76,6 +79,8 @@ namespace DTRMSimpleBackOffice
 
             dgvMenu.AutoGenerateColumns = false;
             dgvCategory.AutoGenerateColumns = false;
+
+            await FormatCategorGrid();
 
             // 2. Set up Parent Source
             _menuSource.DataSource = menuList;
@@ -312,7 +317,7 @@ namespace DTRMSimpleBackOffice
                 {
                     DisplayCategoryButton();
                 } catch
-                {                      
+                {
 
                 }
             }
@@ -320,7 +325,7 @@ namespace DTRMSimpleBackOffice
         private async void DisplayCategoryButton()
         {
             if (dgvCategory.SelectedRows.Count > 0)
-            {                                       
+            {
                 Category category = _categorySource.Current as Category;
                 btnCategorySample.Width = category.Width;
                 btnCategorySample.Text = category.CategoryName;
@@ -328,6 +333,27 @@ namespace DTRMSimpleBackOffice
                 btnCategorySample.BackColor = Color.FromArgb(category.BgColour);
                 btnCategorySample.ForeColor = Color.FromArgb(category.FgColour);
 
+                btnCategorySample.DisplayStyle = (ToolStripItemDisplayStyle)category.ButtonDisplayStyle;
+                btnCategorySample.TextAlign = (ContentAlignment)category.TextAlign;
+                btnCategorySample.ImageAlign = (ContentAlignment)category.ImageAlign;
+                btnCategorySample.TextImageRelation = (TextImageRelation)category.TextImageRelation;
+
+                if (category.ButtonDisplayStyle == ButtonDisplayStyles.Image || category.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
+                {
+                    GenericImage gim = await bslayer.GetGenericImage(category.IID);
+                    if (gim != null && gim.DisplayImage != null)
+                    {
+                        Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);
+                        btnCategorySample.Image = UFWin.ReSizeImageTo(btnImage, btnCategorySample.Height - 5, btnCategorySample.Height - 5);
+                        btnCategorySample.ImageScaling = ToolStripItemImageScaling.None;
+                    } else
+                    {
+                        btnCategorySample.Image = null;
+                    }
+                } else
+                {
+                    btnCategorySample.Image = null;
+                }
             }
         }
 
@@ -365,7 +391,7 @@ namespace DTRMSimpleBackOffice
             {
                 if (MessageBox.Show("This will delete the entity and all the associated buttons.\nDo you want to continue?", "Delete Entity", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
-                    await bslayer.DeleteEntityDB(((Category)dgvCategory.SelectedRows[0].DataBoundItem).IID);
+                    await repoCategory.Delete((_categorySource.Current as Category).IID);
                     await LoadMenuList();
                 }
             }
@@ -442,126 +468,6 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private DataGridView dgvSource;
-        private Rectangle dragBox;
-        private int rowIndexSource;
-        private int rowIndexDestination;
-
-        private void Dgv_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                // If the mouse moves outside the rectangle, start the drag.
-                if (dragBox != Rectangle.Empty && !dragBox.Contains(e.X, e.Y))
-                {
-                    // Proceed with the drag and drop, passing in the list item.                    
-                    //  DragDropEffects dropEffect =
-                    ((DataGridView)sender).DoDragDrop(((DataGridView)sender).Rows[rowIndexSource], DragDropEffects.Move);
-                }
-            }
-        }
-
-        private void Dgv_MouseDown(object sender, MouseEventArgs e)
-        {
-            // Get the index of the item the mouse is below.
-            rowIndexSource = ((DataGridView)sender).HitTest(e.X, e.Y).RowIndex;
-            if (rowIndexSource != -1)
-            {
-                // Remember the point where the mouse down occurred. 
-                // The DragSize indicates the size that the mouse can move before a drag event should be started.                
-                Size dragSize = SystemInformation.DragSize;
-
-                // Create a rectangle using the DragSize, with the mouse position being at the center of the rectangle.
-                dragBox = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
-                dgvSource = ((DataGridView)sender);
-            } else
-                // Reset the rectangle if the mouse is not over an item in the ListBox.
-                dragBox = Rectangle.Empty;
-        }
-
-        private void Dgv_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-            if (dgvSource != (DataGridView)sender)
-                e.Effect = DragDropEffects.None;
-        }
-
-
-
-        private async void DgvEntity_DragDrop(object sender, DragEventArgs e)
-        {
-            if (dgvSource != (DataGridView)sender)
-                return;
-
-            // The mouse locations are relative to the screen, so they must be converted to client coordinates.
-            Point clientPoint = ((DataGridView)sender).PointToClient(new Point(e.X, e.Y));
-
-            // Get the row index of the item the mouse is below. 
-            rowIndexDestination = ((DataGridView)sender).HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-
-            // If the drag operation was a move then remove and insert the row.
-            if (e.Effect == DragDropEffects.Move)
-            {
-                //DataGridViewRow rowToMove = e.Data.GetData(typeof(DataGridViewRow)) as DataGridViewRow;
-                // MessageBox.Show("From : " + rowIndexSource + ",  To : " + rowIndexDestination);
-                //call the methods to change the order now
-
-                //dropped on
-                int don = rowIndexDestination;
-                //being dropped on
-                int bdon = rowIndexSource;
-                bool blnArdisik;
-
-                //target doesn't exist
-                if (don == -1)
-                    return;
-
-
-                //always set bdon to don value on upward or downward movements
-                bslayer.SetEntityDisplayOrder(dgvCategory.Rows[bdon].Cells["colEntityIID"].Value.ToString(), don);
-
-
-                if (bdon < don)
-                {
-                    //Moving downwards
-                    blnArdisik = bdon + 1 == don;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.SetEntityDisplayOrder(dgvCategory.Rows[don].Cells["colEntityIID"].Value.ToString(), bdon);
-
-
-                    } else
-                    {
-                        bslayer.SetEntityDisplayOrder(dgvCategory.Rows[don].Cells["colEntityIID"].Value.ToString(), don - 1);
-                        //arayi doldur
-                        for (int i = bdon + 1; i < don; i++)
-                            bslayer.SetEntityDisplayOrder(dgvCategory.Rows[i].Cells["colEntityIID"].Value.ToString(), i - 1);
-                    }
-                } else
-                {
-                    //Moving upwards
-                    blnArdisik = don + 1 == bdon;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.SetEntityDisplayOrder(dgvCategory.Rows[don].Cells["colEntityIID"].Value.ToString(), bdon);
-                    } else
-                    {
-                        bslayer.SetEntityDisplayOrder(dgvCategory.Rows[don].Cells["colEntityIID"].Value.ToString(), don + 1);
-                        //arayi doldur
-                        for (int i = don + 1; i < bdon; i++)
-                            bslayer.SetEntityDisplayOrder(dgvCategory.Rows[i].Cells["colEntityIID"].Value.ToString(), i + 1);
-                    }
-                }
-
-                await LoadMenuList();
-            }
-        }
-
-
         private async void mnuSetAsDefaultMenu_Click(object sender, EventArgs e)
         {
             if (selectedMenu != null)
@@ -579,7 +485,7 @@ namespace DTRMSimpleBackOffice
 
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                TheMenu menu = await bslayer.GetMenuDB(dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString());
+                TheMenu menu = await repoMenu.Get(selectedMenu.IID); 
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "JSON Files (*.json)|";
@@ -611,7 +517,7 @@ namespace DTRMSimpleBackOffice
                         if (!string.IsNullOrEmpty(content))
                         {
                             TheMenu fm = JsonConvert.DeserializeObject<TheMenu>(content);
-                            await bslayer.SaveMenuDB(fm);
+                            await repoMenu.SaveTree(fm); 
 
                             MessageBox.Show("Saved Printer List");
                         } else
@@ -691,6 +597,39 @@ namespace DTRMSimpleBackOffice
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void btnCategorySample_Paint(object sender, PaintEventArgs e)
+        {
+            ToolStripButton btn = (ToolStripButton)sender;
+            // Draw a solid red border around the button's content area
+            ControlPaint.DrawBorder(e.Graphics, btn.ContentRectangle,
+                Color.Black, ButtonBorderStyle.Solid);
+        }
+
+
+        async Task FormatCategorGrid()
+        {
+            dgvCategory.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "CategoryName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Name"; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "CategoryType").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            //dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price") || c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            //dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "PadFlag").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DistributionName").ToList().ForEach(c => { c.Width = 150; c.HeaderText = "Distribution"; });
+
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Width").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Height").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Font").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategory.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+
         }
     }
 }

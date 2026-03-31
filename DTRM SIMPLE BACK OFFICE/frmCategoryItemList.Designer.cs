@@ -29,11 +29,11 @@ namespace DTRMSimpleBackOffice {
         {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCategoryItemList));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -45,7 +45,7 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCategoryItemList));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -55,18 +55,6 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle33 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle34 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle35 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle36 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle37 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle38 = new System.Windows.Forms.DataGridViewCellStyle();
             popCategoryItem = new System.Windows.Forms.ContextMenuStrip(components);
             popEBAddNew = new System.Windows.Forms.ToolStripMenuItem();
             popEBEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +84,6 @@ namespace DTRMSimpleBackOffice {
             QuantityTypeAsString = new System.Windows.Forms.DataGridViewTextBoxColumn();
             StockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             Comment = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colEBSItemDisplayOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             entityButtonStockItemLookUpBindingSource = new System.Windows.Forms.BindingSource(components);
             pnlEBPicture = new System.Windows.Forms.Panel();
             pboxEBPicture = new System.Windows.Forms.PictureBox();
@@ -116,18 +103,23 @@ namespace DTRMSimpleBackOffice {
             dgvCategoryItem = new System.Windows.Forms.DataGridView();
             itemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             buttonTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            salePriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            sitinPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            taPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            distributionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             saleTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             sitinTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             taTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            padFlagDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            distributionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            salePriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            sitinPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            taPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             widthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             heightDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             fontDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            buttonDisplayStyleDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            textAlignDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            textImageRelationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            imageAlignDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             _categoryItemSourceDesign = new System.Windows.Forms.BindingSource(components);
             barEntityButton = new System.Windows.Forms.ToolStrip();
@@ -383,40 +375,36 @@ namespace DTRMSimpleBackOffice {
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             dgvStockItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvStockItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvStockItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colStockUsageIID, colEBIID, colStockItemIID, Quantity, QuantityTypeAsString, StockName, Comment, colEBSItemDisplayOrder });
+            dgvStockItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colStockUsageIID, colEBIID, colStockItemIID, Quantity, QuantityTypeAsString, StockName, Comment });
             dgvStockItems.DataSource = entityButtonStockItemLookUpBindingSource;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvStockItems.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvStockItems.DefaultCellStyle = dataGridViewCellStyle3;
             dgvStockItems.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvStockItems.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
             dgvStockItems.Location = new System.Drawing.Point(163, 54);
             dgvStockItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             dgvStockItems.Name = "dgvStockItems";
             dgvStockItems.ReadOnly = true;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dgvStockItems.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dgvStockItems.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgvStockItems.RowHeadersWidth = 25;
             dgvStockItems.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             dgvStockItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvStockItems.Size = new System.Drawing.Size(1075, 307);
+            dgvStockItems.Size = new System.Drawing.Size(858, 307);
             dgvStockItems.TabIndex = 11;
             dgvStockItems.CellDoubleClick += DgvStockItems_CellDoubleClick;
-            dgvStockItems.DragDrop += DgvStockItems_DragDrop;
-            dgvStockItems.DragOver += Dgv_DragOver;
-            dgvStockItems.MouseDown += Dgv_MouseDown;
-            dgvStockItems.MouseMove += Dgv_MouseMove;
             // 
             // colStockUsageIID
             // 
@@ -476,21 +464,6 @@ namespace DTRMSimpleBackOffice {
             Comment.ReadOnly = true;
             Comment.Width = 150;
             // 
-            // colEBSItemDisplayOrder
-            // 
-            colEBSItemDisplayOrder.DataPropertyName = "DisplayOrder";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            colEBSItemDisplayOrder.DefaultCellStyle = dataGridViewCellStyle3;
-            colEBSItemDisplayOrder.HeaderText = "Order";
-            colEBSItemDisplayOrder.Name = "colEBSItemDisplayOrder";
-            colEBSItemDisplayOrder.ReadOnly = true;
-            colEBSItemDisplayOrder.ToolTipText = "Display Order";
-            colEBSItemDisplayOrder.Width = 50;
-            // 
-            // entityButtonStockItemLookUpBindingSource
-            // 
-            entityButtonStockItemLookUpBindingSource.DataSource = typeof(EntityButtonStockItemLookUp);
-            // 
             // pnlEBPicture
             // 
             pnlEBPicture.BackColor = System.Drawing.SystemColors.AppWorkspace;
@@ -535,7 +508,7 @@ namespace DTRMSimpleBackOffice {
             barStockUsage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAddStockItem, btnEditStockItem, btnDeleteStockItem, btnCopyStockUsageItems, btnPasteStockUsageItems, btnPasteSpecialStockUsageItems, lblImageSize, btnQuantityToComment, tsSortStockItem, tsMoveUpStockItem, tsMoveDownStockItem });
             barStockUsage.Location = new System.Drawing.Point(0, 0);
             barStockUsage.Name = "barStockUsage";
-            barStockUsage.Size = new System.Drawing.Size(1238, 54);
+            barStockUsage.Size = new System.Drawing.Size(1021, 54);
             barStockUsage.TabIndex = 1;
             barStockUsage.Text = "toolStrip1";
             // 
@@ -660,17 +633,17 @@ namespace DTRMSimpleBackOffice {
             dgvCategoryItem.AutoGenerateColumns = false;
             dgvCategoryItem.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvCategoryItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCategoryItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { itemNameDataGridViewTextBoxColumn, buttonTypeDataGridViewTextBoxColumn, salePriceDataGridViewTextBoxColumn, sitinPriceDataGridViewTextBoxColumn, taPriceDataGridViewTextBoxColumn, dPriceDataGridViewTextBoxColumn, distributionNameDataGridViewTextBoxColumn, saleTaxDataGridViewTextBoxColumn, sitinTaxDataGridViewTextBoxColumn, taTaxDataGridViewTextBoxColumn, dTaxDataGridViewTextBoxColumn, widthDataGridViewTextBoxColumn, heightDataGridViewTextBoxColumn, fontDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn });
+            dgvCategoryItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { itemNameDataGridViewTextBoxColumn, buttonTypeDataGridViewTextBoxColumn, saleTaxDataGridViewTextBoxColumn, sitinTaxDataGridViewTextBoxColumn, taTaxDataGridViewTextBoxColumn, dTaxDataGridViewTextBoxColumn, padFlagDataGridViewTextBoxColumn, distributionNameDataGridViewTextBoxColumn, salePriceDataGridViewTextBoxColumn, sitinPriceDataGridViewTextBoxColumn, taPriceDataGridViewTextBoxColumn, dPriceDataGridViewTextBoxColumn, widthDataGridViewTextBoxColumn, heightDataGridViewTextBoxColumn, fontDataGridViewTextBoxColumn, buttonDisplayStyleDataGridViewTextBoxColumn, textAlignDataGridViewTextBoxColumn, textImageRelationDataGridViewTextBoxColumn, imageAlignDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn });
             dgvCategoryItem.ContextMenuStrip = popCategoryItem;
             dgvCategoryItem.DataSource = _categoryItemSourceDesign;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvCategoryItem.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvCategoryItem.DefaultCellStyle = dataGridViewCellStyle5;
             dgvCategoryItem.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvCategoryItem.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
             dgvCategoryItem.Location = new System.Drawing.Point(0, 78);
@@ -681,14 +654,10 @@ namespace DTRMSimpleBackOffice {
             dgvCategoryItem.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             dgvCategoryItem.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             dgvCategoryItem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvCategoryItem.Size = new System.Drawing.Size(1238, 536);
+            dgvCategoryItem.Size = new System.Drawing.Size(1021, 536);
             dgvCategoryItem.TabIndex = 0;
             dgvCategoryItem.CellDoubleClick += dgvCategoryItem_CellDoubleClick;
             dgvCategoryItem.SelectionChanged += dgvCategoryItem_SelectionChanged;
-            dgvCategoryItem.DragDrop += DgvEntityButton_DragDrop;
-            dgvCategoryItem.DragOver += Dgv_DragOver;
-            dgvCategoryItem.MouseDown += Dgv_MouseDown;
-            dgvCategoryItem.MouseMove += Dgv_MouseMove;
             // 
             // itemNameDataGridViewTextBoxColumn
             // 
@@ -696,7 +665,6 @@ namespace DTRMSimpleBackOffice {
             itemNameDataGridViewTextBoxColumn.HeaderText = "ItemName";
             itemNameDataGridViewTextBoxColumn.Name = "itemNameDataGridViewTextBoxColumn";
             itemNameDataGridViewTextBoxColumn.ReadOnly = true;
-            itemNameDataGridViewTextBoxColumn.Width = 200;
             // 
             // buttonTypeDataGridViewTextBoxColumn
             // 
@@ -705,121 +673,89 @@ namespace DTRMSimpleBackOffice {
             buttonTypeDataGridViewTextBoxColumn.Name = "buttonTypeDataGridViewTextBoxColumn";
             buttonTypeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // salePriceDataGridViewTextBoxColumn
-            // 
-            salePriceDataGridViewTextBoxColumn.DataPropertyName = "SalePrice";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.Format = "n2";
-            salePriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle6;
-            salePriceDataGridViewTextBoxColumn.HeaderText = "SalePrice";
-            salePriceDataGridViewTextBoxColumn.Name = "salePriceDataGridViewTextBoxColumn";
-            salePriceDataGridViewTextBoxColumn.ReadOnly = true;
-            salePriceDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // sitinPriceDataGridViewTextBoxColumn
-            // 
-            sitinPriceDataGridViewTextBoxColumn.DataPropertyName = "SitinPrice";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.Format = "N2";
-            sitinPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle7;
-            sitinPriceDataGridViewTextBoxColumn.HeaderText = "SitinPrice";
-            sitinPriceDataGridViewTextBoxColumn.Name = "sitinPriceDataGridViewTextBoxColumn";
-            sitinPriceDataGridViewTextBoxColumn.ReadOnly = true;
-            sitinPriceDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // taPriceDataGridViewTextBoxColumn
-            // 
-            taPriceDataGridViewTextBoxColumn.DataPropertyName = "TaPrice";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.Format = "N2";
-            taPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle8;
-            taPriceDataGridViewTextBoxColumn.HeaderText = "TaPrice";
-            taPriceDataGridViewTextBoxColumn.Name = "taPriceDataGridViewTextBoxColumn";
-            taPriceDataGridViewTextBoxColumn.ReadOnly = true;
-            taPriceDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // dPriceDataGridViewTextBoxColumn
-            // 
-            dPriceDataGridViewTextBoxColumn.DataPropertyName = "DPrice";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.Format = "N2";
-            dPriceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
-            dPriceDataGridViewTextBoxColumn.HeaderText = "DPrice";
-            dPriceDataGridViewTextBoxColumn.Name = "dPriceDataGridViewTextBoxColumn";
-            dPriceDataGridViewTextBoxColumn.ReadOnly = true;
-            dPriceDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // distributionNameDataGridViewTextBoxColumn
-            // 
-            distributionNameDataGridViewTextBoxColumn.DataPropertyName = "DistributionName";
-            distributionNameDataGridViewTextBoxColumn.HeaderText = "Distribution";
-            distributionNameDataGridViewTextBoxColumn.Name = "distributionNameDataGridViewTextBoxColumn";
-            distributionNameDataGridViewTextBoxColumn.ReadOnly = true;
-            distributionNameDataGridViewTextBoxColumn.Width = 200;
-            // 
             // saleTaxDataGridViewTextBoxColumn
             // 
             saleTaxDataGridViewTextBoxColumn.DataPropertyName = "SaleTax";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.Format = "N2";
-            saleTaxDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
             saleTaxDataGridViewTextBoxColumn.HeaderText = "SaleTax";
             saleTaxDataGridViewTextBoxColumn.Name = "saleTaxDataGridViewTextBoxColumn";
             saleTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            saleTaxDataGridViewTextBoxColumn.Width = 70;
             // 
             // sitinTaxDataGridViewTextBoxColumn
             // 
             sitinTaxDataGridViewTextBoxColumn.DataPropertyName = "SitinTax";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle11.Format = "N2";
-            sitinTaxDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
             sitinTaxDataGridViewTextBoxColumn.HeaderText = "SitinTax";
             sitinTaxDataGridViewTextBoxColumn.Name = "sitinTaxDataGridViewTextBoxColumn";
             sitinTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            sitinTaxDataGridViewTextBoxColumn.Width = 70;
             // 
             // taTaxDataGridViewTextBoxColumn
             // 
             taTaxDataGridViewTextBoxColumn.DataPropertyName = "TaTax";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.Format = "N2";
-            taTaxDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
             taTaxDataGridViewTextBoxColumn.HeaderText = "TaTax";
             taTaxDataGridViewTextBoxColumn.Name = "taTaxDataGridViewTextBoxColumn";
             taTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            taTaxDataGridViewTextBoxColumn.Width = 70;
             // 
             // dTaxDataGridViewTextBoxColumn
             // 
             dTaxDataGridViewTextBoxColumn.DataPropertyName = "DTax";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.Format = "N2";
-            dTaxDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
             dTaxDataGridViewTextBoxColumn.HeaderText = "DTax";
             dTaxDataGridViewTextBoxColumn.Name = "dTaxDataGridViewTextBoxColumn";
             dTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            dTaxDataGridViewTextBoxColumn.Width = 70;
+            // 
+            // padFlagDataGridViewTextBoxColumn
+            // 
+            padFlagDataGridViewTextBoxColumn.DataPropertyName = "PadFlag";
+            padFlagDataGridViewTextBoxColumn.HeaderText = "PadFlag";
+            padFlagDataGridViewTextBoxColumn.Name = "padFlagDataGridViewTextBoxColumn";
+            padFlagDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // distributionNameDataGridViewTextBoxColumn
+            // 
+            distributionNameDataGridViewTextBoxColumn.DataPropertyName = "DistributionName";
+            distributionNameDataGridViewTextBoxColumn.HeaderText = "DistributionName";
+            distributionNameDataGridViewTextBoxColumn.Name = "distributionNameDataGridViewTextBoxColumn";
+            distributionNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // salePriceDataGridViewTextBoxColumn
+            // 
+            salePriceDataGridViewTextBoxColumn.DataPropertyName = "SalePrice";
+            salePriceDataGridViewTextBoxColumn.HeaderText = "SalePrice";
+            salePriceDataGridViewTextBoxColumn.Name = "salePriceDataGridViewTextBoxColumn";
+            salePriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // sitinPriceDataGridViewTextBoxColumn
+            // 
+            sitinPriceDataGridViewTextBoxColumn.DataPropertyName = "SitinPrice";
+            sitinPriceDataGridViewTextBoxColumn.HeaderText = "SitinPrice";
+            sitinPriceDataGridViewTextBoxColumn.Name = "sitinPriceDataGridViewTextBoxColumn";
+            sitinPriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // taPriceDataGridViewTextBoxColumn
+            // 
+            taPriceDataGridViewTextBoxColumn.DataPropertyName = "TaPrice";
+            taPriceDataGridViewTextBoxColumn.HeaderText = "TaPrice";
+            taPriceDataGridViewTextBoxColumn.Name = "taPriceDataGridViewTextBoxColumn";
+            taPriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dPriceDataGridViewTextBoxColumn
+            // 
+            dPriceDataGridViewTextBoxColumn.DataPropertyName = "DPrice";
+            dPriceDataGridViewTextBoxColumn.HeaderText = "DPrice";
+            dPriceDataGridViewTextBoxColumn.Name = "dPriceDataGridViewTextBoxColumn";
+            dPriceDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // widthDataGridViewTextBoxColumn
             // 
             widthDataGridViewTextBoxColumn.DataPropertyName = "Width";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            widthDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
             widthDataGridViewTextBoxColumn.HeaderText = "Width";
             widthDataGridViewTextBoxColumn.Name = "widthDataGridViewTextBoxColumn";
             widthDataGridViewTextBoxColumn.ReadOnly = true;
-            widthDataGridViewTextBoxColumn.Width = 70;
             // 
             // heightDataGridViewTextBoxColumn
             // 
             heightDataGridViewTextBoxColumn.DataPropertyName = "Height";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            heightDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle15;
             heightDataGridViewTextBoxColumn.HeaderText = "Height";
             heightDataGridViewTextBoxColumn.Name = "heightDataGridViewTextBoxColumn";
             heightDataGridViewTextBoxColumn.ReadOnly = true;
-            heightDataGridViewTextBoxColumn.Width = 70;
             // 
             // fontDataGridViewTextBoxColumn
             // 
@@ -827,17 +763,41 @@ namespace DTRMSimpleBackOffice {
             fontDataGridViewTextBoxColumn.HeaderText = "Font";
             fontDataGridViewTextBoxColumn.Name = "fontDataGridViewTextBoxColumn";
             fontDataGridViewTextBoxColumn.ReadOnly = true;
-            fontDataGridViewTextBoxColumn.Width = 150;
+            // 
+            // buttonDisplayStyleDataGridViewTextBoxColumn
+            // 
+            buttonDisplayStyleDataGridViewTextBoxColumn.DataPropertyName = "ButtonDisplayStyle";
+            buttonDisplayStyleDataGridViewTextBoxColumn.HeaderText = "ButtonDisplayStyle";
+            buttonDisplayStyleDataGridViewTextBoxColumn.Name = "buttonDisplayStyleDataGridViewTextBoxColumn";
+            buttonDisplayStyleDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // textAlignDataGridViewTextBoxColumn
+            // 
+            textAlignDataGridViewTextBoxColumn.DataPropertyName = "TextAlign";
+            textAlignDataGridViewTextBoxColumn.HeaderText = "TextAlign";
+            textAlignDataGridViewTextBoxColumn.Name = "textAlignDataGridViewTextBoxColumn";
+            textAlignDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // textImageRelationDataGridViewTextBoxColumn
+            // 
+            textImageRelationDataGridViewTextBoxColumn.DataPropertyName = "TextImageRelation";
+            textImageRelationDataGridViewTextBoxColumn.HeaderText = "TextImageRelation";
+            textImageRelationDataGridViewTextBoxColumn.Name = "textImageRelationDataGridViewTextBoxColumn";
+            textImageRelationDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // imageAlignDataGridViewTextBoxColumn
+            // 
+            imageAlignDataGridViewTextBoxColumn.DataPropertyName = "ImageAlign";
+            imageAlignDataGridViewTextBoxColumn.HeaderText = "ImageAlign";
+            imageAlignDataGridViewTextBoxColumn.Name = "imageAlignDataGridViewTextBoxColumn";
+            imageAlignDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // dOrderDataGridViewTextBoxColumn
             // 
             dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dOrderDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
             dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
             dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
             dOrderDataGridViewTextBoxColumn.ReadOnly = true;
-            dOrderDataGridViewTextBoxColumn.Width = 70;
             // 
             // _categoryItemSourceDesign
             // 
@@ -848,7 +808,7 @@ namespace DTRMSimpleBackOffice {
             barEntityButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAddEntityButton, btnEditEntityButton, btnDeleteEntityButton, btnSetAll, btnMoveToEntity, btnDuplicate, btnConvertToStockItem, btnEntityButtonRowHeight, tsSortCategoryItem, tsMoveUpCategoryItem, tsMoveDownCategoryItem, btnClose, btnCategoryItemSample });
             barEntityButton.Location = new System.Drawing.Point(0, 0);
             barEntityButton.Name = "barEntityButton";
-            barEntityButton.Size = new System.Drawing.Size(1238, 54);
+            barEntityButton.Size = new System.Drawing.Size(1021, 54);
             barEntityButton.TabIndex = 0;
             barEntityButton.Text = "toolStrip1";
             // 
@@ -1125,10 +1085,7 @@ namespace DTRMSimpleBackOffice {
             btnCategoryItemSample.Name = "btnCategoryItemSample";
             btnCategoryItemSample.Size = new System.Drawing.Size(100, 51);
             btnCategoryItemSample.Text = "Sample";
-            // 
-            // entityButtonExtendedBindingSource
-            // 
-            entityButtonExtendedBindingSource.DataSource = typeof(EntityButtonExtended);
+            btnCategoryItemSample.Paint += btnCategoryItemSample_Paint;
             // 
             // dataGridViewTextBoxColumn2
             // 
@@ -1141,8 +1098,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn8
             // 
             dataGridViewTextBoxColumn8.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle6;
             dataGridViewTextBoxColumn8.HeaderText = "QType";
             dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             dataGridViewTextBoxColumn8.ReadOnly = true;
@@ -1151,8 +1108,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn9
             // 
             dataGridViewTextBoxColumn9.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle7;
             dataGridViewTextBoxColumn9.HeaderText = "QType";
             dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             dataGridViewTextBoxColumn9.ReadOnly = true;
@@ -1163,8 +1120,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn10
             // 
             dataGridViewTextBoxColumn10.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle8;
             dataGridViewTextBoxColumn10.HeaderText = "QType";
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.ReadOnly = true;
@@ -1174,8 +1131,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn11
             // 
             dataGridViewTextBoxColumn11.DataPropertyName = "CategoryType";
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle9;
             dataGridViewTextBoxColumn11.HeaderText = "CategoryType";
             dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
             dataGridViewTextBoxColumn11.ReadOnly = true;
@@ -1194,8 +1151,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn14
             // 
             dataGridViewTextBoxColumn14.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle10;
             dataGridViewTextBoxColumn14.HeaderText = "QType";
             dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
             dataGridViewTextBoxColumn14.ReadOnly = true;
@@ -1205,8 +1162,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn15
             // 
             dataGridViewTextBoxColumn15.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle11;
             dataGridViewTextBoxColumn15.HeaderText = "QType";
             dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
             dataGridViewTextBoxColumn15.ReadOnly = true;
@@ -1216,8 +1173,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn16
             // 
             dataGridViewTextBoxColumn16.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle12;
             dataGridViewTextBoxColumn16.HeaderText = "QType";
             dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
             dataGridViewTextBoxColumn16.ReadOnly = true;
@@ -1228,9 +1185,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn17
             // 
             dataGridViewTextBoxColumn17.DataPropertyName = "CategoryType";
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle25.Format = "N2";
-            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle13.Format = "N2";
+            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle13;
             dataGridViewTextBoxColumn17.HeaderText = "CategoryType";
             dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
             dataGridViewTextBoxColumn17.ReadOnly = true;
@@ -1241,8 +1198,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn18
             // 
             dataGridViewTextBoxColumn18.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle14;
             dataGridViewTextBoxColumn18.HeaderText = "QType";
             dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
             dataGridViewTextBoxColumn18.ReadOnly = true;
@@ -1253,9 +1210,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn19
             // 
             dataGridViewTextBoxColumn19.DataPropertyName = "DeliveryPrice";
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle27.Format = "N2";
-            dataGridViewTextBoxColumn19.DefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.Format = "N2";
+            dataGridViewTextBoxColumn19.DefaultCellStyle = dataGridViewCellStyle15;
             dataGridViewTextBoxColumn19.HeaderText = "DL Price";
             dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
             dataGridViewTextBoxColumn19.ReadOnly = true;
@@ -1265,8 +1222,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn20
             // 
             dataGridViewTextBoxColumn20.DataPropertyName = "ButtonWidth";
-            dataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn20.DefaultCellStyle = dataGridViewCellStyle28;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn20.DefaultCellStyle = dataGridViewCellStyle16;
             dataGridViewTextBoxColumn20.HeaderText = "Width";
             dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
             dataGridViewTextBoxColumn20.ReadOnly = true;
@@ -1276,8 +1233,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn21
             // 
             dataGridViewTextBoxColumn21.DataPropertyName = "ButtonHeight";
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle17;
             dataGridViewTextBoxColumn21.HeaderText = "Height";
             dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
             dataGridViewTextBoxColumn21.ReadOnly = true;
@@ -1287,9 +1244,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn22
             // 
             dataGridViewTextBoxColumn22.DataPropertyName = "DirectSaleTaxPercent";
-            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle30.Format = "N2";
-            dataGridViewTextBoxColumn22.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle18.Format = "N2";
+            dataGridViewTextBoxColumn22.DefaultCellStyle = dataGridViewCellStyle18;
             dataGridViewTextBoxColumn22.HeaderText = "DS Tax%";
             dataGridViewTextBoxColumn22.Name = "dataGridViewTextBoxColumn22";
             dataGridViewTextBoxColumn22.ReadOnly = true;
@@ -1299,9 +1256,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn23
             // 
             dataGridViewTextBoxColumn23.DataPropertyName = "InHouseTaxPercent";
-            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle31.Format = "N2";
-            dataGridViewTextBoxColumn23.DefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle19.Format = "N2";
+            dataGridViewTextBoxColumn23.DefaultCellStyle = dataGridViewCellStyle19;
             dataGridViewTextBoxColumn23.HeaderText = "IH Tax%";
             dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
             dataGridViewTextBoxColumn23.ReadOnly = true;
@@ -1311,9 +1268,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn24
             // 
             dataGridViewTextBoxColumn24.DataPropertyName = "TakeAwayTaxPercent";
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle32.Format = "N2";
-            dataGridViewTextBoxColumn24.DefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle20.Format = "N2";
+            dataGridViewTextBoxColumn24.DefaultCellStyle = dataGridViewCellStyle20;
             dataGridViewTextBoxColumn24.HeaderText = "TA Tax%";
             dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
             dataGridViewTextBoxColumn24.ReadOnly = true;
@@ -1323,9 +1280,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn25
             // 
             dataGridViewTextBoxColumn25.DataPropertyName = "DeliveryTaxPercent";
-            dataGridViewCellStyle33.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle33.Format = "N2";
-            dataGridViewTextBoxColumn25.DefaultCellStyle = dataGridViewCellStyle33;
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle21.Format = "N2";
+            dataGridViewTextBoxColumn25.DefaultCellStyle = dataGridViewCellStyle21;
             dataGridViewTextBoxColumn25.HeaderText = "DL Tax%";
             dataGridViewTextBoxColumn25.Name = "dataGridViewTextBoxColumn25";
             dataGridViewTextBoxColumn25.ReadOnly = true;
@@ -1335,9 +1292,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn26
             // 
             dataGridViewTextBoxColumn26.DataPropertyName = "DisplayOrder";
-            dataGridViewCellStyle34.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle34.Format = "N2";
-            dataGridViewTextBoxColumn26.DefaultCellStyle = dataGridViewCellStyle34;
+            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle22.Format = "N2";
+            dataGridViewTextBoxColumn26.DefaultCellStyle = dataGridViewCellStyle22;
             dataGridViewTextBoxColumn26.HeaderText = "DO";
             dataGridViewTextBoxColumn26.Name = "dataGridViewTextBoxColumn26";
             dataGridViewTextBoxColumn26.ReadOnly = true;
@@ -1347,9 +1304,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn27
             // 
             dataGridViewTextBoxColumn27.DataPropertyName = "FFamily";
-            dataGridViewCellStyle35.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle35.Format = "N2";
-            dataGridViewTextBoxColumn27.DefaultCellStyle = dataGridViewCellStyle35;
+            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle23.Format = "N2";
+            dataGridViewTextBoxColumn27.DefaultCellStyle = dataGridViewCellStyle23;
             dataGridViewTextBoxColumn27.HeaderText = "Font";
             dataGridViewTextBoxColumn27.Name = "dataGridViewTextBoxColumn27";
             dataGridViewTextBoxColumn27.ReadOnly = true;
@@ -1359,9 +1316,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn28
             // 
             dataGridViewTextBoxColumn28.DataPropertyName = "FSize";
-            dataGridViewCellStyle36.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle36.Format = "N2";
-            dataGridViewTextBoxColumn28.DefaultCellStyle = dataGridViewCellStyle36;
+            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle24.Format = "N2";
+            dataGridViewTextBoxColumn28.DefaultCellStyle = dataGridViewCellStyle24;
             dataGridViewTextBoxColumn28.HeaderText = "FSize";
             dataGridViewTextBoxColumn28.Name = "dataGridViewTextBoxColumn28";
             dataGridViewTextBoxColumn28.ReadOnly = true;
@@ -1371,9 +1328,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn29
             // 
             dataGridViewTextBoxColumn29.DataPropertyName = "FStyle";
-            dataGridViewCellStyle37.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle37.Format = "N2";
-            dataGridViewTextBoxColumn29.DefaultCellStyle = dataGridViewCellStyle37;
+            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle25.Format = "N2";
+            dataGridViewTextBoxColumn29.DefaultCellStyle = dataGridViewCellStyle25;
             dataGridViewTextBoxColumn29.HeaderText = "FStyle";
             dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
             dataGridViewTextBoxColumn29.ReadOnly = true;
@@ -1525,8 +1482,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn47
             // 
             dataGridViewTextBoxColumn47.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle38.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn47.DefaultCellStyle = dataGridViewCellStyle38;
+            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn47.DefaultCellStyle = dataGridViewCellStyle26;
             dataGridViewTextBoxColumn47.HeaderText = "QType";
             dataGridViewTextBoxColumn47.Name = "dataGridViewTextBoxColumn47";
             dataGridViewTextBoxColumn47.Visible = false;
@@ -1558,7 +1515,7 @@ namespace DTRMSimpleBackOffice {
             splitContainer1.Panel2.Controls.Add(dgvStockItems);
             splitContainer1.Panel2.Controls.Add(pnlEBPicture);
             splitContainer1.Panel2.Controls.Add(barStockUsage);
-            splitContainer1.Size = new System.Drawing.Size(1238, 995);
+            splitContainer1.Size = new System.Drawing.Size(1021, 995);
             splitContainer1.SplitterDistance = 614;
             splitContainer1.SplitterWidth = 20;
             splitContainer1.TabIndex = 3;
@@ -1571,7 +1528,7 @@ namespace DTRMSimpleBackOffice {
             panel1.Dock = System.Windows.Forms.DockStyle.Top;
             panel1.Location = new System.Drawing.Point(0, 54);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(1238, 24);
+            panel1.Size = new System.Drawing.Size(1021, 24);
             panel1.TabIndex = 1;
             // 
             // lblCategory
@@ -1589,7 +1546,7 @@ namespace DTRMSimpleBackOffice {
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1238, 995);
+            ClientSize = new System.Drawing.Size(1021, 995);
             Controls.Add(splitContainer1);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
@@ -1742,7 +1699,6 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripButton btnQuantityToComment;
         private System.Windows.Forms.BindingSource theMenuBindingSource;
         private System.Windows.Forms.BindingSource categoryBindingSource;
-        private System.Windows.Forms.BindingSource _categoryItemSourceDesign;
         private System.Windows.Forms.ToolStripButton tsSortStockItem;
         private System.Windows.Forms.ToolStripButton tsMoveUpStockItem;
         private System.Windows.Forms.ToolStripButton tsMoveDownStockItem;
@@ -1752,24 +1708,31 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.ContextMenuStrip popCategoryItem;
+        private System.Windows.Forms.ToolStripButton btnClose;
+        private System.Windows.Forms.ToolStripButton btnCategoryItemSample;
         private System.Windows.Forms.DataGridViewTextBoxColumn itemNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn buttonTypeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn salePriceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sitinPriceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn taPriceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dPriceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn distributionNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn saleTaxDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn sitinTaxDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn taTaxDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dTaxDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn padFlagDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn distributionNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn salePriceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sitinPriceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn taPriceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dPriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn widthDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn heightDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn fontDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn buttonDisplayStyleDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn textAlignDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn textImageRelationDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn imageAlignDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn;
-        private System.Windows.Forms.ContextMenuStrip popCategoryItem;
-        private System.Windows.Forms.ToolStripButton btnClose;
-        private System.Windows.Forms.ToolStripButton btnCategoryItemSample;
+        private System.Windows.Forms.BindingSource categoryItemBindingSource;
+        private System.Windows.Forms.BindingSource _categoryItemSourceDesign;
     }
 }
 

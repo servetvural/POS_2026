@@ -65,7 +65,7 @@ namespace DTRMNS {
             FlatStyle = FlatStyle.Flat;
             FlatAppearance.BorderSize = 0;
             try {
-                if (entitybutton.WithImage) {
+                if (entitybutton.ButtonDisplayStyle == ButtonDisplayStyles.Image || entitybutton.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText) {
                     this.Image = UFWin.ByteArrayToImage( bs.GetGenericImage(entitybutton.IID).Result.DisplayImage); //   Image.FromFile(entitybutton.ImageFileName);
                     this.ImageAlign = ContentAlignment.TopCenter;
                     this.TextAlign = ContentAlignment.BottomCenter;

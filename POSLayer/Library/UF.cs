@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 using POSLayer.Models;
@@ -566,4 +567,13 @@ public static class UF
         return CombinedNumber;
     }
     #endregion
+
+
+    public static CultureInfo GetCulture(string culture)
+    {
+        CultureInfo ci = new CultureInfo(culture);
+        ci.NumberFormat.CurrencyDecimalDigits = 2;
+        ci.NumberFormat.NumberDecimalDigits = 2;
+        return ci;
+    }
 }

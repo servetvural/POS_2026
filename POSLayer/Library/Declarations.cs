@@ -16,8 +16,7 @@ public enum WeekDays { NoDay = 0, Monday = 1, Tuesday = 2, Wednesday = 4, Thursd
 
 public enum OrderTypes { Unknown = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, DirectSale = 256, Pad = 512 };
 public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
-public enum ButtonStyleTypes { Text, Image, TextAndImage }
-public enum ImagePositionTypes { Left, Center,  Right }
+
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
 public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
 public enum PaymentMethods { Unknown, Cash, Card, Online }
@@ -121,3 +120,85 @@ public enum BonusTypes { NoTip, Half_Tip, Full_Tip }
 
 
 public enum FormWindowStateTypes { Normal, Minimized, Maximized }
+
+
+
+public enum ButtonDisplayStyles { None, Text, Image, ImageAndText }
+//public enum ImagePositionTypes { Left, Center,  Right }
+public enum ContentAlignmentX
+{
+    Unknown = 0x0,
+    /// <summary>
+    ///  Content is vertically aligned at the top, and horizontally aligned on the left.
+    /// </summary>
+    TopLeft = 0x001,
+    /// <summary>
+    ///  Content is vertically aligned at the top, and horizontally aligned at the center.
+    /// </summary>
+    TopCenter = 0x002,
+    /// <summary>
+    ///  Content is vertically aligned at the top, and horizontally aligned on the right.
+    /// </summary>
+    TopRight = 0x004,
+    /// <summary>
+    ///  Content is vertically aligned in the middle, and horizontally aligned on the left.
+    /// </summary>
+    MiddleLeft = 0x010,
+    /// <summary>
+    ///  Content is vertically aligned in the middle, and horizontally aligned at the center.
+    /// </summary>
+    MiddleCenter = 0x020,
+    /// <summary>
+    ///  Content is vertically aligned in the middle, and horizontally aligned on the right.
+    /// </summary>
+    MiddleRight = 0x040,
+    /// <summary>
+    ///  Content is vertically aligned at the bottom, and horizontally aligned on the left.
+    /// </summary>
+    BottomLeft = 0x100,
+    /// <summary>
+    ///  Content is vertically aligned at the bottom, and horizontally aligned at the center.
+    /// </summary>
+    BottomCenter = 0x200,
+    /// <summary>
+    ///  Content is vertically aligned at the bottom, and horizontally aligned on the right.
+    /// </summary>
+    BottomRight = 0x400,
+}
+
+public enum TextImageRelationX
+{
+    Overlay = AnchorStylesX.None,
+    ImageBeforeText = AnchorStylesX.Left,
+    TextBeforeImage = AnchorStylesX.Right,
+    ImageAboveText = AnchorStylesX.Top,
+    TextAboveImage = AnchorStylesX.Bottom
+}
+
+public enum AnchorStylesX
+{
+    /// <summary>
+    ///  The control is anchored to the top edge of its container.
+    /// </summary>
+    Top = 0x01,
+
+    /// <summary>
+    ///  The control is anchored to the bottom edge of its container.
+    /// </summary>
+    Bottom = 0x02,
+
+    /// <summary>
+    ///  The control is anchored to the left edge of its container.
+    /// </summary>
+    Left = 0x04,
+
+    /// <summary>
+    ///  The control is anchored to the right edge of its container.
+    /// </summary>
+    Right = 0x08,
+
+    /// <summary>
+    ///  The control is not anchored to any edges of its container.
+    /// </summary>
+    None = 0,
+}

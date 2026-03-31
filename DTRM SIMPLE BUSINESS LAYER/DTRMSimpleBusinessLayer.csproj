@@ -292,7 +292,9 @@
     <EmbeddedResource Remove="Components\ButtonX.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj">
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\POSWinFormLayer\POSWinFormLayer.csproj" />
   </ItemGroup>
   <ProjectExtensions>

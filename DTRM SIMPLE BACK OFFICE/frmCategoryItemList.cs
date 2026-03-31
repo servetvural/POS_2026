@@ -82,10 +82,12 @@ namespace DTRMSimpleBackOffice
         {
             dgvCategoryItem.AutoGenerateColumns = false;
 
+            await FormatCategorItemGrid();
+
             category = await repoCategory.Get(category.IID, "Distribution, Items, Items.Distribution");
 
             _categoryItemSource.DataSource = category.Items.ReOrder().ToBindingList();
-           // _categoryItemSource.Sort = "DOrder ASC";
+            // _categoryItemSource.Sort = "DOrder ASC";
             dgvCategoryItem.DataSource = _categoryItemSource;
 
             lblCategory.Text = "Category : " + category.CategoryName;
@@ -139,12 +141,12 @@ namespace DTRMSimpleBackOffice
             if (dgvCategoryItem.SelectedRows.Count > 0)
             {
                 selectedCategoryItem = _categoryItemSource.Current as CategoryItem;
-                DisplayCategoryItemButton();
+                DisplaySampleCategoryItemButton();
             } else
                 selectedCategoryItem = null;
         }
 
-        private async void DisplayCategoryItemButton()
+        private async void DisplaySampleCategoryItemButton()
         {
             if (selectedCategoryItem != null)
             {
@@ -153,43 +155,61 @@ namespace DTRMSimpleBackOffice
                 btnCategoryItemSample.Font = new Font(category.FFamily, (float)selectedCategoryItem.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), category.FStyle));
                 btnCategoryItemSample.BackColor = Color.FromArgb(selectedCategoryItem.BgColor);
                 btnCategoryItemSample.ForeColor = Color.FromArgb(selectedCategoryItem.FgColor);
-                if (selectedCategoryItem.WithImage)
+
+                btnCategoryItemSample.DisplayStyle = (ToolStripItemDisplayStyle)selectedCategoryItem.ButtonDisplayStyle;
+                btnCategoryItemSample.TextAlign = (ContentAlignment)selectedCategoryItem.TextAlign;
+                btnCategoryItemSample.ImageAlign = (ContentAlignment)selectedCategoryItem.ImageAlign;
+                btnCategoryItemSample.TextImageRelation = (TextImageRelation)selectedCategoryItem.TextImageRelation;
+
+                if (selectedCategoryItem.ButtonDisplayStyle == ButtonDisplayStyles.Image || selectedCategoryItem.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
                 {
                     GenericImage gim = await bslayer.GetGenericImage(selectedCategoryItem.IID);
                     if (gim != null && gim.DisplayImage != null)
                     {
                         Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);
-                        btnCategoryItemSample.Image =  UFWin.ReSizeImageTo(btnImage, btnCategoryItemSample.Height -5, btnCategoryItemSample.Height-5);
+                        btnCategoryItemSample.Image = UFWin.ReSizeImageTo(btnImage, btnCategoryItemSample.Height - 5, btnCategoryItemSample.Height - 5);
                         btnCategoryItemSample.ImageScaling = ToolStripItemImageScaling.None;
-                        btnCategoryItemSample.DisplayStyle = UFWin.GetToolStripItemDisplayStyle(selectedCategoryItem.ItemStyle);
-                        btnCategoryItemSample.ImageAlign = UFWin.GetContentAlignment(selectedCategoryItem.ImagePosition);
-                       
+                    } else
+                    {
+                        btnCategoryItemSample.Image = null;
                     }
-                } 
-
+                } else
+                {
+                    btnCategoryItemSample.Image = null;
+                }
             }
         }
+        private void btnCategoryItemSample_Paint(object sender, PaintEventArgs e)
+        {
+            ToolStripButton btn = (ToolStripButton)sender;
+            // Draw a solid red border around the button's content area
+            ControlPaint.DrawBorder(e.Graphics, btn.ContentRectangle,
+                Color.Red, ButtonBorderStyle.Solid);
+        }
 
-        
+
         #endregion
 
 
         private async void BtnEBFontTo_Click(object sender, EventArgs e)
         {
-            using (FontDialog fd = new FontDialog())
+            if (dgvCategoryItem.SelectedRows.Count > 0)
             {
-                fd.Font = new Font("Arial", 10, FontStyle.Bold);
-                if (fd.ShowDialog() == DialogResult.OK)
+                using (FontDialog fd = new FontDialog())
                 {
-                    for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                    fd.Font = new Font("Arial", 10, FontStyle.Bold);
+                    if (fd.ShowDialog() == DialogResult.OK)
                     {
-                        CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                        eb.FFamily = fd.Font.FontFamily.Name;
-                        eb.FSize = fd.Font.Size;
-                        eb.FStyle = fd.Font.Style.ToString();
-                        await bslayer.SaveJustEntityButton(eb);
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
+                        {
+                            item.FFamily = fd.Font.FontFamily.Name;
+                            item.FSize = fd.Font.Size;
+                            item.FStyle = fd.Font.Style.ToString();
+                            await repoCategoryItem.Save(item);
+                        }
+                        await LoadCategoryItems();
                     }
-                    await LoadCategoryItems();
                 }
             }
         }
@@ -203,11 +223,11 @@ namespace DTRMSimpleBackOffice
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val))
                     {
-                        for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
                         {
-                            CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                            eb.Width = val;
-                            await bslayer.SaveJustEntityButton(eb);
+                            item.Width = val;
+                            await repoCategoryItem.Save(item);
                         }
                         await LoadCategoryItems();
                     }
@@ -224,11 +244,11 @@ namespace DTRMSimpleBackOffice
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val))
                     {
-                        for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
                         {
-                            CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                            eb.Height = val;
-                            await bslayer.SaveJustEntityButton(eb);
+                            item.Height = val;
+                            await repoCategoryItem.Save(item);
                         }
                         await LoadCategoryItems();
                     }
@@ -248,14 +268,14 @@ namespace DTRMSimpleBackOffice
                         float val = 0;
                         if (float.TryParse(frm.InputValue, out val))
                         {
-                            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                            foreach (var item in selectedItems)
                             {
-                                CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                                eb.SalePrice = val;
-                                eb.SitinPrice = val;
-                                eb.TaPrice = val;
-                                eb.DPrice = val;
-                                await bslayer.SaveJustEntityButton(eb);
+                                item.SalePrice = val;
+                                item.SitinPrice = val;
+                                item.TaPrice = val;
+                                item.DPrice = val;
+                                await repoCategoryItem.Save(item);
                             }
                             await LoadCategoryItems();
                         }
@@ -273,14 +293,14 @@ namespace DTRMSimpleBackOffice
                     float val = 0;
                     if (float.TryParse(frm.InputValue, out val))
                     {
-                        for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
                         {
-                            CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                            eb.SaleTax = val;
-                            eb.SitinTax = val;
-                            eb.TaTax = val;
-                            eb.DTax = val;
-                            await bslayer.SaveJustEntityButton(eb);
+                            item.SaleTax = val;
+                            item.SitinTax = val;
+                            item.TaTax = val;
+                            item.DTax = val;
+                            await repoCategoryItem.Save(item);
                         }
                         await LoadCategoryItems();
                     }
@@ -290,25 +310,22 @@ namespace DTRMSimpleBackOffice
 
         private async void BtnMoveToEntity_Click(object sender, EventArgs e)
         {
-            //if (dgvCategoryItem.SelectedRows.Count > 0)
-            //{
-            //    using (frmEntitySelector frm = new frmEntitySelector(bslayer, dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString()))
-            //    {
-            //        if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //        {
-            //            string menuiid = dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString();
-            //            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
-            //            {
-            //                // EntityButton entityButton = GetEntityButton();
-            //                string ebiid = dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString();
-            //                CategoryItem entityButton = await bslayer.GetJustEntityButton(ebiid);
-            //                entityButton.CategoryIID = frm.SelectedEntiyIID;
-            //                await bslayer.SaveJustEntityButton(entityButton);
-            //            }
-            //            DgvEntity_SelectionChanged(null, null);
-            //        }
-            //    }
-            //}
+            if (dgvCategoryItem.SelectedRows.Count > 0)
+            {
+                using (frmCategorySelector frm = ActivatorUtilities.CreateInstance<frmCategorySelector>(ServiceHelper.Services, category.MenuIID))
+                {
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
+                        {
+                            item.CategoryIID = frm.SelectedCategoryIID;
+                            await repoCategoryItem.Save(item);
+                        }
+                        await LoadCategoryItems();
+                    }
+                }
+            }
         }
 
 
@@ -320,34 +337,49 @@ namespace DTRMSimpleBackOffice
                 bool blnDuplicateStockItems = (MessageBox.Show("Do you want to duplicate stock items as well?",
                     "DUPLICATE STOCK ITEMS", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                     MessageBoxDefaultButton.Button1) == DialogResult.Yes);
-                for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+
+                var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                foreach (var item in selectedItems)
                 {
-
-                    CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                    CategoryItem eb2 = eb.Duplicate();
-
-                    eb2.ItemName = "";
-                    if (await bslayer.SaveJustEntityButton(eb2))
+                    CategoryItem duplicated = item.Duplicate();
+                    duplicated.ItemName = "";
+                    duplicated = await repoCategoryItem.Save(duplicated);
+                    if (blnDuplicateStockItems)
                     {
-                        if (blnDuplicateStockItems)
-                        {
-                            List<EntityButtonStockItemLookUp> lookupList = await bslayer.GetStockItemsForEB(eb.IID);
-                            foreach (var lookup in lookupList)
-                            {
-                                EntityButtonStockItemLookUp newlookup = lookup.Duplicate(eb2.IID);
-                                await bslayer.SaveEntityButtonStockItemLookUp(newlookup);
-                            }
-                            //DataTable dt = bslayer.GetStockItemsForEB(eb.IID);
-                            //for (int s = 0; s < dt.Rows.Count; s++) {
-                            //    EntityButtonStockItemLookUp lookup = new EntityButtonStockItemLookUp(dt.Rows[s]) {
-                            //        EntityButtonIID = eb2.IID
-                            //    };
 
-                            //    bslayer.SaveEntityButtonStockItemLookUp(lookup.Duplicate(eb2.IID));
-                            //}
-                        }
                     }
                 }
+
+                await LoadCategoryItems();
+
+                //    for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                //{
+
+                //    CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
+                //    CategoryItem eb2 = eb.Duplicate();
+
+                //    eb2.ItemName = "";
+                //    if (await bslayer.SaveJustEntityButton(eb2))
+                //    {
+                //        if (blnDuplicateStockItems)
+                //        {
+                //            List<EntityButtonStockItemLookUp> lookupList = await bslayer.GetStockItemsForEB(eb.IID);
+                //            foreach (var lookup in lookupList)
+                //            {
+                //                EntityButtonStockItemLookUp newlookup = lookup.Duplicate(eb2.IID);
+                //                await bslayer.SaveEntityButtonStockItemLookUp(newlookup);
+                //            }
+                //            //DataTable dt = bslayer.GetStockItemsForEB(eb.IID);
+                //            //for (int s = 0; s < dt.Rows.Count; s++) {
+                //            //    EntityButtonStockItemLookUp lookup = new EntityButtonStockItemLookUp(dt.Rows[s]) {
+                //            //        EntityButtonIID = eb2.IID
+                //            //    };
+
+                //            //    bslayer.SaveEntityButtonStockItemLookUp(lookup.Duplicate(eb2.IID));
+                //            //}
+                //        }
+                //    }
+                //}
             }
         }
 
@@ -375,16 +407,16 @@ namespace DTRMSimpleBackOffice
                     pboxEBPicture.Image = null;
                 else
                 {
-                    if (eb.WithImage)
-                        pboxEBPicture.Image = null;
-                    else
+                    if (eb.ButtonDisplayStyle == ButtonDisplayStyles.Image || eb.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
                     {
                         pboxEBPicture.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
                         lblImageSize.Text = gim.ImageSizeinKB.ToString() + " KB";
-                        // float sz = gim.GetImageSize();
+                    } else
+                    {
+                        pboxEBPicture.Image = null;
                     }
                 }
-                if (eb.WithImage)
+                if (eb.ButtonDisplayStyle == ButtonDisplayStyles.Image || eb.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
                 {
 
                     if (gim != null && gim.DisplayImage != null)
@@ -535,11 +567,11 @@ namespace DTRMSimpleBackOffice
 
         private async void BtnSetUpperCase_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+            foreach (var item in selectedItems)
             {
-                CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.ItemName = eb.ItemName.ToUpper();
-                bslayer.SaveJustEntityButton(eb);
+                item.ItemName = item.ItemName.ToUpper();
+                await repoCategoryItem.Save(item);
             }
             await LoadCategoryItems();
 
@@ -547,24 +579,22 @@ namespace DTRMSimpleBackOffice
 
         private async void BtnSetSentenceCase_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+            foreach (var item in selectedItems)
             {
-                CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.ItemName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(eb.ItemName);
-                bslayer.SaveJustEntityButton(eb);
+                item.ItemName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.ItemName);
             }
             await LoadCategoryItems();
-
         }
 
 
         private async void BtnSetToLowerCase_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+            foreach (var item in selectedItems)
             {
-                CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.ItemName = eb.ItemName.ToLower();
-                await bslayer.SaveJustEntityButton(eb);
+                item.ItemName = item.ItemName.ToLower();
+                await repoCategoryItem.Save(item);
             }
             await LoadCategoryItems();
         }
@@ -576,12 +606,11 @@ namespace DTRMSimpleBackOffice
                 if (cdlg.ShowDialog() == DialogResult.OK)
                 {
                     int selectedColor = cdlg.Color.ToArgb();
-
-                    for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                    var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                    foreach (var item in selectedItems)
                     {
-                        CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                        eb.FgColor = selectedColor;
-                        await bslayer.SaveJustEntityButton(eb);
+                        item.FgColor = selectedColor;
+                        await repoCategoryItem.Save(item);
                     }
                     await LoadCategoryItems();
                 }
@@ -595,12 +624,11 @@ namespace DTRMSimpleBackOffice
                 if (cdlg.ShowDialog() == DialogResult.OK)
                 {
                     int selectedColor = cdlg.Color.ToArgb();
-
-                    for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                    var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                    foreach (var item in selectedItems)
                     {
-                        CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                        eb.BgColor = selectedColor;
-                        await bslayer.SaveJustEntityButton(eb);
+                        item.BgColor = selectedColor;
+                        await repoCategoryItem.Save(item);
                     }
                     await LoadCategoryItems();
                 }
@@ -610,12 +638,11 @@ namespace DTRMSimpleBackOffice
         private async void BtnSetAllBackColourToTransparent_Click(object sender, EventArgs e)
         {
             int selectedColor = Color.Transparent.ToArgb();
-
-            for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+            foreach (var item in selectedItems)
             {
-                CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                eb.BgColor = selectedColor;
-                await bslayer.SaveJustEntityButton(eb);
+                item.BgColor = selectedColor;
+                await repoCategoryItem.Save(item);
             }
             await LoadCategoryItems();
         }
@@ -626,14 +653,14 @@ namespace DTRMSimpleBackOffice
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    List<Distribution> theList = frm.selectedDistributions;
-                    if (theList.Count > 0)
+                    Distribution distribution = frm.selectedDistributions?.First();
+                    if (distribution != null)
                     {
-                        for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                        var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                        foreach (var item in selectedItems)
                         {
-                            CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                            eb.DistributionIID = theList[0].IID;
-                            await bslayer.SaveJustEntityButton(eb);
+                            item.DistributionIID = distribution.IID;
+                            await repoCategoryItem.Save(item);
                         }
                         await LoadCategoryItems();
                     }
@@ -642,193 +669,7 @@ namespace DTRMSimpleBackOffice
         }
 
 
-        private DataGridView dgvSource;
-        private Rectangle dragBox;
-        private int rowIndexSource;
-        private int rowIndexDestination;
 
-        private void Dgv_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
-            {
-                // If the mouse moves outside the rectangle, start the drag.
-                if (dragBox != Rectangle.Empty && !dragBox.Contains(e.X, e.Y))
-                {
-                    // Proceed with the drag and drop, passing in the list item.                    
-                    //  DragDropEffects dropEffect =
-                    ((DataGridView)sender).DoDragDrop(((DataGridView)sender).Rows[rowIndexSource], DragDropEffects.Move);
-                }
-            }
-        }
-
-        private void Dgv_MouseDown(object sender, MouseEventArgs e)
-        {
-            // Get the index of the item the mouse is below.
-            rowIndexSource = ((DataGridView)sender).HitTest(e.X, e.Y).RowIndex;
-            if (rowIndexSource != -1)
-            {
-                // Remember the point where the mouse down occurred. 
-                // The DragSize indicates the size that the mouse can move before a drag event should be started.                
-                Size dragSize = SystemInformation.DragSize;
-
-                // Create a rectangle using the DragSize, with the mouse position being at the center of the rectangle.
-                dragBox = new Rectangle(new Point(e.X - (dragSize.Width / 2), e.Y - (dragSize.Height / 2)), dragSize);
-                dgvSource = ((DataGridView)sender);
-            } else
-                // Reset the rectangle if the mouse is not over an item in the ListBox.
-                dragBox = Rectangle.Empty;
-        }
-
-        private void Dgv_DragOver(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Move;
-            if (dgvSource != (DataGridView)sender)
-                e.Effect = DragDropEffects.None;
-        }
-
-        private void DgvStockItems_DragDrop(object sender, DragEventArgs e)
-        {
-            if (dgvSource != (DataGridView)sender)
-                return;
-
-            // The mouse locations are relative to the screen, so they must be converted to client coordinates.
-            Point clientPoint = ((DataGridView)sender).PointToClient(new Point(e.X, e.Y));
-
-            // Get the row index of the item the mouse is below. 
-            rowIndexDestination = ((DataGridView)sender).HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-
-            // If the drag operation was a move then remove and insert the row.
-            if (e.Effect == DragDropEffects.Move)
-            {
-                //DataGridViewRow rowToMove = e.Data.GetData(typeof(DataGridViewRow)) as DataGridViewRow;
-                //MessageBox.Show("From : " + rowIndexSource + ",  To : " + rowIndexDestination);
-                //call the methods to change the order now
-
-
-                //dropped on
-                int don = rowIndexDestination;
-                //being dropped on
-                int bdon = rowIndexSource;
-                bool blnArdisik;
-
-                //target doesn't exist
-                if (don == -1)
-                    return;
-
-
-                //always set bdon to don value on upward or downward movements
-                bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[bdon].Cells["colStockUsageIID"].Value.ToString(), don);
-
-
-                if (bdon < don)
-                {
-                    //Moving downwards
-                    blnArdisik = bdon + 1 == don;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[don].Cells["colStockUsageIID"].Value.ToString(), bdon);
-
-                    } else
-                    {
-                        bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[don].Cells["colStockUsageIID"].Value.ToString(), don - 1);
-                        //arayi doldur
-                        for (int i = bdon + 1; i < don; i++)
-                            bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[i].Cells["colStockUsageIID"].Value.ToString(), i - 1);
-                    }
-                } else
-                {
-                    //Moving upwards
-                    blnArdisik = don + 1 == bdon;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[don].Cells["colStockUsageIID"].Value.ToString(), bdon);
-                    } else
-                    {
-                        bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[don].Cells["colStockUsageIID"].Value.ToString(), don + 1);
-                        //arayi doldur
-                        for (int i = don + 1; i < bdon; i++)
-                            bslayer.UpdateStockItemLookUpDisplayOrder(dgvStockItems.Rows[i].Cells["colStockUsageIID"].Value.ToString(), i + 1);
-                    }
-                }
-
-                LoadStockItems();
-            }
-        }
-        private async void DgvEntityButton_DragDrop(object sender, DragEventArgs e)
-        {
-            if (dgvSource != (DataGridView)sender)
-                return;
-
-            // The mouse locations are relative to the screen, so they must be converted to client coordinates.
-            Point clientPoint = ((DataGridView)sender).PointToClient(new Point(e.X, e.Y));
-
-            // Get the row index of the item the mouse is below. 
-            rowIndexDestination = ((DataGridView)sender).HitTest(clientPoint.X, clientPoint.Y).RowIndex;
-
-            // If the drag operation was a move then remove and insert the row.
-            if (e.Effect == DragDropEffects.Move)
-            {
-                //DataGridViewRow rowToMove = e.Data.GetData(typeof(DataGridViewRow)) as DataGridViewRow;
-                //MessageBox.Show("From : " + rowIndexSource + ",  To : " + rowIndexDestination);
-                //call the methods to change the order now
-
-
-                //dropped on
-                int don = rowIndexDestination;
-                //being dropped on
-                int bdon = rowIndexSource;
-                bool blnArdisik;
-
-                //target doesn't exist
-                if (don == -1)
-                    return;
-
-
-                //always set bdon to don value on upward or downward movements
-                bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[bdon].Cells["colEntityButtonIID"].Value.ToString(), don);
-
-
-                if (bdon < don)
-                {
-                    //Moving downwards
-                    blnArdisik = bdon + 1 == don;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[don].Cells["colEntityButtonIID"].Value.ToString(), bdon);
-
-                    } else
-                    {
-                        bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[don].Cells["colEntityButtonIID"].Value.ToString(), don - 1);
-                        //arayi doldur
-                        for (int i = bdon + 1; i < don; i++)
-                            bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[i].Cells["colEntityButtonIID"].Value.ToString(), i - 1);
-                    }
-                } else
-                {
-                    //Moving upwards
-                    blnArdisik = don + 1 == bdon;
-
-                    if (blnArdisik)
-                    {
-                        //Just swap
-                        bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[don].Cells["colEntityButtonIID"].Value.ToString(), bdon);
-                    } else
-                    {
-                        bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[don].Cells["colEntityButtonIID"].Value.ToString(), don + 1);
-                        //arayi doldur
-                        for (int i = don + 1; i < bdon; i++)
-                            bslayer.SetEntityButtonDisplayOrder(dgvCategoryItem.Rows[i].Cells["colEntityButtonIID"].Value.ToString(), i + 1);
-                    }
-                }
-                await LoadCategoryItems();
-            }
-        }
 
 
 
@@ -946,6 +787,28 @@ namespace DTRMSimpleBackOffice
             Close();
         }
 
-       
+        async Task FormatCategorItemGrid() 
+        {
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Item"; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonType").ToList().ForEach(c => {  c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price") || c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "PadFlag").ToList().ForEach(c => {  c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DistributionName").ToList().ForEach(c => { c.Width = 150; c.HeaderText = "Distribution"; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Width").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment= DataGridViewContentAlignment.MiddleCenter ; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Height").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Font").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            
+        }
     }
 }
