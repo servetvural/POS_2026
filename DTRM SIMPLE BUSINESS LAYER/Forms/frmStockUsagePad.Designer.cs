@@ -1,4 +1,4 @@
-﻿using POSLayer.Views;
+﻿using POSLayer.Models;
 
 namespace DTRMNS {
     partial class frmStockUsagePad {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Models;
 
@@ -11,9 +12,11 @@ using POSLayer.Models;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331184119_recipe3")]
+    partial class recipe3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,6 +457,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageFileName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ImageSizeinKB")
@@ -766,14 +770,17 @@ namespace POSLayer.Migrations
                     b.Property<string>("FreeItemText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuantityType")
                         .HasColumnType("int");
 
                     b.Property<string>("StockItemIID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("isFreeItem")
+                        .HasColumnType("bit");
 
                     b.HasKey("IID");
 
@@ -1442,7 +1449,7 @@ namespace POSLayer.Migrations
                     b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
                         .WithMany("recipes")
                         .HasForeignKey("CategoryItemIID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("POSLayer.Models.StockItem", "StockItem")
                         .WithMany("recipes")

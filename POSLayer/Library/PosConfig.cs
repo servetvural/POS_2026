@@ -994,6 +994,9 @@ public class PosConfig
     #endregion
 
 
+    public int CategoryItem_Image_Width { get; set; } = 200;
+    public int CategoryItem_Image_Height { get; set; } = 200;
+
 
     #region IID values
 

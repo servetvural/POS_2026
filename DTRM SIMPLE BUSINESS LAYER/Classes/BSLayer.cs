@@ -3756,11 +3756,11 @@ namespace DTRMNS
         {
 
             if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName);
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName);
             //return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
             else
             {
-                return repoMenu.GetStockItemUsageView().Result.OrderBy(x => x.SupplierName);
+                return repoMenu.GetStockItemUsageView().Result.OrderBy(x => x.StockItem.SupplierName);
                 //return GetDataTable("Select * from StockItemUsage order by SupplierName asc");
             }
         }
@@ -3787,28 +3787,28 @@ namespace DTRMNS
         public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplier(string SupplierIID, bool OrderableOnly)
         {
             if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName).ToList();
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName).ToList();
             //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
             else
             {
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID).OrderBy(x => x.SupplierName).ToList();
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID).OrderBy(x => x.StockItem.SupplierName).ToList();
                 //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' order by SupplierName asc");
             }
         }
         public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplierWithSearch(string SupplierIID, bool OrderableOnly, string searchText)
         {
             if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.OrderableQuantity >= 1 && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.OrderableQuantity >= 1 && x.StockItem.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.StockItem.SupplierName).ToList();
             //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
             else
             {
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.SupplierIID == SupplierIID && x.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.SupplierName).ToList();
+                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.StockItem.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.StockItem.SupplierName).ToList();
                 //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "'  and StockName Like '%" + searchText + "%' order by SupplierName asc");
             }
         }
         public async Task<IEnumerable<StockItemUsage>> GetOrderableStockUsage()
         {
-            return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.SupplierName).ToList();
+            return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName).ToList();
             //return GetDataTable("Select OrderableQuantity as HowMany, OrderableType, StockName, SupplierName from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
         }
 

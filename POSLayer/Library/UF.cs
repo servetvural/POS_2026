@@ -454,6 +454,12 @@ public static class UF
         return new BindingList<T>(source);
     }
 
+    // Returns 'value' if 'current' is 0; otherwise returns 'current'
+    public static int ifZero(this int current, int value)
+    {
+        return current == 0 ? value : current;
+    }
+
     public static List<T> ReOrder<T>(this IList<T>? source) where T : BaseClass
     {
         if (source == null || source.Count == 0)

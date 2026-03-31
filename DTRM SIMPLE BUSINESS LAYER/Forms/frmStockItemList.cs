@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,25 +12,41 @@ using Newtonsoft.Json;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using PosLibrary;
+
+using POSWinFormLayer;
 
 namespace DTRMNS
 {
     public partial class frmStockItemList : Form
     {
         PosConfig config;
-        DTRMSimpleBusiness bslayer;
-        StockItem selectedStockItem;
+        IRepository<Supplier> repoSupplier;
+        IRepository<StockItem> repoStockItem;
+                                    IRepository<StockItemUsage> repoStockItemUsage;
 
+        DTRMSimpleBusiness bslayer;
+
+        public  StockItem selectedStockItem;
+
+        private BindingSource _supplierSource = new BindingSource();
+        private BindingSource _stockItemSource = new BindingSource();
+        private BindingSource _usageSource = new BindingSource();
         public frmStockItemList()
         {
             InitializeComponent();
         }
-        public frmStockItemList(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public frmStockItemList(PosConfig configAsService, IRepository<Supplier> _repoSupplier, IRepository<StockItem> _repoStockItem,
+            IRepository<StockItemUsage> _repoStockItemUsage, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
             config = configAsService;
+            repoSupplier = _repoSupplier;
+            repoStockItem = _repoStockItem;
+            repoStockItemUsage = _repoStockItemUsage;
+
             this.bslayer = bslayer;
             rbAll.Checked = true;
         }
@@ -39,11 +56,14 @@ namespace DTRMNS
             LoadAll();
         }
 
-        private void LoadAll()
+        private async void LoadAll()
         {
-            PopulatePopup();
-            LoadSuppliers();
-            LoadStockItems();
+            dgv.AutoGenerateColumns = false;
+            await PopulatePopup();
+            await LoadSuppliers();
+            await LoadStockItems();
+
+            await FormatStockItemGrid();
         }
 
         private async Task PopulatePopup()
@@ -52,20 +72,10 @@ namespace DTRMNS
             popQuantityType.DropDownItems.Clear();
             popOrderType.DropDownItems.Clear();
 
-            //DataTable dt = bslayer.GetAllSuppliers();
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    Supplier sup = new Supplier(dt.Rows[i]);
-            //    ToolStripMenuItem tsi = new System.Windows.Forms.ToolStripMenuItem();
-            //    tsi.Text = sup.SupplierName;
-            //    tsi.Tag = sup.IID;
-            //    popSupplier.DropDownItems.Add(tsi);
-            //    tsi.Click += Tsi_Click;
-            //}
-            List<Supplier> suppliers = await bslayer.GetAllSuppliersAsList();
+            List<Supplier> suppliers = await repoSupplier.GetAllAsync();
             foreach (var sup in suppliers)
             {
-                ToolStripMenuItem tsi = new System.Windows.Forms.ToolStripMenuItem();
+                ToolStripMenuItem tsi = new ToolStripMenuItem();
                 tsi.Text = sup.SupplierName;
                 tsi.Tag = sup.IID;
                 popSupplier.DropDownItems.Add(tsi);
@@ -74,7 +84,7 @@ namespace DTRMNS
 
             for (int i = 0; i < 9; i++)
             {
-                ToolStripMenuItem tsi = new System.Windows.Forms.ToolStripMenuItem();
+                ToolStripMenuItem tsi = new ToolStripMenuItem();
                 tsi.Text = ((QuantityTypes)i).ToString();
                 tsi.Tag = i;
                 popQuantityType.DropDownItems.Add(tsi);
@@ -83,7 +93,7 @@ namespace DTRMNS
 
             for (int i = 0; i < 9; i++)
             {
-                ToolStripMenuItem tsi = new System.Windows.Forms.ToolStripMenuItem();
+                ToolStripMenuItem tsi = new ToolStripMenuItem();
                 tsi.Text = ((QuantityTypes)i).ToString();
                 tsi.Tag = i;
                 popOrderType.DropDownItems.Add(tsi);
@@ -99,47 +109,40 @@ namespace DTRMNS
                 string supIID = tsi.Tag.ToString();
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
                 {
-                    StockItem si =await bslayer.GetStockItem(dgv.SelectedRows[i].Cells[0].Value.ToString());
+                    StockItem si = _stockItemSource.Current as StockItem;
                     si.SupplierIID = supIID;
-                    bslayer.SaveStockItem(si);
+                    await repoStockItem.Save(si);
                 }
-                LoadStockItems();
+                await LoadStockItems();
             }
         }
 
-        private void LoadSuppliers()
+        private async Task LoadSuppliers()
         {
-            cmbSuppliers.DataSource = bslayer.GetAllSuppliersAsList();
+            _supplierSource.DataSource = (await repoSupplier.GetAllAsync()).ToBindingList();
+            cmbSuppliers.DataSource = _supplierSource;
+            cmbSuppliers.DisplayMember = "SupplierName";
+            cmbSuppliers.ValueMember = "IID";
         }
 
-        private void LoadStockItems()
+        private async Task LoadStockItems()
         {
             if (rbAll.Checked)
             {
-                dgv.DataSource = bslayer.GetAllStockItems();
+                _stockItemSource.DataSource = (await repoStockItem.GetAllAsync("Supplier")).ToBindingList();
+                dgv.DataSource = _stockItemSource;
             } else
             {
                 if (cmbSuppliers.SelectedValue != null)
                 {
-                    dgv.DataSource = bslayer.GetStockItemsForSupplier(cmbSuppliers.SelectedValue.ToString());
-                }
+                    _stockItemSource.DataSource = (await repoStockItem.GetListByField("SupplierIID", cmbSuppliers.SelectedValue.ToString(), "Supplier")).ToBindingList();
+                    dgv.DataSource = _stockItemSource;
+                } else
+                    _stockItemSource.DataSource = null;
             }
-            PopulateRows();
-
         }
 
-        private void PopulateRows()
-        {
-            for (int i = 0; i < dgv.Rows.Count; i++)
-            {
-                dgv.Rows[i].Cells["colqtylabel"].Value = (QuantityTypes)(int.Parse(dgv.Rows[i].Cells["colqty"].Value.ToString()));
-                dgv.Rows[i].Cells["colordlabel"].Value = (QuantityTypes)(int.Parse(dgv.Rows[i].Cells["colord"].Value.ToString()));
-            }
-            vScrolldgv.Maximum = dgv.RowCount;
-        }
-
-
-        private void rbAll_CheckedChanged(object sender, EventArgs e)
+        private async void rbAll_CheckedChanged(object sender, EventArgs e)
         {
             if (rbAll.Checked)
                 cmbSuppliers.Visible = false;
@@ -147,37 +150,36 @@ namespace DTRMNS
             {
                 cmbSuppliers.Visible = true;
             }
-            LoadStockItems();
+            await LoadStockItems();
         }
 
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAdd_Click(object sender, EventArgs e)
         {
-            frmStockItem frm = new frmStockItem(bslayer, new StockItem());
+            frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, new StockItem());
             if (frm.ShowDialog() == DialogResult.OK)
-                LoadStockItems();
+                await LoadStockItems();
         }
 
         private async void btnEdit_Click(object sender, EventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            if (selectedStockItem != null)
             {
-                StockItem stockItem =await bslayer.GetStockItem(dgv.SelectedRows[0].Cells[0].Value.ToString());
-                frmStockItem frm = new frmStockItem(bslayer, stockItem);
+                frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, selectedStockItem);
                 if (frm.ShowDialog() == DialogResult.OK)
-                    LoadStockItems();
+                    await LoadStockItems();
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e)
+        private async void btnDelete_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Not good Idea", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes)
+            if (selectedStockItem != null)
             {
-                for (int i = 0; i < dgv.SelectedRows.Count; i++)
+                if (MessageBox.Show("Not good Idea", "Warning", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes)
                 {
-                    bslayer.DeleteStockItem(dgv.SelectedRows[i].Cells[0].Value.ToString(), false);
+                    await repoStockItem.Delete(selectedStockItem.IID);
+                    await LoadStockItems();
                 }
-                LoadStockItems();
             }
         }
 
@@ -192,70 +194,53 @@ namespace DTRMNS
             Close();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private async void btnSelect_Click(object sender, EventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            if (selectedStockItem != null)
             {
-                selectedStockItem =await bslayer.GetStockItem(dgv.SelectedRows[0].Cells[0].Value.ToString());
                 this.DialogResult = DialogResult.OK;
                 Close();
             }
         }
 
-        private void cmbSuppliers_SelectionChangeCommitted(object sender, EventArgs e)
+        private async void cmbSuppliers_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            LoadStockItems();
+            await LoadStockItems();
         }
 
         private async void QuantityType_Click(object sender, EventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            if (selectedStockItem != null)
             {
                 ToolStripMenuItem mi = (ToolStripMenuItem)sender;
-                for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                {
-                    StockItem si =await bslayer.GetStockItem(dgv.SelectedRows[i].Cells[0].Value.ToString());
-                    si.QuantityType = (QuantityTypes)(int.Parse(mi.Tag.ToString()));
-                    bslayer.SaveStockItem(si);
-                }
-                LoadStockItems();
+                selectedStockItem.QuantityType = (QuantityTypes)(int.Parse(mi.Tag.ToString()));
+                await repoStockItem.Save(selectedStockItem);
+                await LoadStockItems();
             }
         }
 
         private async void OrderType_Click(object sender, EventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            if (selectedStockItem != null)
             {
                 ToolStripMenuItem mi = (ToolStripMenuItem)sender;
-                for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                {
-                    StockItem si =await bslayer.GetStockItem(dgv.SelectedRows[i].Cells[0].Value.ToString());
-                    si.OrderType = (QuantityTypes)(int.Parse(mi.Tag.ToString()));
-                    bslayer.SaveStockItem(si);
-                }
-                LoadStockItems();
+                selectedStockItem.OrderType = (QuantityTypes)(int.Parse(mi.Tag.ToString()));
+                await repoStockItem.Save(selectedStockItem);
+                await LoadStockItems();
             }
         }
 
         private async void conversionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            if (selectedStockItem != null)
             {
                 frmNo frm = new frmNo();
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                    {
-                        StockItem si =await bslayer.GetStockItem(dgv.SelectedRows[i].Cells[0].Value.ToString());
-                        si.Conversion = frm.val;
-                        bslayer.SaveStockItem(si);
-                    }
-                    LoadStockItems();
+                    selectedStockItem.Conversion = frm.val;
+                    await repoStockItem.Save(selectedStockItem);
+                    await LoadStockItems();
                 }
             }
         }
@@ -285,21 +270,33 @@ namespace DTRMNS
             }
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private async void btnSearch_Click(object sender, EventArgs e)
         {
             if (txtSearch.Text.Length > 0)
             {
+                // Filter by exact match
+                //myBindingSource.Filter = "SupplierName = 'ACME Corp'";
+
                 if (rbAll.Checked)
-                    dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim());
+                    // Filter using 'LIKE' for partial matches (search as you type)
+                    _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%'", txtSearch.Text.Trim());
+
+                //  dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim());
                 else
-                    dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
-                PopulateRows();
+                {
+                    _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%' and SupplierIID = '{1}", txtSearch.Text.Trim(), cmbSuppliers.SelectedItem);
+                    // dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
+
+                }
                 txtSearch.Text = "";
             } else
-                LoadStockItems();
+            {
+                _stockItemSource.Filter = null;
+                await LoadStockItems();
+            }
         }
 
-        private void txtSearch_KeyDown(object sender, KeyEventArgs e)
+        private async void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 btnSearch_Click(null, null);
@@ -311,35 +308,50 @@ namespace DTRMNS
                 txtSearch.Focus();
         }
 
-        private void dgv_SelectionChanged(object sender, EventArgs e)
+        private async void dgv_SelectionChanged(object sender, EventArgs e)
         {
-            LoadUsage();
+            selectedStockItem = (StockItem)_stockItemSource.Current;
+            if (selectedStockItem != null)
+            {
+                GenericImage gim = await repoStockItem.GetImageAsync(selectedStockItem.IID);
+                if (gim != null && gim.DisplayImage != null)
+                {
+                    pBox.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
+                    btnSample.Image = UFWin.ReSizeImageTo(pBox.Image, 60, 50, true);
+                } else
+                {
+                    pBox.Image = null;
+                    btnSample.Image = null;
+                }
+                await LoadUsage();
+            }
+
+
         }
 
-        private void LoadUsage()
+        private void btnSample_Paint(object sender, PaintEventArgs e)
         {
-            if (dgv.SelectedRows.Count > 0)
+            // Draw a solid red border around the button's content area
+            ControlPaint.DrawBorder(e.Graphics, btnSample.ContentRectangle,
+                Color.Black, ButtonBorderStyle.Solid);
+        }
+        private async Task LoadUsage()
+        {
+            if (selectedStockItem != null)
             {
-                string StockItemIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                //string sql = "select IID, EntityButtonName from EntityButton where IID in (select EntityButtonIID from entitybuttonstockItemLookup where stockItemIID = '" + IID + "')";
-                dgvUsage.DataSource = bslayer.GetEntityButtonStockItemRecipeFromStockItem(StockItemIID);
-                //bslayer.GetDataTable(sql);
 
-                PopulateUsageData();
+               // string StockItemIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
+               // dgvUsage.DataSource = bslayer.GetEntityButtonStockItemRecipeFromStockItem(selectedStockItem.IID);
+               
+                _usageSource.DataSource = await repoStockItemUsage.GetListByField("StockItemIID", selectedStockItem.IID, "CategoryItem,StockItem");
+                  dgvUsage.DataSource = _usageSource;
 
-                vScrolldgvUsage.Maximum = dgvUsage.RowCount;
+                //  vScrolldgvUsage.Maximum = dgvUsage.RowCount;
             } else
                 dgvUsage.DataSource = null;
 
         }
 
-        private void PopulateUsageData()
-        {
-            for (int i = 0; i < dgvUsage.Rows.Count; i++)
-            {
-                dgvUsage.Rows[i].Cells["colQuantityTypeLabel"].Value = (QuantityTypes)(int.Parse(dgvUsage.Rows[i].Cells["colQuantityType"].Value.ToString()));
-            }
-        }
 
         private void dgvUsage_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -353,7 +365,7 @@ namespace DTRMNS
             //}
         }
 
-        private void btnWideRowToggle_Click(object sender, EventArgs e)
+        private async void btnWideRowToggle_Click(object sender, EventArgs e)
         {
             if (dgv.RowTemplate.Height == 22)
             {
@@ -362,7 +374,7 @@ namespace DTRMNS
             {
                 dgv.RowTemplate.Height = 22;
             }
-            LoadStockItems();
+            await LoadStockItems();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -412,19 +424,9 @@ namespace DTRMNS
                 dgvUsage.FirstDisplayedScrollingRowIndex = e.NewValue;
         }
 
-        private void dgv_Sorted(object sender, EventArgs e)
-        {
-            PopulateRows();
-        }
-
-        private void dgvUsage_Sorted(object sender, EventArgs e)
-        {
-            PopulateUsageData();
-        }
-
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<StockItem> itemList =await bslayer.GetAllStockItemsList();
+            List<StockItem> itemList = await repoStockItem.GetAllAsync();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -444,7 +446,7 @@ namespace DTRMNS
             }
         }
 
-        private void btnImportFromJson_Click(object sender, EventArgs e)
+        private async void btnImportFromJson_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
@@ -461,17 +463,59 @@ namespace DTRMNS
                             List<StockItem> itemList = JsonConvert.DeserializeObject<List<StockItem>>(content);
                             foreach (StockItem item in itemList)
                             {
-                                bslayer.SaveStockItem(item);
+                                await repoStockItem.Save(item);
                             }
                             MessageBox.Show("Saved Stock Item List");
                         } else
                         {
                             MessageBox.Show("Failed to Get Stock Item List");
                         }
-                        LoadStockItems();
+                        await LoadStockItems();
                     }
                 }
             }
         }
+
+        async Task FormatStockItemGrid()
+        {
+            dgv.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "StockName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 250; c.HeaderText = "Stock Item"; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "QuantityType").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "OrderType").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Conversion").ToList().ForEach(c => { c.Width = 100; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "SupplierName").ToList().ForEach(c => { c.Width = 250; c.HeaderText = "Supplier"; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "UsedQuantity").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgv.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+        }
+
+        private void btnSample_Click(object sender, EventArgs e)
+        {
+            pBox.Visible = !pBox.Visible;
+        }
+
+        private async void tsSort_Click(object sender, EventArgs e)
+        {
+            await repoStockItem.Sort();
+            await LoadStockItems();
+        }
+        private async void tsMoveUp_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoStockItem.MoveUp((StockItem)dgv.SelectedRows[0].DataBoundItem);
+                await LoadStockItems();
+            }
+        }
+        private async void tsMoveDown_Click(object sender, EventArgs e)
+        {
+            if (dgv.SelectedRows.Count > 0)
+            {
+                await repoStockItem.MoveDown((StockItem)dgv.SelectedRows[0].DataBoundItem);
+                await LoadStockItems();
+            }
+        }
+
+
     }
 }

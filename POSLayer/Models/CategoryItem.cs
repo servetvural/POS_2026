@@ -51,6 +51,9 @@ public partial class CategoryItem : BaseClass
     public TextImageRelationX TextImageRelation { get; set; } = TextImageRelationX.ImageBeforeText;
     public ContentAlignmentX ImageAlign { get; set; } = ContentAlignmentX.MiddleCenter;
 
+    public List<StockItemUsage> stockUsages { get; set; } = new();
+
+    public List<Recipe> recipes { get; set; } = new();
 
     //public ButtonStyleTypes ItemStyle { get; set; }    // { Text, Image, TextAndImage }
     //public ImagePositionTypes ImagePosition { get; set; } // { Left, Center, Right }
@@ -106,7 +109,7 @@ public partial class CategoryItem : BaseClass
     public CategoryItem Duplicate()
     {
         CategoryItem eb = Clone();
-        eb.IID = ShortGuid.NewGuid().ToString();
+        eb.IID = null;
         return eb;
     }
 

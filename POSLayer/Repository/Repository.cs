@@ -672,15 +672,15 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                          Menu ON Distribution.ParentMenuIID = Menu.IID";
         return await GetDBContext().Set<StockItemUsage>().FromSqlRaw(sql).ToListAsync();
     }
-    public async Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView()
-    {
-        var sql = @"SELECT StockItem.StockName, EntityButton.EntityButtonName, EntityButtonStockItemLookUp.EntityButtonIID, EntityButtonStockItemLookUp.StockItemIID, EntityButtonStockItemLookUp.QuantityType, 
-                         EntityButtonStockItemLookUp.Quantity, EntityButton.ParentMenuIID
-                FROM EntityButtonStockItemLookUp LEFT OUTER JOIN
-                         EntityButton ON EntityButtonStockItemLookUp.EntityButtonIID = EntityButton.IID LEFT OUTER JOIN
-                         StockItem ON EntityButtonStockItemLookUp.StockItemIID = StockItem.IID";
-        return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView()
+    //{
+    //    var sql = @"SELECT StockItem.StockName, EntityButton.EntityButtonName, EntityButtonStockItemLookUp.EntityButtonIID, EntityButtonStockItemLookUp.StockItemIID, EntityButtonStockItemLookUp.QuantityType, 
+    //                     EntityButtonStockItemLookUp.Quantity, EntityButton.ParentMenuIID
+    //            FROM EntityButtonStockItemLookUp LEFT OUTER JOIN
+    //                     EntityButton ON EntityButtonStockItemLookUp.EntityButtonIID = EntityButton.IID LEFT OUTER JOIN
+    //                     StockItem ON EntityButtonStockItemLookUp.StockItemIID = StockItem.IID";
+    //    return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();
+    //}
 
     public async Task<List<DistributionView>> GetDistributionView()
     {
@@ -783,9 +783,6 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         {
             return null;
         }
-
-
-
     }
 
 
@@ -814,5 +811,72 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
+    #region STOCK FUNCTIONS
 
+    //public async Task<List<StockItemView>> GetStockItesWithSupplier(string SupplierIID = null)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        var query = _db.StockItems.Join(_db.Suppliers,
+    //stock => stock.SupplierIID,      // Key from first list
+    //supp => supp.IID,   // Key from second list
+    //(stock, supp) => new StockItemView {   // Resulting "merged" object
+    //    student.Name,
+    //    score.Grade
+    //});
+
+
+    //    if (string.IsNullOrEmpty(SupplierIID))
+    //    {
+    //        var sql = @"SELECT StockItem.*, Supplier.SupplierName
+    //                FROM StockItem LEFT OUTER JOIN
+    //                     Supplier ON StockItem.SupplierIID = Supplier.IID";
+    //        return await GetDBContext().Set<StockItemView>().FromSqlRaw(sql).ToListAsync();
+    //    } else
+    //    {
+    //        var sql = @"SELECT StockItem.*, Supplier.SupplierName
+    //                FROM StockItem LEFT OUTER JOIN
+    //                     Supplier ON StockItem.SupplierIID = Supplier.IID
+    //                WHERE StockItem.SupplierIID = '" + SupplierIID + "'";
+    //        return await GetDBContext().Set<StockItemView>().FromSqlRaw(sql).ToListAsync();
+    //    }
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }
+    //}
+    //public async Task<List<StockItem>> GetStockItemsForMenu(string MenuIID)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        var stockItems = await _db.Menus.Where(m => m.IID == MenuIID)
+    //            .SelectMany(m => m.categories)
+    //            .SelectMany(c => c.Items)
+    //            .SelectMany(i => new[] { i.StockItem1, i.StockItem2, i.StockItem3, i.StockItem4, i.StockItem5 })
+    //            .Where(si => si != null) // Filter out nulls
+    //            .Distinct() // Get unique stock items
+    //            .ToListAsync();
+    //        return stockItems;
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }
+    //}
+
+    #endregion
+
+    public async Task<GenericImage> GetImageAsync(string EntityIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            GenericImage gim =await _db.Images.Where(img => img.ReferenceIID == EntityIID).FirstOrDefaultAsync();
+            return gim;
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
 }

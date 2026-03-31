@@ -29,11 +29,11 @@ namespace DTRMSimpleBackOffice {
         {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCategoryItemList));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -54,7 +54,6 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
             popCategoryItem = new System.Windows.Forms.ContextMenuStrip(components);
             popEBAddNew = new System.Windows.Forms.ToolStripMenuItem();
             popEBEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,43 +75,41 @@ namespace DTRMSimpleBackOffice {
             popSetAllBackColourTo = new System.Windows.Forms.ToolStripMenuItem();
             popSetAllBackColourToTransparent = new System.Windows.Forms.ToolStripMenuItem();
             popSetAllDistributionTo = new System.Windows.Forms.ToolStripMenuItem();
-            dgvStockItems = new System.Windows.Forms.DataGridView();
-            colStockUsageIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colEBIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colStockItemIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            QuantityTypeAsString = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            StockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Comment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dgvRecipe = new System.Windows.Forms.DataGridView();
+            recipeTextDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            stockItemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            quantityTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            commentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            recipeBindingSource = new System.Windows.Forms.BindingSource(components);
             entityButtonStockItemLookUpBindingSource = new System.Windows.Forms.BindingSource(components);
             pnlEBPicture = new System.Windows.Forms.Panel();
             pboxEBPicture = new System.Windows.Forms.PictureBox();
-            btnEBSample = new System.Windows.Forms.Button();
             barStockUsage = new System.Windows.Forms.ToolStrip();
-            btnAddStockItem = new System.Windows.Forms.ToolStripButton();
+            btnAddRecipeItem = new System.Windows.Forms.ToolStripButton();
             btnEditStockItem = new System.Windows.Forms.ToolStripButton();
             btnDeleteStockItem = new System.Windows.Forms.ToolStripButton();
-            btnCopyStockUsageItems = new System.Windows.Forms.ToolStripButton();
-            btnPasteStockUsageItems = new System.Windows.Forms.ToolStripButton();
-            btnPasteSpecialStockUsageItems = new System.Windows.Forms.ToolStripButton();
-            lblImageSize = new System.Windows.Forms.ToolStripLabel();
+            btnCopyRecipeItems = new System.Windows.Forms.ToolStripButton();
+            btnPasteRecipeItems = new System.Windows.Forms.ToolStripButton();
             btnQuantityToComment = new System.Windows.Forms.ToolStripButton();
-            tsSortStockItem = new System.Windows.Forms.ToolStripButton();
-            tsMoveUpStockItem = new System.Windows.Forms.ToolStripButton();
-            tsMoveDownStockItem = new System.Windows.Forms.ToolStripButton();
+            tsSortRecipeItem = new System.Windows.Forms.ToolStripButton();
+            tsMoveUpRecipeItem = new System.Windows.Forms.ToolStripButton();
+            tsMoveDownRecipeItem = new System.Windows.Forms.ToolStripButton();
             dgvCategoryItem = new System.Windows.Forms.DataGridView();
             itemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             buttonTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            saleTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            sitinTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            taTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            padFlagDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             distributionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             salePriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             sitinPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             taPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dPriceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            saleTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            sitinTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            taTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dTaxDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            padFlagDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             widthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             heightDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             fontDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -120,7 +117,6 @@ namespace DTRMSimpleBackOffice {
             textAlignDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             textImageRelationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             imageAlignDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             _categoryItemSourceDesign = new System.Windows.Forms.BindingSource(components);
             barEntityButton = new System.Windows.Forms.ToolStrip();
             btnAddEntityButton = new System.Windows.Forms.ToolStripButton();
@@ -146,8 +142,10 @@ namespace DTRMSimpleBackOffice {
             btnEntityButtonRowHeight25 = new System.Windows.Forms.ToolStripMenuItem();
             btnEntityButtonRowHeight50 = new System.Windows.Forms.ToolStripMenuItem();
             btnEntityButtonRowHeight100 = new System.Windows.Forms.ToolStripMenuItem();
-            btnEntityButtonRowHeight150 = new System.Windows.Forms.ToolStripMenuItem();
-            btnEntityButtonRowHeight200 = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             tsSortCategoryItem = new System.Windows.Forms.ToolStripButton();
             tsMoveUpCategoryItem = new System.Windows.Forms.ToolStripButton();
             tsMoveDownCategoryItem = new System.Windows.Forms.ToolStripButton();
@@ -199,7 +197,8 @@ namespace DTRMSimpleBackOffice {
             panel1 = new System.Windows.Forms.Panel();
             lblCategory = new System.Windows.Forms.Label();
             popCategoryItem.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvStockItems).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvRecipe).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)recipeBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)entityButtonStockItemLookUpBindingSource).BeginInit();
             pnlEBPicture.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pboxEBPicture).BeginInit();
@@ -287,21 +286,21 @@ namespace DTRMSimpleBackOffice {
             popEBSetToUpperCase.Name = "popEBSetToUpperCase";
             popEBSetToUpperCase.Size = new System.Drawing.Size(235, 22);
             popEBSetToUpperCase.Text = "Set To UPPERCASE";
-            popEBSetToUpperCase.Click += BtnSetUpperCase_Click;
+            popEBSetToUpperCase.Click += btnSetUpperCase_Click;
             // 
             // popEBSetToLowercase
             // 
             popEBSetToLowercase.Name = "popEBSetToLowercase";
             popEBSetToLowercase.Size = new System.Drawing.Size(235, 22);
             popEBSetToLowercase.Text = "Set To lowercase";
-            popEBSetToLowercase.Click += BtnSetToLowerCase_Click;
+            popEBSetToLowercase.Click += btnSetToLowerCase_Click;
             // 
             // popSetSentenceCase
             // 
             popSetSentenceCase.Name = "popSetSentenceCase";
             popSetSentenceCase.Size = new System.Drawing.Size(235, 22);
             popSetSentenceCase.Text = "Set To Sentence Case";
-            popSetSentenceCase.Click += BtnSetSentenceCase_Click;
+            popSetSentenceCase.Click += btnSetSentenceCase_Click;
             // 
             // popEBMoveTo
             // 
@@ -335,37 +334,37 @@ namespace DTRMSimpleBackOffice {
             popSetAllForeColourTo.Name = "popSetAllForeColourTo";
             popSetAllForeColourTo.Size = new System.Drawing.Size(235, 22);
             popSetAllForeColourTo.Text = "Set ForeColour";
-            popSetAllForeColourTo.Click += BtnSetAllForeColourTo_Click;
+            popSetAllForeColourTo.Click += btnSetAllForeColourTo_Click;
             // 
             // popSetAllBackColourTo
             // 
             popSetAllBackColourTo.Name = "popSetAllBackColourTo";
             popSetAllBackColourTo.Size = new System.Drawing.Size(235, 22);
             popSetAllBackColourTo.Text = "Set BackColour";
-            popSetAllBackColourTo.Click += BtnSetAllBackColourTo_Click;
+            popSetAllBackColourTo.Click += btnSetAllBackColourTo_Click;
             // 
             // popSetAllBackColourToTransparent
             // 
             popSetAllBackColourToTransparent.Name = "popSetAllBackColourToTransparent";
             popSetAllBackColourToTransparent.Size = new System.Drawing.Size(235, 22);
             popSetAllBackColourToTransparent.Text = "Set BackColour To Transparent";
-            popSetAllBackColourToTransparent.Click += BtnSetAllBackColourToTransparent_Click;
+            popSetAllBackColourToTransparent.Click += btnSetAllBackColourToTransparent_Click;
             // 
             // popSetAllDistributionTo
             // 
             popSetAllDistributionTo.Name = "popSetAllDistributionTo";
             popSetAllDistributionTo.Size = new System.Drawing.Size(235, 22);
             popSetAllDistributionTo.Text = "Set Distribution";
-            popSetAllDistributionTo.Click += BtnChangeDistributionForEB_Click;
+            popSetAllDistributionTo.Click += btnChangeDistribution_Click;
             // 
-            // dgvStockItems
+            // dgvRecipe
             // 
-            dgvStockItems.AllowDrop = true;
-            dgvStockItems.AllowUserToAddRows = false;
-            dgvStockItems.AllowUserToDeleteRows = false;
-            dgvStockItems.AutoGenerateColumns = false;
-            dgvStockItems.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            dgvStockItems.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dgvRecipe.AllowDrop = true;
+            dgvRecipe.AllowUserToAddRows = false;
+            dgvRecipe.AllowUserToDeleteRows = false;
+            dgvRecipe.AutoGenerateColumns = false;
+            dgvRecipe.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            dgvRecipe.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
@@ -373,102 +372,90 @@ namespace DTRMSimpleBackOffice {
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dgvStockItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvStockItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvStockItems.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colStockUsageIID, colEBIID, colStockItemIID, Quantity, QuantityTypeAsString, StockName, Comment });
-            dgvStockItems.DataSource = entityButtonStockItemLookUpBindingSource;
+            dgvRecipe.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvRecipe.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvRecipe.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { recipeTextDataGridViewTextBoxColumn, stockItemNameDataGridViewTextBoxColumn, quantityDataGridViewTextBoxColumn, quantityTypeDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn1, commentDataGridViewTextBoxColumn });
+            dgvRecipe.DataSource = recipeBindingSource;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvRecipe.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvRecipe.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvRecipe.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgvRecipe.Location = new System.Drawing.Point(163, 54);
+            dgvRecipe.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgvRecipe.Name = "dgvRecipe";
+            dgvRecipe.ReadOnly = true;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvStockItems.DefaultCellStyle = dataGridViewCellStyle3;
-            dgvStockItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            dgvStockItems.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
-            dgvStockItems.Location = new System.Drawing.Point(163, 54);
-            dgvStockItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            dgvStockItems.Name = "dgvStockItems";
-            dgvStockItems.ReadOnly = true;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            dgvStockItems.RowHeadersDefaultCellStyle = dataGridViewCellStyle4;
-            dgvStockItems.RowHeadersWidth = 25;
-            dgvStockItems.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
-            dgvStockItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvStockItems.Size = new System.Drawing.Size(858, 307);
-            dgvStockItems.TabIndex = 11;
-            dgvStockItems.CellDoubleClick += DgvStockItems_CellDoubleClick;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            dgvRecipe.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvRecipe.RowHeadersWidth = 25;
+            dgvRecipe.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
+            dgvRecipe.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvRecipe.Size = new System.Drawing.Size(1062, 307);
+            dgvRecipe.TabIndex = 11;
+            dgvRecipe.CellDoubleClick += dgvRecipeItems_CellDoubleClick;
+            dgvRecipe.SelectionChanged += dgvRecipe_SelectionChanged;
             // 
-            // colStockUsageIID
+            // recipeTextDataGridViewTextBoxColumn
             // 
-            colStockUsageIID.DataPropertyName = "IID";
-            colStockUsageIID.HeaderText = "IID";
-            colStockUsageIID.Name = "colStockUsageIID";
-            colStockUsageIID.ReadOnly = true;
-            colStockUsageIID.Visible = false;
-            colStockUsageIID.Width = 5;
+            recipeTextDataGridViewTextBoxColumn.DataPropertyName = "RecipeText";
+            recipeTextDataGridViewTextBoxColumn.HeaderText = "RecipeText";
+            recipeTextDataGridViewTextBoxColumn.Name = "recipeTextDataGridViewTextBoxColumn";
+            recipeTextDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // colEBIID
+            // stockItemNameDataGridViewTextBoxColumn
             // 
-            colEBIID.DataPropertyName = "EntityButtonIID";
-            colEBIID.HeaderText = "EBIID";
-            colEBIID.Name = "colEBIID";
-            colEBIID.ReadOnly = true;
-            colEBIID.Visible = false;
+            stockItemNameDataGridViewTextBoxColumn.DataPropertyName = "StockItemName";
+            stockItemNameDataGridViewTextBoxColumn.HeaderText = "StockItemName";
+            stockItemNameDataGridViewTextBoxColumn.Name = "stockItemNameDataGridViewTextBoxColumn";
+            stockItemNameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // colStockItemIID
+            // quantityDataGridViewTextBoxColumn
             // 
-            colStockItemIID.DataPropertyName = "StockItemIID";
-            colStockItemIID.HeaderText = "StockItemIID";
-            colStockItemIID.Name = "colStockItemIID";
-            colStockItemIID.ReadOnly = true;
-            colStockItemIID.Visible = false;
+            quantityDataGridViewTextBoxColumn.DataPropertyName = "Quantity";
+            quantityDataGridViewTextBoxColumn.HeaderText = "Quantity";
+            quantityDataGridViewTextBoxColumn.Name = "quantityDataGridViewTextBoxColumn";
+            quantityDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // Quantity
+            // quantityTypeDataGridViewTextBoxColumn
             // 
-            Quantity.DataPropertyName = "Quantity";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            Quantity.DefaultCellStyle = dataGridViewCellStyle2;
-            Quantity.HeaderText = "Stock Quantity";
-            Quantity.Name = "Quantity";
-            Quantity.ReadOnly = true;
-            Quantity.Width = 120;
+            quantityTypeDataGridViewTextBoxColumn.DataPropertyName = "QuantityType";
+            quantityTypeDataGridViewTextBoxColumn.HeaderText = "QuantityType";
+            quantityTypeDataGridViewTextBoxColumn.Name = "quantityTypeDataGridViewTextBoxColumn";
+            quantityTypeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // QuantityTypeAsString
+            // dOrderDataGridViewTextBoxColumn1
             // 
-            QuantityTypeAsString.DataPropertyName = "QuantityTypeAsString";
-            QuantityTypeAsString.HeaderText = "Quantity Type";
-            QuantityTypeAsString.Name = "QuantityTypeAsString";
-            QuantityTypeAsString.ReadOnly = true;
+            dOrderDataGridViewTextBoxColumn1.DataPropertyName = "DOrder";
+            dOrderDataGridViewTextBoxColumn1.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn1.Name = "dOrderDataGridViewTextBoxColumn1";
+            dOrderDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
-            // StockName
+            // commentDataGridViewTextBoxColumn
             // 
-            StockName.DataPropertyName = "StockName";
-            StockName.HeaderText = "Stock Item";
-            StockName.Name = "StockName";
-            StockName.ReadOnly = true;
-            StockName.Width = 150;
+            commentDataGridViewTextBoxColumn.DataPropertyName = "Comment";
+            commentDataGridViewTextBoxColumn.HeaderText = "Comment";
+            commentDataGridViewTextBoxColumn.Name = "commentDataGridViewTextBoxColumn";
+            commentDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // Comment
+            // recipeBindingSource
             // 
-            Comment.DataPropertyName = "Comment";
-            Comment.HeaderText = "Comment";
-            Comment.Name = "Comment";
-            Comment.ReadOnly = true;
-            Comment.Width = 150;
+            recipeBindingSource.DataSource = typeof(Recipe);
             // 
             // pnlEBPicture
             // 
             pnlEBPicture.BackColor = System.Drawing.SystemColors.AppWorkspace;
             pnlEBPicture.Controls.Add(pboxEBPicture);
-            pnlEBPicture.Controls.Add(btnEBSample);
             pnlEBPicture.Dock = System.Windows.Forms.DockStyle.Left;
             pnlEBPicture.Location = new System.Drawing.Point(0, 54);
             pnlEBPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -481,148 +468,130 @@ namespace DTRMSimpleBackOffice {
             pboxEBPicture.BackColor = System.Drawing.Color.White;
             pboxEBPicture.Dock = System.Windows.Forms.DockStyle.Fill;
             pboxEBPicture.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            pboxEBPicture.Location = new System.Drawing.Point(0, 185);
+            pboxEBPicture.Location = new System.Drawing.Point(0, 0);
             pboxEBPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pboxEBPicture.Name = "pboxEBPicture";
-            pboxEBPicture.Size = new System.Drawing.Size(163, 122);
+            pboxEBPicture.Size = new System.Drawing.Size(163, 307);
             pboxEBPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             pboxEBPicture.TabIndex = 10;
             pboxEBPicture.TabStop = false;
             pboxEBPicture.DoubleClick += pboxEBPicture_DoubleClick;
             // 
-            // btnEBSample
-            // 
-            btnEBSample.BackColor = System.Drawing.Color.White;
-            btnEBSample.Dock = System.Windows.Forms.DockStyle.Top;
-            btnEBSample.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnEBSample.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            btnEBSample.Location = new System.Drawing.Point(0, 0);
-            btnEBSample.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnEBSample.Name = "btnEBSample";
-            btnEBSample.Size = new System.Drawing.Size(163, 185);
-            btnEBSample.TabIndex = 9;
-            btnEBSample.UseVisualStyleBackColor = false;
-            // 
             // barStockUsage
             // 
-            barStockUsage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAddStockItem, btnEditStockItem, btnDeleteStockItem, btnCopyStockUsageItems, btnPasteStockUsageItems, btnPasteSpecialStockUsageItems, lblImageSize, btnQuantityToComment, tsSortStockItem, tsMoveUpStockItem, tsMoveDownStockItem });
+            barStockUsage.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAddRecipeItem, btnEditStockItem, btnDeleteStockItem, btnCopyRecipeItems, btnPasteRecipeItems, btnQuantityToComment, tsSortRecipeItem, tsMoveUpRecipeItem, tsMoveDownRecipeItem });
             barStockUsage.Location = new System.Drawing.Point(0, 0);
             barStockUsage.Name = "barStockUsage";
-            barStockUsage.Size = new System.Drawing.Size(1021, 54);
+            barStockUsage.Size = new System.Drawing.Size(1225, 54);
             barStockUsage.TabIndex = 1;
             barStockUsage.Text = "toolStrip1";
             // 
-            // btnAddStockItem
+            // btnAddRecipeItem
             // 
-            btnAddStockItem.Image = Properties.Resources.arti32;
-            btnAddStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            btnAddStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            btnAddStockItem.Name = "btnAddStockItem";
-            btnAddStockItem.Size = new System.Drawing.Size(51, 51);
-            btnAddStockItem.Text = "   Add   ";
-            btnAddStockItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnAddStockItem.Click += BtnAddStockItem_Click;
+            btnAddRecipeItem.AutoSize = false;
+            btnAddRecipeItem.Image = Properties.Resources.arti32;
+            btnAddRecipeItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnAddRecipeItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnAddRecipeItem.Name = "btnAddRecipeItem";
+            btnAddRecipeItem.Size = new System.Drawing.Size(60, 51);
+            btnAddRecipeItem.Text = "   Add   ";
+            btnAddRecipeItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnAddRecipeItem.Click += btnAddRecipeItem_Click;
             // 
             // btnEditStockItem
             // 
+            btnEditStockItem.AutoSize = false;
             btnEditStockItem.Image = Properties.Resources.MatReport_32;
             btnEditStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnEditStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnEditStockItem.Name = "btnEditStockItem";
-            btnEditStockItem.Size = new System.Drawing.Size(43, 51);
+            btnEditStockItem.Size = new System.Drawing.Size(60, 51);
             btnEditStockItem.Text = "  Edit  ";
             btnEditStockItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnEditStockItem.Click += BtnEditStockItem_Click;
+            btnEditStockItem.Click += btnEditRecipeItem_Click;
             // 
             // btnDeleteStockItem
             // 
+            btnDeleteStockItem.AutoSize = false;
             btnDeleteStockItem.Image = Properties.Resources.eksi32;
             btnDeleteStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnDeleteStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnDeleteStockItem.Name = "btnDeleteStockItem";
-            btnDeleteStockItem.Size = new System.Drawing.Size(50, 51);
+            btnDeleteStockItem.Size = new System.Drawing.Size(60, 51);
             btnDeleteStockItem.Text = " Delete ";
             btnDeleteStockItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnDeleteStockItem.Click += BtnDeleteStockItem_Click;
+            btnDeleteStockItem.Click += btnDeleteRecipeItem_Click;
             // 
-            // btnCopyStockUsageItems
+            // btnCopyRecipeItems
             // 
-            btnCopyStockUsageItems.Image = Properties.Resources.WindowCascade;
-            btnCopyStockUsageItems.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            btnCopyStockUsageItems.ImageTransparentColor = System.Drawing.Color.Magenta;
-            btnCopyStockUsageItems.Name = "btnCopyStockUsageItems";
-            btnCopyStockUsageItems.Size = new System.Drawing.Size(71, 51);
-            btnCopyStockUsageItems.Text = "Copy Items";
-            btnCopyStockUsageItems.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnCopyRecipeItems.AutoSize = false;
+            btnCopyRecipeItems.Image = Properties.Resources.WindowCascade;
+            btnCopyRecipeItems.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnCopyRecipeItems.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnCopyRecipeItems.Name = "btnCopyRecipeItems";
+            btnCopyRecipeItems.Size = new System.Drawing.Size(80, 51);
+            btnCopyRecipeItems.Text = "Copy Items";
+            btnCopyRecipeItems.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnCopyRecipeItems.Click += btnCopyRecipeItems_Click;
             // 
-            // btnPasteStockUsageItems
+            // btnPasteRecipeItems
             // 
-            btnPasteStockUsageItems.Image = Properties.Resources.Paste232;
-            btnPasteStockUsageItems.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            btnPasteStockUsageItems.ImageTransparentColor = System.Drawing.Color.Magenta;
-            btnPasteStockUsageItems.Name = "btnPasteStockUsageItems";
-            btnPasteStockUsageItems.Size = new System.Drawing.Size(71, 51);
-            btnPasteStockUsageItems.Text = "Paste Items";
-            btnPasteStockUsageItems.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // btnPasteSpecialStockUsageItems
-            // 
-            btnPasteSpecialStockUsageItems.Image = Properties.Resources.Paste232;
-            btnPasteSpecialStockUsageItems.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            btnPasteSpecialStockUsageItems.ImageTransparentColor = System.Drawing.Color.Magenta;
-            btnPasteSpecialStockUsageItems.Name = "btnPasteSpecialStockUsageItems";
-            btnPasteSpecialStockUsageItems.Size = new System.Drawing.Size(125, 51);
-            btnPasteSpecialStockUsageItems.Text = "Paste And Keep Items";
-            btnPasteSpecialStockUsageItems.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            // 
-            // lblImageSize
-            // 
-            lblImageSize.Name = "lblImageSize";
-            lblImageSize.Size = new System.Drawing.Size(24, 51);
-            lblImageSize.Text = "0x0";
+            btnPasteRecipeItems.AutoSize = false;
+            btnPasteRecipeItems.Image = Properties.Resources.Paste232;
+            btnPasteRecipeItems.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnPasteRecipeItems.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnPasteRecipeItems.Name = "btnPasteRecipeItems";
+            btnPasteRecipeItems.Size = new System.Drawing.Size(80, 51);
+            btnPasteRecipeItems.Text = "Paste Items";
+            btnPasteRecipeItems.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnPasteRecipeItems.Click += btnPasteRecipeItems_Click;
             // 
             // btnQuantityToComment
             // 
-            btnQuantityToComment.Image = Properties.Resources.copy_black_24dp1;
+            btnQuantityToComment.Image = Properties.Resources.comment;
             btnQuantityToComment.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnQuantityToComment.Name = "btnQuantityToComment";
-            btnQuantityToComment.Size = new System.Drawing.Size(63, 51);
-            btnQuantityToComment.Text = "Q to Com";
+            btnQuantityToComment.Size = new System.Drawing.Size(65, 51);
+            btnQuantityToComment.Text = "Comment";
             btnQuantityToComment.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnQuantityToComment.ToolTipText = "Generate Comment from Quantity";
             btnQuantityToComment.Click += btnQuantityToComment_Click;
             // 
-            // tsSortStockItem
+            // tsSortRecipeItem
             // 
-            tsSortStockItem.AutoSize = false;
-            tsSortStockItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            tsSortStockItem.Image = Properties.Resources.updown;
-            tsSortStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            tsSortStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            tsSortStockItem.Name = "tsSortStockItem";
-            tsSortStockItem.Size = new System.Drawing.Size(60, 51);
-            tsSortStockItem.Text = "toolStripButton1";
+            tsSortRecipeItem.AutoSize = false;
+            tsSortRecipeItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsSortRecipeItem.Image = Properties.Resources.updown;
+            tsSortRecipeItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsSortRecipeItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsSortRecipeItem.Name = "tsSortRecipeItem";
+            tsSortRecipeItem.Size = new System.Drawing.Size(60, 51);
+            tsSortRecipeItem.Text = "toolStripButton1";
+            tsSortRecipeItem.Click += tsSortRecipeItem_Click;
             // 
-            // tsMoveUpStockItem
+            // tsMoveUpRecipeItem
             // 
-            tsMoveUpStockItem.AutoSize = false;
-            tsMoveUpStockItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            tsMoveUpStockItem.Image = Properties.Resources.up2;
-            tsMoveUpStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            tsMoveUpStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            tsMoveUpStockItem.Name = "tsMoveUpStockItem";
-            tsMoveUpStockItem.Size = new System.Drawing.Size(60, 51);
-            tsMoveUpStockItem.Text = "toolStripButton1";
+            tsMoveUpRecipeItem.AutoSize = false;
+            tsMoveUpRecipeItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveUpRecipeItem.Image = Properties.Resources.up2;
+            tsMoveUpRecipeItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveUpRecipeItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveUpRecipeItem.Name = "tsMoveUpRecipeItem";
+            tsMoveUpRecipeItem.Size = new System.Drawing.Size(60, 51);
+            tsMoveUpRecipeItem.Text = "toolStripButton1";
+            tsMoveUpRecipeItem.Click += tsMoveUpRecipeItem_Click;
             // 
-            // tsMoveDownStockItem
+            // tsMoveDownRecipeItem
             // 
-            tsMoveDownStockItem.AutoSize = false;
-            tsMoveDownStockItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            tsMoveDownStockItem.Image = Properties.Resources.down2;
-            tsMoveDownStockItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            tsMoveDownStockItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            tsMoveDownStockItem.Name = "tsMoveDownStockItem";
-            tsMoveDownStockItem.Size = new System.Drawing.Size(60, 51);
-            tsMoveDownStockItem.Text = "toolStripButton1";
+            tsMoveDownRecipeItem.AutoSize = false;
+            tsMoveDownRecipeItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveDownRecipeItem.Image = Properties.Resources.down2;
+            tsMoveDownRecipeItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveDownRecipeItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveDownRecipeItem.Name = "tsMoveDownRecipeItem";
+            tsMoveDownRecipeItem.Size = new System.Drawing.Size(60, 51);
+            tsMoveDownRecipeItem.Text = "toolStripButton1";
+            tsMoveDownRecipeItem.Click += tsMoveDownRecipeItem_Click;
             // 
             // dgvCategoryItem
             // 
@@ -633,17 +602,17 @@ namespace DTRMSimpleBackOffice {
             dgvCategoryItem.AutoGenerateColumns = false;
             dgvCategoryItem.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvCategoryItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCategoryItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { itemNameDataGridViewTextBoxColumn, buttonTypeDataGridViewTextBoxColumn, saleTaxDataGridViewTextBoxColumn, sitinTaxDataGridViewTextBoxColumn, taTaxDataGridViewTextBoxColumn, dTaxDataGridViewTextBoxColumn, padFlagDataGridViewTextBoxColumn, distributionNameDataGridViewTextBoxColumn, salePriceDataGridViewTextBoxColumn, sitinPriceDataGridViewTextBoxColumn, taPriceDataGridViewTextBoxColumn, dPriceDataGridViewTextBoxColumn, widthDataGridViewTextBoxColumn, heightDataGridViewTextBoxColumn, fontDataGridViewTextBoxColumn, buttonDisplayStyleDataGridViewTextBoxColumn, textAlignDataGridViewTextBoxColumn, textImageRelationDataGridViewTextBoxColumn, imageAlignDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn });
+            dgvCategoryItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { itemNameDataGridViewTextBoxColumn, buttonTypeDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn, distributionNameDataGridViewTextBoxColumn, salePriceDataGridViewTextBoxColumn, sitinPriceDataGridViewTextBoxColumn, taPriceDataGridViewTextBoxColumn, dPriceDataGridViewTextBoxColumn, saleTaxDataGridViewTextBoxColumn, sitinTaxDataGridViewTextBoxColumn, taTaxDataGridViewTextBoxColumn, dTaxDataGridViewTextBoxColumn, padFlagDataGridViewTextBoxColumn, widthDataGridViewTextBoxColumn, heightDataGridViewTextBoxColumn, fontDataGridViewTextBoxColumn, buttonDisplayStyleDataGridViewTextBoxColumn, textAlignDataGridViewTextBoxColumn, textImageRelationDataGridViewTextBoxColumn, imageAlignDataGridViewTextBoxColumn });
             dgvCategoryItem.ContextMenuStrip = popCategoryItem;
             dgvCategoryItem.DataSource = _categoryItemSourceDesign;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvCategoryItem.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvCategoryItem.DefaultCellStyle = dataGridViewCellStyle4;
             dgvCategoryItem.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvCategoryItem.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
             dgvCategoryItem.Location = new System.Drawing.Point(0, 78);
@@ -654,7 +623,7 @@ namespace DTRMSimpleBackOffice {
             dgvCategoryItem.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             dgvCategoryItem.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             dgvCategoryItem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvCategoryItem.Size = new System.Drawing.Size(1021, 536);
+            dgvCategoryItem.Size = new System.Drawing.Size(1225, 536);
             dgvCategoryItem.TabIndex = 0;
             dgvCategoryItem.CellDoubleClick += dgvCategoryItem_CellDoubleClick;
             dgvCategoryItem.SelectionChanged += dgvCategoryItem_SelectionChanged;
@@ -673,40 +642,12 @@ namespace DTRMSimpleBackOffice {
             buttonTypeDataGridViewTextBoxColumn.Name = "buttonTypeDataGridViewTextBoxColumn";
             buttonTypeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // saleTaxDataGridViewTextBoxColumn
+            // dOrderDataGridViewTextBoxColumn
             // 
-            saleTaxDataGridViewTextBoxColumn.DataPropertyName = "SaleTax";
-            saleTaxDataGridViewTextBoxColumn.HeaderText = "SaleTax";
-            saleTaxDataGridViewTextBoxColumn.Name = "saleTaxDataGridViewTextBoxColumn";
-            saleTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // sitinTaxDataGridViewTextBoxColumn
-            // 
-            sitinTaxDataGridViewTextBoxColumn.DataPropertyName = "SitinTax";
-            sitinTaxDataGridViewTextBoxColumn.HeaderText = "SitinTax";
-            sitinTaxDataGridViewTextBoxColumn.Name = "sitinTaxDataGridViewTextBoxColumn";
-            sitinTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // taTaxDataGridViewTextBoxColumn
-            // 
-            taTaxDataGridViewTextBoxColumn.DataPropertyName = "TaTax";
-            taTaxDataGridViewTextBoxColumn.HeaderText = "TaTax";
-            taTaxDataGridViewTextBoxColumn.Name = "taTaxDataGridViewTextBoxColumn";
-            taTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // dTaxDataGridViewTextBoxColumn
-            // 
-            dTaxDataGridViewTextBoxColumn.DataPropertyName = "DTax";
-            dTaxDataGridViewTextBoxColumn.HeaderText = "DTax";
-            dTaxDataGridViewTextBoxColumn.Name = "dTaxDataGridViewTextBoxColumn";
-            dTaxDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // padFlagDataGridViewTextBoxColumn
-            // 
-            padFlagDataGridViewTextBoxColumn.DataPropertyName = "PadFlag";
-            padFlagDataGridViewTextBoxColumn.HeaderText = "PadFlag";
-            padFlagDataGridViewTextBoxColumn.Name = "padFlagDataGridViewTextBoxColumn";
-            padFlagDataGridViewTextBoxColumn.ReadOnly = true;
+            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
+            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
+            dOrderDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // distributionNameDataGridViewTextBoxColumn
             // 
@@ -742,6 +683,41 @@ namespace DTRMSimpleBackOffice {
             dPriceDataGridViewTextBoxColumn.HeaderText = "DPrice";
             dPriceDataGridViewTextBoxColumn.Name = "dPriceDataGridViewTextBoxColumn";
             dPriceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // saleTaxDataGridViewTextBoxColumn
+            // 
+            saleTaxDataGridViewTextBoxColumn.DataPropertyName = "SaleTax";
+            saleTaxDataGridViewTextBoxColumn.HeaderText = "SaleTax";
+            saleTaxDataGridViewTextBoxColumn.Name = "saleTaxDataGridViewTextBoxColumn";
+            saleTaxDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // sitinTaxDataGridViewTextBoxColumn
+            // 
+            sitinTaxDataGridViewTextBoxColumn.DataPropertyName = "SitinTax";
+            sitinTaxDataGridViewTextBoxColumn.HeaderText = "SitinTax";
+            sitinTaxDataGridViewTextBoxColumn.Name = "sitinTaxDataGridViewTextBoxColumn";
+            sitinTaxDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // taTaxDataGridViewTextBoxColumn
+            // 
+            taTaxDataGridViewTextBoxColumn.DataPropertyName = "TaTax";
+            taTaxDataGridViewTextBoxColumn.HeaderText = "TaTax";
+            taTaxDataGridViewTextBoxColumn.Name = "taTaxDataGridViewTextBoxColumn";
+            taTaxDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dTaxDataGridViewTextBoxColumn
+            // 
+            dTaxDataGridViewTextBoxColumn.DataPropertyName = "DTax";
+            dTaxDataGridViewTextBoxColumn.HeaderText = "DTax";
+            dTaxDataGridViewTextBoxColumn.Name = "dTaxDataGridViewTextBoxColumn";
+            dTaxDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // padFlagDataGridViewTextBoxColumn
+            // 
+            padFlagDataGridViewTextBoxColumn.DataPropertyName = "PadFlag";
+            padFlagDataGridViewTextBoxColumn.HeaderText = "PadFlag";
+            padFlagDataGridViewTextBoxColumn.Name = "padFlagDataGridViewTextBoxColumn";
+            padFlagDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // widthDataGridViewTextBoxColumn
             // 
@@ -792,13 +768,6 @@ namespace DTRMSimpleBackOffice {
             imageAlignDataGridViewTextBoxColumn.Name = "imageAlignDataGridViewTextBoxColumn";
             imageAlignDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // dOrderDataGridViewTextBoxColumn
-            // 
-            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
-            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
-            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
-            dOrderDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // _categoryItemSourceDesign
             // 
             _categoryItemSourceDesign.DataSource = typeof(CategoryItem);
@@ -808,7 +777,7 @@ namespace DTRMSimpleBackOffice {
             barEntityButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAddEntityButton, btnEditEntityButton, btnDeleteEntityButton, btnSetAll, btnMoveToEntity, btnDuplicate, btnConvertToStockItem, btnEntityButtonRowHeight, tsSortCategoryItem, tsMoveUpCategoryItem, tsMoveDownCategoryItem, btnClose, btnCategoryItemSample });
             barEntityButton.Location = new System.Drawing.Point(0, 0);
             barEntityButton.Name = "barEntityButton";
-            barEntityButton.Size = new System.Drawing.Size(1021, 54);
+            barEntityButton.Size = new System.Drawing.Size(1225, 54);
             barEntityButton.TabIndex = 0;
             barEntityButton.Text = "toolStrip1";
             // 
@@ -862,87 +831,99 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnEBFontTo
             // 
+            btnEBFontTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEBFontTo.Name = "btnEBFontTo";
-            btnEBFontTo.Size = new System.Drawing.Size(216, 22);
+            btnEBFontTo.Size = new System.Drawing.Size(303, 30);
             btnEBFontTo.Text = "Font To";
             btnEBFontTo.Click += BtnEBFontTo_Click;
             // 
             // btnEBWidthTo
             // 
+            btnEBWidthTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEBWidthTo.Name = "btnEBWidthTo";
-            btnEBWidthTo.Size = new System.Drawing.Size(216, 22);
+            btnEBWidthTo.Size = new System.Drawing.Size(303, 30);
             btnEBWidthTo.Text = "Width To";
             btnEBWidthTo.Click += BtnEBWidthTo_Click;
             // 
             // btnEBHeightTo
             // 
+            btnEBHeightTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEBHeightTo.Name = "btnEBHeightTo";
-            btnEBHeightTo.Size = new System.Drawing.Size(216, 22);
+            btnEBHeightTo.Size = new System.Drawing.Size(303, 30);
             btnEBHeightTo.Text = "Height To";
             btnEBHeightTo.Click += BtnEBHeightTo_Click;
             // 
             // btnEBPriceTo
             // 
+            btnEBPriceTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEBPriceTo.Name = "btnEBPriceTo";
-            btnEBPriceTo.Size = new System.Drawing.Size(216, 22);
+            btnEBPriceTo.Size = new System.Drawing.Size(303, 30);
             btnEBPriceTo.Text = "Price To";
             btnEBPriceTo.Click += BtnEBPriceTo_Click;
             // 
             // btnEBTaxRateTo
             // 
+            btnEBTaxRateTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEBTaxRateTo.Name = "btnEBTaxRateTo";
-            btnEBTaxRateTo.Size = new System.Drawing.Size(216, 22);
+            btnEBTaxRateTo.Size = new System.Drawing.Size(303, 30);
             btnEBTaxRateTo.Text = "Tax Rate To";
             btnEBTaxRateTo.Click += BtnEBTaxRateTo_Click;
             // 
             // btnSetUpperCase
             // 
+            btnSetUpperCase.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetUpperCase.Name = "btnSetUpperCase";
-            btnSetUpperCase.Size = new System.Drawing.Size(216, 22);
+            btnSetUpperCase.Size = new System.Drawing.Size(303, 30);
             btnSetUpperCase.Text = "Set To UPPER CASE";
-            btnSetUpperCase.Click += BtnSetUpperCase_Click;
+            btnSetUpperCase.Click += btnSetUpperCase_Click;
             // 
             // btnSetToLowerCase
             // 
+            btnSetToLowerCase.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetToLowerCase.Name = "btnSetToLowerCase";
-            btnSetToLowerCase.Size = new System.Drawing.Size(216, 22);
+            btnSetToLowerCase.Size = new System.Drawing.Size(303, 30);
             btnSetToLowerCase.Text = "Set To lower case";
-            btnSetToLowerCase.Click += BtnSetToLowerCase_Click;
+            btnSetToLowerCase.Click += btnSetToLowerCase_Click;
             // 
             // btnSetSentenceCase
             // 
+            btnSetSentenceCase.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetSentenceCase.Name = "btnSetSentenceCase";
-            btnSetSentenceCase.Size = new System.Drawing.Size(216, 22);
+            btnSetSentenceCase.Size = new System.Drawing.Size(303, 30);
             btnSetSentenceCase.Text = "Set To Sentence Case";
-            btnSetSentenceCase.Click += BtnSetSentenceCase_Click;
+            btnSetSentenceCase.Click += btnSetSentenceCase_Click;
             // 
             // btnSetAllForeColourTo
             // 
+            btnSetAllForeColourTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetAllForeColourTo.Name = "btnSetAllForeColourTo";
-            btnSetAllForeColourTo.Size = new System.Drawing.Size(216, 22);
+            btnSetAllForeColourTo.Size = new System.Drawing.Size(303, 30);
             btnSetAllForeColourTo.Text = "ForeColour To";
-            btnSetAllForeColourTo.Click += BtnSetAllForeColourTo_Click;
+            btnSetAllForeColourTo.Click += btnSetAllForeColourTo_Click;
             // 
             // btnSetAllBackColourTo
             // 
+            btnSetAllBackColourTo.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetAllBackColourTo.Name = "btnSetAllBackColourTo";
-            btnSetAllBackColourTo.Size = new System.Drawing.Size(216, 22);
+            btnSetAllBackColourTo.Size = new System.Drawing.Size(303, 30);
             btnSetAllBackColourTo.Text = "BackColour To";
-            btnSetAllBackColourTo.Click += BtnSetAllBackColourTo_Click;
+            btnSetAllBackColourTo.Click += btnSetAllBackColourTo_Click;
             // 
             // btnSetAllBackColourToTransparent
             // 
+            btnSetAllBackColourToTransparent.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnSetAllBackColourToTransparent.Name = "btnSetAllBackColourToTransparent";
-            btnSetAllBackColourToTransparent.Size = new System.Drawing.Size(216, 22);
+            btnSetAllBackColourToTransparent.Size = new System.Drawing.Size(303, 30);
             btnSetAllBackColourToTransparent.Text = "BackColour To Transparent";
-            btnSetAllBackColourToTransparent.Click += BtnSetAllBackColourToTransparent_Click;
+            btnSetAllBackColourToTransparent.Click += btnSetAllBackColourToTransparent_Click;
             // 
             // btnChangeDistributionForEB
             // 
+            btnChangeDistributionForEB.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnChangeDistributionForEB.Name = "btnChangeDistributionForEB";
-            btnChangeDistributionForEB.Size = new System.Drawing.Size(216, 22);
+            btnChangeDistributionForEB.Size = new System.Drawing.Size(303, 30);
             btnChangeDistributionForEB.Text = "Distribution To";
-            btnChangeDistributionForEB.Click += BtnChangeDistributionForEB_Click;
+            btnChangeDistributionForEB.Click += btnChangeDistribution_Click;
             // 
             // btnMoveToEntity
             // 
@@ -981,52 +962,71 @@ namespace DTRMSimpleBackOffice {
             // btnEntityButtonRowHeight
             // 
             btnEntityButtonRowHeight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            btnEntityButtonRowHeight.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { btnEntityButtonRowHeight25, btnEntityButtonRowHeight50, btnEntityButtonRowHeight100, btnEntityButtonRowHeight150, btnEntityButtonRowHeight200 });
+            btnEntityButtonRowHeight.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { btnEntityButtonRowHeight25, btnEntityButtonRowHeight50, btnEntityButtonRowHeight100, toolStripSeparator1, toolStripMenuItem2, toolStripMenuItem3, toolStripMenuItem4 });
             btnEntityButtonRowHeight.Image = (System.Drawing.Image)resources.GetObject("btnEntityButtonRowHeight.Image");
             btnEntityButtonRowHeight.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnEntityButtonRowHeight.Name = "btnEntityButtonRowHeight";
-            btnEntityButtonRowHeight.Size = new System.Drawing.Size(82, 51);
-            btnEntityButtonRowHeight.Text = "Row Height";
+            btnEntityButtonRowHeight.Size = new System.Drawing.Size(122, 51);
+            btnEntityButtonRowHeight.Text = "Row Height && Font";
             // 
             // btnEntityButtonRowHeight25
             // 
+            btnEntityButtonRowHeight25.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEntityButtonRowHeight25.Name = "btnEntityButtonRowHeight25";
-            btnEntityButtonRowHeight25.Size = new System.Drawing.Size(160, 22);
+            btnEntityButtonRowHeight25.Size = new System.Drawing.Size(265, 30);
             btnEntityButtonRowHeight25.Tag = "25";
-            btnEntityButtonRowHeight25.Text = "Small (25)";
+            btnEntityButtonRowHeight25.Text = "Small Row Size (25)";
             btnEntityButtonRowHeight25.Click += btnEntityButtonRowHeight_Click;
             // 
             // btnEntityButtonRowHeight50
             // 
+            btnEntityButtonRowHeight50.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEntityButtonRowHeight50.Name = "btnEntityButtonRowHeight50";
-            btnEntityButtonRowHeight50.Size = new System.Drawing.Size(160, 22);
+            btnEntityButtonRowHeight50.Size = new System.Drawing.Size(265, 30);
             btnEntityButtonRowHeight50.Tag = "50";
-            btnEntityButtonRowHeight50.Text = "Medium (50)";
+            btnEntityButtonRowHeight50.Text = "Medium Row Size (50)";
             btnEntityButtonRowHeight50.Click += btnEntityButtonRowHeight_Click;
             // 
             // btnEntityButtonRowHeight100
             // 
+            btnEntityButtonRowHeight100.Font = new System.Drawing.Font("Segoe UI", 14F);
             btnEntityButtonRowHeight100.Name = "btnEntityButtonRowHeight100";
-            btnEntityButtonRowHeight100.Size = new System.Drawing.Size(160, 22);
+            btnEntityButtonRowHeight100.Size = new System.Drawing.Size(265, 30);
             btnEntityButtonRowHeight100.Tag = "100";
-            btnEntityButtonRowHeight100.Text = "Large (100)";
+            btnEntityButtonRowHeight100.Text = "Large Row Size (100)";
             btnEntityButtonRowHeight100.Click += btnEntityButtonRowHeight_Click;
             // 
-            // btnEntityButtonRowHeight150
+            // toolStripSeparator1
             // 
-            btnEntityButtonRowHeight150.Name = "btnEntityButtonRowHeight150";
-            btnEntityButtonRowHeight150.Size = new System.Drawing.Size(160, 22);
-            btnEntityButtonRowHeight150.Tag = "150";
-            btnEntityButtonRowHeight150.Text = "Extra Large (150)";
-            btnEntityButtonRowHeight150.Click += btnEntityButtonRowHeight_Click;
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(262, 6);
             // 
-            // btnEntityButtonRowHeight200
+            // toolStripMenuItem2
             // 
-            btnEntityButtonRowHeight200.Name = "btnEntityButtonRowHeight200";
-            btnEntityButtonRowHeight200.Size = new System.Drawing.Size(160, 22);
-            btnEntityButtonRowHeight200.Tag = "200";
-            btnEntityButtonRowHeight200.Text = "Maximum (200)";
-            btnEntityButtonRowHeight200.Click += btnEntityButtonRowHeight_Click;
+            toolStripMenuItem2.Font = new System.Drawing.Font("Segoe UI", 14F);
+            toolStripMenuItem2.Name = "toolStripMenuItem2";
+            toolStripMenuItem2.Size = new System.Drawing.Size(265, 30);
+            toolStripMenuItem2.Tag = "10";
+            toolStripMenuItem2.Text = "Grid Font 10";
+            toolStripMenuItem2.Click += btnGridFontSize_Click;
+            // 
+            // toolStripMenuItem3
+            // 
+            toolStripMenuItem3.Font = new System.Drawing.Font("Segoe UI", 14F);
+            toolStripMenuItem3.Name = "toolStripMenuItem3";
+            toolStripMenuItem3.Size = new System.Drawing.Size(265, 30);
+            toolStripMenuItem3.Tag = "14";
+            toolStripMenuItem3.Text = "Grid Font 14";
+            toolStripMenuItem3.Click += btnGridFontSize_Click;
+            // 
+            // toolStripMenuItem4
+            // 
+            toolStripMenuItem4.Font = new System.Drawing.Font("Segoe UI", 14F);
+            toolStripMenuItem4.Name = "toolStripMenuItem4";
+            toolStripMenuItem4.Size = new System.Drawing.Size(265, 30);
+            toolStripMenuItem4.Tag = "18";
+            toolStripMenuItem4.Text = "Grid Font 18";
+            toolStripMenuItem4.Click += btnGridFontSize_Click;
             // 
             // tsSortCategoryItem
             // 
@@ -1098,8 +1098,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn8
             // 
             dataGridViewTextBoxColumn8.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle5;
             dataGridViewTextBoxColumn8.HeaderText = "QType";
             dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             dataGridViewTextBoxColumn8.ReadOnly = true;
@@ -1108,8 +1108,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn9
             // 
             dataGridViewTextBoxColumn9.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle6;
             dataGridViewTextBoxColumn9.HeaderText = "QType";
             dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             dataGridViewTextBoxColumn9.ReadOnly = true;
@@ -1120,8 +1120,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn10
             // 
             dataGridViewTextBoxColumn10.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle7;
             dataGridViewTextBoxColumn10.HeaderText = "QType";
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.ReadOnly = true;
@@ -1131,8 +1131,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn11
             // 
             dataGridViewTextBoxColumn11.DataPropertyName = "CategoryType";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle8;
             dataGridViewTextBoxColumn11.HeaderText = "CategoryType";
             dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
             dataGridViewTextBoxColumn11.ReadOnly = true;
@@ -1151,8 +1151,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn14
             // 
             dataGridViewTextBoxColumn14.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle9;
             dataGridViewTextBoxColumn14.HeaderText = "QType";
             dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
             dataGridViewTextBoxColumn14.ReadOnly = true;
@@ -1162,8 +1162,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn15
             // 
             dataGridViewTextBoxColumn15.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle10;
             dataGridViewTextBoxColumn15.HeaderText = "QType";
             dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
             dataGridViewTextBoxColumn15.ReadOnly = true;
@@ -1173,8 +1173,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn16
             // 
             dataGridViewTextBoxColumn16.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle11;
             dataGridViewTextBoxColumn16.HeaderText = "QType";
             dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
             dataGridViewTextBoxColumn16.ReadOnly = true;
@@ -1185,9 +1185,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn17
             // 
             dataGridViewTextBoxColumn17.DataPropertyName = "CategoryType";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle13.Format = "N2";
-            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle12.Format = "N2";
+            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle12;
             dataGridViewTextBoxColumn17.HeaderText = "CategoryType";
             dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
             dataGridViewTextBoxColumn17.ReadOnly = true;
@@ -1198,8 +1198,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn18
             // 
             dataGridViewTextBoxColumn18.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle13;
             dataGridViewTextBoxColumn18.HeaderText = "QType";
             dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
             dataGridViewTextBoxColumn18.ReadOnly = true;
@@ -1210,9 +1210,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn19
             // 
             dataGridViewTextBoxColumn19.DataPropertyName = "DeliveryPrice";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle15.Format = "N2";
-            dataGridViewTextBoxColumn19.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle14.Format = "N2";
+            dataGridViewTextBoxColumn19.DefaultCellStyle = dataGridViewCellStyle14;
             dataGridViewTextBoxColumn19.HeaderText = "DL Price";
             dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
             dataGridViewTextBoxColumn19.ReadOnly = true;
@@ -1222,8 +1222,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn20
             // 
             dataGridViewTextBoxColumn20.DataPropertyName = "ButtonWidth";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn20.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn20.DefaultCellStyle = dataGridViewCellStyle15;
             dataGridViewTextBoxColumn20.HeaderText = "Width";
             dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
             dataGridViewTextBoxColumn20.ReadOnly = true;
@@ -1233,8 +1233,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn21
             // 
             dataGridViewTextBoxColumn21.DataPropertyName = "ButtonHeight";
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle16;
             dataGridViewTextBoxColumn21.HeaderText = "Height";
             dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
             dataGridViewTextBoxColumn21.ReadOnly = true;
@@ -1244,9 +1244,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn22
             // 
             dataGridViewTextBoxColumn22.DataPropertyName = "DirectSaleTaxPercent";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle18.Format = "N2";
-            dataGridViewTextBoxColumn22.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle17.Format = "N2";
+            dataGridViewTextBoxColumn22.DefaultCellStyle = dataGridViewCellStyle17;
             dataGridViewTextBoxColumn22.HeaderText = "DS Tax%";
             dataGridViewTextBoxColumn22.Name = "dataGridViewTextBoxColumn22";
             dataGridViewTextBoxColumn22.ReadOnly = true;
@@ -1256,9 +1256,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn23
             // 
             dataGridViewTextBoxColumn23.DataPropertyName = "InHouseTaxPercent";
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle19.Format = "N2";
-            dataGridViewTextBoxColumn23.DefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle18.Format = "N2";
+            dataGridViewTextBoxColumn23.DefaultCellStyle = dataGridViewCellStyle18;
             dataGridViewTextBoxColumn23.HeaderText = "IH Tax%";
             dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
             dataGridViewTextBoxColumn23.ReadOnly = true;
@@ -1268,9 +1268,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn24
             // 
             dataGridViewTextBoxColumn24.DataPropertyName = "TakeAwayTaxPercent";
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle20.Format = "N2";
-            dataGridViewTextBoxColumn24.DefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle19.Format = "N2";
+            dataGridViewTextBoxColumn24.DefaultCellStyle = dataGridViewCellStyle19;
             dataGridViewTextBoxColumn24.HeaderText = "TA Tax%";
             dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
             dataGridViewTextBoxColumn24.ReadOnly = true;
@@ -1280,9 +1280,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn25
             // 
             dataGridViewTextBoxColumn25.DataPropertyName = "DeliveryTaxPercent";
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle21.Format = "N2";
-            dataGridViewTextBoxColumn25.DefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle20.Format = "N2";
+            dataGridViewTextBoxColumn25.DefaultCellStyle = dataGridViewCellStyle20;
             dataGridViewTextBoxColumn25.HeaderText = "DL Tax%";
             dataGridViewTextBoxColumn25.Name = "dataGridViewTextBoxColumn25";
             dataGridViewTextBoxColumn25.ReadOnly = true;
@@ -1292,9 +1292,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn26
             // 
             dataGridViewTextBoxColumn26.DataPropertyName = "DisplayOrder";
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle22.Format = "N2";
-            dataGridViewTextBoxColumn26.DefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle21.Format = "N2";
+            dataGridViewTextBoxColumn26.DefaultCellStyle = dataGridViewCellStyle21;
             dataGridViewTextBoxColumn26.HeaderText = "DO";
             dataGridViewTextBoxColumn26.Name = "dataGridViewTextBoxColumn26";
             dataGridViewTextBoxColumn26.ReadOnly = true;
@@ -1304,9 +1304,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn27
             // 
             dataGridViewTextBoxColumn27.DataPropertyName = "FFamily";
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle23.Format = "N2";
-            dataGridViewTextBoxColumn27.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle22.Format = "N2";
+            dataGridViewTextBoxColumn27.DefaultCellStyle = dataGridViewCellStyle22;
             dataGridViewTextBoxColumn27.HeaderText = "Font";
             dataGridViewTextBoxColumn27.Name = "dataGridViewTextBoxColumn27";
             dataGridViewTextBoxColumn27.ReadOnly = true;
@@ -1316,9 +1316,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn28
             // 
             dataGridViewTextBoxColumn28.DataPropertyName = "FSize";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle24.Format = "N2";
-            dataGridViewTextBoxColumn28.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle23.Format = "N2";
+            dataGridViewTextBoxColumn28.DefaultCellStyle = dataGridViewCellStyle23;
             dataGridViewTextBoxColumn28.HeaderText = "FSize";
             dataGridViewTextBoxColumn28.Name = "dataGridViewTextBoxColumn28";
             dataGridViewTextBoxColumn28.ReadOnly = true;
@@ -1328,9 +1328,9 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn29
             // 
             dataGridViewTextBoxColumn29.DataPropertyName = "FStyle";
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle25.Format = "N2";
-            dataGridViewTextBoxColumn29.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle24.Format = "N2";
+            dataGridViewTextBoxColumn29.DefaultCellStyle = dataGridViewCellStyle24;
             dataGridViewTextBoxColumn29.HeaderText = "FStyle";
             dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
             dataGridViewTextBoxColumn29.ReadOnly = true;
@@ -1482,8 +1482,8 @@ namespace DTRMSimpleBackOffice {
             // dataGridViewTextBoxColumn47
             // 
             dataGridViewTextBoxColumn47.DataPropertyName = "QuantityType";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn47.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewTextBoxColumn47.DefaultCellStyle = dataGridViewCellStyle25;
             dataGridViewTextBoxColumn47.HeaderText = "QType";
             dataGridViewTextBoxColumn47.Name = "dataGridViewTextBoxColumn47";
             dataGridViewTextBoxColumn47.Visible = false;
@@ -1512,10 +1512,10 @@ namespace DTRMSimpleBackOffice {
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(dgvStockItems);
+            splitContainer1.Panel2.Controls.Add(dgvRecipe);
             splitContainer1.Panel2.Controls.Add(pnlEBPicture);
             splitContainer1.Panel2.Controls.Add(barStockUsage);
-            splitContainer1.Size = new System.Drawing.Size(1021, 995);
+            splitContainer1.Size = new System.Drawing.Size(1225, 995);
             splitContainer1.SplitterDistance = 614;
             splitContainer1.SplitterWidth = 20;
             splitContainer1.TabIndex = 3;
@@ -1528,7 +1528,7 @@ namespace DTRMSimpleBackOffice {
             panel1.Dock = System.Windows.Forms.DockStyle.Top;
             panel1.Location = new System.Drawing.Point(0, 54);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(1021, 24);
+            panel1.Size = new System.Drawing.Size(1225, 24);
             panel1.TabIndex = 1;
             // 
             // lblCategory
@@ -1546,7 +1546,7 @@ namespace DTRMSimpleBackOffice {
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1021, 995);
+            ClientSize = new System.Drawing.Size(1225, 995);
             Controls.Add(splitContainer1);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             KeyPreview = true;
@@ -1556,9 +1556,9 @@ namespace DTRMSimpleBackOffice {
             Text = "CATEGORY EDITOR";
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += FrmMenuEditor_Load;
-            KeyDown += FrmMenuEditor_KeyDown;
             popCategoryItem.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvStockItems).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvRecipe).EndInit();
+            ((System.ComponentModel.ISupportInitialize)recipeBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)entityButtonStockItemLookUpBindingSource).EndInit();
             pnlEBPicture.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pboxEBPicture).EndInit();
@@ -1643,20 +1643,15 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripMenuItem btnEntityButtonRowHeight25;
         private System.Windows.Forms.ToolStripMenuItem btnEntityButtonRowHeight50;
         private System.Windows.Forms.ToolStripMenuItem btnEntityButtonRowHeight100;
-        private System.Windows.Forms.ToolStripMenuItem btnEntityButtonRowHeight150;
-        private System.Windows.Forms.ToolStripMenuItem btnEntityButtonRowHeight200;
-        private System.Windows.Forms.DataGridView dgvStockItems;
+        private System.Windows.Forms.DataGridView dgvRecipe;
         private System.Windows.Forms.Panel pnlEBPicture;
         private System.Windows.Forms.PictureBox pboxEBPicture;
-        private System.Windows.Forms.Button btnEBSample;
         private System.Windows.Forms.ToolStrip barStockUsage;
-        private System.Windows.Forms.ToolStripButton btnAddStockItem;
+        private System.Windows.Forms.ToolStripButton btnAddRecipeItem;
         private System.Windows.Forms.ToolStripButton btnEditStockItem;
         private System.Windows.Forms.ToolStripButton btnDeleteStockItem;
-        private System.Windows.Forms.ToolStripButton btnCopyStockUsageItems;
-        private System.Windows.Forms.ToolStripButton btnPasteStockUsageItems;
-        private System.Windows.Forms.ToolStripButton btnPasteSpecialStockUsageItems;
-        private System.Windows.Forms.ToolStripLabel lblImageSize;
+        private System.Windows.Forms.ToolStripButton btnCopyRecipeItems;
+        private System.Windows.Forms.ToolStripButton btnPasteRecipeItems;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
@@ -1687,21 +1682,14 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn46;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn47;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn48;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStockUsageIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEBIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStockItemIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn QuantityTypeAsString;
-        private System.Windows.Forms.DataGridViewTextBoxColumn StockName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Comment;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEBSItemDisplayOrder;
         private System.Windows.Forms.DataGridViewTextBoxColumn entityNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.ToolStripButton btnQuantityToComment;
         private System.Windows.Forms.BindingSource theMenuBindingSource;
         private System.Windows.Forms.BindingSource categoryBindingSource;
-        private System.Windows.Forms.ToolStripButton tsSortStockItem;
-        private System.Windows.Forms.ToolStripButton tsMoveUpStockItem;
-        private System.Windows.Forms.ToolStripButton tsMoveDownStockItem;
+        private System.Windows.Forms.ToolStripButton tsSortRecipeItem;
+        private System.Windows.Forms.ToolStripButton tsMoveUpRecipeItem;
+        private System.Windows.Forms.ToolStripButton tsMoveDownRecipeItem;
         private System.Windows.Forms.ToolStripButton tsSortCategoryItem;
         private System.Windows.Forms.ToolStripButton tsMoveUpCategoryItem;
         private System.Windows.Forms.ToolStripButton tsMoveDownCategoryItem;
@@ -1711,18 +1699,46 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ContextMenuStrip popCategoryItem;
         private System.Windows.Forms.ToolStripButton btnClose;
         private System.Windows.Forms.ToolStripButton btnCategoryItemSample;
+        private System.Windows.Forms.BindingSource categoryItemBindingSource;
+        private System.Windows.Forms.BindingSource _categoryItemSourceDesign;
+        private System.Windows.Forms.BindingSource recipeBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn recipeTextDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stockItemNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantityTypeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn commentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn categoryIIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn categoryDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn bgColorDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fgColorDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn availableForDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn compulsaryDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn barcodeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn distributionIIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn distributionDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fFamilyDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fSizeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn fStyleDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn iIDDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn selectedDataGridViewCheckBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn itemNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn buttonTypeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn saleTaxDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sitinTaxDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn taTaxDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dTaxDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn padFlagDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn distributionNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn salePriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn sitinPriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn taPriceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dPriceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn saleTaxDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sitinTaxDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn taTaxDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dTaxDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn padFlagDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn widthDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn heightDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn fontDataGridViewTextBoxColumn;
@@ -1730,9 +1746,6 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn textAlignDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn textImageRelationDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn imageAlignDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn;
-        private System.Windows.Forms.BindingSource categoryItemBindingSource;
-        private System.Windows.Forms.BindingSource _categoryItemSourceDesign;
     }
 }
 

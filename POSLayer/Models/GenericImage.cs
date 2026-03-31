@@ -14,7 +14,7 @@ public partial class GenericImage     : BaseClass
 
     public string? ExtraText { get; set; } = null!;
 
-    public string ImageFileName { get; set; }
+    public string? ImageFileName { get; set; }
 
 
     public long ImageSizeinKB { get; set; }
@@ -23,7 +23,6 @@ public partial class GenericImage     : BaseClass
     {
         try
         {
-            //DisplayImage = Image.FromFile(FileName);
             DisplayImage = File.ReadAllBytes(FileName);
 
             FileInfo finfo = new FileInfo(FileName);

@@ -8,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 using POSLayer.Library;
 using POSLayer.Models;
-using POSLayer.Views;
 
 using PosLibrary;
 
@@ -151,7 +150,7 @@ namespace DTRMNS {
         private async void btnEdit_Click(object sender, EventArgs e) {
            if (dgv.SelectedRows.Count > 0) {
                 string StockItemIID = dgv.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
-                frmStockItem frm = new frmStockItem(bslayer, await bslayer.GetStockItem(StockItemIID));
+                frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, await bslayer.GetStockItem(StockItemIID));
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadUsage();
             }
@@ -220,7 +219,7 @@ namespace DTRMNS {
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            frmStockItem frm = new frmStockItem(bslayer, new StockItem());
+            frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, new StockItem());
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadUsage();
         }

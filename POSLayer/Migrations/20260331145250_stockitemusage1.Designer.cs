@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Models;
 
@@ -11,9 +12,11 @@ using POSLayer.Models;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260331145250_stockitemusage1")]
+    partial class stockitemusage1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,6 +457,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageFileName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ImageSizeinKB")
@@ -746,42 +750,6 @@ namespace POSLayer.Migrations
                     b.HasKey("IID");
 
                     b.ToTable("Printers");
-                });
-
-            modelBuilder.Entity("POSLayer.Models.Recipe", b =>
-                {
-                    b.Property<string>("IID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CategoryItemIID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FreeItemText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.Property<int>("QuantityType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StockItemIID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("IID");
-
-                    b.HasIndex("CategoryItemIID");
-
-                    b.HasIndex("StockItemIID");
-
-                    b.ToTable("Recipes", (string)null);
                 });
 
             modelBuilder.Entity("POSLayer.Models.Session", b =>
@@ -1437,23 +1405,6 @@ namespace POSLayer.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("POSLayer.Models.Recipe", b =>
-                {
-                    b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
-                        .WithMany("recipes")
-                        .HasForeignKey("CategoryItemIID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("POSLayer.Models.StockItem", "StockItem")
-                        .WithMany("recipes")
-                        .HasForeignKey("StockItemIID")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("CategoryItem");
-
-                    b.Navigation("StockItem");
-                });
-
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
                 {
                     b.HasOne("POSLayer.Models.Supplier", "Supplier")
@@ -1507,8 +1458,6 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.CategoryItem", b =>
                 {
-                    b.Navigation("recipes");
-
                     b.Navigation("stockUsages");
                 });
 
@@ -1539,8 +1488,6 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
                 {
-                    b.Navigation("recipes");
-
                     b.Navigation("stockUsages");
                 });
 

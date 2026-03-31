@@ -43,9 +43,9 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private void frmPrinters_Load(object sender, EventArgs e)
+        private async void frmPrinters_Load(object sender, EventArgs e)
         {
-            LoadPrinters();
+            await LoadPrinters();
         }
 
         private async Task LoadPrinters()
@@ -94,11 +94,11 @@ namespace DTRMSimpleBackOffice
             //} catch { }
         }
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAdd_Click(object sender, EventArgs e)
         {
             frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, new Printer());
             if (frm.ShowDialog() == DialogResult.OK)
-                LoadPrinters();
+               await LoadPrinters();
         }
 
         private async void btnEdit_Click(object sender, EventArgs e)
@@ -107,7 +107,7 @@ namespace DTRMSimpleBackOffice
             {
                 frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, (Printer)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
-                    LoadPrinters();
+                  await  LoadPrinters();
             }
         }
 
@@ -118,7 +118,7 @@ namespace DTRMSimpleBackOffice
                 if (MessageBox.Show("You are about to delete Printer from the system", "Delete Printer", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
                     await repoPrinter.Delete(((Printer)dgv.SelectedRows[0].DataBoundItem).IID);
-                    LoadPrinters();
+                  await  LoadPrinters();
                 }
             }
         }
@@ -129,9 +129,9 @@ namespace DTRMSimpleBackOffice
         }
 
 
-        private void chkAllPrinters_Click(object sender, EventArgs e)
+        private async void chkAllPrinters_Click(object sender, EventArgs e)
         {
-            LoadPrinters();
+           await LoadPrinters();
         }
 
         private async void btnPrintTestPage_Click(object sender, EventArgs e)

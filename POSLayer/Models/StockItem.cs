@@ -15,10 +15,18 @@ public partial class StockItem : BaseClass
 
     public int Conversion { get; set; }
 
-    public string SupplierIID { get; set; } 
+    public string? SupplierIID { get; set; }
 
-    public string SupplierName { get; set; }
+    public Supplier? Supplier { get; set; }
+
+    public string? SupplierName => Supplier?.SupplierName;
+
 
     public double UsedQuantity { get; set; }
+
+
+    public List<StockItemUsage> stockUsages { get; set; } = new();
+
+    public List<Recipe> recipes { get; set; } = new();
 
 }

@@ -79,7 +79,8 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<StockItem> StockItems { get; set; }
 
-    // public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
+    public virtual DbSet<Recipe> Recipes { get; set; }
+    public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
@@ -164,10 +165,37 @@ public partial class PosDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
 
-        
+
+        modelBuilder.Entity<StockItemUsage>(entity =>
+        {
+            entity.ToTable("StockItemUsages");
+
+            entity.HasOne(dp => dp.StockItem)
+                .WithMany(d => d.stockUsages)
+                .HasForeignKey(dp => dp.StockItemIID)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(dp => dp.CategoryItem)
+                .WithMany(p => p.stockUsages)
+                .HasForeignKey(dp => dp.CategoryItemIID)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
 
 
+        modelBuilder.Entity<Recipe>(entity =>
+        {
+            entity.ToTable("Recipes");
 
+            entity.HasOne(dp => dp.StockItem)
+                .WithMany(d => d.recipes)
+                .HasForeignKey(dp => dp.StockItemIID)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(dp => dp.CategoryItem)
+                .WithMany(p => p.recipes)
+                .HasForeignKey(dp => dp.CategoryItemIID)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
 
 

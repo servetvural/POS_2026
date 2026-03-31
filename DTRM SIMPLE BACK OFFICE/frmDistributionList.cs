@@ -67,7 +67,7 @@ namespace DTRMSimpleBackOffice
 
         private async void btnAdd_Click(object sender, EventArgs e)
         {
-            frmDistribution frm = ActivatorUtilities.CreateInstance<frmDistribution>(ServiceHelper.Services, new Distribution());
+            frmDistribution frm = ActivatorUtilities.CreateInstance<frmDistribution>(ServiceHelper.Services, new Distribution() { DOrder = dgv.Rows.Count + 1} );
             if (frm.ShowDialog() == DialogResult.OK)
                 await LoadDistributions();
         }

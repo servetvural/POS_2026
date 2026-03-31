@@ -43,7 +43,7 @@ public interface IRepository<T> where T : BaseClass
     Task<List<SessionData>> GetSessionSumView();
     Task<List<StockItemUsage>> GetStockItemUsageView();
 
-    Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView();
+    //Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView();
     Task<List<DistributionView>> GetDistributionView();
     Task<List<OrdersView>> GetOrdersView();
 
@@ -59,6 +59,10 @@ public interface IRepository<T> where T : BaseClass
 
 
     #endregion
-    //Task<bool> AddPrinterToDistribution(Distribution dist, Printer printer);
-    //Task<bool> RemovePrinterFromDistribution(string distributionIID, string printerIID);
+
+    #region STOCK ITEM FUNCTIONS
+    //Task<List<StockItemView>> GetStockItesWithSupplier(string SupplierIID = null);
+    #endregion
+
+    Task<GenericImage> GetImageAsync(string EntityIID);
 }

@@ -1,5 +1,4 @@
 ﻿using POSLayer.Models;
-using POSLayer.Views;
 
 namespace DTRMNS {
     partial class frmStockItemList {
@@ -25,644 +24,704 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmStockItemList));
-            this.dgv = new System.Windows.Forms.DataGridView();
-            this.popGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.popQuantityType = new System.Windows.Forms.ToolStripMenuItem();
-            this.popOrderType = new System.Windows.Forms.ToolStripMenuItem();
-            this.conversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.popSupplier = new System.Windows.Forms.ToolStripMenuItem();
-            this.stockItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.supplierBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cmbSuppliers = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkIncludeSupplierInPrint = new System.Windows.Forms.CheckBox();
-            this.rbSingle = new System.Windows.Forms.RadioButton();
-            this.rbAll = new System.Windows.Forms.RadioButton();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnSelect = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.dgvUsage = new System.Windows.Forms.DataGridView();
-            this.colEntityButtonIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colStockItemIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEntityButtonName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colQuantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colQuantityType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colQuantityTypeLabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.entityButtonStockItemRecipeBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.vScrolldgv = new System.Windows.Forms.VScrollBar();
-            this.vScrolldgvUsage = new System.Windows.Forms.VScrollBar();
-            this.barMain = new System.Windows.Forms.ToolStrip();
-            this.cmdAdd = new System.Windows.Forms.ToolStripButton();
-            this.cmdEdit = new System.Windows.Forms.ToolStripButton();
-            this.cmdDelete = new System.Windows.Forms.ToolStripButton();
-            this.cmdReload = new System.Windows.Forms.ToolStripButton();
-            this.cmdPrint = new System.Windows.Forms.ToolStripButton();
-            this.cmdExportAsCsv = new System.Windows.Forms.ToolStripButton();
-            this.txtSearch = new System.Windows.Forms.ToolStripTextBox();
-            this.cmdSearch = new System.Windows.Forms.ToolStripButton();
-            this.btnExportAsJson = new System.Windows.Forms.ToolStripButton();
-            this.btnImportFromJson = new System.Windows.Forms.ToolStripButton();
-            this.colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StockName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colqty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colqtylabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colordlabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colConversion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SupplierName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            this.popGrid.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.stockItemBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvUsage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.entityButtonStockItemRecipeBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.barMain.SuspendLayout();
-            this.SuspendLayout();
+            dgv = new System.Windows.Forms.DataGridView();
+            stockNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            quantityTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            conversionDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            usedQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            supplierNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            popGrid = new System.Windows.Forms.ContextMenuStrip(components);
+            popQuantityType = new System.Windows.Forms.ToolStripMenuItem();
+            popOrderType = new System.Windows.Forms.ToolStripMenuItem();
+            conversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            popSupplier = new System.Windows.Forms.ToolStripMenuItem();
+            stockItemBindingSource = new System.Windows.Forms.BindingSource(components);
+            supplierBindingSource = new System.Windows.Forms.BindingSource(components);
+            cmbSuppliers = new System.Windows.Forms.ComboBox();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            chkIncludeSupplierInPrint = new System.Windows.Forms.CheckBox();
+            rbSingle = new System.Windows.Forms.RadioButton();
+            rbAll = new System.Windows.Forms.RadioButton();
+            panel1 = new System.Windows.Forms.Panel();
+            btnSelect = new System.Windows.Forms.Button();
+            btnClose = new System.Windows.Forms.Button();
+            btnSave = new System.Windows.Forms.Button();
+            dgvUsage = new System.Windows.Forms.DataGridView();
+            entityButtonStockItemRecipeBindingSource = new System.Windows.Forms.BindingSource(components);
+            splitContainer1 = new System.Windows.Forms.SplitContainer();
+            pBox = new System.Windows.Forms.PictureBox();
+            vScrolldgv = new System.Windows.Forms.VScrollBar();
+            vScrolldgvUsage = new System.Windows.Forms.VScrollBar();
+            barMain = new System.Windows.Forms.ToolStrip();
+            cmdAdd = new System.Windows.Forms.ToolStripButton();
+            cmdEdit = new System.Windows.Forms.ToolStripButton();
+            cmdDelete = new System.Windows.Forms.ToolStripButton();
+            cmdReload = new System.Windows.Forms.ToolStripButton();
+            cmdPrint = new System.Windows.Forms.ToolStripButton();
+            cmdExportAsCsv = new System.Windows.Forms.ToolStripButton();
+            txtSearch = new System.Windows.Forms.ToolStripTextBox();
+            cmdSearch = new System.Windows.Forms.ToolStripButton();
+            btnExportAsJson = new System.Windows.Forms.ToolStripButton();
+            btnImportFromJson = new System.Windows.Forms.ToolStripButton();
+            tsSort = new System.Windows.Forms.ToolStripButton();
+            tsMoveUp = new System.Windows.Forms.ToolStripButton();
+            tsMoveDown = new System.Windows.Forms.ToolStripButton();
+            btnSample = new System.Windows.Forms.ToolStripButton();
+            stockItemUsageBindingSource = new System.Windows.Forms.BindingSource(components);
+            stockItemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            categoryItemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            sessionQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            xSessionQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            previousQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderableQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderableFloatQuantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            commentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            popGrid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)stockItemBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)supplierBindingSource).BeginInit();
+            groupBox1.SuspendLayout();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvUsage).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)entityButtonStockItemRecipeBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pBox).BeginInit();
+            barMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)stockItemUsageBindingSource).BeginInit();
+            SuspendLayout();
             // 
             // dgv
             // 
-            this.dgv.AllowUserToAddRows = false;
-            this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AutoGenerateColumns = false;
-            this.dgv.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colIID,
-            this.StockName,
-            this.colqty,
-            this.colqtylabel,
-            this.colord,
-            this.colordlabel,
-            this.colConversion,
-            this.SupplierName});
-            this.dgv.ContextMenuStrip = this.popGrid;
-            this.dgv.DataSource = this.stockItemBindingSource;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv.Location = new System.Drawing.Point(0, 0);
-            this.dgv.MultiSelect = false;
-            this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
-            this.dgv.RowHeadersWidth = 25;
-            this.dgv.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgv.RowTemplate.Height = 50;
-            this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(865, 320);
-            this.dgv.TabIndex = 5;
-            this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
-            this.dgv.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgv_Scroll);
-            this.dgv.SelectionChanged += new System.EventHandler(this.dgv_SelectionChanged);
-            this.dgv.Sorted += new System.EventHandler(this.dgv_Sorted);
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AutoGenerateColumns = false;
+            dgv.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { stockNameDataGridViewTextBoxColumn, quantityTypeDataGridViewTextBoxColumn, orderTypeDataGridViewTextBoxColumn, conversionDataGridViewTextBoxColumn, usedQuantityDataGridViewTextBoxColumn, supplierNameDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn });
+            dgv.ContextMenuStrip = popGrid;
+            dgv.DataSource = stockItemBindingSource;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle1;
+            dgv.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgv.Location = new System.Drawing.Point(0, 0);
+            dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgv.MultiSelect = false;
+            dgv.Name = "dgv";
+            dgv.ReadOnly = true;
+            dgv.RowHeadersWidth = 25;
+            dgv.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dgv.RowTemplate.Height = 50;
+            dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgv.Size = new System.Drawing.Size(994, 374);
+            dgv.TabIndex = 5;
+            dgv.CellDoubleClick += dgv_CellDoubleClick;
+            dgv.Scroll += dgv_Scroll;
+            dgv.SelectionChanged += dgv_SelectionChanged;
+            // 
+            // stockNameDataGridViewTextBoxColumn
+            // 
+            stockNameDataGridViewTextBoxColumn.DataPropertyName = "StockName";
+            stockNameDataGridViewTextBoxColumn.HeaderText = "StockName";
+            stockNameDataGridViewTextBoxColumn.Name = "stockNameDataGridViewTextBoxColumn";
+            stockNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // quantityTypeDataGridViewTextBoxColumn
+            // 
+            quantityTypeDataGridViewTextBoxColumn.DataPropertyName = "QuantityType";
+            quantityTypeDataGridViewTextBoxColumn.HeaderText = "QuantityType";
+            quantityTypeDataGridViewTextBoxColumn.Name = "quantityTypeDataGridViewTextBoxColumn";
+            quantityTypeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // orderTypeDataGridViewTextBoxColumn
+            // 
+            orderTypeDataGridViewTextBoxColumn.DataPropertyName = "OrderType";
+            orderTypeDataGridViewTextBoxColumn.HeaderText = "OrderType";
+            orderTypeDataGridViewTextBoxColumn.Name = "orderTypeDataGridViewTextBoxColumn";
+            orderTypeDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // conversionDataGridViewTextBoxColumn
+            // 
+            conversionDataGridViewTextBoxColumn.DataPropertyName = "Conversion";
+            conversionDataGridViewTextBoxColumn.HeaderText = "Conversion";
+            conversionDataGridViewTextBoxColumn.Name = "conversionDataGridViewTextBoxColumn";
+            conversionDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // usedQuantityDataGridViewTextBoxColumn
+            // 
+            usedQuantityDataGridViewTextBoxColumn.DataPropertyName = "UsedQuantity";
+            usedQuantityDataGridViewTextBoxColumn.HeaderText = "UsedQuantity";
+            usedQuantityDataGridViewTextBoxColumn.Name = "usedQuantityDataGridViewTextBoxColumn";
+            usedQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // supplierNameDataGridViewTextBoxColumn
+            // 
+            supplierNameDataGridViewTextBoxColumn.DataPropertyName = "SupplierName";
+            supplierNameDataGridViewTextBoxColumn.HeaderText = "SupplierName";
+            supplierNameDataGridViewTextBoxColumn.Name = "supplierNameDataGridViewTextBoxColumn";
+            supplierNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dOrderDataGridViewTextBoxColumn
+            // 
+            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
+            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
+            dOrderDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // popGrid
             // 
-            this.popGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.popQuantityType,
-            this.popOrderType,
-            this.conversionToolStripMenuItem,
-            this.popSupplier});
-            this.popGrid.Name = "contextMenuStrip1";
-            this.popGrid.Size = new System.Drawing.Size(184, 92);
+            popGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { popQuantityType, popOrderType, conversionToolStripMenuItem, popSupplier });
+            popGrid.Name = "contextMenuStrip1";
+            popGrid.Size = new System.Drawing.Size(184, 92);
             // 
             // popQuantityType
             // 
-            this.popQuantityType.Name = "popQuantityType";
-            this.popQuantityType.Size = new System.Drawing.Size(183, 22);
-            this.popQuantityType.Tag = "0";
-            this.popQuantityType.Text = "Quantity Type";
+            popQuantityType.Name = "popQuantityType";
+            popQuantityType.Size = new System.Drawing.Size(183, 22);
+            popQuantityType.Tag = "0";
+            popQuantityType.Text = "Quantity Type";
             // 
             // popOrderType
             // 
-            this.popOrderType.Name = "popOrderType";
-            this.popOrderType.Size = new System.Drawing.Size(183, 22);
-            this.popOrderType.Text = "Order Type";
+            popOrderType.Name = "popOrderType";
+            popOrderType.Size = new System.Drawing.Size(183, 22);
+            popOrderType.Text = "Order Type";
             // 
             // conversionToolStripMenuItem
             // 
-            this.conversionToolStripMenuItem.Name = "conversionToolStripMenuItem";
-            this.conversionToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.conversionToolStripMenuItem.Text = "Set Conversion Ratio";
-            this.conversionToolStripMenuItem.Click += new System.EventHandler(this.conversionToolStripMenuItem_Click);
+            conversionToolStripMenuItem.Name = "conversionToolStripMenuItem";
+            conversionToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            conversionToolStripMenuItem.Text = "Set Conversion Ratio";
+            conversionToolStripMenuItem.Click += conversionToolStripMenuItem_Click;
             // 
             // popSupplier
             // 
-            this.popSupplier.Name = "popSupplier";
-            this.popSupplier.Size = new System.Drawing.Size(183, 22);
-            this.popSupplier.Text = "Set Supplier";
+            popSupplier.Name = "popSupplier";
+            popSupplier.Size = new System.Drawing.Size(183, 22);
+            popSupplier.Text = "Set Supplier";
             // 
             // stockItemBindingSource
             // 
-            this.stockItemBindingSource.DataSource = typeof(StockItem);
+            stockItemBindingSource.DataSource = typeof(StockItem);
             // 
             // supplierBindingSource
             // 
-            this.supplierBindingSource.DataSource = typeof(Supplier);
+            supplierBindingSource.DataSource = typeof(Supplier);
             // 
             // cmbSuppliers
             // 
-            this.cmbSuppliers.DataSource = this.supplierBindingSource;
-            this.cmbSuppliers.DisplayMember = "SupplierName";
-            this.cmbSuppliers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSuppliers.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
-            this.cmbSuppliers.FormattingEnabled = true;
-            this.cmbSuppliers.Location = new System.Drawing.Point(265, 15);
-            this.cmbSuppliers.Name = "cmbSuppliers";
-            this.cmbSuppliers.Size = new System.Drawing.Size(207, 33);
-            this.cmbSuppliers.TabIndex = 0;
-            this.cmbSuppliers.ValueMember = "IID";
-            this.cmbSuppliers.Visible = false;
-            this.cmbSuppliers.SelectionChangeCommitted += new System.EventHandler(this.cmbSuppliers_SelectionChangeCommitted);
+            cmbSuppliers.DataSource = supplierBindingSource;
+            cmbSuppliers.DisplayMember = "SupplierName";
+            cmbSuppliers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbSuppliers.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F);
+            cmbSuppliers.FormattingEnabled = true;
+            cmbSuppliers.Location = new System.Drawing.Point(309, 17);
+            cmbSuppliers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbSuppliers.Name = "cmbSuppliers";
+            cmbSuppliers.Size = new System.Drawing.Size(241, 33);
+            cmbSuppliers.TabIndex = 0;
+            cmbSuppliers.ValueMember = "IID";
+            cmbSuppliers.Visible = false;
+            cmbSuppliers.SelectionChangeCommitted += cmbSuppliers_SelectionChangeCommitted;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.chkIncludeSupplierInPrint);
-            this.groupBox1.Controls.Add(this.rbSingle);
-            this.groupBox1.Controls.Add(this.cmbSuppliers);
-            this.groupBox1.Controls.Add(this.rbAll);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox1.Location = new System.Drawing.Point(0, 54);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(925, 56);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
+            groupBox1.Controls.Add(chkIncludeSupplierInPrint);
+            groupBox1.Controls.Add(rbSingle);
+            groupBox1.Controls.Add(cmbSuppliers);
+            groupBox1.Controls.Add(rbAll);
+            groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            groupBox1.Location = new System.Drawing.Point(0, 54);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(1154, 65);
+            groupBox1.TabIndex = 1;
+            groupBox1.TabStop = false;
             // 
             // chkIncludeSupplierInPrint
             // 
-            this.chkIncludeSupplierInPrint.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkIncludeSupplierInPrint.Location = new System.Drawing.Point(488, 15);
-            this.chkIncludeSupplierInPrint.Name = "chkIncludeSupplierInPrint";
-            this.chkIncludeSupplierInPrint.Size = new System.Drawing.Size(133, 33);
-            this.chkIncludeSupplierInPrint.TabIndex = 2;
-            this.chkIncludeSupplierInPrint.Text = "INC. SUPP. TO PRINT";
-            this.chkIncludeSupplierInPrint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.chkIncludeSupplierInPrint.UseVisualStyleBackColor = true;
+            chkIncludeSupplierInPrint.Appearance = System.Windows.Forms.Appearance.Button;
+            chkIncludeSupplierInPrint.Location = new System.Drawing.Point(569, 17);
+            chkIncludeSupplierInPrint.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            chkIncludeSupplierInPrint.Name = "chkIncludeSupplierInPrint";
+            chkIncludeSupplierInPrint.Size = new System.Drawing.Size(155, 38);
+            chkIncludeSupplierInPrint.TabIndex = 2;
+            chkIncludeSupplierInPrint.Text = "INC. SUPP. TO PRINT";
+            chkIncludeSupplierInPrint.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            chkIncludeSupplierInPrint.UseVisualStyleBackColor = true;
             // 
             // rbSingle
             // 
-            this.rbSingle.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbSingle.Location = new System.Drawing.Point(142, 15);
-            this.rbSingle.Name = "rbSingle";
-            this.rbSingle.Size = new System.Drawing.Size(108, 33);
-            this.rbSingle.TabIndex = 1;
-            this.rbSingle.Text = "ONE SUPPLIER";
-            this.rbSingle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbSingle.UseVisualStyleBackColor = true;
+            rbSingle.Appearance = System.Windows.Forms.Appearance.Button;
+            rbSingle.Location = new System.Drawing.Point(166, 17);
+            rbSingle.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbSingle.Name = "rbSingle";
+            rbSingle.Size = new System.Drawing.Size(126, 38);
+            rbSingle.TabIndex = 1;
+            rbSingle.Text = "ONE SUPPLIER";
+            rbSingle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            rbSingle.UseVisualStyleBackColor = true;
             // 
             // rbAll
             // 
-            this.rbAll.Appearance = System.Windows.Forms.Appearance.Button;
-            this.rbAll.Checked = true;
-            this.rbAll.Location = new System.Drawing.Point(16, 15);
-            this.rbAll.Name = "rbAll";
-            this.rbAll.Size = new System.Drawing.Size(108, 33);
-            this.rbAll.TabIndex = 0;
-            this.rbAll.TabStop = true;
-            this.rbAll.Text = "ALL SUPPLIERS";
-            this.rbAll.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rbAll.UseVisualStyleBackColor = true;
-            this.rbAll.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
+            rbAll.Appearance = System.Windows.Forms.Appearance.Button;
+            rbAll.Checked = true;
+            rbAll.Location = new System.Drawing.Point(19, 17);
+            rbAll.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            rbAll.Name = "rbAll";
+            rbAll.Size = new System.Drawing.Size(126, 38);
+            rbAll.TabIndex = 0;
+            rbAll.TabStop = true;
+            rbAll.Text = "ALL SUPPLIERS";
+            rbAll.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            rbAll.UseVisualStyleBackColor = true;
+            rbAll.CheckedChanged += rbAll_CheckedChanged;
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.Control;
-            this.panel1.Controls.Add(this.btnSelect);
-            this.panel1.Controls.Add(this.btnClose);
-            this.panel1.Controls.Add(this.btnSave);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 590);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(10);
-            this.panel1.Size = new System.Drawing.Size(925, 70);
-            this.panel1.TabIndex = 46;
+            panel1.BackColor = System.Drawing.SystemColors.Control;
+            panel1.Controls.Add(btnSelect);
+            panel1.Controls.Add(btnClose);
+            panel1.Controls.Add(btnSave);
+            panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panel1.Location = new System.Drawing.Point(0, 681);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Padding = new System.Windows.Forms.Padding(12);
+            panel1.Size = new System.Drawing.Size(1154, 81);
+            panel1.TabIndex = 46;
             // 
             // btnSelect
             // 
-            this.btnSelect.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnSelect.FlatAppearance.BorderSize = 0;
-            this.btnSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnSelect.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSelect.Location = new System.Drawing.Point(540, 10);
-            this.btnSelect.Name = "btnSelect";
-            this.btnSelect.Size = new System.Drawing.Size(125, 50);
-            this.btnSelect.TabIndex = 44;
-            this.btnSelect.Text = "SELECT";
-            this.btnSelect.UseVisualStyleBackColor = false;
-            this.btnSelect.Click += new System.EventHandler(this.btnSelect_Click);
+            btnSelect.Dock = System.Windows.Forms.DockStyle.Right;
+            btnSelect.FlatAppearance.BorderSize = 0;
+            btnSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnSelect.ForeColor = System.Drawing.SystemColors.ControlText;
+            btnSelect.Location = new System.Drawing.Point(704, 12);
+            btnSelect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSelect.Name = "btnSelect";
+            btnSelect.Size = new System.Drawing.Size(146, 57);
+            btnSelect.TabIndex = 44;
+            btnSelect.Text = "SELECT";
+            btnSelect.UseVisualStyleBackColor = false;
+            btnSelect.Click += btnSelect_Click;
             // 
             // btnClose
             // 
-            this.btnClose.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnClose.FlatAppearance.BorderSize = 0;
-            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnClose.Location = new System.Drawing.Point(665, 10);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(125, 50);
-            this.btnClose.TabIndex = 42;
-            this.btnClose.Text = "CANCEL";
-            this.btnClose.UseVisualStyleBackColor = false;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            btnClose.Dock = System.Windows.Forms.DockStyle.Right;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
+            btnClose.Location = new System.Drawing.Point(850, 12);
+            btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new System.Drawing.Size(146, 57);
+            btnClose.TabIndex = 42;
+            btnClose.Text = "CANCEL";
+            btnClose.UseVisualStyleBackColor = false;
+            btnClose.Click += btnClose_Click;
             // 
             // btnSave
             // 
-            this.btnSave.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnSave.FlatAppearance.BorderSize = 0;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnSave.Location = new System.Drawing.Point(790, 10);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(125, 50);
-            this.btnSave.TabIndex = 43;
-            this.btnSave.Text = "SAVE";
-            this.btnSave.UseVisualStyleBackColor = false;
-            this.btnSave.Visible = false;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Dock = System.Windows.Forms.DockStyle.Right;
+            btnSave.FlatAppearance.BorderSize = 0;
+            btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnSave.Location = new System.Drawing.Point(996, 12);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(146, 57);
+            btnSave.TabIndex = 43;
+            btnSave.Text = "SAVE";
+            btnSave.UseVisualStyleBackColor = false;
+            btnSave.Visible = false;
             // 
             // dgvUsage
             // 
-            this.dgvUsage.AllowUserToAddRows = false;
-            this.dgvUsage.AllowUserToDeleteRows = false;
-            this.dgvUsage.AutoGenerateColumns = false;
-            this.dgvUsage.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
-            this.dgvUsage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvUsage.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colEntityButtonIID,
-            this.colStockItemIID,
-            this.colEntityButtonName,
-            this.colQuantity,
-            this.colQuantityType,
-            this.colQuantityTypeLabel});
-            this.dgvUsage.ContextMenuStrip = this.popGrid;
-            this.dgvUsage.DataSource = this.entityButtonStockItemRecipeBindingSource;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvUsage.DefaultCellStyle = dataGridViewCellStyle7;
-            this.dgvUsage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvUsage.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgvUsage.Location = new System.Drawing.Point(0, 0);
-            this.dgvUsage.MultiSelect = false;
-            this.dgvUsage.Name = "dgvUsage";
-            this.dgvUsage.ReadOnly = true;
-            this.dgvUsage.RowHeadersWidth = 25;
-            this.dgvUsage.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvUsage.RowTemplate.Height = 40;
-            this.dgvUsage.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgvUsage.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvUsage.Size = new System.Drawing.Size(865, 120);
-            this.dgvUsage.TabIndex = 47;
-            this.dgvUsage.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvUsage_CellDoubleClick);
-            this.dgvUsage.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgvUsage_Scroll);
-            this.dgvUsage.Sorted += new System.EventHandler(this.dgvUsage_Sorted);
-            // 
-            // colEntityButtonIID
-            // 
-            this.colEntityButtonIID.DataPropertyName = "EntityButtonIID";
-            this.colEntityButtonIID.HeaderText = "EntityButtonIID";
-            this.colEntityButtonIID.Name = "colEntityButtonIID";
-            this.colEntityButtonIID.ReadOnly = true;
-            this.colEntityButtonIID.Visible = false;
-            // 
-            // colStockItemIID
-            // 
-            this.colStockItemIID.DataPropertyName = "StockItemIID";
-            this.colStockItemIID.HeaderText = "StockItemIID";
-            this.colStockItemIID.Name = "colStockItemIID";
-            this.colStockItemIID.ReadOnly = true;
-            this.colStockItemIID.Visible = false;
-            // 
-            // colEntityButtonName
-            // 
-            this.colEntityButtonName.DataPropertyName = "EntityButtonName";
-            this.colEntityButtonName.HeaderText = "Category Item";
-            this.colEntityButtonName.Name = "colEntityButtonName";
-            this.colEntityButtonName.ReadOnly = true;
-            this.colEntityButtonName.Width = 350;
-            // 
-            // colQuantity
-            // 
-            this.colQuantity.DataPropertyName = "Quantity";
-            this.colQuantity.HeaderText = "Quantity";
-            this.colQuantity.Name = "colQuantity";
-            this.colQuantity.ReadOnly = true;
-            // 
-            // colQuantityType
-            // 
-            this.colQuantityType.DataPropertyName = "QuantityType";
-            this.colQuantityType.HeaderText = "QuantityType";
-            this.colQuantityType.Name = "colQuantityType";
-            this.colQuantityType.ReadOnly = true;
-            this.colQuantityType.Visible = false;
-            // 
-            // colQuantityTypeLabel
-            // 
-            this.colQuantityTypeLabel.HeaderText = "Type";
-            this.colQuantityTypeLabel.Name = "colQuantityTypeLabel";
-            this.colQuantityTypeLabel.ReadOnly = true;
+            dgvUsage.AllowUserToAddRows = false;
+            dgvUsage.AllowUserToDeleteRows = false;
+            dgvUsage.AutoGenerateColumns = false;
+            dgvUsage.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
+            dgvUsage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvUsage.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { stockItemNameDataGridViewTextBoxColumn, categoryItemNameDataGridViewTextBoxColumn, sessionQuantityDataGridViewTextBoxColumn, xSessionQuantityDataGridViewTextBoxColumn, previousQuantityDataGridViewTextBoxColumn, totalQuantityDataGridViewTextBoxColumn, orderableQuantityDataGridViewTextBoxColumn, orderableFloatQuantityDataGridViewTextBoxColumn, commentDataGridViewTextBoxColumn, dOrderDataGridViewTextBoxColumn1 });
+            dgvUsage.ContextMenuStrip = popGrid;
+            dgvUsage.DataSource = stockItemUsageBindingSource;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvUsage.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvUsage.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvUsage.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgvUsage.Location = new System.Drawing.Point(0, 0);
+            dgvUsage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgvUsage.MultiSelect = false;
+            dgvUsage.Name = "dgvUsage";
+            dgvUsage.ReadOnly = true;
+            dgvUsage.RowHeadersWidth = 25;
+            dgvUsage.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dgvUsage.RowTemplate.Height = 40;
+            dgvUsage.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            dgvUsage.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvUsage.Size = new System.Drawing.Size(1094, 142);
+            dgvUsage.TabIndex = 47;
+            dgvUsage.CellDoubleClick += dgvUsage_CellDoubleClick;
+            dgvUsage.Scroll += dgvUsage_Scroll;
             // 
             // entityButtonStockItemRecipeBindingSource
             // 
-            this.entityButtonStockItemRecipeBindingSource.DataSource = typeof(EntityButtonStockItemRecipe);
+            entityButtonStockItemRecipeBindingSource.DataSource = typeof(Recipe);
             // 
             // splitContainer1
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 110);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 119);
+            splitContainer1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.dgv);
-            this.splitContainer1.Panel1.Controls.Add(this.vScrolldgv);
+            splitContainer1.Panel1.Controls.Add(dgv);
+            splitContainer1.Panel1.Controls.Add(pBox);
+            splitContainer1.Panel1.Controls.Add(vScrolldgv);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.dgvUsage);
-            this.splitContainer1.Panel2.Controls.Add(this.vScrolldgvUsage);
-            this.splitContainer1.Panel2MinSize = 100;
-            this.splitContainer1.Size = new System.Drawing.Size(925, 480);
-            this.splitContainer1.SplitterDistance = 320;
-            this.splitContainer1.SplitterWidth = 40;
-            this.splitContainer1.TabIndex = 48;
+            splitContainer1.Panel2.Controls.Add(dgvUsage);
+            splitContainer1.Panel2.Controls.Add(vScrolldgvUsage);
+            splitContainer1.Panel2MinSize = 100;
+            splitContainer1.Size = new System.Drawing.Size(1154, 562);
+            splitContainer1.SplitterDistance = 374;
+            splitContainer1.SplitterWidth = 46;
+            splitContainer1.TabIndex = 48;
+            // 
+            // pBox
+            // 
+            pBox.BackColor = System.Drawing.SystemColors.Window;
+            pBox.Dock = System.Windows.Forms.DockStyle.Right;
+            pBox.Location = new System.Drawing.Point(994, 0);
+            pBox.Name = "pBox";
+            pBox.Size = new System.Drawing.Size(100, 374);
+            pBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            pBox.TabIndex = 0;
+            pBox.TabStop = false;
+            pBox.Visible = false;
             // 
             // vScrolldgv
             // 
-            this.vScrolldgv.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrolldgv.Location = new System.Drawing.Point(865, 0);
-            this.vScrolldgv.Name = "vScrolldgv";
-            this.vScrolldgv.Size = new System.Drawing.Size(60, 320);
-            this.vScrolldgv.TabIndex = 6;
-            this.vScrolldgv.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrolldgv_Scroll);
+            vScrolldgv.Dock = System.Windows.Forms.DockStyle.Right;
+            vScrolldgv.Location = new System.Drawing.Point(1094, 0);
+            vScrolldgv.Name = "vScrolldgv";
+            vScrolldgv.Size = new System.Drawing.Size(60, 374);
+            vScrolldgv.TabIndex = 6;
+            vScrolldgv.Scroll += vScrolldgv_Scroll;
             // 
             // vScrolldgvUsage
             // 
-            this.vScrolldgvUsage.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScrolldgvUsage.Location = new System.Drawing.Point(865, 0);
-            this.vScrolldgvUsage.Name = "vScrolldgvUsage";
-            this.vScrolldgvUsage.Size = new System.Drawing.Size(60, 120);
-            this.vScrolldgvUsage.TabIndex = 48;
-            this.vScrolldgvUsage.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrolldgvUsage_Scroll);
+            vScrolldgvUsage.Dock = System.Windows.Forms.DockStyle.Right;
+            vScrolldgvUsage.Location = new System.Drawing.Point(1094, 0);
+            vScrolldgvUsage.Name = "vScrolldgvUsage";
+            vScrolldgvUsage.Size = new System.Drawing.Size(60, 142);
+            vScrolldgvUsage.TabIndex = 48;
+            vScrolldgvUsage.Scroll += vScrolldgvUsage_Scroll;
             // 
             // barMain
             // 
-            this.barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.cmdAdd,
-            this.cmdEdit,
-            this.cmdDelete,
-            this.cmdReload,
-            this.cmdPrint,
-            this.cmdExportAsCsv,
-            this.txtSearch,
-            this.cmdSearch,
-            this.btnExportAsJson,
-            this.btnImportFromJson});
-            this.barMain.Location = new System.Drawing.Point(0, 0);
-            this.barMain.Name = "barMain";
-            this.barMain.Size = new System.Drawing.Size(925, 54);
-            this.barMain.TabIndex = 49;
-            this.barMain.Text = "toolStrip1";
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete, cmdReload, cmdPrint, cmdExportAsCsv, txtSearch, cmdSearch, btnExportAsJson, btnImportFromJson, tsSort, tsMoveUp, tsMoveDown, btnSample });
+            barMain.Location = new System.Drawing.Point(0, 0);
+            barMain.Name = "barMain";
+            barMain.Size = new System.Drawing.Size(1154, 54);
+            barMain.TabIndex = 49;
+            barMain.Text = "toolStrip1";
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Image = global::DTRMNS.Properties.Resources.arti32;
-            this.cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdAdd.Name = "cmdAdd";
-            this.cmdAdd.Size = new System.Drawing.Size(60, 51);
-            this.cmdAdd.Text = "Add New";
-            this.cmdAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            cmdAdd.Image = Properties.Resources.arti32;
+            cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdAdd.Name = "cmdAdd";
+            cmdAdd.Size = new System.Drawing.Size(60, 51);
+            cmdAdd.Text = "Add New";
+            cmdAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdAdd.Click += btnAdd_Click;
             // 
             // cmdEdit
             // 
-            this.cmdEdit.Image = global::DTRMNS.Properties.Resources.MatReport_32;
-            this.cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdEdit.Name = "cmdEdit";
-            this.cmdEdit.Size = new System.Drawing.Size(49, 51);
-            this.cmdEdit.Text = "   Edit   ";
-            this.cmdEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            cmdEdit.Image = Properties.Resources.MatReport_32;
+            cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdEdit.Name = "cmdEdit";
+            cmdEdit.Size = new System.Drawing.Size(49, 51);
+            cmdEdit.Text = "   Edit   ";
+            cmdEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdEdit.Click += btnEdit_Click;
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Image = global::DTRMNS.Properties.Resources.eksi32;
-            this.cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(65, 51);
-            this.cmdDelete.Text = "    Delete   ";
-            this.cmdDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            cmdDelete.Image = Properties.Resources.eksi32;
+            cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdDelete.Name = "cmdDelete";
+            cmdDelete.Size = new System.Drawing.Size(65, 51);
+            cmdDelete.Text = "    Delete   ";
+            cmdDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdDelete.Click += btnDelete_Click;
             // 
             // cmdReload
             // 
-            this.cmdReload.Image = global::DTRMNS.Properties.Resources.Reload_32;
-            this.cmdReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdReload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdReload.Name = "cmdReload";
-            this.cmdReload.Size = new System.Drawing.Size(71, 51);
-            this.cmdReload.Text = "    Reload    ";
-            this.cmdReload.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdReload.Click += new System.EventHandler(this.btnRefresh_Click);
+            cmdReload.Image = Properties.Resources.Reload_32;
+            cmdReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdReload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdReload.Name = "cmdReload";
+            cmdReload.Size = new System.Drawing.Size(71, 51);
+            cmdReload.Text = "    Reload    ";
+            cmdReload.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdReload.Click += btnRefresh_Click;
             // 
             // cmdPrint
             // 
-            this.cmdPrint.Image = global::DTRMNS.Properties.Resources.Print32;
-            this.cmdPrint.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdPrint.Name = "cmdPrint";
-            this.cmdPrint.Size = new System.Drawing.Size(57, 51);
-            this.cmdPrint.Text = "    Print   ";
-            this.cmdPrint.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            cmdPrint.Image = Properties.Resources.Print32;
+            cmdPrint.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdPrint.Name = "cmdPrint";
+            cmdPrint.Size = new System.Drawing.Size(57, 51);
+            cmdPrint.Text = "    Print   ";
+            cmdPrint.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdPrint.Click += btnPrint_Click;
             // 
             // cmdExportAsCsv
             // 
-            this.cmdExportAsCsv.Image = global::DTRMNS.Properties.Resources.Export32;
-            this.cmdExportAsCsv.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdExportAsCsv.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdExportAsCsv.Name = "cmdExportAsCsv";
-            this.cmdExportAsCsv.Size = new System.Drawing.Size(82, 51);
-            this.cmdExportAsCsv.Text = "Export As Csv";
-            this.cmdExportAsCsv.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdExportAsCsv.Click += new System.EventHandler(this.btnExportAsCsv_Click);
+            cmdExportAsCsv.Image = Properties.Resources.Export32;
+            cmdExportAsCsv.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdExportAsCsv.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdExportAsCsv.Name = "cmdExportAsCsv";
+            cmdExportAsCsv.Size = new System.Drawing.Size(82, 51);
+            cmdExportAsCsv.Text = "Export As Csv";
+            cmdExportAsCsv.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdExportAsCsv.Click += btnExportAsCsv_Click;
             // 
             // txtSearch
             // 
-            this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtSearch.Font = new System.Drawing.Font("Segoe UI", 14F);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(200, 54);
-            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
+            txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            txtSearch.Font = new System.Drawing.Font("Segoe UI", 14F);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new System.Drawing.Size(233, 54);
+            txtSearch.KeyDown += txtSearch_KeyDown;
             // 
             // cmdSearch
             // 
-            this.cmdSearch.Image = global::DTRMNS.Properties.Resources.View32;
-            this.cmdSearch.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.cmdSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cmdSearch.Name = "cmdSearch";
-            this.cmdSearch.Size = new System.Drawing.Size(61, 51);
-            this.cmdSearch.Text = "  Search   ";
-            this.cmdSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.cmdSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            cmdSearch.Image = Properties.Resources.View32;
+            cmdSearch.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdSearch.Name = "cmdSearch";
+            cmdSearch.Size = new System.Drawing.Size(61, 51);
+            cmdSearch.Text = "  Search   ";
+            cmdSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdSearch.Click += btnSearch_Click;
             // 
             // btnExportAsJson
             // 
-            this.btnExportAsJson.Image = global::DTRMNS.Properties.Resources.SquareArrowRightExpander32;
-            this.btnExportAsJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnExportAsJson.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnExportAsJson.Name = "btnExportAsJson";
-            this.btnExportAsJson.Size = new System.Drawing.Size(75, 51);
-            this.btnExportAsJson.Text = "JSON Export";
-            this.btnExportAsJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnExportAsJson.Click += new System.EventHandler(this.btnExportAsJson_Click);
+            btnExportAsJson.Image = Properties.Resources.SquareArrowRightExpander32;
+            btnExportAsJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnExportAsJson.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnExportAsJson.Name = "btnExportAsJson";
+            btnExportAsJson.Size = new System.Drawing.Size(75, 51);
+            btnExportAsJson.Text = "JSON Export";
+            btnExportAsJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnExportAsJson.Click += btnExportAsJson_Click;
             // 
             // btnImportFromJson
             // 
-            this.btnImportFromJson.Image = global::DTRMNS.Properties.Resources.SquareArrowLeftNarrower32;
-            this.btnImportFromJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.btnImportFromJson.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnImportFromJson.Name = "btnImportFromJson";
-            this.btnImportFromJson.Size = new System.Drawing.Size(78, 51);
-            this.btnImportFromJson.Text = "JSON Import";
-            this.btnImportFromJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnImportFromJson.Click += new System.EventHandler(this.btnImportFromJson_Click);
+            btnImportFromJson.Image = Properties.Resources.SquareArrowLeftNarrower32;
+            btnImportFromJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnImportFromJson.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnImportFromJson.Name = "btnImportFromJson";
+            btnImportFromJson.Size = new System.Drawing.Size(78, 51);
+            btnImportFromJson.Text = "JSON Import";
+            btnImportFromJson.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnImportFromJson.Click += btnImportFromJson_Click;
             // 
-            // colIID
+            // tsSort
             // 
-            this.colIID.DataPropertyName = "IID";
-            this.colIID.HeaderText = "IID";
-            this.colIID.Name = "colIID";
-            this.colIID.ReadOnly = true;
-            this.colIID.Visible = false;
+            tsSort.AutoSize = false;
+            tsSort.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsSort.Image = Properties.Resources.updown;
+            tsSort.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsSort.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsSort.Name = "tsSort";
+            tsSort.Size = new System.Drawing.Size(60, 51);
+            tsSort.Text = "toolStripButton1";
+            tsSort.Click += tsSort_Click;
             // 
-            // StockName
+            // tsMoveUp
             // 
-            this.StockName.DataPropertyName = "StockName";
-            this.StockName.HeaderText = "StockName";
-            this.StockName.Name = "StockName";
-            this.StockName.ReadOnly = true;
-            this.StockName.Width = 250;
+            tsMoveUp.AutoSize = false;
+            tsMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveUp.Image = Properties.Resources.up2;
+            tsMoveUp.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveUp.Name = "tsMoveUp";
+            tsMoveUp.Size = new System.Drawing.Size(60, 51);
+            tsMoveUp.Text = "toolStripButton1";
+            tsMoveUp.Click += tsMoveUp_Click;
             // 
-            // colqty
+            // tsMoveDown
             // 
-            this.colqty.DataPropertyName = "UsedQuantity";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colqty.DefaultCellStyle = dataGridViewCellStyle1;
-            this.colqty.HeaderText = "Used Qty";
-            this.colqty.Name = "colqty";
-            this.colqty.ReadOnly = true;
-            this.colqty.Width = 50;
+            tsMoveDown.AutoSize = false;
+            tsMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            tsMoveDown.Image = Properties.Resources.down2;
+            tsMoveDown.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            tsMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            tsMoveDown.Name = "tsMoveDown";
+            tsMoveDown.Size = new System.Drawing.Size(60, 51);
+            tsMoveDown.Text = "toolStripButton1";
+            tsMoveDown.Click += tsMoveDown_Click;
             // 
-            // colqtylabel
+            // btnSample
             // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colqtylabel.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colqtylabel.HeaderText = "Quantity Type";
-            this.colqtylabel.Name = "colqtylabel";
-            this.colqtylabel.ReadOnly = true;
-            this.colqtylabel.Width = 90;
+            btnSample.AutoSize = false;
+            btnSample.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            btnSample.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnSample.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnSample.Name = "btnSample";
+            btnSample.Size = new System.Drawing.Size(60, 51);
+            btnSample.Text = "Selected Stock Item Image";
+            btnSample.Click += btnSample_Click;
+            btnSample.Paint += btnSample_Paint;
             // 
-            // colord
+            // stockItemUsageBindingSource
             // 
-            this.colord.DataPropertyName = "OrderType";
-            this.colord.HeaderText = "OrderType";
-            this.colord.Name = "colord";
-            this.colord.ReadOnly = true;
-            this.colord.Visible = false;
+            stockItemUsageBindingSource.DataSource = typeof(StockItemUsage);
             // 
-            // colordlabel
+            // stockItemNameDataGridViewTextBoxColumn
             // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colordlabel.DefaultCellStyle = dataGridViewCellStyle3;
-            this.colordlabel.HeaderText = "Order Type";
-            this.colordlabel.Name = "colordlabel";
-            this.colordlabel.ReadOnly = true;
-            this.colordlabel.Width = 90;
+            stockItemNameDataGridViewTextBoxColumn.DataPropertyName = "StockItemName";
+            stockItemNameDataGridViewTextBoxColumn.HeaderText = "StockItemName";
+            stockItemNameDataGridViewTextBoxColumn.Name = "stockItemNameDataGridViewTextBoxColumn";
+            stockItemNameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // colConversion
+            // categoryItemNameDataGridViewTextBoxColumn
             // 
-            this.colConversion.DataPropertyName = "Conversion";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.colConversion.DefaultCellStyle = dataGridViewCellStyle4;
-            this.colConversion.HeaderText = "Conversion";
-            this.colConversion.Name = "colConversion";
-            this.colConversion.ReadOnly = true;
-            this.colConversion.Width = 65;
+            categoryItemNameDataGridViewTextBoxColumn.DataPropertyName = "CategoryItemName";
+            categoryItemNameDataGridViewTextBoxColumn.HeaderText = "CategoryItemName";
+            categoryItemNameDataGridViewTextBoxColumn.Name = "categoryItemNameDataGridViewTextBoxColumn";
+            categoryItemNameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // SupplierName
+            // sessionQuantityDataGridViewTextBoxColumn
             // 
-            this.SupplierName.DataPropertyName = "SupplierName";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            this.SupplierName.DefaultCellStyle = dataGridViewCellStyle5;
-            this.SupplierName.HeaderText = "Supplier";
-            this.SupplierName.Name = "SupplierName";
-            this.SupplierName.ReadOnly = true;
-            this.SupplierName.Width = 80;
+            sessionQuantityDataGridViewTextBoxColumn.DataPropertyName = "SessionQuantity";
+            sessionQuantityDataGridViewTextBoxColumn.HeaderText = "SessionQuantity";
+            sessionQuantityDataGridViewTextBoxColumn.Name = "sessionQuantityDataGridViewTextBoxColumn";
+            sessionQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // xSessionQuantityDataGridViewTextBoxColumn
+            // 
+            xSessionQuantityDataGridViewTextBoxColumn.DataPropertyName = "XSessionQuantity";
+            xSessionQuantityDataGridViewTextBoxColumn.HeaderText = "XSessionQuantity";
+            xSessionQuantityDataGridViewTextBoxColumn.Name = "xSessionQuantityDataGridViewTextBoxColumn";
+            xSessionQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // previousQuantityDataGridViewTextBoxColumn
+            // 
+            previousQuantityDataGridViewTextBoxColumn.DataPropertyName = "PreviousQuantity";
+            previousQuantityDataGridViewTextBoxColumn.HeaderText = "PreviousQuantity";
+            previousQuantityDataGridViewTextBoxColumn.Name = "previousQuantityDataGridViewTextBoxColumn";
+            previousQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // totalQuantityDataGridViewTextBoxColumn
+            // 
+            totalQuantityDataGridViewTextBoxColumn.DataPropertyName = "TotalQuantity";
+            totalQuantityDataGridViewTextBoxColumn.HeaderText = "TotalQuantity";
+            totalQuantityDataGridViewTextBoxColumn.Name = "totalQuantityDataGridViewTextBoxColumn";
+            totalQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // orderableQuantityDataGridViewTextBoxColumn
+            // 
+            orderableQuantityDataGridViewTextBoxColumn.DataPropertyName = "OrderableQuantity";
+            orderableQuantityDataGridViewTextBoxColumn.HeaderText = "OrderableQuantity";
+            orderableQuantityDataGridViewTextBoxColumn.Name = "orderableQuantityDataGridViewTextBoxColumn";
+            orderableQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // orderableFloatQuantityDataGridViewTextBoxColumn
+            // 
+            orderableFloatQuantityDataGridViewTextBoxColumn.DataPropertyName = "OrderableFloatQuantity";
+            orderableFloatQuantityDataGridViewTextBoxColumn.HeaderText = "OrderableFloatQuantity";
+            orderableFloatQuantityDataGridViewTextBoxColumn.Name = "orderableFloatQuantityDataGridViewTextBoxColumn";
+            orderableFloatQuantityDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // commentDataGridViewTextBoxColumn
+            // 
+            commentDataGridViewTextBoxColumn.DataPropertyName = "Comment";
+            commentDataGridViewTextBoxColumn.HeaderText = "Comment";
+            commentDataGridViewTextBoxColumn.Name = "commentDataGridViewTextBoxColumn";
+            commentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // dOrderDataGridViewTextBoxColumn1
+            // 
+            dOrderDataGridViewTextBoxColumn1.DataPropertyName = "DOrder";
+            dOrderDataGridViewTextBoxColumn1.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn1.Name = "dOrderDataGridViewTextBoxColumn1";
+            dOrderDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // frmStockItemList
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(925, 660);
-            this.Controls.Add(this.splitContainer1);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.barMain);
-            this.Controls.Add(this.panel1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.KeyPreview = true;
-            this.Name = "frmStockItemList";
-            this.Text = "STOCK ITEMS";
-            this.Load += new System.EventHandler(this.frmStockItemList_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmStockItemList_KeyDown);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            this.popGrid.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.stockItemBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.supplierBindingSource)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvUsage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.entityButtonStockItemRecipeBindingSource)).EndInit();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.barMain.ResumeLayout(false);
-            this.barMain.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(1154, 762);
+            Controls.Add(splitContainer1);
+            Controls.Add(groupBox1);
+            Controls.Add(barMain);
+            Controls.Add(panel1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmStockItemList";
+            Text = "STOCK ITEMS";
+            Load += frmStockItemList_Load;
+            KeyDown += frmStockItemList_KeyDown;
+            ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            popGrid.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)stockItemBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)supplierBindingSource).EndInit();
+            groupBox1.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvUsage).EndInit();
+            ((System.ComponentModel.ISupportInitialize)entityButtonStockItemRecipeBindingSource).EndInit();
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pBox).EndInit();
+            barMain.ResumeLayout(false);
+            barMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)stockItemUsageBindingSource).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
@@ -673,7 +732,6 @@ namespace DTRMNS {
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton rbSingle;
         private System.Windows.Forms.RadioButton rbAll;
-        private System.Windows.Forms.BindingSource stockItemBindingSource;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnSelect;
         private System.Windows.Forms.Button btnClose;
@@ -689,12 +747,6 @@ namespace DTRMNS {
         private System.Windows.Forms.VScrollBar vScrolldgvUsage;
         private System.Windows.Forms.CheckBox chkIncludeSupplierInPrint;
         private System.Windows.Forms.BindingSource entityButtonStockItemRecipeBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEntityButtonIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStockItemIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colEntityButtonName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colQuantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colQuantityType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colQuantityTypeLabel;
         private System.Windows.Forms.ToolStrip barMain;
         private System.Windows.Forms.ToolStripButton cmdAdd;
         private System.Windows.Forms.ToolStripButton cmdEdit;
@@ -706,13 +758,29 @@ namespace DTRMNS {
         private System.Windows.Forms.ToolStripButton cmdSearch;
         private System.Windows.Forms.ToolStripButton btnExportAsJson;
         private System.Windows.Forms.ToolStripButton btnImportFromJson;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn StockName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colqty;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colqtylabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colord;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colordlabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colConversion;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SupplierName;
+        private System.Windows.Forms.ToolStripButton btnSample;
+        private System.Windows.Forms.BindingSource stockItemBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stockNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantityTypeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderTypeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn conversionDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn usedQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn supplierNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn;
+        private System.Windows.Forms.PictureBox pBox;
+        private System.Windows.Forms.ToolStripButton tsMoveDown;
+        private System.Windows.Forms.ToolStripButton tsMoveUp;
+        private System.Windows.Forms.ToolStripButton tsSort;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stockItemNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn categoryItemNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn sessionQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn xSessionQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn previousQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderableQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderableFloatQuantityDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn commentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dOrderDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.BindingSource stockItemUsageBindingSource;
     }
 }

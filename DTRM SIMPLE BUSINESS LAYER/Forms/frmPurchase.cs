@@ -4,7 +4,6 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
-using POSLayer.Views;
 
 namespace DTRMNS {
     public partial class frmPurchase : Form {
@@ -28,7 +27,7 @@ namespace DTRMNS {
 
         private async Task LoadStockItemUsage() {
             stockItem =await bslayer.GetStockItem(stockItemUsage.StockItemIID);
-            txtStockItemName.Text = stockItemUsage.StockName;
+            txtStockItemName.Text = stockItemUsage.StockItem.StockName;
             txtQuantity.Value = (int)stockItemUsage.OrderableQuantity;
             txtConversion.Text = stockItem.Conversion.ToString();
             txtNewConversion.Value = stockItem.Conversion;

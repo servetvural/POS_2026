@@ -713,15 +713,15 @@ namespace DTRMNS {
                 if (blnSupplier)
                     DrawText(string.Format("{0,2:N0} {1,-5} {2,-21}",
                                         item.OrderableQuantity,
-                                        SubStr(item.OrderableType.ToString(), 5),
-                                        SubStr(item.StockName, 27)));
+                                        SubStr(item.StockItem.OrderType.ToString(), 5),
+                                        SubStr(item.StockItem.StockName, 27)));
 
                 else
                     DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
                            item.OrderableQuantity,
-                           SubStr(item.OrderableType.ToString(), 5),
-                           SubStr(item.StockName, 22),
-                           SubStr(item.SupplierName, 6)));
+                           SubStr(item.StockItem.OrderType.ToString(), 5),
+                           SubStr(item.StockItem.StockName, 22),
+                           SubStr(item.StockItem.SupplierName, 6)));
 
             }
             //for (int i = 0; i < dtStockUsage.Rows.Count; i++) {

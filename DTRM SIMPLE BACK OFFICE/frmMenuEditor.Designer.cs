@@ -32,6 +32,9 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMenuEditor));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -54,9 +57,6 @@ namespace DTRMSimpleBackOffice {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             dgvMenu = new System.Windows.Forms.DataGridView();
             colMenuIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colMenuName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -64,6 +64,17 @@ namespace DTRMSimpleBackOffice {
             DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
             _menuSourceDesign = new System.Windows.Forms.BindingSource(components);
             dgvCategory = new System.Windows.Forms.DataGridView();
+            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            CategoryType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            widthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            heightDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            DistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            Font = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ButtonDisplayStyle = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            TextAlign = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            TextImageRelation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            ImageAlign = new System.Windows.Forms.DataGridViewTextBoxColumn();
             _categorySourceDesign = new System.Windows.Forms.BindingSource(components);
             barEntity = new System.Windows.Forms.ToolStrip();
             btnAddEntity = new System.Windows.Forms.ToolStripButton();
@@ -134,17 +145,6 @@ namespace DTRMSimpleBackOffice {
             dataGridViewTextBoxColumn47 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn48 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             mainContainer = new System.Windows.Forms.SplitContainer();
-            Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            CategoryType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            widthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            heightDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            DistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            Font = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dOrderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ButtonDisplayStyle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            TextAlign = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            TextImageRelation = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ImageAlign = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvMenu).BeginInit();
             ((System.ComponentModel.ISupportInitialize)_menuSourceDesign).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvCategory).BeginInit();
@@ -229,10 +229,8 @@ namespace DTRMSimpleBackOffice {
             // 
             // dgvCategory
             // 
-            dgvCategory.AllowDrop = true;
             dgvCategory.AllowUserToAddRows = false;
             dgvCategory.AllowUserToDeleteRows = false;
-            dgvCategory.AllowUserToOrderColumns = true;
             dgvCategory.AutoGenerateColumns = false;
             dgvCategory.BackgroundColor = System.Drawing.Color.White;
             dgvCategory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -252,6 +250,7 @@ namespace DTRMSimpleBackOffice {
             dgvCategory.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             dgvCategory.MultiSelect = false;
             dgvCategory.Name = "dgvCategory";
+            dgvCategory.ReadOnly = true;
             dgvCategory.RowHeadersWidth = 25;
             dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             dgvCategory.RowsDefaultCellStyle = dataGridViewCellStyle7;
@@ -261,6 +260,98 @@ namespace DTRMSimpleBackOffice {
             dgvCategory.TabIndex = 4;
             dgvCategory.CellDoubleClick += DgvEntity_CellDoubleClick;
             dgvCategory.SelectionChanged += DgvEntity_SelectionChanged;
+            // 
+            // Column1
+            // 
+            Column1.DataPropertyName = "CategoryName";
+            Column1.HeaderText = "Category Name";
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Width = 200;
+            // 
+            // CategoryType
+            // 
+            CategoryType.DataPropertyName = "CategoryType";
+            CategoryType.HeaderText = "Category Type";
+            CategoryType.Name = "CategoryType";
+            CategoryType.ReadOnly = true;
+            CategoryType.Width = 150;
+            // 
+            // widthDataGridViewTextBoxColumn
+            // 
+            widthDataGridViewTextBoxColumn.DataPropertyName = "Width";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            widthDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            widthDataGridViewTextBoxColumn.HeaderText = "Width";
+            widthDataGridViewTextBoxColumn.Name = "widthDataGridViewTextBoxColumn";
+            widthDataGridViewTextBoxColumn.ReadOnly = true;
+            widthDataGridViewTextBoxColumn.Width = 70;
+            // 
+            // heightDataGridViewTextBoxColumn
+            // 
+            heightDataGridViewTextBoxColumn.DataPropertyName = "Height";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            heightDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            heightDataGridViewTextBoxColumn.HeaderText = "Height";
+            heightDataGridViewTextBoxColumn.Name = "heightDataGridViewTextBoxColumn";
+            heightDataGridViewTextBoxColumn.ReadOnly = true;
+            heightDataGridViewTextBoxColumn.Width = 70;
+            // 
+            // DistributionName
+            // 
+            DistributionName.DataPropertyName = "DistributionName";
+            DistributionName.HeaderText = "Distribution";
+            DistributionName.Name = "DistributionName";
+            DistributionName.ReadOnly = true;
+            DistributionName.Width = 200;
+            // 
+            // Font
+            // 
+            Font.DataPropertyName = "Font";
+            Font.HeaderText = "Font";
+            Font.Name = "Font";
+            Font.ReadOnly = true;
+            Font.Width = 200;
+            // 
+            // dOrderDataGridViewTextBoxColumn
+            // 
+            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dOrderDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
+            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
+            dOrderDataGridViewTextBoxColumn.ReadOnly = true;
+            dOrderDataGridViewTextBoxColumn.Width = 70;
+            // 
+            // ButtonDisplayStyle
+            // 
+            ButtonDisplayStyle.DataPropertyName = "ButtonDisplayStyle";
+            ButtonDisplayStyle.HeaderText = "ButtonDisplayStyle";
+            ButtonDisplayStyle.Name = "ButtonDisplayStyle";
+            ButtonDisplayStyle.ReadOnly = true;
+            ButtonDisplayStyle.Width = 120;
+            // 
+            // TextAlign
+            // 
+            TextAlign.DataPropertyName = "TextAlign";
+            TextAlign.HeaderText = "TextAlign";
+            TextAlign.Name = "TextAlign";
+            TextAlign.ReadOnly = true;
+            // 
+            // TextImageRelation
+            // 
+            TextImageRelation.DataPropertyName = "TextImageRelation";
+            TextImageRelation.HeaderText = "TextImageRelation";
+            TextImageRelation.Name = "TextImageRelation";
+            TextImageRelation.ReadOnly = true;
+            TextImageRelation.Width = 120;
+            // 
+            // ImageAlign
+            // 
+            ImageAlign.DataPropertyName = "ImageAlign";
+            ImageAlign.HeaderText = "ImageAlign";
+            ImageAlign.Name = "ImageAlign";
+            ImageAlign.ReadOnly = true;
             // 
             // _categorySourceDesign
             // 
@@ -1008,89 +1099,6 @@ namespace DTRMSimpleBackOffice {
             mainContainer.SplitterDistance = 267;
             mainContainer.SplitterWidth = 20;
             mainContainer.TabIndex = 3;
-            // 
-            // Column1
-            // 
-            Column1.DataPropertyName = "CategoryName";
-            Column1.HeaderText = "Category Name";
-            Column1.Name = "Column1";
-            Column1.Width = 200;
-            // 
-            // CategoryType
-            // 
-            CategoryType.DataPropertyName = "CategoryType";
-            CategoryType.HeaderText = "Category Type";
-            CategoryType.Name = "CategoryType";
-            CategoryType.Width = 150;
-            // 
-            // widthDataGridViewTextBoxColumn
-            // 
-            widthDataGridViewTextBoxColumn.DataPropertyName = "Width";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            widthDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            widthDataGridViewTextBoxColumn.HeaderText = "Width";
-            widthDataGridViewTextBoxColumn.Name = "widthDataGridViewTextBoxColumn";
-            widthDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // heightDataGridViewTextBoxColumn
-            // 
-            heightDataGridViewTextBoxColumn.DataPropertyName = "Height";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            heightDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            heightDataGridViewTextBoxColumn.HeaderText = "Height";
-            heightDataGridViewTextBoxColumn.Name = "heightDataGridViewTextBoxColumn";
-            heightDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // DistributionName
-            // 
-            DistributionName.DataPropertyName = "DistributionName";
-            DistributionName.HeaderText = "Distribution";
-            DistributionName.Name = "DistributionName";
-            DistributionName.ReadOnly = true;
-            DistributionName.Width = 200;
-            // 
-            // Font
-            // 
-            Font.DataPropertyName = "Font";
-            Font.HeaderText = "Font";
-            Font.Name = "Font";
-            Font.ReadOnly = true;
-            Font.Width = 200;
-            // 
-            // dOrderDataGridViewTextBoxColumn
-            // 
-            dOrderDataGridViewTextBoxColumn.DataPropertyName = "DOrder";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dOrderDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            dOrderDataGridViewTextBoxColumn.HeaderText = "DOrder";
-            dOrderDataGridViewTextBoxColumn.Name = "dOrderDataGridViewTextBoxColumn";
-            dOrderDataGridViewTextBoxColumn.Width = 70;
-            // 
-            // ButtonDisplayStyle
-            // 
-            ButtonDisplayStyle.DataPropertyName = "ButtonDisplayStyle";
-            ButtonDisplayStyle.HeaderText = "ButtonDisplayStyle";
-            ButtonDisplayStyle.Name = "ButtonDisplayStyle";
-            ButtonDisplayStyle.Width = 120;
-            // 
-            // TextAlign
-            // 
-            TextAlign.DataPropertyName = "TextAlign";
-            TextAlign.HeaderText = "TextAlign";
-            TextAlign.Name = "TextAlign";
-            // 
-            // TextImageRelation
-            // 
-            TextImageRelation.DataPropertyName = "TextImageRelation";
-            TextImageRelation.HeaderText = "TextImageRelation";
-            TextImageRelation.Name = "TextImageRelation";
-            TextImageRelation.Width = 120;
-            // 
-            // ImageAlign
-            // 
-            ImageAlign.DataPropertyName = "ImageAlign";
-            ImageAlign.HeaderText = "ImageAlign";
-            ImageAlign.Name = "ImageAlign";
             // 
             // FrmMenuEditor
             // 

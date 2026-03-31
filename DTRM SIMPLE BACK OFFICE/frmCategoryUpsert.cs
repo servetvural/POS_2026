@@ -167,7 +167,7 @@ namespace DTRMSimpleBackOffice {
 
                 if ((category.ButtonDisplayStyle == ButtonDisplayStyles.Image || category.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText) && pBox.BackgroundImage != null)
                 {
-                    byte[] imgBytes = UFWin.ReSizeImageTo(pBox.BackgroundImage, 200, 200, true).ToByteArray();
+                    byte[] imgBytes = UFWin.ReSizeImageTo(pBox.BackgroundImage, config.CategoryItem_Image_Width, config.CategoryItem_Image_Height, true).ToByteArray();
 
                     GenericImage gim = new GenericImage()
                     {

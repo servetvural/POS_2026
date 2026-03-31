@@ -22,391 +22,366 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.txtStockName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtConversion = new PosLibrary.IntegerTextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.cmbQuantityType = new System.Windows.Forms.ComboBox();
-            this.cmbSupplier = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cmbOrderType = new System.Windows.Forms.ComboBox();
-            this.txtUsedQuantity = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.lblUsed = new System.Windows.Forms.Label();
-            this.btnSet0 = new System.Windows.Forms.Button();
-            this.btnSetCustom = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
-            this.txtImageFile = new System.Windows.Forms.TextBox();
-            this.btnLoadImageFromDatabase = new System.Windows.Forms.Button();
-            this.btnDeleteImage = new System.Windows.Forms.Button();
-            this.btnLoadImageFromDirectory = new System.Windows.Forms.Button();
-            this.pBox = new System.Windows.Forms.PictureBox();
-            this.btnMinusQty = new System.Windows.Forms.Button();
-            this.btnPlusQty = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pBox)).BeginInit();
-            this.SuspendLayout();
+        private void InitializeComponent()
+        {
+            btnSave = new System.Windows.Forms.Button();
+            btnCancel = new System.Windows.Forms.Button();
+            txtStockName = new System.Windows.Forms.TextBox();
+            label1 = new System.Windows.Forms.Label();
+            label2 = new System.Windows.Forms.Label();
+            txtConversion = new PosLibrary.IntegerTextBox();
+            label8 = new System.Windows.Forms.Label();
+            label10 = new System.Windows.Forms.Label();
+            cmbQuantityType = new System.Windows.Forms.ComboBox();
+            cmbSupplier = new System.Windows.Forms.ComboBox();
+            label3 = new System.Windows.Forms.Label();
+            cmbOrderType = new System.Windows.Forms.ComboBox();
+            txtUsedQuantity = new System.Windows.Forms.TextBox();
+            label4 = new System.Windows.Forms.Label();
+            lblUsed = new System.Windows.Forms.Label();
+            btnSet0 = new System.Windows.Forms.Button();
+            btnSetCustom = new System.Windows.Forms.Button();
+            label18 = new System.Windows.Forms.Label();
+            txtImageFile = new System.Windows.Forms.TextBox();
+            btnLoadImageFromDatabase = new System.Windows.Forms.Button();
+            btnDeleteImage = new System.Windows.Forms.Button();
+            btnLoadImageFromDirectory = new System.Windows.Forms.Button();
+            pBox = new System.Windows.Forms.PictureBox();
+            btnMinusQty = new System.Windows.Forms.Button();
+            btnPlusQty = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)pBox).BeginInit();
+            SuspendLayout();
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(546, 345);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(94, 50);
-            this.btnSave.TabIndex = 6;
-            this.btnSave.Text = "SAVE";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            btnSave.Location = new System.Drawing.Point(637, 398);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(110, 58);
+            btnSave.TabIndex = 6;
+            btnSave.Text = "SAVE";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(410, 345);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(94, 50);
-            this.btnCancel.TabIndex = 7;
-            this.btnCancel.Text = "CANCEL";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(478, 398);
+            btnCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(110, 58);
+            btnCancel.TabIndex = 7;
+            btnCancel.Text = "CANCEL";
+            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Click += btnCancel_Click;
             // 
             // txtStockName
             // 
-            this.txtStockName.AcceptsReturn = true;
-            this.txtStockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.txtStockName.Location = new System.Drawing.Point(134, 12);
-            this.txtStockName.Name = "txtStockName";
-            this.txtStockName.Size = new System.Drawing.Size(224, 35);
-            this.txtStockName.TabIndex = 0;
+            txtStockName.AcceptsReturn = true;
+            txtStockName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            txtStockName.Location = new System.Drawing.Point(156, 14);
+            txtStockName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtStockName.Name = "txtStockName";
+            txtStockName.Size = new System.Drawing.Size(261, 35);
+            txtStockName.TabIndex = 0;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 27);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(106, 13);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "STOCK ITEM NAME";
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(22, 31);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(110, 15);
+            label1.TabIndex = 16;
+            label1.Text = "STOCK ITEM NAME";
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(32, 77);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "QUANTITY TYPE";
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(37, 89);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(95, 15);
+            label2.TabIndex = 26;
+            label2.Text = "QUANTITY TYPE";
             // 
             // txtConversion
             // 
-            this.txtConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.txtConversion.Increment = 1;
-            this.txtConversion.Location = new System.Drawing.Point(134, 169);
-            this.txtConversion.MaxValue = 51000;
-            this.txtConversion.MinValue = 0;
-            this.txtConversion.Name = "txtConversion";
-            this.txtConversion.Size = new System.Drawing.Size(80, 35);
-            this.txtConversion.TabIndex = 3;
-            this.txtConversion.Text = "0";
-            this.txtConversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtConversion.Value = 0;
+            txtConversion.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            txtConversion.Increment = 1;
+            txtConversion.Location = new System.Drawing.Point(156, 195);
+            txtConversion.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtConversion.MaxValue = 51000;
+            txtConversion.MinValue = 0;
+            txtConversion.Name = "txtConversion";
+            txtConversion.Size = new System.Drawing.Size(93, 35);
+            txtConversion.TabIndex = 3;
+            txtConversion.Text = "0";
+            txtConversion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            txtConversion.Value = 0;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(47, 180);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(78, 13);
-            this.label8.TabIndex = 31;
-            this.label8.Text = "CONVERSION";
+            label8.AutoSize = true;
+            label8.Location = new System.Drawing.Point(55, 208);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(80, 15);
+            label8.TabIndex = 31;
+            label8.Text = "CONVERSION";
             // 
             // label10
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(47, 131);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(77, 13);
-            this.label10.TabIndex = 27;
-            this.label10.Text = "ORDER TYPE";
+            label10.AutoSize = true;
+            label10.Location = new System.Drawing.Point(55, 151);
+            label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label10.Name = "label10";
+            label10.Size = new System.Drawing.Size(74, 15);
+            label10.TabIndex = 27;
+            label10.Text = "ORDER TYPE";
             // 
             // cmbQuantityType
             // 
-            this.cmbQuantityType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbQuantityType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbQuantityType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbQuantityType.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.cmbQuantityType.FormattingEnabled = true;
-            this.cmbQuantityType.Items.AddRange(new object[] {
-            "None",
-            "Piece",
-            "Kilo",
-            "Gram",
-            "Litre",
-            "Mililitre",
-            "Pack",
-            "Box",
-            "Bottle",
-            "Crate",
-            "Slice",
-            "Dash",
-            "Pinch",
-            "Bar Spoon",
-            "Leaf",
-            "Wheel",
-            "Handful",
-            "Quarter",
-            "Drops",
-            "Halves",
-            "Barista_Scoop",
-            "Splash",
-            "Sprinkle",
-            "Sachet",
-            "Can"});
-            this.cmbQuantityType.Location = new System.Drawing.Point(134, 62);
-            this.cmbQuantityType.MaxDropDownItems = 10;
-            this.cmbQuantityType.Name = "cmbQuantityType";
-            this.cmbQuantityType.Size = new System.Drawing.Size(224, 37);
-            this.cmbQuantityType.TabIndex = 1;
+            cmbQuantityType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            cmbQuantityType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            cmbQuantityType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbQuantityType.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            cmbQuantityType.FormattingEnabled = true;
+            cmbQuantityType.Items.AddRange(new object[] { "None", "Piece", "Kilo", "Gram", "Litre", "Mililitre", "Pack", "Box", "Bottle", "Crate", "Slice", "Dash", "Pinch", "Bar Spoon", "Leaf", "Wheel", "Handful", "Quarter", "Drops", "Halves", "Barista_Scoop", "Splash", "Sprinkle", "Sachet", "Can" });
+            cmbQuantityType.Location = new System.Drawing.Point(156, 72);
+            cmbQuantityType.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbQuantityType.MaxDropDownItems = 10;
+            cmbQuantityType.Name = "cmbQuantityType";
+            cmbQuantityType.Size = new System.Drawing.Size(261, 37);
+            cmbQuantityType.TabIndex = 1;
             // 
             // cmbSupplier
             // 
-            this.cmbSupplier.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbSupplier.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbSupplier.DisplayMember = "SupplierName";
-            this.cmbSupplier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbSupplier.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.cmbSupplier.FormattingEnabled = true;
-            this.cmbSupplier.Items.AddRange(new object[] {
-            "Piece",
-            "Kilo",
-            "Gram",
-            "Litre",
-            "Centitlitre",
-            "Pack",
-            "Box"});
-            this.cmbSupplier.Location = new System.Drawing.Point(134, 283);
-            this.cmbSupplier.Name = "cmbSupplier";
-            this.cmbSupplier.Size = new System.Drawing.Size(224, 37);
-            this.cmbSupplier.TabIndex = 5;
-            this.cmbSupplier.ValueMember = "IID";
+            cmbSupplier.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            cmbSupplier.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            cmbSupplier.DisplayMember = "SupplierName";
+            cmbSupplier.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbSupplier.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            cmbSupplier.FormattingEnabled = true;
+            cmbSupplier.Items.AddRange(new object[] { "Piece", "Kilo", "Gram", "Litre", "Centitlitre", "Pack", "Box" });
+            cmbSupplier.Location = new System.Drawing.Point(156, 327);
+            cmbSupplier.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbSupplier.Name = "cmbSupplier";
+            cmbSupplier.Size = new System.Drawing.Size(261, 37);
+            cmbSupplier.TabIndex = 5;
+            cmbSupplier.ValueMember = "IID";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(64, 298);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
-            this.label3.TabIndex = 36;
-            this.label3.Text = "SUPPLIER";
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(75, 344);
+            label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(57, 15);
+            label3.TabIndex = 36;
+            label3.Text = "SUPPLIER";
             // 
             // cmbOrderType
             // 
-            this.cmbOrderType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.cmbOrderType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cmbOrderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbOrderType.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
-            this.cmbOrderType.FormattingEnabled = true;
-            this.cmbOrderType.Items.AddRange(new object[] {
-            "None",
-            "Piece",
-            "Kilo",
-            "Gram",
-            "Litre",
-            "Mililitre",
-            "Pack",
-            "Box",
-            "Bottle",
-            "Crate",
-            "Slice",
-            "Dash",
-            "Pinch",
-            "Bar Spoon",
-            "Leaf",
-            "Wheel",
-            "Handful",
-            "Quarter",
-            "Drops",
-            "Sprig"});
-            this.cmbOrderType.Location = new System.Drawing.Point(134, 116);
-            this.cmbOrderType.MaxDropDownItems = 10;
-            this.cmbOrderType.Name = "cmbOrderType";
-            this.cmbOrderType.Size = new System.Drawing.Size(224, 37);
-            this.cmbOrderType.TabIndex = 2;
+            cmbOrderType.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            cmbOrderType.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            cmbOrderType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cmbOrderType.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F);
+            cmbOrderType.FormattingEnabled = true;
+            cmbOrderType.Items.AddRange(new object[] { "None", "Piece", "Kilo", "Gram", "Litre", "Mililitre", "Pack", "Box", "Bottle", "Crate", "Slice", "Dash", "Pinch", "Bar Spoon", "Leaf", "Wheel", "Handful", "Quarter", "Drops", "Sprig" });
+            cmbOrderType.Location = new System.Drawing.Point(156, 134);
+            cmbOrderType.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cmbOrderType.MaxDropDownItems = 10;
+            cmbOrderType.Name = "cmbOrderType";
+            cmbOrderType.Size = new System.Drawing.Size(261, 37);
+            cmbOrderType.TabIndex = 2;
             // 
             // txtUsedQuantity
             // 
-            this.txtUsedQuantity.AcceptsReturn = true;
-            this.txtUsedQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.txtUsedQuantity.Location = new System.Drawing.Point(134, 239);
-            this.txtUsedQuantity.Name = "txtUsedQuantity";
-            this.txtUsedQuantity.ReadOnly = true;
-            this.txtUsedQuantity.Size = new System.Drawing.Size(80, 29);
-            this.txtUsedQuantity.TabIndex = 4;
+            txtUsedQuantity.AcceptsReturn = true;
+            txtUsedQuantity.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            txtUsedQuantity.Location = new System.Drawing.Point(156, 276);
+            txtUsedQuantity.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtUsedQuantity.Name = "txtUsedQuantity";
+            txtUsedQuantity.ReadOnly = true;
+            txtUsedQuantity.Size = new System.Drawing.Size(93, 29);
+            txtUsedQuantity.TabIndex = 4;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(29, 250);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(95, 13);
-            this.label4.TabIndex = 40;
-            this.label4.Text = "USED QUANTITY";
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(34, 288);
+            label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(96, 15);
+            label4.TabIndex = 40;
+            label4.Text = "USED QUANTITY";
             // 
             // lblUsed
             // 
-            this.lblUsed.AutoSize = true;
-            this.lblUsed.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
-            this.lblUsed.Location = new System.Drawing.Point(220, 242);
-            this.lblUsed.Name = "lblUsed";
-            this.lblUsed.Size = new System.Drawing.Size(40, 24);
-            this.lblUsed.TabIndex = 41;
-            this.lblUsed.Text = "000";
+            lblUsed.AutoSize = true;
+            lblUsed.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            lblUsed.Location = new System.Drawing.Point(257, 279);
+            lblUsed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblUsed.Name = "lblUsed";
+            lblUsed.Size = new System.Drawing.Size(40, 24);
+            lblUsed.TabIndex = 41;
+            lblUsed.Text = "000";
             // 
             // btnSet0
             // 
-            this.btnSet0.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.btnSet0.Location = new System.Drawing.Point(410, 273);
-            this.btnSet0.Name = "btnSet0";
-            this.btnSet0.Size = new System.Drawing.Size(94, 47);
-            this.btnSet0.TabIndex = 44;
-            this.btnSet0.Text = "Set  0";
-            this.btnSet0.UseVisualStyleBackColor = true;
-            this.btnSet0.Click += new System.EventHandler(this.btnSet0_Click);
+            btnSet0.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            btnSet0.Location = new System.Drawing.Point(478, 315);
+            btnSet0.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSet0.Name = "btnSet0";
+            btnSet0.Size = new System.Drawing.Size(110, 54);
+            btnSet0.TabIndex = 44;
+            btnSet0.Text = "Set  0";
+            btnSet0.UseVisualStyleBackColor = true;
+            btnSet0.Click += btnSet0_Click;
             // 
             // btnSetCustom
             // 
-            this.btnSetCustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.btnSetCustom.Location = new System.Drawing.Point(546, 273);
-            this.btnSetCustom.Name = "btnSetCustom";
-            this.btnSetCustom.Size = new System.Drawing.Size(94, 47);
-            this.btnSetCustom.TabIndex = 45;
-            this.btnSetCustom.Text = "Set  ?";
-            this.btnSetCustom.UseVisualStyleBackColor = true;
-            this.btnSetCustom.Click += new System.EventHandler(this.btnSetCustom_Click);
+            btnSetCustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            btnSetCustom.Location = new System.Drawing.Point(637, 315);
+            btnSetCustom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSetCustom.Name = "btnSetCustom";
+            btnSetCustom.Size = new System.Drawing.Size(110, 54);
+            btnSetCustom.TabIndex = 45;
+            btnSetCustom.Text = "Set  ?";
+            btnSetCustom.UseVisualStyleBackColor = true;
+            btnSetCustom.Click += btnSetCustom_Click;
             // 
             // label18
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(407, 193);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(86, 13);
-            this.label18.TabIndex = 109;
-            this.label18.Text = "Image File Name";
+            label18.AutoSize = true;
+            label18.Location = new System.Drawing.Point(475, 223);
+            label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label18.Name = "label18";
+            label18.Size = new System.Drawing.Size(96, 15);
+            label18.TabIndex = 109;
+            label18.Text = "Image File Name";
             // 
             // txtImageFile
             // 
-            this.txtImageFile.BackColor = System.Drawing.SystemColors.Window;
-            this.txtImageFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.txtImageFile.Location = new System.Drawing.Point(410, 209);
-            this.txtImageFile.Name = "txtImageFile";
-            this.txtImageFile.ReadOnly = true;
-            this.txtImageFile.Size = new System.Drawing.Size(230, 23);
-            this.txtImageFile.TabIndex = 108;
+            txtImageFile.BackColor = System.Drawing.SystemColors.Window;
+            txtImageFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            txtImageFile.Location = new System.Drawing.Point(478, 241);
+            txtImageFile.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtImageFile.Name = "txtImageFile";
+            txtImageFile.ReadOnly = true;
+            txtImageFile.Size = new System.Drawing.Size(268, 23);
+            txtImageFile.TabIndex = 108;
             // 
             // btnLoadImageFromDatabase
             // 
-            this.btnLoadImageFromDatabase.Image = global::DTRMNS.Properties.Resources.DBSource32;
-            this.btnLoadImageFromDatabase.Location = new System.Drawing.Point(592, 131);
-            this.btnLoadImageFromDatabase.Name = "btnLoadImageFromDatabase";
-            this.btnLoadImageFromDatabase.Size = new System.Drawing.Size(48, 48);
-            this.btnLoadImageFromDatabase.TabIndex = 107;
-            this.btnLoadImageFromDatabase.UseVisualStyleBackColor = true;
-            this.btnLoadImageFromDatabase.Click += new System.EventHandler(this.btnLoadImageFromDatabase_Click);
+            btnLoadImageFromDatabase.Image = Properties.Resources.DBSource32;
+            btnLoadImageFromDatabase.Location = new System.Drawing.Point(691, 151);
+            btnLoadImageFromDatabase.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnLoadImageFromDatabase.Name = "btnLoadImageFromDatabase";
+            btnLoadImageFromDatabase.Size = new System.Drawing.Size(56, 55);
+            btnLoadImageFromDatabase.TabIndex = 107;
+            btnLoadImageFromDatabase.UseVisualStyleBackColor = true;
+            btnLoadImageFromDatabase.Click += btnLoadImageFromDatabase_Click;
             // 
             // btnDeleteImage
             // 
-            this.btnDeleteImage.Image = global::DTRMNS.Properties.Resources.Cancel;
-            this.btnDeleteImage.Location = new System.Drawing.Point(592, 69);
-            this.btnDeleteImage.Name = "btnDeleteImage";
-            this.btnDeleteImage.Size = new System.Drawing.Size(48, 48);
-            this.btnDeleteImage.TabIndex = 106;
-            this.btnDeleteImage.UseVisualStyleBackColor = true;
-            this.btnDeleteImage.Click += new System.EventHandler(this.btnDeleteImage_Click);
+            btnDeleteImage.Image = Properties.Resources.Cancel;
+            btnDeleteImage.Location = new System.Drawing.Point(691, 80);
+            btnDeleteImage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDeleteImage.Name = "btnDeleteImage";
+            btnDeleteImage.Size = new System.Drawing.Size(56, 55);
+            btnDeleteImage.TabIndex = 106;
+            btnDeleteImage.UseVisualStyleBackColor = true;
+            btnDeleteImage.Click += btnDeleteImage_Click;
             // 
             // btnLoadImageFromDirectory
             // 
-            this.btnLoadImageFromDirectory.Image = global::DTRMNS.Properties.Resources.FolderOpen_32;
-            this.btnLoadImageFromDirectory.Location = new System.Drawing.Point(592, 12);
-            this.btnLoadImageFromDirectory.Name = "btnLoadImageFromDirectory";
-            this.btnLoadImageFromDirectory.Size = new System.Drawing.Size(48, 48);
-            this.btnLoadImageFromDirectory.TabIndex = 105;
-            this.btnLoadImageFromDirectory.UseVisualStyleBackColor = true;
-            this.btnLoadImageFromDirectory.Click += new System.EventHandler(this.btnLoadImageFromDirectory_Click);
+            btnLoadImageFromDirectory.Image = Properties.Resources.FolderOpen_32;
+            btnLoadImageFromDirectory.Location = new System.Drawing.Point(691, 14);
+            btnLoadImageFromDirectory.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnLoadImageFromDirectory.Name = "btnLoadImageFromDirectory";
+            btnLoadImageFromDirectory.Size = new System.Drawing.Size(56, 55);
+            btnLoadImageFromDirectory.TabIndex = 105;
+            btnLoadImageFromDirectory.UseVisualStyleBackColor = true;
+            btnLoadImageFromDirectory.Click += btnLoadImageFromDirectory_Click;
             // 
             // pBox
             // 
-            this.pBox.BackColor = System.Drawing.Color.White;
-            this.pBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pBox.Location = new System.Drawing.Point(410, 12);
-            this.pBox.Name = "pBox";
-            this.pBox.Size = new System.Drawing.Size(176, 168);
-            this.pBox.TabIndex = 103;
-            this.pBox.TabStop = false;
+            pBox.BackColor = System.Drawing.Color.White;
+            pBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            pBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            pBox.Location = new System.Drawing.Point(478, 14);
+            pBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            pBox.Name = "pBox";
+            pBox.Size = new System.Drawing.Size(205, 194);
+            pBox.TabIndex = 103;
+            pBox.TabStop = false;
             // 
             // btnMinusQty
             // 
-            this.btnMinusQty.Image = global::DTRMNS.Properties.Resources.eksi321;
-            this.btnMinusQty.Location = new System.Drawing.Point(289, 169);
-            this.btnMinusQty.Name = "btnMinusQty";
-            this.btnMinusQty.Size = new System.Drawing.Size(69, 35);
-            this.btnMinusQty.TabIndex = 43;
-            this.btnMinusQty.UseVisualStyleBackColor = true;
-            this.btnMinusQty.Click += new System.EventHandler(this.btnMinusQty_Click);
+            btnMinusQty.Image = Properties.Resources.eksi321;
+            btnMinusQty.Location = new System.Drawing.Point(337, 195);
+            btnMinusQty.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnMinusQty.Name = "btnMinusQty";
+            btnMinusQty.Size = new System.Drawing.Size(80, 40);
+            btnMinusQty.TabIndex = 43;
+            btnMinusQty.UseVisualStyleBackColor = true;
+            btnMinusQty.Click += btnMinusQty_Click;
             // 
             // btnPlusQty
             // 
-            this.btnPlusQty.Image = global::DTRMNS.Properties.Resources.AddGreen;
-            this.btnPlusQty.Location = new System.Drawing.Point(223, 169);
-            this.btnPlusQty.Name = "btnPlusQty";
-            this.btnPlusQty.Size = new System.Drawing.Size(60, 35);
-            this.btnPlusQty.TabIndex = 42;
-            this.btnPlusQty.UseVisualStyleBackColor = true;
-            this.btnPlusQty.Click += new System.EventHandler(this.btnPlusQty_Click);
+            btnPlusQty.Image = Properties.Resources.AddGreen;
+            btnPlusQty.Location = new System.Drawing.Point(260, 195);
+            btnPlusQty.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnPlusQty.Name = "btnPlusQty";
+            btnPlusQty.Size = new System.Drawing.Size(70, 40);
+            btnPlusQty.TabIndex = 42;
+            btnPlusQty.UseVisualStyleBackColor = true;
+            btnPlusQty.Click += btnPlusQty_Click;
             // 
             // frmStockItem
             // 
-            this.AcceptButton = this.btnSave;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(671, 416);
-            this.ControlBox = false;
-            this.Controls.Add(this.label18);
-            this.Controls.Add(this.txtImageFile);
-            this.Controls.Add(this.btnLoadImageFromDatabase);
-            this.Controls.Add(this.btnDeleteImage);
-            this.Controls.Add(this.btnLoadImageFromDirectory);
-            this.Controls.Add(this.pBox);
-            this.Controls.Add(this.btnSetCustom);
-            this.Controls.Add(this.btnSet0);
-            this.Controls.Add(this.btnMinusQty);
-            this.Controls.Add(this.btnPlusQty);
-            this.Controls.Add(this.lblUsed);
-            this.Controls.Add(this.txtUsedQuantity);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.cmbOrderType);
-            this.Controls.Add(this.cmbSupplier);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.cmbQuantityType);
-            this.Controls.Add(this.txtConversion);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.txtStockName);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmStockItem";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "STOCK ITEM";
-            this.Load += new System.EventHandler(this.frmStockItem_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pBox)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AcceptButton = btnSave;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            CancelButton = btnCancel;
+            ClientSize = new System.Drawing.Size(779, 486);
+            ControlBox = false;
+            Controls.Add(label18);
+            Controls.Add(txtImageFile);
+            Controls.Add(btnLoadImageFromDatabase);
+            Controls.Add(btnDeleteImage);
+            Controls.Add(btnLoadImageFromDirectory);
+            Controls.Add(pBox);
+            Controls.Add(btnSetCustom);
+            Controls.Add(btnSet0);
+            Controls.Add(btnMinusQty);
+            Controls.Add(btnPlusQty);
+            Controls.Add(lblUsed);
+            Controls.Add(txtUsedQuantity);
+            Controls.Add(label4);
+            Controls.Add(cmbOrderType);
+            Controls.Add(cmbSupplier);
+            Controls.Add(label3);
+            Controls.Add(cmbQuantityType);
+            Controls.Add(txtConversion);
+            Controls.Add(label8);
+            Controls.Add(label10);
+            Controls.Add(label2);
+            Controls.Add(btnSave);
+            Controls.Add(btnCancel);
+            Controls.Add(txtStockName);
+            Controls.Add(label1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "frmStockItem";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "STOCK ITEM";
+            Load += frmStockItem_Load;
+            ((System.ComponentModel.ISupportInitialize)pBox).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

@@ -37,21 +37,23 @@ namespace DTRMSimpleBackOffice
         IRepository<Supplier> repoSupplier;
         IRepository<StockItem> repoStockItem;
         IRepository<Bonus> repoBonus;
+        IRepository<Recipe> repoRecipe;
 
         private DTRMSimpleBusiness bslayer;
 
 
         Category category;
         private BindingSource _categoryItemSource = new BindingSource();
-        private BindingSource _stockItemSource = new BindingSource();
+        private BindingSource _recipeSource = new BindingSource();
 
         CategoryItem selectedCategoryItem;
+        Recipe selectedRecipeItem;
 
         public frmCategoryItemList(PosConfig configAsService, IRepository<TheMenu> _repoMenu,
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
-                   IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus,
+                   IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<Recipe> _repoRecipe,
             DTRMSimpleBusiness bslayer, Category _category)
         {
             InitializeComponent();
@@ -65,6 +67,7 @@ namespace DTRMSimpleBackOffice
             repoSupplier = _repoSupplier;
             repoStockItem = _repoStockItem;
             repoBonus = _repoBonus;
+            repoRecipe = _repoRecipe;
 
             category = _category;
 
@@ -78,11 +81,13 @@ namespace DTRMSimpleBackOffice
                 await LoadCategoryItems();
         }
 
+        #region CATEGORY ITEM FUNCTIONS    
         async Task LoadCategoryItems()
         {
             dgvCategoryItem.AutoGenerateColumns = false;
 
             await FormatCategorItemGrid();
+            await FormatRecipeGrid();
 
             category = await repoCategory.Get(category.IID, "Distribution, Items, Items.Distribution");
 
@@ -93,11 +98,9 @@ namespace DTRMSimpleBackOffice
             lblCategory.Text = "Category : " + category.CategoryName;
         }
 
-        #region CATEGORY ITEM FUNCTIONS    
-
         private async void btnAddCategoryItem_Click(object sender, EventArgs e)
         {
-            using (frmCategoryItemUpsert frm = ActivatorUtilities.CreateInstance<frmCategoryItemUpsert>(ServiceHelper.Services, new CategoryItem() { CategoryIID = category.IID }))
+            using (frmCategoryItemUpsert frm = ActivatorUtilities.CreateInstance<frmCategoryItemUpsert>(ServiceHelper.Services, new CategoryItem() { CategoryIID = category.IID, DOrder = dgvCategoryItem.Rows.Count + 1 }))
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
@@ -136,12 +139,13 @@ namespace DTRMSimpleBackOffice
         {
             btnEditCategoryItem_Click(null, null);
         }
-        private void dgvCategoryItem_SelectionChanged(object sender, EventArgs e)
+        private async void dgvCategoryItem_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvCategoryItem.SelectedRows.Count > 0)
             {
                 selectedCategoryItem = _categoryItemSource.Current as CategoryItem;
                 DisplaySampleCategoryItemButton();
+                await LoadRecipeItems();
             } else
                 selectedCategoryItem = null;
         }
@@ -167,6 +171,7 @@ namespace DTRMSimpleBackOffice
                     if (gim != null && gim.DisplayImage != null)
                     {
                         Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);
+                        pboxEBPicture.Image = btnImage;
                         btnCategoryItemSample.Image = UFWin.ReSizeImageTo(btnImage, btnCategoryItemSample.Height - 5, btnCategoryItemSample.Height - 5);
                         btnCategoryItemSample.ImageScaling = ToolStripItemImageScaling.None;
                     } else
@@ -190,6 +195,8 @@ namespace DTRMSimpleBackOffice
 
         #endregion
 
+
+        #region TOOLBAR BUTTON FUNCTIONS
 
         private async void BtnEBFontTo_Click(object sender, EventArgs e)
         {
@@ -218,7 +225,7 @@ namespace DTRMSimpleBackOffice
         {
             using (frmInputForm frm = new frmInputForm("100"))
             {
-                if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (frm.ShowDialog() == DialogResult.OK)
                 {
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val))
@@ -239,7 +246,7 @@ namespace DTRMSimpleBackOffice
         {
             using (frmInputForm frm = new frmInputForm("100"))
             {
-                if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (frm.ShowDialog() == DialogResult.OK)
                 {
                     int val = 0;
                     if (int.TryParse(frm.InputValue, out val))
@@ -260,15 +267,15 @@ namespace DTRMSimpleBackOffice
         {
             if (dgvCategoryItem.SelectedRows.Count > 0)
             {
-                CategoryItem firsteb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString());
-                using (frmInputForm frm = new frmInputForm(firsteb.SalePrice.ToString()))
+                var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+
+                using (frmInputForm frm = new frmInputForm(selectedItems.First().SalePrice.ToString()))
                 {
-                    if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        float val = 0;
-                        if (float.TryParse(frm.InputValue, out val))
+                        double val = 0;
+                        if (double.TryParse(frm.InputValue, out val))
                         {
-                            var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
                             foreach (var item in selectedItems)
                             {
                                 item.SalePrice = val;
@@ -346,163 +353,40 @@ namespace DTRMSimpleBackOffice
                     duplicated = await repoCategoryItem.Save(duplicated);
                     if (blnDuplicateStockItems)
                     {
-
+                        await repoRecipe.GetListByField("CategoryItemIID", item.IID).ContinueWith(async t =>
+                        {
+                            List<Recipe> recipes = t.Result;
+                            foreach (var recipe in recipes)
+                            {
+                                Recipe newRecipe = recipe.Duplicate();
+                                newRecipe.CategoryItemIID = duplicated.IID;
+                                await repoRecipe.Save(newRecipe);
+                            }
+                        });
                     }
                 }
-
                 await LoadCategoryItems();
-
-                //    for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
-                //{
-
-                //    CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                //    CategoryItem eb2 = eb.Duplicate();
-
-                //    eb2.ItemName = "";
-                //    if (await bslayer.SaveJustEntityButton(eb2))
-                //    {
-                //        if (blnDuplicateStockItems)
-                //        {
-                //            List<EntityButtonStockItemLookUp> lookupList = await bslayer.GetStockItemsForEB(eb.IID);
-                //            foreach (var lookup in lookupList)
-                //            {
-                //                EntityButtonStockItemLookUp newlookup = lookup.Duplicate(eb2.IID);
-                //                await bslayer.SaveEntityButtonStockItemLookUp(newlookup);
-                //            }
-                //            //DataTable dt = bslayer.GetStockItemsForEB(eb.IID);
-                //            //for (int s = 0; s < dt.Rows.Count; s++) {
-                //            //    EntityButtonStockItemLookUp lookup = new EntityButtonStockItemLookUp(dt.Rows[s]) {
-                //            //        EntityButtonIID = eb2.IID
-                //            //    };
-
-                //            //    bslayer.SaveEntityButtonStockItemLookUp(lookup.Duplicate(eb2.IID));
-                //            //}
-                //        }
-                //    }
-                //}
             }
         }
-
-        private async void LoadStockItems()
-        {
-            if (dgvCategoryItem.SelectedRows.Count > 0)
-            {
-                string selEBIID = dgvCategoryItem.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
-                CategoryItem eb = await bslayer.GetJustEntityButton(selEBIID);
-
-                try
-                {
-                    btnEBSample.Font = new Font(eb.FFamily, (float)eb.FSize, (FontStyle)Enum.Parse(typeof(FontStyle), eb.FStyle));
-                    pnlEBPicture.Width = eb.Width;
-                    btnEBSample.Height = eb.Height;
-                    btnEBSample.BackColor = Color.FromArgb(eb.BgColor);
-                    btnEBSample.ForeColor = Color.FromArgb(eb.FgColor);
-                    btnEBSample.Text = eb.ItemName;
-                } catch
-                {
-                }
-
-                GenericImage gim = await bslayer.GetGenericImage(selEBIID);
-                if (gim == null)
-                    pboxEBPicture.Image = null;
-                else
-                {
-                    if (eb.ButtonDisplayStyle == ButtonDisplayStyles.Image || eb.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
-                    {
-                        pboxEBPicture.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
-                        lblImageSize.Text = gim.ImageSizeinKB.ToString() + " KB";
-                    } else
-                    {
-                        pboxEBPicture.Image = null;
-                    }
-                }
-                if (eb.ButtonDisplayStyle == ButtonDisplayStyles.Image || eb.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
-                {
-
-                    if (gim != null && gim.DisplayImage != null)
-                    {
-                        btnEBSample.Image = UFWin.ByteArrayToImage(gim.DisplayImage);
-                        btnEBSample.ImageAlign = ContentAlignment.TopCenter;
-                        btnEBSample.TextAlign = ContentAlignment.BottomCenter;
-                    }
-                } else
-                {
-                    btnEBSample.TextAlign = ContentAlignment.MiddleCenter;
-                    btnEBSample.Image = null;
-                }
-
-                //   DataTable dt = UF.StringifyEnumInDataTable(await bslayer.GetStockItemsForEB(selEBIID), "QuantityType", "QuantityTypeAsString", typeof(QuantityTypes));
-                dgvStockItems.DataSource = await bslayer.GetStockItemsForEB(selEBIID);
-            }
-        }
-
-        private async void BtnAddStockItem_Click(object sender, EventArgs e)
-        {
-            if (dgvCategoryItem.SelectedRows.Count > 0)
-            {
-                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer, await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString())))
-                {
-                    if (frm.ShowDialog() == DialogResult.OK)
-                        LoadStockItems();
-                }
-            }
-        }
-
-        private async void BtnEditStockItem_Click(object sender, EventArgs e)
-        {
-            if (dgvStockItems.SelectedRows.Count > 0)
-            {
-                string IID = dgvStockItems.SelectedRows[0].Cells["colStockUsageIID"].Value.ToString();
-
-                using (frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer, await bslayer.GetEntityButtonStockItemLookUp(IID)))
-                {
-                    if (frm.ShowDialog() == DialogResult.OK)
-                        LoadStockItems();
-                }
-            }
-        }
-
-        private async void BtnDeleteStockItem_Click(object sender, EventArgs e)
-        {
-            if (dgvStockItems.SelectedRows.Count > 0)
-            {
-                for (int i = 0; i < dgvStockItems.SelectedRows.Count; i++)
-                {
-                    string IID = dgvStockItems.SelectedRows[0].Cells["colStockUsageIID"].Value.ToString();
-                    await bslayer.DeleteEntityButtonStockItemLookUp(IID);
-                }
-                LoadStockItems();
-            }
-        }
+        #endregion
 
 
-        private void DgvStockItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            BtnEditStockItem_Click(null, null);
-        }
 
         private async void BtnConvertToStockItem_Click(object sender, EventArgs e)
         {
             if (dgvCategoryItem.SelectedRows.Count > 0)
             {
-                for (int i = 0; i < dgvCategoryItem.SelectedRows.Count; i++)
+                var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
+                foreach (var item in selectedItems)
                 {
-                    CategoryItem eb = await bslayer.GetJustEntityButton(dgvCategoryItem.SelectedRows[i].Cells["colEntityButtonIID"].Value.ToString());
-                    StockItem si = new StockItem()
+                    await repoStockItem.Save(new StockItem()
                     {
-                        StockName = eb.ItemName
-                    };
-                    bslayer.SaveStockItem(si);
+                        StockName = item.ItemName
+                    });
                 }
-
             }
         }
 
-        private void FrmMenuEditor_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F3)
-                BtnAddStockItem_Click(null, null);
-        }
 
         private async void BtnExportStockManager_Click(object sender, EventArgs e)
         {
@@ -565,7 +449,7 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private async void BtnSetUpperCase_Click(object sender, EventArgs e)
+        private async void btnSetUpperCase_Click(object sender, EventArgs e)
         {
             var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
             foreach (var item in selectedItems)
@@ -577,18 +461,19 @@ namespace DTRMSimpleBackOffice
 
         }
 
-        private async void BtnSetSentenceCase_Click(object sender, EventArgs e)
+        private async void btnSetSentenceCase_Click(object sender, EventArgs e)
         {
             var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
             foreach (var item in selectedItems)
             {
                 item.ItemName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(item.ItemName);
+                await repoCategoryItem.Save(item);
             }
             await LoadCategoryItems();
         }
 
 
-        private async void BtnSetToLowerCase_Click(object sender, EventArgs e)
+        private async void btnSetToLowerCase_Click(object sender, EventArgs e)
         {
             var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
             foreach (var item in selectedItems)
@@ -599,7 +484,7 @@ namespace DTRMSimpleBackOffice
             await LoadCategoryItems();
         }
 
-        private async void BtnSetAllForeColourTo_Click(object sender, EventArgs e)
+        private async void btnSetAllForeColourTo_Click(object sender, EventArgs e)
         {
             using (ColorDialog cdlg = new ColorDialog())
             {
@@ -617,7 +502,7 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private async void BtnSetAllBackColourTo_Click(object sender, EventArgs e)
+        private async void btnSetAllBackColourTo_Click(object sender, EventArgs e)
         {
             using (ColorDialog cdlg = new ColorDialog())
             {
@@ -635,7 +520,7 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private async void BtnSetAllBackColourToTransparent_Click(object sender, EventArgs e)
+        private async void btnSetAllBackColourToTransparent_Click(object sender, EventArgs e)
         {
             int selectedColor = Color.Transparent.ToArgb();
             var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
@@ -647,9 +532,9 @@ namespace DTRMSimpleBackOffice
             await LoadCategoryItems();
         }
 
-        private async void BtnChangeDistributionForEB_Click(object sender, EventArgs e)
+        private async void btnChangeDistribution_Click(object sender, EventArgs e)
         {
-            using (frmDistributionSelector frm = ActivatorUtilities.CreateInstance<frmDistributionSelector>(ServiceHelper.Services, false, null))
+            using (frmDistributionSelector frm = ActivatorUtilities.CreateInstance<frmDistributionSelector>(ServiceHelper.Services, false, new List<Distribution>(), category.MenuIID))
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
@@ -674,45 +559,6 @@ namespace DTRMSimpleBackOffice
 
 
 
-        private void BtnSearchCategoryButtons_Click(object sender, EventArgs e)
-        {
-            //if (txtSearchCategoryButtons.Text.Trim().Length == 0)
-            //    return;
-
-
-            //if (dgvMenu.Rows.Count > 0)
-            //{
-
-            //    string MenuIID = dgvMenu.SelectedRows[0].Cells["colMenuIID"].Value.ToString();
-
-            //    ((DataGridViewImageColumn)dgvSearchResults.Columns[columnName: "colDisplayImageSearch"]).ImageLayout = DataGridViewImageCellLayout.Zoom;
-            //    ((DataGridViewImageColumn)dgvSearchResults.Columns[columnName: "colDisplayImageSearch"]).DefaultCellStyle.NullValue = null;
-
-            //    string menustring = chkAllMenuSearch.Checked ? "" : " and Entity.ParentMenuIID = '" + MenuIID + "' ";
-
-            //    dgvSearchResults.DataSource = bslayer.GetDataTable("SELECT EntityButton.IID, EntityButton.EntityButtonName, Entity.EntityName, Images.DisplayImage " +
-            //                    "FROM Images RIGHT OUTER JOIN EntityButton ON Images.ReferenceIID = dbo.EntityButton.IID LEFT OUTER JOIN " +
-            //                    " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE(EntityButton.EntityButtonName LIKE '%" + txtSearchCategoryButtons.Text + "%') " +
-            //                    menustring + " ORDER BY EntityButton.EntityButtonName ");
-
-            //    lblSearchResults.Text = "(" + dgvSearchResults.Rows.Count.ToString() + ")";
-            //}
-        }
-
-
-
-
-
-        private void ChkAllMenuSearch_Click(object sender, EventArgs e)
-        {
-            BtnSearchCategoryButtons_Click(null, null);
-        }
-
-        private void chkIncludeCategoryItemDetails_CheckedChanged(object sender, EventArgs e)
-        {
-        }
-
-
 
 
         private async void btnEntityButtonRowHeight_Click(object sender, EventArgs e)
@@ -722,6 +568,14 @@ namespace DTRMSimpleBackOffice
             await LoadCategoryItems();
         }
 
+        private async void btnGridFontSize_Click(object sender, EventArgs e)
+        {
+            int fontsize = int.Parse(((ToolStripMenuItem)sender).Tag.ToString());
+            Font newFont = new Font(dgvCategoryItem.Font.FontFamily, fontsize, dgvCategoryItem.Font.Style);
+            dgvCategoryItem.DefaultCellStyle.Font = newFont;
+            dgvCategoryItem.ColumnHeadersDefaultCellStyle.Font = newFont;
+            // await LoadCategoryItems();
+        }
 
 
         private void pboxEBPicture_DoubleClick(object sender, EventArgs e)
@@ -733,33 +587,8 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-
-        private async void btnQuantityToComment_Click(object sender, EventArgs e)
-        {
-            if (dgvStockItems.SelectedRows.Count > 0)
-            {
-                for (int i = 0; i < dgvStockItems.SelectedRows.Count; i++)
-                {
-                    string IID = dgvStockItems.SelectedRows[i].Cells["colStockUsageIID"].Value.ToString();
-
-                    EntityButtonStockItemLookUp item = await bslayer.GetEntityButtonStockItemLookUp(IID);
-                    item.Comment = item.Quantity + " " + item.QuantityType + item.Comment;
-
-                    await bslayer.SaveEntityButtonStockItemLookUp(item);
-
-                }
-                LoadStockItems();
-            }
-        }
-
-
-
-
-
-
         private async void tsSortCategoryItem_Click(object sender, EventArgs e)
         {
-
             await repoCategoryItem.SortByField("CategoryIID", category.IID);
             await LoadCategoryItems();
         }
@@ -781,34 +610,172 @@ namespace DTRMSimpleBackOffice
                 await LoadCategoryItems();
             }
         }
+        async Task FormatCategorItemGrid()
+        {
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Item"; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonType").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price") || c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "PadFlag").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DistributionName").ToList().ForEach(c => { c.Width = 150; c.HeaderText = "Distribution"; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Width").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Height").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Font").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+
+        }
+
+
+
+        #region RECIPE ITEM FUNCTIONS
+
+        private async Task LoadRecipeItems()
+        {
+            if (selectedCategoryItem != null)
+            {
+                _recipeSource.DataSource = (await repoRecipe.GetListByField("CategoryItemIID", selectedCategoryItem.IID, "StockItem")).ToBindingList();
+                dgvRecipe.DataSource = _recipeSource;
+            }
+        }
+        private void dgvRecipe_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvRecipe.SelectedRows.Count > 0)
+            {
+                selectedRecipeItem = (Recipe)dgvRecipe.SelectedRows[0].DataBoundItem;
+            } else
+            {
+                selectedRecipeItem = null;
+            }
+        }
+        private async void btnAddRecipeItem_Click(object sender, EventArgs e)
+        {
+            if (selectedCategoryItem != null)
+            {
+                using (frmRecipe frm = ActivatorUtilities.CreateInstance<frmRecipe>(ServiceHelper.Services, selectedCategoryItem, dgvRecipe.Rows.Count + 1))
+                {
+                    if (frm.ShowDialog() == DialogResult.OK)
+                        await LoadRecipeItems();
+                }
+            }
+        }
+        private async void btnEditRecipeItem_Click(object sender, EventArgs e)
+        {
+            if (selectedRecipeItem != null)
+            {
+                using (frmRecipe frm = ActivatorUtilities.CreateInstance<frmRecipe>(ServiceHelper.Services, (Recipe)dgvRecipe.SelectedRows[0].DataBoundItem))
+                {
+                    if (frm.ShowDialog() == DialogResult.OK)
+                        await LoadRecipeItems();
+                }
+            }
+        }
+        private void dgvRecipeItems_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            btnEditRecipeItem_Click(null, null);
+        }
+        private async void btnDeleteRecipeItem_Click(object sender, EventArgs e)
+        {
+            if (selectedRecipeItem != null)
+            {
+                await repoRecipe.Delete(selectedRecipeItem.IID);
+                await repoRecipe.SortByField("CategoryItemIID", selectedCategoryItem.IID);
+                await LoadRecipeItems();
+            }
+        }
+
+        List<Recipe> copiedRecipeItems = new List<Recipe>();
+        private void btnCopyRecipeItems_Click(object sender, EventArgs e)
+        {
+            copiedRecipeItems = dgvRecipe.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as Recipe).ToList();
+        }
+
+        private async void btnPasteRecipeItems_Click(object sender, EventArgs e)
+        {
+            if (!copiedRecipeItems.IsNullOrEmpty() && selectedCategoryItem != null)
+            {
+                foreach (var recipe in copiedRecipeItems)
+                {
+                    Recipe newRecipe = recipe.Duplicate();
+                    newRecipe.CategoryItemIID = selectedCategoryItem.IID;
+                    await repoRecipe.Save(newRecipe);
+                }
+                await LoadRecipeItems();
+            }
+        }
+
+        private async void btnQuantityToComment_Click(object sender, EventArgs e)
+        {
+            if (selectedRecipeItem != null)
+            {
+                selectedRecipeItem.Comment = selectedRecipeItem.Quantity + " " + selectedRecipeItem.QuantityType + selectedRecipeItem.Comment;
+                await repoRecipe.Save(selectedRecipeItem);
+                await LoadRecipeItems();
+            }
+        }
+
+
+        private async void tsSortRecipeItem_Click(object sender, EventArgs e)
+        {
+            await repoRecipe.SortByField("CategoryItemIID", selectedCategoryItem.IID);
+            await LoadRecipeItems();
+        }
+
+        private async void tsMoveUpRecipeItem_Click(object sender, EventArgs e)
+        {
+            if (selectedCategoryItem != null)
+            {
+                await repoRecipe.MoveUpByField((Recipe)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
+                await LoadRecipeItems();
+            }
+        }
+
+        private async void tsMoveDownRecipeItem_Click(object sender, EventArgs e)
+        {
+            if (selectedCategoryItem != null)
+            {
+                await repoRecipe.MoveDownByField((Recipe)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
+                await LoadRecipeItems();
+            }
+        }
+
+
+
+
+        async Task FormatRecipeGrid()
+        {
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "RecipeText").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Recipe Item Text"; });
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "StockItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Stock Item Name"; });
+            // dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "CategoryItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Item Name"; });
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Quantity").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "QuantityType").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+
+            dgvRecipe.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Comment").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 800; c.HeaderText = "Comment"; });
+
+
+        }
+
+        #endregion
+
 
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        async Task FormatCategorItemGrid() 
-        {
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter; });
 
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Item"; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonType").ToList().ForEach(c => {  c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price") || c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "PadFlag").ToList().ForEach(c => {  c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DistributionName").ToList().ForEach(c => { c.Width = 150; c.HeaderText = "Distribution"; });
 
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Width").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment= DataGridViewContentAlignment.MiddleCenter ; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Height").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Font").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
 
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-
-            
-        }
     }
 }

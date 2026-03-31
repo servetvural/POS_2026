@@ -5,13 +5,17 @@ using System.IO;
 
 using POSLayer.Models;
 using POSLayer.Library;
-using System.Threading.Tasks;
 using POSWinFormLayer;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS
 {
     public partial class frmStockItem : Form
     {
+        IRepository<StockItem> repoStockItem;
+        IRepository<Supplier> repoSupplier;
+        IRepository<GenericImage> repoImage;
+
         private DTRMSimpleBusiness bslayer;
         public StockItem stockItem;
         private UndoItem oldItem;
@@ -20,13 +24,21 @@ namespace DTRMNS
         private int originalValue = 0;
         GenericImage gim;
 
+        private BindingSource _supplierSource = new BindingSource();
+
         public frmStockItem()
         {
             InitializeComponent();
         }
-        public frmStockItem(DTRMSimpleBusiness bslayer, StockItem stockItem)
+        public frmStockItem(IRepository<StockItem> _repoStockItem, IRepository<Supplier> _repoSupplier,
+            IRepository<GenericImage> _repoImage,
+            DTRMSimpleBusiness bslayer, StockItem stockItem)
         {
             InitializeComponent();
+            repoStockItem = _repoStockItem;
+            repoSupplier = _repoSupplier;
+            repoImage = _repoImage;
+
             this.bslayer = bslayer;
             this.stockItem = stockItem;
         }
@@ -37,22 +49,19 @@ namespace DTRMNS
             LoadStockItem();
 
         }
-        private void LoadSuppliers()
+        private async void LoadSuppliers()
         {
-            cmbSupplier.DataSource = bslayer.GetAllSuppliersAsList();
-            cmbOrderType.Items.Clear();
-            cmbQuantityType.Items.Clear();
-            for (int i = 0; i < 25; i++)
-            {
-                cmbQuantityType.Items.Add(((QuantityTypes)i).ToString());
-                cmbOrderType.Items.Add(((QuantityTypes)i).ToString());
-            }
+            _supplierSource.DataSource = (await repoSupplier.GetAllAsync()).ToBindingList();
+            cmbSupplier.DataSource = _supplierSource;
+
+            cmbOrderType.DataSource = Enum.GetValues(typeof(QuantityTypes));
+            cmbQuantityType.DataSource = Enum.GetValues(typeof(QuantityTypes));
         }
         private async void LoadStockItem()
         {
             txtStockName.Text = stockItem.StockName;
-            cmbQuantityType.SelectedIndex = (int)stockItem.QuantityType;
-            cmbOrderType.SelectedIndex = (int)stockItem.OrderType;
+            cmbQuantityType.SelectedItem = stockItem.QuantityType;
+            cmbOrderType.SelectedItem = stockItem.OrderType;
             txtConversion.Value = stockItem.Conversion;
             txtUsedQuantity.Text = stockItem.UsedQuantity.ToString();
             //PreviousQuantity = stockItem.UsedQuantity;
@@ -87,22 +96,28 @@ namespace DTRMNS
             if (txtStockName.Text.Length > 0)
             {
                 stockItem.StockName = txtStockName.Text;
-                stockItem.QuantityType = (QuantityTypes)cmbQuantityType.SelectedIndex;
-                stockItem.OrderType = (QuantityTypes)cmbOrderType.SelectedIndex;
+                stockItem.QuantityType = (QuantityTypes)cmbQuantityType.SelectedItem;
+                stockItem.OrderType = (QuantityTypes)cmbOrderType.SelectedItem;
                 stockItem.Conversion = txtConversion.Value;
                 stockItem.SupplierIID = cmbSupplier.SelectedValue.ToString();
-                if (await bslayer.SaveStockItem(stockItem))
+                if (await repoStockItem.Save(stockItem) != null)
                 {
                     if (pBox.BackgroundImage != null)
                     {
+                        byte[] imgBytes = UFWin.ReSizeImageTo(pBox.BackgroundImage, 250, 250, true).ToByteArray();
+
                         GenericImage gim = new GenericImage()
                         {
                             ReferenceIID = stockItem.IID,
-                            DisplayImage = pBox.BackgroundImage.ToByteArray(),
+                            DisplayImage = imgBytes,
                             ExtraText = stockItem.StockName,
-                            ImageFileName = txtImageFile.Text
+                            ImageFileName = txtImageFile.Text,
+                            ImageSizeinKB = imgBytes?.Length / 1024 ?? 0
                         };
-                        await bslayer.SaveGenericImage(gim);
+                        if (stockItem.IID == null)
+                            await repoImage.Save(gim);
+                        else
+                            await repoImage.SaveByField("ReferenceIID", stockItem.IID, gim);
                     }
                     this.DialogResult = DialogResult.OK;
                     Close();
