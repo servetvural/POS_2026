@@ -53,7 +53,7 @@ public partial class CategoryItem : BaseClass
 
     public List<StockItemUsage> stockUsages { get; set; } = new();
 
-    public List<Recipe> recipes { get; set; } = new();
+    public List<RecipeItem> recipes { get; set; } = new();
 
     //public ButtonStyleTypes ItemStyle { get; set; }    // { Text, Image, TextAndImage }
     //public ImagePositionTypes ImagePosition { get; set; } // { Left, Center, Right }

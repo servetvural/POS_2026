@@ -25,8 +25,8 @@ namespace DTRMSimpleBackOffice
     public enum ViewModes { User, Accountant, MenuEditor, Owner };
     public partial class frmOffice : Form
     {
-        readonly IServiceProvider sp;
         PosConfig config;
+        IRepository<TheMenu> repoMenu;
 
         private ConnectionStatus conStatus;
         private DTRMSimpleBusiness bslayer;
@@ -34,14 +34,15 @@ namespace DTRMSimpleBackOffice
 
         readonly  IRepository<User> repoUser;
 
-        public frmOffice(IServiceProvider _sp, PosConfig configAsService, DTRMSimpleBusiness _bslayer, IRepository<User> _repoUser,  IFormFactory formFactory)
+        public frmOffice(IServiceProvider _sp, PosConfig configAsService, IRepository<TheMenu> _repoMenu, DTRMSimpleBusiness _bslayer, IRepository<User> _repoUser,  IFormFactory formFactory)
         {
             InitializeComponent();
-            sp = _sp;
             config = configAsService;
-            bslayer = _bslayer;
+            repoMenu = _repoMenu;
             repoUser = _repoUser;
-           // bslayer.config = configAsService;
+
+            bslayer = _bslayer;
+           
             if (!string.IsNullOrEmpty(Program.UserType))
             {
                 if (!Enum.TryParse<ViewModes>(Program.UserType, true, out viewMode))
@@ -63,7 +64,7 @@ namespace DTRMSimpleBackOffice
             {
                 if (await repoUser.IsDatabaseExist())
                 {
-                    frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(sp, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
+                    frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                     if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
                         User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
@@ -281,34 +282,34 @@ namespace DTRMSimpleBackOffice
 
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            FrmMenuEditor frm = ActivatorUtilities.CreateInstance<FrmMenuEditor>(sp);
+            FrmMenuEditor frm = ActivatorUtilities.CreateInstance<FrmMenuEditor>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnDistributions_Click(object sender, EventArgs e)
         {
-            frmDistributionList frm = ActivatorUtilities.CreateInstance <frmDistributionList>(sp);
+            frmDistributionList frm = ActivatorUtilities.CreateInstance <frmDistributionList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
         private void btnUserEditor_Click(object sender, EventArgs e)
         {
-            frmUserEditor frm = ActivatorUtilities.CreateInstance<frmUserEditor>(sp);
+            frmUserEditor frm = ActivatorUtilities.CreateInstance<frmUserEditor>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnPrinters_Click(object sender, EventArgs e)
         {
-            frmPrinters frm = ActivatorUtilities.CreateInstance<frmPrinters>(sp);
+            frmPrinters frm = ActivatorUtilities.CreateInstance<frmPrinters>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnDisplay_Click(object sender, EventArgs e)
         {
-            frmCurrentSessionDisplay frm = ActivatorUtilities.CreateInstance<frmCurrentSessionDisplay>(sp);
+            frmCurrentSessionDisplay frm = ActivatorUtilities.CreateInstance<frmCurrentSessionDisplay>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -317,7 +318,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionReports_Click(object sender, EventArgs e)
         {
-            frmSessionReports frm = ActivatorUtilities.CreateInstance < frmSessionReports>(sp);
+            frmSessionReports frm = ActivatorUtilities.CreateInstance < frmSessionReports>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -325,7 +326,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            frmSupplierList frm = ActivatorUtilities.CreateInstance < frmSupplierList>(sp);
+            frmSupplierList frm = ActivatorUtilities.CreateInstance < frmSupplierList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -333,7 +334,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnStockItemList_Click(object sender, EventArgs e)
         {
-            frmStockItemList frm = ActivatorUtilities.CreateInstance<frmStockItemList>(sp);
+            frmStockItemList frm = ActivatorUtilities.CreateInstance<frmStockItemList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -342,7 +343,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnStockUsage_Click(object sender, EventArgs e)
         {
-            frmStockItemUsage frm = ActivatorUtilities.CreateInstance<frmStockItemUsage>(sp);
+            frmStockItemUsage frm = ActivatorUtilities.CreateInstance<frmStockItemUsage>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -350,7 +351,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnImageList_Click(object sender, EventArgs e)
         {
-            frmImageList frm = ActivatorUtilities.CreateInstance<frmImageList>(sp, false);
+            frmImageList frm = ActivatorUtilities.CreateInstance<frmImageList>(ServiceHelper.Services, false);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -358,7 +359,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionAnalysis_Click(object sender, EventArgs e)
         {
-            frmSessionAnalysis frm = ActivatorUtilities.CreateInstance<frmSessionAnalysis>(sp);
+            frmSessionAnalysis frm = ActivatorUtilities.CreateInstance<frmSessionAnalysis>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -367,7 +368,7 @@ namespace DTRMSimpleBackOffice
         private void btnSettings_Click(object sender, EventArgs e)
         {
             //frmConfig frm = new frmConfig(bslayer);
-            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(sp); 
+            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(ServiceHelper.Services); 
             frm.Show();
         }
 
@@ -395,7 +396,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnBonusList_Click(object sender, EventArgs e)
         {
-            frmBonusList frm = new frmBonusList(bslayer);
+            frmBonusList frm = ActivatorUtilities.CreateInstance< frmBonusList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -481,8 +482,6 @@ namespace DTRMSimpleBackOffice
                     }
                 }
             }
-
-
         }
 
         private void tabForms_ControlAdded(object sender, ControlEventArgs e)
@@ -504,17 +503,14 @@ namespace DTRMSimpleBackOffice
 
         private void btnEmployees_Click(object sender, EventArgs e)
         {
-            frmEmployeeList frm = new frmEmployeeList(bslayer);
+            frmEmployeeList frm = ActivatorUtilities.CreateInstance < frmEmployeeList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
 
         private void btnKassaCalculator_Click(object sender, EventArgs e)
         {
-            //frmKassaCalculator frm = new frmKassaCalculator();
-            //frm.MdiParent = this;
-            //frm.Show();
-            var frm = ActivatorUtilities.CreateInstance<frmKassaCalculator>(sp);
+            var frm = ActivatorUtilities.CreateInstance<frmKassaCalculator>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -534,16 +530,22 @@ namespace DTRMSimpleBackOffice
             frm.Show();
         }
 
-        private void btnOrderPad_Click(object sender, EventArgs e)
+        private async void btnOrderPad_Click(object sender, EventArgs e)
         {
-            if (!bslayer.IsMenuExist(config.ActiveMenuIID))
+            if (config.ActiveMenuIID == null)
             {
                 MessageBox.Show("Create and/or Select Default Menu");
                 return;
             }
 
+            TheMenu activeMenu = await repoMenu.Get(config.ActiveMenuIID);
+            if (activeMenu == null)
+            {
+                MessageBox.Show("Create and/or Select Default Menu");
+                return;
+            }
 
-            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(sp, null, true);
+            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(ServiceHelper.Services, null, true);
             frm.Text = "Order Pad";
             frm.ControlBox = true;
             frm.MinimizeBox = true;

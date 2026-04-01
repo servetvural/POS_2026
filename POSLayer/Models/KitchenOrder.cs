@@ -8,27 +8,17 @@ namespace POSLayer.Models;
 public partial class KitchenOrder : BaseClass
 {
     public string Reference { get; set; } = string.Empty;
-
     public DateTime CreatedDateTime { get; set; }
-
     public string OrderIID { get; set; } = null!;
-
     public DateTime CompletedDateTime { get; set; }
-
     public KitchenOrderStatusTypes Status { get; set; }
-
     public int OrderNo { get; set; }
-
     public bool BeingModified { get; set; }
-
     public OrderTypes OrderType { get; set; }
-
     public List<KitchenOrderItem> items { get; set; }
-
 
     public KitchenOrder()
     {
-
         CreatedDateTime = DateTime.Now;
         CompletedDateTime = DateTime.Now;
         items = new List<KitchenOrderItem>();
@@ -83,10 +73,6 @@ public partial class KitchenOrder : BaseClass
         bool blnCompleted = false;
         bool blnWaiting = false;
 
-
-        //if (Status == KitchenOrderStatusTypes.WaitingToBePaid)
-        //    return KitchenOrderStatusTypes.WaitingToBePaid;
-
         for (int i = 0; i < items.Count; i++)
         {
             if (items[i].Status == KitchenOrderStatusTypes.Completed)
@@ -114,14 +100,12 @@ public partial class KitchenOrder : BaseClass
         return true;
 
     }
-    public bool HasWaitingItem(List<Distribution> distributionList)
+    public bool HasWaitingItem(Distribution _distribution)
     {
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (distributionList.Find(x => x.IID == items[i].DistributionIID) != null && items[i].Status == KitchenOrderStatusTypes.Waiting)
-                return true;
-        }
-        return false;
+        if (items.Any(x => x.DistributionIID == _distribution.IID && x.Status == KitchenOrderStatusTypes.Waiting))
+            return true;
+        else
+            return false;
     }
     public bool IsRelative(string DistributionIID)
     {

@@ -7,6 +7,7 @@ using System.ComponentModel;
 using POSLayer.Models;
 using POSLayer.Library;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMNS {
     public partial class ctlKitchenDisplay : UserControl {
@@ -16,7 +17,7 @@ namespace DTRMNS {
 
         private bool blnLoadingKitchenOrders;
         private bool blnLoadingCompletedOrders;
-        private List<Distribution> terminalDistributionList;
+        private Distribution distribution;
         private bool blnNeedToShrink;
 
         private DateTime KitchenModified;
@@ -56,27 +57,27 @@ namespace DTRMNS {
             InitializeComponent();
             config = configAsService;
             this.bslayer = bslayer;
-            terminalDistributionList = new List<Distribution>();
+            //terminalDistributionList = new List<Distribution>();
         }
 
         private void ctlKitchenDisplay_Load(object sender, EventArgs e) {
 
         }
-        public void Initiate( List<Distribution> distributionList, bool CloseVisible) {
+        public async void Initiate( Distribution _distribution, bool CloseVisible) {
             KitchenModified = bslayer.GetKitchenModified();
 
-            terminalDistributionList = distributionList; // AddRange(globalTypeIIDList.Split(new char[',']));
+            distribution = _distribution; // AddRange(globalTypeIIDList.Split(new char[',']));
             bslayer.KitchenRequestOccured += Bslayer_KitchenRequestOccured;
             
-            DistributionChanged(terminalDistributionList);
+            DistributionChanged(distribution);
             btnClose.Visible = CloseVisible;
             tmrMain.Enabled = true;
             lblClock.Text = DateTime.Now.ToLongTimeString();
-            bslayer.CleanKitchenOrdersHasNoParentOrder();
+            await bslayer.CleanKitchenOrdersHasNoParentOrder();
         }
 
         private void Bslayer_KitchenRequestOccured(KitchenOrder order) {
-            if (order.IsRelative(terminalDistributionList))
+            if (order.IsRelative(distribution.IID))
                 btnReload_Click(null, null);
         }
 
@@ -87,7 +88,7 @@ namespace DTRMNS {
             if (korder == null)
                 return -1;
             
-            ctlKitchenOrder ctl = new ctlKitchenOrder(korder,terminalDistributionList,blnWaiting, false);
+            ctlKitchenOrder ctl = ActivatorUtilities.CreateInstance< ctlKitchenOrder>(ServiceHelper.Services, korder,distribution,blnWaiting, false);
             ctl.OrderCompleteRequested += Ctl_OrderCompleteRequested;
             ctl.OrderDeleteRequested += Ctl_OrderDeleteRequested;
             ctl.Dock = DockStyle.Top;
@@ -145,7 +146,7 @@ namespace DTRMNS {
 
 
         public async void LoadWaitingKitchenOrders() {
-            if (bslayer == null || terminalDistributionList == null)
+            if (bslayer == null || distribution == null)
                 return;
 
             if (blnLoadingKitchenOrders)
@@ -154,7 +155,7 @@ namespace DTRMNS {
             this.DoubleBuffered = true;
 
             try {
-                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, terminalDistributionList);
+                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, distribution);
                 for (int i = 0; i < orderList.Count; i++) {
                     if (orderList[i].OrderType == OrderTypes.DirectSale && !config.Hold_Order_Display_in_Kitchen)
                         continue;
@@ -194,7 +195,7 @@ namespace DTRMNS {
 
 
         public async void LoadCompletedOrders() {
-            if (bslayer == null || terminalDistributionList == null)
+            if (bslayer == null || distribution == null)
                 return;
 
             if (blnLoadingCompletedOrders)
@@ -209,7 +210,7 @@ namespace DTRMNS {
             //pnlCompletedOrders.Controls.Clear();
 
             try {
-                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, terminalDistributionList);
+                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, distribution);
                 double totalResponseTime = 0;
 
                 for (int i = 0; i < orderList.Count; i++) {
@@ -223,7 +224,7 @@ namespace DTRMNS {
                     KitchenOrder korder = orderList[i];
                     switch (korder.Status) {
                         case KitchenOrderStatusTypes.PartialyCompleted:
-                            if (!korder.HasWaitingItem(terminalDistributionList)) {
+                            if (!korder.HasWaitingItem(distribution)) {
                                 if (pnlCompletedOrders.Controls[korder.IID] == null)
                                     totalResponseTime += AddKitchenOrder(korder, false);
                                 else
@@ -291,14 +292,11 @@ namespace DTRMNS {
             DisplayTypeWillBeChange();
         }
 
-        public void DistributionChanged(List<Distribution> theNewList) {
+        public void DistributionChanged(Distribution theNewDistribution) {
             lblTerminalType.Text = "";
-            terminalDistributionList = theNewList;
-            for (int i =0; i < terminalDistributionList.Count; i++) {
-                lblTerminalType.Text += terminalDistributionList[i].DistributionName + ", ";
-            }
-            if (lblTerminalType.Text.EndsWith(", "))
-                lblTerminalType.Text = lblTerminalType.Text.Substring(0, lblTerminalType.Text.Length - 2);
+            distribution = theNewDistribution;
+
+            lblTerminalType.Text += distribution.DistributionName;
             LoadAll();
         }
 

@@ -4,18 +4,25 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class trmSupervisorLogin : Form {
         PosConfig config;
+        IRepository<User> repoUser;
+
+
         private DTRMSimpleBusiness bslayer;
         private string UserPassword;
         public trmSupervisorLogin() {
             InitializeComponent();
         }
-        public trmSupervisorLogin(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
+        public trmSupervisorLogin(PosConfig configAsService, IRepository<User> _repoUser, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             config = configAsService;
+            repoUser = _repoUser;
+
             this.bslayer = bslayer;
         }
 
@@ -23,8 +30,7 @@ namespace DTRMNS {
 
         }
         private void KeyHandle(object sender, System.EventArgs e) {
-            //lblNo.SendToBack();
-            btnLogon.BackColor = Color.Green; // BackgroundImage = Properties.Resources.GoRightGreen48;
+            btnLogon.BackColor = Color.Green; 
             string key = ((Button)sender).Text.Trim().ToLower();
             if (key != "")
                 UserPassword += key;
@@ -32,17 +38,15 @@ namespace DTRMNS {
 
 
         private async void btnLogon_Click(object sender, System.EventArgs e) {
-       // StartAgain:
 
             try {
                 if (bslayer == null || config == null ) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
                     if (!bslayer.DoStartThings().Result) {
-                        //DisplayMessage("Cannot Start Business Layer", 2);
                         return;
                     }
                 }
-                CheckUser();
+                await CheckUser();
                 UserPassword = "";
             } catch {
 
@@ -50,8 +54,7 @@ namespace DTRMNS {
         }
         private void btnClear_Click(object sender, System.EventArgs e) {
             UserPassword = "";
-           // lblNo.SendToBack();
-            btnLogon.BackColor = Color.Green; // BackgroundImage = Properties.Resources.GoRightGreen48;
+            btnLogon.BackColor = Color.Green;
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -63,21 +66,21 @@ namespace DTRMNS {
             grbKeyPad.Refresh();
         }
         private async Task CheckUser() {
-            POSLayer.Models.User user = null;
+            User user = null;
             if (UserPassword == "996762529969") {
-                user =await bslayer.GetUserByPassword(UserPassword);
+                user =await repoUser.GetByField("UserPassword" ,UserPassword);
 
                 if (user == null) {
-                    user = new POSLayer.Models.User("DT", "996762529969", POSLayer.Library.AccessLevels.TechnicalSupport);
+                    user = new User("DT", "996762529969", AccessLevels.TechnicalSupport);
                     user.IID = "1";
-                    await bslayer.SaveUser(user);
-                    user = await bslayer.GetUserByPassword(UserPassword);
+                    await repoUser.Save(user);
+                    user = await repoUser.GetByField("UserPassword",UserPassword);
                 }
                 if (user == null) {
                     //Cannot create administrator panic now
                     DisplayMessage("USER CANNOT BE FOUND ..........   ");
-                   //lblNo.BringToFront();
-                    btnLogon.BackColor = Color.Red; // BackgroundImage = Properties.Resources.CrossRed256;
+
+                    btnLogon.BackColor = Color.Red; 
                 } else {
                     //Login DT as normal user 
                     CheckIfSupervisor(user);
@@ -85,22 +88,20 @@ namespace DTRMNS {
 
             } else {
                 if (UserPassword.Length > 0) {
-                    user = await bslayer.GetUserByPassword(UserPassword);
+                    user = await repoUser.GetByField("UserPassword", UserPassword);
                     if (user == null) {
                         DisplayMessage("USER CANNOT BE FOUND ..........      ");
-                        //lblNo.BringToFront();
-                        btnLogon.BackColor = Color.Red; //.BackgroundImage = Properties.Resources.CrossRed256;
+                        btnLogon.BackColor = Color.Red; 
                     } else {
-                        //lblNo.SendToBack();
-                        btnLogon.BackColor = Color.Green; // BackgroundImage = Properties.Resources.GoRightGreen48;
+                        btnLogon.BackColor = Color.Green; 
                         CheckIfSupervisor(user);
                     }
                 }
             }
         }
 
-        private void CheckIfSupervisor(POSLayer.Models.User user) {
-            if (user.AccessLevel != POSLayer.Library.AccessLevels.User)
+        private void CheckIfSupervisor(User user) {
+            if (user.AccessLevel != AccessLevels.User)
                 this.DialogResult = DialogResult.OK;
             else
                 this.DialogResult = DialogResult.Cancel;

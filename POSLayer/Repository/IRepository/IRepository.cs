@@ -24,6 +24,7 @@ public interface IRepository<T> where T : BaseClass
     Task<T> SaveByField(string fieldName, object value, T obj, string includeItemsOnReturn = "");
     Task<T> SaveTree(T rootEntity, string includeItemsOnReturn = "");
     Task<int> Delete(string IID);
+    Task<int> Delete(T obj);
     Task<int> DeleteAll();
     Task<int> DeleteByField(string fieldName, object value);
 

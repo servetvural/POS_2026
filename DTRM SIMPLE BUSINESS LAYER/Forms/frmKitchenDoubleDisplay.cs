@@ -7,14 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class frmKitchenDoubleDisplay : Form {
         PosConfig config;
+        IRepository<Distribution> repoDistribution;
+
         private DTRMSimpleBusiness bslayer;
-        public frmKitchenDoubleDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
+        public frmKitchenDoubleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             config = configAsService;
+            repoDistribution = _repoDistribution;
+
             this.bslayer = bslayer;
         }
         public frmKitchenDoubleDisplay(DTRMSimpleBusiness bslayer) {
@@ -22,14 +27,14 @@ namespace DTRMNS {
             this.bslayer = bslayer;
         }
         private async void frmKitchenDisplay_Load(object sender, EventArgs e) {
-            ctlKitchenFirst.Initiate(await bslayer.GetFirstDisplayTypeList(),false);
+            ctlKitchenFirst.Initiate(await repoDistribution.Get(config.Default_Distribution_IID), false);
             ctlKitchenFirst.DisplayTypeWillBeChange += CtlKitchenFirst_DisplayTypeWillBeChange;
             ctlKitchenFirst.DisplayClock = config.Show_Clock_in_Kitchen;
             ctlKitchenFirst.BonusControl.Visible = false;
             ctlKitchenFirst.OrderDeleted += CtlKitchenFirst_OrderDeleted;
             ctlKitchenFirst.LoadAll();
 
-            ctlKitchenSecond.Initiate(await bslayer.GetSecondDisplayTypeList(),true);
+            ctlKitchenSecond.Initiate(await repoDistribution.Get(config.Secondary_Distribution_IID), true);
             ctlKitchenSecond.DisplayTypeWillBeChange += CtlKitchenSecond_DisplayTypeWillBeChange;
             ctlKitchenSecond.OrderDeleted += CtlKitchenSecond_OrderDeleted;
             if (config.Display_Session_Bonus) {
@@ -56,27 +61,20 @@ namespace DTRMNS {
         }
 
         private async void CtlKitchenFirst_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await bslayer.GetFirstDisplayTypeList());
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Default_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK) {
-                List<Distribution> theList = frm.selectedDistributions;
-                if (theList.Count > 0) {
-                    config.Default_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
-                    UF.SaveConfig(config);
-                    ctlKitchenFirst.DistributionChanged(await bslayer.GetFirstDisplayTypeList());
-                }
+                config.Default_Distribution_IID = frm.distribution.IID;
+                UF.SaveConfig(config);
+                ctlKitchenFirst.DistributionChanged(frm.distribution);
             }
         }
 
         private async void CtlKitchenSecond_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true,await bslayer.GetSecondDisplayTypeList());
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Secondary_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK) {
-                List<POSLayer.Models.Distribution> theList = frm.selectedDistributions;
-                if (theList.Count > 0) {
-                    config.Secondary_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
-                    UF.SaveConfig(config);
-                    ctlKitchenSecond.DistributionChanged(await bslayer.GetSecondDisplayTypeList());
-
-                }
+                config.Secondary_Distribution_IID = frm.distribution.IID;
+                UF.SaveConfig(config);
+                ctlKitchenSecond.DistributionChanged(frm.distribution);
             }
         }
     }

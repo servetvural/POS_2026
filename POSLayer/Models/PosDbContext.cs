@@ -79,7 +79,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<StockItem> StockItems { get; set; }
 
-    public virtual DbSet<Recipe> Recipes { get; set; }
+    public virtual DbSet<RecipeItem> RecipeItems { get; set; }
     public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
@@ -182,9 +182,9 @@ public partial class PosDbContext : DbContext
         });
 
 
-        modelBuilder.Entity<Recipe>(entity =>
+        modelBuilder.Entity<RecipeItem>(entity =>
         {
-            entity.ToTable("Recipes");
+            entity.ToTable("RecipeItems");
 
             entity.HasOne(dp => dp.StockItem)
                 .WithMany(d => d.recipes)

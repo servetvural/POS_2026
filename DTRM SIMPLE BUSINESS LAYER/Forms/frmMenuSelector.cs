@@ -8,31 +8,31 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
 namespace DTRMNS {
     public partial class frmMenuSelector : Form {
-        private DTRMSimpleBusiness bslayer;
+        IRepository<TheMenu> repoMenu;
+
         public string SelectedMenuIID;
-
-
-        public frmMenuSelector(DTRMSimpleBusiness bslayer) {
+        public frmMenuSelector(IRepository<TheMenu> _repoMenu) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoMenu = _repoMenu;
         }
 
-        private void frmMenuSelector_Load(object sender, EventArgs e) {
-            LoadMenuList();
+        private async void frmMenuSelector_Load(object sender, EventArgs e) {
+            await LoadMenuList();
         }
 
-        private void LoadMenuList() {
-            dgv.DataSource = bslayer.GetMenuList();
-
+        private async Task LoadMenuList() {
+            dgv.DataSource = await repoMenu.GetAllAsync();
         }
 
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e) {
-            SelectedMenuIID = dgv.SelectedRows[0].Cells["colIID"].Value.ToString();
+            SelectedMenuIID = (dgv.SelectedRows[0].DataBoundItem as TheMenu).IID; 
             this.DialogResult = DialogResult.OK;
             Close();
-
         }
 
         private void btnCancel_Click(object sender, EventArgs e) {

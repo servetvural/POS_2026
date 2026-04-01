@@ -24,136 +24,118 @@ namespace DTRMNS {
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDistributionSelector));
-            this.dgv = new System.Windows.Forms.DataGridView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDistributionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.globalTypeBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.globalTypeBindingSource)).BeginInit();
-            this.SuspendLayout();
+            dgv = new System.Windows.Forms.DataGridView();
+            globalTypeBindingSource = new System.Windows.Forms.BindingSource(components);
+            panel1 = new System.Windows.Forms.Panel();
+            btnClose = new System.Windows.Forms.Button();
+            btnSave = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)globalTypeBindingSource).BeginInit();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // dgv
             // 
-            this.dgv.AllowUserToAddRows = false;
-            this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AutoGenerateColumns = false;
-            this.dgv.BackgroundColor = System.Drawing.Color.White;
-            this.dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv.ColumnHeadersVisible = false;
-            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colIID,
-            this.colDistributionName});
-            this.dgv.DataSource = this.globalTypeBindingSource;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AutoGenerateColumns = false;
+            dgv.BackgroundColor = System.Drawing.Color.White;
+            dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgv.ColumnHeadersVisible = false;
+            dgv.DataSource = globalTypeBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv.Location = new System.Drawing.Point(0, 0);
-            this.dgv.MultiSelect = false;
-            this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
-            this.dgv.RowHeadersVisible = false;
-            this.dgv.RowHeadersWidth = 25;
-            this.dgv.RowTemplate.Height = 50;
-            this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(304, 580);
-            this.dgv.TabIndex = 45;
-            this.dgv.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_CellDoubleClick);
+            dgv.DefaultCellStyle = dataGridViewCellStyle1;
+            dgv.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgv.Location = new System.Drawing.Point(0, 0);
+            dgv.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgv.MultiSelect = false;
+            dgv.Name = "dgv";
+            dgv.ReadOnly = true;
+            dgv.RowHeadersVisible = false;
+            dgv.RowHeadersWidth = 25;
+            dgv.RowTemplate.Height = 50;
+            dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgv.Size = new System.Drawing.Size(355, 669);
+            dgv.TabIndex = 45;
+            dgv.CellDoubleClick += dgv_CellDoubleClick;
+            dgv.SelectionChanged += dgv_SelectionChanged;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnClose);
-            this.panel1.Controls.Add(this.btnSave);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 580);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(10);
-            this.panel1.Size = new System.Drawing.Size(304, 70);
-            this.panel1.TabIndex = 46;
+            panel1.Controls.Add(btnClose);
+            panel1.Controls.Add(btnSave);
+            panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panel1.Location = new System.Drawing.Point(0, 669);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            panel1.Size = new System.Drawing.Size(355, 81);
+            panel1.TabIndex = 46;
             // 
             // btnClose
             // 
-            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.FlatAppearance.BorderSize = 0;
-            this.btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnClose.Location = new System.Drawing.Point(13, 10);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(125, 50);
-            this.btnClose.TabIndex = 42;
-            this.btnClose.Text = "CANCEL";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
+            btnClose.Location = new System.Drawing.Point(15, 12);
+            btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new System.Drawing.Size(146, 58);
+            btnClose.TabIndex = 42;
+            btnClose.Text = "CANCEL";
+            btnClose.UseVisualStyleBackColor = true;
+            btnClose.Click += btnClose_Click;
             // 
             // btnSave
             // 
-            this.btnSave.FlatAppearance.BorderSize = 0;
-            this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.btnSave.Location = new System.Drawing.Point(164, 8);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(125, 50);
-            this.btnSave.TabIndex = 43;
-            this.btnSave.Text = "SELECT / SAVE";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // colIID
-            // 
-            this.colIID.DataPropertyName = "IID";
-            this.colIID.HeaderText = "IID";
-            this.colIID.Name = "colIID";
-            this.colIID.ReadOnly = true;
-            this.colIID.Visible = false;
-            // 
-            // colDistributionName
-            // 
-            this.colDistributionName.DataPropertyName = "DistributionName";
-            this.colDistributionName.HeaderText = "Distribution";
-            this.colDistributionName.Name = "colDistributionName";
-            this.colDistributionName.ReadOnly = true;
-            this.colDistributionName.Width = 300;
-            // 
-            // globalTypeBindingSource
-            // 
-            this.globalTypeBindingSource.DataSource = typeof(Distribution);
+            btnSave.FlatAppearance.BorderSize = 0;
+            btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            btnSave.Location = new System.Drawing.Point(191, 9);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(146, 58);
+            btnSave.TabIndex = 43;
+            btnSave.Text = "SELECT / SAVE";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
             // 
             // frmDistributionSelector
             // 
-            this.AcceptButton = this.btnSave;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnClose;
-            this.ClientSize = new System.Drawing.Size(304, 650);
-            this.ControlBox = false;
-            this.Controls.Add(this.dgv);
-            this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "frmDistributionSelector";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Distributions";
-            this.Load += new System.EventHandler(this.frmDistributionSelector_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.globalTypeBindingSource)).EndInit();
-            this.ResumeLayout(false);
+            AcceptButton = btnSave;
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            CancelButton = btnClose;
+            ClientSize = new System.Drawing.Size(355, 750);
+            ControlBox = false;
+            Controls.Add(dgv);
+            Controls.Add(panel1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "frmDistributionSelector";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            Text = "Distributions";
+            Load += frmDistributionSelector_Load;
+            ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
+            ((System.ComponentModel.ISupportInitialize)globalTypeBindingSource).EndInit();
+            panel1.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

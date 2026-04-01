@@ -76,7 +76,6 @@
             LogoBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             LogoBox.TabIndex = 88;
             LogoBox.TabStop = false;
-            LogoBox.Click += LogoBox_Click;
             LogoBox.DoubleClick += LogoBox_DoubleClick;
             // 
             // txtUserPassword

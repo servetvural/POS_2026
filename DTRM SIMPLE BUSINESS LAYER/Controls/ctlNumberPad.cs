@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
 
@@ -16,6 +17,7 @@ namespace DTRMNS {
     /// </summary>
     public class ctlNumberPad : System.Windows.Forms.UserControl {
         PosConfig config;
+        IRepository<Category> repoCategory;
 
         private Button button107;
         private Button button93;
@@ -69,9 +71,11 @@ namespace DTRMNS {
         private System.ComponentModel.Container components = null;
 
 
-        public ctlNumberPad(PosConfig configAsService,DTRMSimpleBusiness bslayer) {
+        public ctlNumberPad(PosConfig configAsService,IRepository<Category> _repoCategory, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             config = configAsService;
+            repoCategory = _repoCategory;
+
             this.bslayer = bslayer;
         }
 
@@ -847,7 +851,7 @@ namespace DTRMNS {
 
             List<CategoryItem> entityButtons = await bslayer.GetEntityButtonsForNumberPad();
 
-            List<Category> entities =await bslayer.GetAllEntities(config.ActiveMenuIID);
+            List<Category> entities =await repoCategory.GetListByField("MenuIID",config.ActiveMenuIID);
            
             foreach (var entitybutton in entityButtons)
             {

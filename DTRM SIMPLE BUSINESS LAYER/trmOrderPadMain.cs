@@ -34,6 +34,8 @@ namespace DTRMNS
         public DTRMSimpleBusiness bslayer;
         IRepository<TheMenu> repoMenu;
         IRepository<Order> repoOrder;
+        IRepository<Bonus> repoBonus;
+        IRepository<Distribution> repoDistribution;
 
 
         private Button btnDone;
@@ -168,17 +170,19 @@ namespace DTRMNS
         {
             InitializeComponent();
         }
-        public trmOrderPadMain(IServiceProvider _sp, PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<TheMenu> _repoMenu, 
-            IRepository<Order> _repoOrder,  Form Locker, bool blnLockable)
+        public trmOrderPadMain(IServiceProvider _sp, PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<TheMenu> _repoMenu,
+            IRepository<Order> _repoOrder, IRepository<Bonus> _repoBonus, IRepository<Distribution> _repoDistribution, Form Locker, bool blnLockable)
         {
             sp = _sp;
             config = configAsService;
             this.bslayer = bslayer;
             repoMenu = _repoMenu;
             repoOrder = _repoOrder;
+            repoBonus = _repoBonus;
+            repoDistribution = _repoDistribution;
 
             InitializeComponent();
-           
+
             this.Locker = Locker;
             this.blnLockable = blnLockable;
 
@@ -354,17 +358,17 @@ namespace DTRMNS
             }
         }
 
-        private void mnuChangeMenu_Click(object sender, EventArgs e)
+        private async void mnuChangeMenu_Click(object sender, EventArgs e)
         {
             if (bslayer.AttachedOrder != null)
                 return;
-            frmMenuSelector frm = new frmMenuSelector(bslayer);
+            frmMenuSelector frm = ActivatorUtilities.CreateInstance< frmMenuSelector>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 config.ActiveMenuIID = frm.SelectedMenuIID;
                 UF.SaveConfig(config);
-                bslayer.ActiveMenu = bslayer.GetActiveMenu(true, true);
-                LoadUserInterface();
+                bslayer.ActiveMenu =await bslayer.GetActiveMenu(true, true);
+                await LoadUserInterface();
             }
         }
 
@@ -382,7 +386,7 @@ namespace DTRMNS
         //    }
         //}
 
-        private void MenuSelect_Click(object sender, EventArgs e)
+        private async void MenuSelect_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem btn = (ToolStripMenuItem)sender;
             string menuIID = btn.Tag.ToString();
@@ -390,30 +394,29 @@ namespace DTRMNS
             config.ActiveMenuIID = menuIID;
 
             UF.SaveConfig(config);
-            bslayer.ActiveMenu = bslayer.GetActiveMenu(true, true);
-            LoadUserInterface();
+            bslayer.ActiveMenu =await bslayer.GetActiveMenu(true, true);
+            await LoadUserInterface();
             //RefreshUserInterface();
         }
 
         private async Task LoadViewBars()
         {
-            List<Distribution> theList = await bslayer.GetDistributionList(config.ActiveMenuIID);
-            foreach (Distribution gt in theList)
+            List<Distribution> theList = await repoDistribution.GetListByField("MenuIID", config.ActiveMenuIID);
+            foreach (Distribution distro in theList)
             {
                 ToolStripMenuItem btn = new ToolStripMenuItem();
                 btn.Image = global::DTRMNS.Properties.Resources.chef64;
-                btn.Tag = gt.IID;
-                btn.Text = gt.DistributionName;
+                btn.Tag = distro;
+                btn.Text = distro.DistributionName;
                 btn.Click += ViewBar_Click;
                 mnuViewBars.DropDownItems.Add(btn);
             }
         }
         private void ViewBar_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem btn = (ToolStripMenuItem)sender;
-            string gIID = btn.Tag.ToString();
-
-            frmKitchenSingleDisplay frm = new frmKitchenSingleDisplay(bslayer, gIID, true, true);
+            ToolStripMenuItem btn = (ToolStripMenuItem)sender;              
+            Distribution distribution = (Distribution)btn.Tag;
+            frmKitchenSingleDisplay frm = ActivatorUtilities.CreateInstance< frmKitchenSingleDisplay>(ServiceHelper.Services, distribution, true, true);
             frm.ShowDialog();
 
         }
@@ -421,7 +424,7 @@ namespace DTRMNS
         private async Task LoadBonusSchemes()
         {
             pnlBonus.Activate();
-            List<Bonus> theList = await bslayer.GetAllBonusList();
+            List<Bonus> theList = await repoBonus.GetAllAsync();
             mnuSelectBonusPlan.DropDownItems.Clear();
             foreach (Bonus bon in theList)
             {
@@ -443,7 +446,7 @@ namespace DTRMNS
             ToolStripMenuItem btn = (ToolStripMenuItem)sender;
             string bonusIID = btn.Tag.ToString();
 
-            bslayer.currentBonusScheme = await bslayer.GetBonus(bonusIID);
+            bslayer.currentBonusScheme = await repoBonus.Get(bonusIID);
             mnuSelectBonusPlan.Text = bslayer.currentBonusScheme.PlanName + " (or Change)";
             pnlBonus.UpdateBonusDisplay();
 
@@ -501,7 +504,7 @@ namespace DTRMNS
             btnHoldAndReceiptGreen = new ToolStripMenuItem();
             btnHoldAndReceiptOrange = new ToolStripMenuItem();
             pnlStandardDisplay = new Panel();
-            OrderScreen = ActivatorUtilities.CreateInstance <OrderDisplay>(sp);
+            OrderScreen = ActivatorUtilities.CreateInstance<OrderDisplay>(sp);
             pnlMoneyActions = new TableLayoutPanel();
             btnPrintOnlineFinalPaymentWithReceipt = new Button();
             btnPrintOnlineFinalPayment = new Button();
@@ -514,7 +517,7 @@ namespace DTRMNS
             btnPrintCashFinalPayment = new Button();
             btnHoldAndReceipt = new Button();
             btnHoldOrder = new Button();
-            pnlBonus = ActivatorUtilities.CreateInstance <ctlBonus>(sp);
+            pnlBonus = ActivatorUtilities.CreateInstance<ctlBonus>(sp);
             pnlSubTotal = new Panel();
             pnlSubMoneyActions = new TableLayoutPanel();
             button1 = new Button();
@@ -2295,7 +2298,7 @@ namespace DTRMNS
 
             pnlPendingOrders.Visible = config.Hold_Order_Available;
 
-            btnCashDrawer.Text =bslayer.shop.VoidText;
+            btnCashDrawer.Text = bslayer.shop.VoidText;
             if (OUI == null)
                 OUI = new InterfaceHolder("orderpad");
             OUI.Panels.Clear();
@@ -2331,7 +2334,7 @@ namespace DTRMNS
 
                 for (int i = 0; i < bslayer.ActiveMenu.categories.Count; i++)
                 {
-                    UPEntity upe = ActivatorUtilities.CreateInstance< UPEntity>(bslayer.sp, (Category)bslayer.ActiveMenu.categories[i], null);
+                    UPEntity upe = ActivatorUtilities.CreateInstance<UPEntity>(bslayer.sp, (Category)bslayer.ActiveMenu.categories[i], null);
                     upe.DoneEventHandler = new GenericFunctionCallReturnBool(this.DoneEventHandlerFunction);
                     upe.Name = "upentity";
                     OUI.Panels.Add(upe);
@@ -2670,9 +2673,9 @@ namespace DTRMNS
         public bool ShowCustomerDialog(bool blnEnsureContinuation, int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive)
         {
             if (blnEnsureContinuation)
-                AttachPanel(new ctlCustomer(bslayer, new GenericFunctionCall(DetachCustomerPanel), new RemoteCompleteAttachedOrder(CompleteAttachedOrder), NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive));
+                AttachPanel(ActivatorUtilities.CreateInstance<ctlCustomer>(ServiceHelper.Services, new GenericFunctionCall(DetachCustomerPanel), new RemoteCompleteAttachedOrder(CompleteAttachedOrder), NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive));
             else
-                AttachPanel(new ctlCustomer(bslayer, new GenericFunctionCall(DetachCustomerPanel), null, NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive));
+                AttachPanel(ActivatorUtilities.CreateInstance<ctlCustomer>(ServiceHelper.Services, new GenericFunctionCall(DetachCustomerPanel), null, NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive));
             return false;
         }
         public void DetachCustomerPanel()
@@ -2697,7 +2700,7 @@ namespace DTRMNS
                             MessageBox.Show("Customer name is missing !");
                         return false;
                     }
-                    if ((bslayer.AttachedOrder.Customer.Tel +  bslayer.AttachedOrder.Customer.Email) == "")
+                    if ((bslayer.AttachedOrder.Customer.Tel + bslayer.AttachedOrder.Customer.Email) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have at least one phone number or an email address");
@@ -3016,7 +3019,7 @@ namespace DTRMNS
             if (bslayer.HasSubTables(((TableButton)sender).IID).Result)
             {
                 //Display SubTables selection panel
-                frmSubTableSelector frm = ActivatorUtilities.CreateInstance < frmSubTableSelector>(sp, ((TableButton)sender).IID,
+                frmSubTableSelector frm = ActivatorUtilities.CreateInstance<frmSubTableSelector>(sp, ((TableButton)sender).IID,
                     new GenericEventHandler(btnActualTableButton_Click));
                 if (frm.ShowDialog() == DialogResult.Cancel)
                     cmdTables_Click(null, null);
@@ -3495,7 +3498,7 @@ namespace DTRMNS
             if (bslayer.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
-            {                    
+            {
                 bslayer.AttachedOrder = new Order(OrderTypes.TakeAwayB, bslayer.shop.ServiceChargeRate, bslayer.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
@@ -3508,7 +3511,7 @@ namespace DTRMNS
                 return;
             if (SafelyPackTheOrder(StatusFlags.DONE, true))
             {
-              
+
                 bslayer.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Delivery, bslayer.shop.ServiceChargeRate, bslayer.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
@@ -3690,7 +3693,7 @@ namespace DTRMNS
                 if (report.RequireCashDrawTotal)
                 {
                     //RequireCashDrawTotal before printing report                        
-                    TrmDrawerCount frmDrawer = ActivatorUtilities.CreateInstance< TrmDrawerCount>(ServiceHelper.Services, bslayer);
+                    TrmDrawerCount frmDrawer = ActivatorUtilities.CreateInstance<TrmDrawerCount>(ServiceHelper.Services, bslayer);
                     if (frmDrawer.ShowDialog() != DialogResult.OK)
                     {
                         goto bypass;
@@ -3881,14 +3884,11 @@ namespace DTRMNS
 
         private void btnOptions_Click(object sender, EventArgs e)
         {
-            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(sp);
+            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                if (UF.SaveConfig(frm.config))
-                {
-                    if (bslayer != null)
-                        config = frm.config;
-                }
+                MessageBox.Show("Some changes may require application restart to take effect, Please restart the application as soon as possible to ensure smooth operation");
+                Environment.Exit(0);
             }
         }
 
@@ -4345,7 +4345,7 @@ namespace DTRMNS
                 btn.BackgroundImage = Properties.Resources.shadow;
                 btn.BackgroundImageLayout = ImageLayout.Stretch;
 
-                
+
 
                 btn.ButtonClick += new EventHandler(pendingOrder_Click);
                 pnlPendingOrders.Controls.Add(btn);

@@ -20,9 +20,12 @@ using PosLibrary;
 
 namespace DTRMNS {
     public partial class frmKassaCalculator : Form {
-        readonly IServiceProvider sp;
-        readonly IRepository<User> repoUser;
+
         PosConfig config;
+        IRepository<User> repoUser;
+        IRepository<Employee> repoEmployee;
+        IRepository<Bonus> repoBonus;
+
         private DTRMSimpleBusiness bslayer;
 
 
@@ -34,11 +37,14 @@ namespace DTRMNS {
         private double stepOneTotal;
 
         bool blnTerminate = false;
-        public frmKassaCalculator(IServiceProvider _sp, DTRMSimpleBusiness bslayer, PosConfig configAsService, IRepository<User> _repoUser) {
+        public frmKassaCalculator( PosConfig configAsService, IRepository<User> _repoUser, IRepository<Employee> _repoEmployee,
+            IRepository<Bonus> _repoBonus, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
-            sp = _sp;
+
             config = configAsService;
             repoUser = _repoUser;
+            repoEmployee = _repoEmployee;
+            repoBonus = _repoBonus;
 
             if (config.IsValid())
             {
@@ -58,7 +64,7 @@ namespace DTRMNS {
         {
             if (await repoUser.IsDatabaseExist())
             {
-                frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(sp, "Database : " + config.Database_Instance);
+                frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + config.Database_Instance);
                 if (frmpswd.ShowDialog() == DialogResult.OK)
                 {
                     User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
@@ -79,7 +85,7 @@ namespace DTRMNS {
         }
 
         private bool AskForConfig() {
-            frmConfig frm = ActivatorUtilities.CreateInstance < frmConfig>(sp);
+            frmConfig frm = ActivatorUtilities.CreateInstance <frmConfig>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 MessageBox.Show("Saved Restart Application");
@@ -96,17 +102,17 @@ namespace DTRMNS {
         //    this.bslayer = bslayer;
         //}
 
-        private void frmKassaCalculator_Load(object sender, EventArgs e) {
+        private async void frmKassaCalculator_Load(object sender, EventArgs e) {
             if (blnTerminate)
                 Application.Exit();
-            LoadKassa();
+            await LoadKassa();
         }
 
-        private void LoadKassa() {
+        private async Task LoadKassa() {
             lblDate.Text = DateTime.Now.ToString("dd/MMM dddd HH:mm");
-            cmbManagedBy.DataSource = bslayer.GetAllEmployeeList();
-            cmbController.DataSource = bslayer.GetAllEmployeeList();
-            cmbBonus.DataSource = bslayer.GetAllBonusList();
+            cmbManagedBy.DataSource = await repoEmployee.GetAllAsync();
+            cmbController.DataSource = await repoEmployee.GetAllAsync();
+            cmbBonus.DataSource = await repoBonus.GetAllAsync();
             cmbXType.SelectedIndex = 0;
         }
 
@@ -166,7 +172,7 @@ namespace DTRMNS {
         private void cmdAdd_Click(object sender, EventArgs e) {
             Bonus bonus = cmbBonus.SelectedItem as Bonus;
 
-            frmStaffIncomeEditor frm = new frmStaffIncomeEditor(bslayer, new StaffIncome()
+            frmStaffIncomeEditor frm = ActivatorUtilities.CreateInstance<frmStaffIncomeEditor>(ServiceHelper.Services, new StaffIncome()
             {
                 xAmount = txtXAmount.Value,
                 bonus = bonus
@@ -186,7 +192,7 @@ namespace DTRMNS {
                 if (dgvEmployee.SelectedRows.Count > 0) {
                     StaffIncome staff = staffIncomes.Where(x => x.IID == dgvEmployee.SelectedRows[0].Cells["colIID"].Value.ToString()).FirstOrDefault();
 
-                    frmStaffIncomeEditor frm = new frmStaffIncomeEditor(bslayer, staff);
+                    frmStaffIncomeEditor frm = ActivatorUtilities.CreateInstance < frmStaffIncomeEditor>(ServiceHelper.Services, staff);
                     if (frm.ShowDialog() == DialogResult.OK)
                         //staff = frm.staff;
                         LoadStaffList();
@@ -313,7 +319,7 @@ namespace DTRMNS {
     
 
         private void tsAddExpense_Click(object sender, EventArgs e) {
-            frmExpense frm = new frmExpense(bslayer, new Expense());
+            frmExpense frm = ActivatorUtilities.CreateInstance<frmExpense>(ServiceHelper.Services, new Expense());
             if (frm.ShowDialog() == DialogResult.OK) {
                 if (!expenses.Contains(frm.expense)) {
                     expenses.Add(frm.expense);
@@ -327,7 +333,7 @@ namespace DTRMNS {
             if (dgvExpense.SelectedRows.Count > 0) {
                 Expense expense = expenses.Where(x => x.IID == dgvExpense.SelectedRows[0].Cells["colExpenseIID"].Value.ToString()).FirstOrDefault();
 
-                frmExpense frm = new frmExpense(bslayer, expense);
+                frmExpense frm = ActivatorUtilities.CreateInstance< frmExpense>(ServiceHelper.Services, expense);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadExpenseList();
                 LoadStaffList();
@@ -405,7 +411,7 @@ namespace DTRMNS {
                         xAmount = staff.xAmount
                     };
 
-                    frmStaffIncomeEditor frm = new frmStaffIncomeEditor(bslayer, newStaff);
+                    frmStaffIncomeEditor frm = ActivatorUtilities.CreateInstance < frmStaffIncomeEditor>(ServiceHelper.Services, newStaff);
                     if (frm.ShowDialog() == DialogResult.OK) {
                         if (staffIncomes.Where(x => x.IID == frm.staff.IID).Any()) {
                             MessageBox.Show("Already in the list");

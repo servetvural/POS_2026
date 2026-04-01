@@ -393,7 +393,7 @@ namespace DTRMNS {
             // 
             // entityButtonStockItemRecipeBindingSource
             // 
-            entityButtonStockItemRecipeBindingSource.DataSource = typeof(Recipe);
+            entityButtonStockItemRecipeBindingSource.DataSource = typeof(RecipeItem);
             // 
             // splitContainer1
             // 

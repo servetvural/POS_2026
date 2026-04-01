@@ -1,38 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using DTRMNS;
-
-using Microsoft.EntityFrameworkCore;
-
-using POSLayer.Library;
 using POSLayer.Models;
-
-using PosLibrary.DRSoftware;
-using PosLayer.Repository;
 using POSLayer.Repository.IRepository;
 using POSWinFormLayer;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmEmployee : Form {
-        private DTRMSimpleBusiness bslayer;
+        IRepository<Employee> repoEmployee;
+        IRepository<GenericImage> repoImage;
+
         public Employee employee;
         private GenericImage gim;
-       // PosDbContext dbContext;
-        IRepository<POSLayer.Models.Employee> repoEmployee;
-        public frmEmployee(DTRMSimpleBusiness bslayer, Employee employee) {
+        public frmEmployee(IRepository<Employee> _repoEmployee, IRepository<GenericImage> _repoImage, Employee employee) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoEmployee = _repoEmployee;
+            repoImage = _repoImage;
+
             this.employee = employee;
-            repoEmployee = ServiceHelper.GetRepository<POSLayer.Models.Employee>();
         }
 
         private void frmEmployee_Load(object sender, EventArgs e) {
@@ -50,12 +35,12 @@ namespace DTRMSimpleBackOffice {
 
         private async void LoadGenericImage() {
             try {
-                gim = await bslayer.GetGenericImage(employee.IID);
+                gim = await repoImage.Get(employee.IID);
                 if (gim == null) {
-                   // pBox.BackgroundImage = Properties.Resources.BlueMan32;
+
                 } else {
                     if (gim.DisplayImage != null)
-                        pBox.BackgroundImage = gim.DisplayImage.ToImage(); // Image.from gim.DisplayImage;
+                        pBox.BackgroundImage = gim.DisplayImage.ToImage(); 
                     lblImageSize.Text = gim.ImageSizeinKB + " KB";
                 }
             } catch {
@@ -73,10 +58,7 @@ namespace DTRMSimpleBackOffice {
                 employee.Rate = (float)txtRate.Value;
                 employee.Shortable = chkShortable.Checked;
 
-                if (bslayer.SaveEmployee(employee)) {
-               
-                //if (await repoEmployee.Save(employee) != null)
-                //{ 
+                if (await repoEmployee.Save(employee) != null) {
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -104,12 +86,12 @@ namespace DTRMSimpleBackOffice {
                     ExtraText = "",
                     ImageFileName = finfo.Name
                 };
-                await bslayer.SaveGenericImage(gim);
+                await repoImage.Save(gim);
             }
         }
 
         private async void btnDeletePrepImage_Click(object sender, EventArgs e) {
-            await bslayer.DeleteGenericImage(employee.IID);
+            await repoImage.Delete(employee.IID);
             pBox.BackgroundImage = null;
         }
     }

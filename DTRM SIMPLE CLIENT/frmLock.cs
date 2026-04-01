@@ -19,11 +19,11 @@ namespace DTRMClientNS
     public partial class FrmLock : Form
     {
         PosConfig config;
+        IRepository<User> repoUser;
+
         private DTRMSimpleBusiness bslayer;
-        readonly IRepository<User> repoUser;
 
         private trmOrderPadMain OrderPad;
-        private int LoginCounter;
 
         public FrmLock(PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<User> _repoUser)
         {
@@ -46,7 +46,6 @@ namespace DTRMClientNS
 
             ResetProgress();
 
-
             if (config.IsValid())
             {
                // LoginUser();
@@ -56,11 +55,11 @@ namespace DTRMClientNS
                 {
                     if (bslayer != null)
                         if (config != null)
-                            this.WindowState = FormWindowState.Normal; // (FormWindowState)config.Lock_Screen_Window_Format;
+                            this.WindowState = FormWindowState.Normal; 
                         else
-                            this.WindowState = (FormWindowState)POSLayer.Library.UF.GetConfig().Lock_Screen_Window_Format;
+                            this.WindowState = (FormWindowState)UF.GetConfig().Lock_Screen_Window_Format;
                     else
-                        this.WindowState = (FormWindowState)POSLayer.Library.UF.GetConfig().Lock_Screen_Window_Format;
+                        this.WindowState = (FormWindowState)UF.GetConfig().Lock_Screen_Window_Format;
                 } catch
                 {
 
@@ -92,36 +91,6 @@ namespace DTRMClientNS
         }
 
 
-        //async Task<bool> LoginUser()
-        //{
-        //    if (await repoUser.IsDatabaseExist())
-        //    {
-        //        frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + config.Database_Instance);
-        //        if (frmpswd.ShowDialog() == DialogResult.OK)
-        //        {
-        //            User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
-        //            if (user == null)
-        //            {
-        //                return false;
-        //            } else
-        //            {
-        //                return true;
-        //            }
-        //        } else
-        //        {
-        //            MessageBox.Show("Failed to Login");
-        //            return false;
-        //        }
-        //    } else
-        //        return false;
-        //}
-
-
-        private void FrmLock_FormClosing(object sender, FormClosingEventArgs e)
-        {
-
-        }
-
         #region "KEY HANDLERS"
         private void KeyHandle(object sender, System.EventArgs e)
         {
@@ -132,7 +101,6 @@ namespace DTRMClientNS
         }
         private void BtnClear_Click(object sender, System.EventArgs e)
         {
-            // LogoCount = 0;
             DisplayMessage("LOGIN YOUR KEY", 3);
             txtUserPassword.Clear();
             ResetLogonButton();
@@ -160,51 +128,6 @@ namespace DTRMClientNS
             lblNotify.Refresh();
         }
 
-        private async Task<bool> ValidateConfiguration()
-        {
-            try
-            {
-                if (POSLayer.Library.UF.GetConfig() == null)
-                {
-                    LogoBox_DoubleClick(null, null);
-                    if (POSLayer.Library.UF.GetConfig() == null)
-                    {
-                        MessageBox.Show("CONFIGURATION ERROR, PLEASE CONFIGURE THE APPLICATION FIRST.", "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Application.Exit();
-                        return false;
-                    }
-                }
-
-                DisplayMessage("VALIDATING CONFIGURATION........   ", 2);
-               
-                //Validate Client IP
-                if (config.Terminal_Name.Trim() == "")
-                {
-
-                    DisplayMessage("VALIDATION ERROR 1", 2);
-                    return false;
-
-                }
-
-                DisplayMessage("DB SERVER IP VALID, CHECKING DB CONNECTION  .....", 2);
-
-                //if (await bslayer.EstablishDatabaseConnection())
-                //{
-                //    if (MessageBox.Show("Check Database Connection Error : \r\n" + bslayer.DBConnectionError + "\r\n\r\nExit Application??", "Database Connection Error", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                //        Application.Exit();
-                //    DisplayMessage("VALIDATION ERROR 3 " + bslayer.DBConnectionError, 2);
-                //    return false;
-
-                //}
-                DisplayMessage("DB SERVER AND CONNECTION ARE VALID.....", 2);
-                return true;
-
-            } catch
-            {
-                return false;
-            }
-        }
-
 
         private async void BtnLogon_Click(object sender, System.EventArgs e)
         {
@@ -212,7 +135,6 @@ namespace DTRMClientNS
 
             if (txtUserPassword.Text.Length == 0)
                 return;
-
 
             pBar.Value = 0;
 
@@ -232,81 +154,7 @@ namespace DTRMClientNS
                     OrderPad = ActivatorUtilities.CreateInstance< trmOrderPadMain>(ServiceHelper.Services, this, true);
             }
 
-            //if (user.IsManagerOrMore())
-            //{
-
-            //    ConnectActions(true);
-
-            //    //Identify connection type
-            //    if (blnLocalDatabase)
-            //    {
-            //        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
-            //        btnPrinters.Enabled = true;
-            //        btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
-            //    } else
-            //    {
-            //        //remote connection
-            //        conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
-            //        //btnPrinters.Enabled = false;
-            //        btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
-            //    }
-
-            //    btnConnect.Visible = false;
-            //    btnDisconnect.Visible = true;
-
-            //    lblStatus.Text = conStatus.ToString() + " : " +
-            //                     "Instanse/IP: " + config.Database_Instance + ", " +
-            //                     "Database: " + config.Database_Name + ", " +
-            //                     "User : " + config.Database_User_Name;
-
-            //    this.Refresh();
-
-            //}
-
-
-
-            //try
-            //{
-            //    //if (bslayer == null || bslayer.config == null || bslayer.db == null)
-            //    //{
-            //        if (await ValidateConfiguration())
-            //        {
-            //            //DisplayMessage("CHECKING DATABASE UPDATES.............        ", 2);
-            //            //bslayer.CheckAndUpdateDatabaseVersion();
-
-            //            DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
-            //            if (!bslayer.DoStartThings().Result)
-            //            {
-            //                DisplayMessage("Cannot Start Business Layer", 2);
-            //                return;
-            //            }
-            //            //if (bslayer.DisplayPort == null) {
-            //            //    if (bslayer.HasCustomerDisplay()) {
-            //            //        bslayer.CDSetCommandMode();
-            //            //        bslayer.CDSetCharacterSet();
-            //            //    }
-            //            //}
-            //            DisplayMessage("CREATING ORDER PAD ..........      ", 3);
-            //            // if (OrderPad == null)
-            //            OrderPad = ActivatorUtilities.CreateInstance < trmOrderPadMain>(ServiceHelper.Services, this, true);
-            //            DisplayMessage("CHECKING USER INFORMATION  ..........      ", 4);
-            //            try
-            //            {
-            //                DisplayMessage("INITIATING REPORT MODULE  ..........      ", 4);
-
-            //            } catch
-            //            {
-            //            }
-            //        } else
-            //        {
-            //            goto StartAgain;
-            //        }
-            //    CheckUser();
-            //    txtUserPassword.Clear();
-            //} catch
-            //{
-
-            //}
+            
             tmrSaat.Enabled = false;
         }
         #endregion
@@ -315,55 +163,6 @@ namespace DTRMClientNS
         {
             pBar.Value = 0;
             tmrSaat.Enabled = true;
-        }
-
-        private async void CheckUser()
-        {
-            User user = null;
-            bslayer.EnsureRequiredUsers();
-
-            if (txtUserPassword.Text.Length > 0)
-            {
-                user =await bslayer.GetUserByPassword(txtUserPassword.Text);
-                if (user == null)
-                {
-                    DisplayMessage("LOGIN FAILURE ..........      ", 2);
-                    ShowFailedLogon();
-                } else
-                {
-                    ResetLogonButton();
-                    // blnValidUser = true;
-                    LoginUser(user);
-                }
-            }
-        }
-
-        private void LoginUser(User user)
-        {
-            DisplayMessage("LOGIN YOUR KEY", 3);
-            this.Hide();
-
-            txtUserPassword.Clear();
-            bslayer.LoggedUser = user.Clone();
-            OrderPad.bslayer = bslayer;
-            OrderPad.Enabled = true;
-
-
-            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(config.Terminal_Currency_Culture);
-
-            OrderPad.Show();
-
-
-
-            if (LoginCounter > 0)
-                OrderPad.DoInitialThings();
-            LoginCounter++;
-            bslayer.OnDisplayOrder();
-        }
-
-        private void ShowFailedLogon()
-        {
-            btnLogon.Text = "FAILED";
         }
         private void ResetLogonButton()
         {
@@ -376,12 +175,6 @@ namespace DTRMClientNS
         {
             Application.Exit();
         }
-
-        public void ShowKeyboard()
-        {
-            DRProcess.ShowKeyboard();
-        }
-
 
         private void TmrSaat_Tick(object sender, EventArgs e)
         {
@@ -399,24 +192,11 @@ namespace DTRMClientNS
             frmConfig frm = ActivatorUtilities.CreateInstance< frmConfig>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                if (POSLayer.Library.UF.SaveConfig(frm.config))
-                {
-                    if (bslayer != null)
-                        config = frm.config;
-
-                    if (OrderPad != null)
-                        OrderPad.ConfigChanged();
-                }
+                MessageBox.Show("Saved Restart Application");
+                Environment.Exit(0);
             }
         }
 
-
-
         #endregion
-
-        private void LogoBox_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

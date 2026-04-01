@@ -7,35 +7,32 @@ using Microsoft.Extensions.DependencyInjection;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class frmKitchenSingleDisplay : Form
     {
         PosConfig config;
+        IRepository<Distribution> repoDistribution;
+
         private DTRMSimpleBusiness bslayer;
         private bool blnForSpecificDistribution;
 
+        Distribution distribution;
         public frmKitchenSingleDisplay()
         {
             InitializeComponent();
         }
-        public frmKitchenSingleDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public frmKitchenSingleDisplay(PosConfig configAsService,IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
             config = configAsService;
+            repoDistribution = _repoDistribution;
+
             this.bslayer = bslayer;
         }
-        private async void frmKitchenDisplay_Load(object sender, EventArgs e)
-        {
-            if (!blnForSpecificDistribution)
-            {
-                ctlKitchen.Initiate(await bslayer.GetFirstDisplayTypeList(), true);
-                ctlKitchen.DisplayClock = config.Show_Clock_in_Kitchen;
-                ctlKitchen.DisplayTypeWillBeChange += CtlKitchen_DisplayTypeWillBeChange;
-                ctlKitchen.LoadAll();
-            }
-        }
-        public  frmKitchenSingleDisplay(DTRMSimpleBusiness bslayer, string DistributionIID, bool CloseVisible, bool FullScreen)
+       
+        public  frmKitchenSingleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer, Distribution _distribution, bool CloseVisible, bool FullScreen)
         {
             InitializeComponent();
             this.bslayer = bslayer;
@@ -47,29 +44,31 @@ namespace DTRMNS {
             blnForSpecificDistribution = true;
             ctlKitchen.ChangeDistributionVisible = false;
 
-            List<Distribution> theDistributionList = new List<Distribution>();
-            theDistributionList.Add(bslayer.GetDistribution(DistributionIID).Result);
-            ctlKitchen.Initiate( theDistributionList, CloseVisible);
-            //ctlKitchen.DisplayTypeWillBeChange += CtlKitchen_DisplayTypeWillBeChangeWithoutSaving;
-            //ctlKitchen.LoadAll();
+            distribution =_distribution;
+            ctlKitchen.Initiate( distribution, CloseVisible);
 
         }
 
+        private async void frmKitchenDisplay_Load(object sender, EventArgs e)
+        {
+            if (!blnForSpecificDistribution)
+            {
+                ctlKitchen.Initiate(await repoDistribution.Get(config.Default_Distribution_IID), true);
+                ctlKitchen.DisplayClock = config.Show_Clock_in_Kitchen;
+                ctlKitchen.DisplayTypeWillBeChange += CtlKitchen_DisplayTypeWillBeChange;
+                ctlKitchen.LoadAll();
+            }
+        }
 
 
         private async void CtlKitchen_DisplayTypeWillBeChange()
         {
-           // if (await ServiceHelper.GetService<frmDistributionSelector>().ShowDialog() == DialogResult.OK) {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true,await bslayer.GetFirstDisplayTypeList());
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Default_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                List<Distribution> theList = frm.selectedDistributions;
-                if (theList.Count > 0)
-                {
-                    config.Default_Distribution_Terminal_Type_List = bslayer.GetCommaSeperatedDistributionIIDListForDatabase(theList);
-                    UF.SaveConfig(config);
-                    ctlKitchen.DistributionChanged(await bslayer.GetFirstDisplayTypeList());
-                }
+                config.Default_Distribution_IID  = frm.distribution.IID;
+                UF.SaveConfig(config);
+                ctlKitchen.DistributionChanged(frm.distribution);                
             }
         }
 

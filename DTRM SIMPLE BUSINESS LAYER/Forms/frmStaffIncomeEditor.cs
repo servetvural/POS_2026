@@ -2,17 +2,15 @@
 using DTRMNS.Forms;
 using System;
 using System.Windows.Forms;
-
 using POSLayer.Library;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMNS {
     public partial class frmStaffIncomeEditor : Form {
-        private DTRMSimpleBusiness bslayer;
         public StaffIncome staff;
 
-        public frmStaffIncomeEditor(DTRMSimpleBusiness bslayer, StaffIncome staff) {
+        public frmStaffIncomeEditor( StaffIncome staff) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.staff = staff;
         }
 
@@ -21,7 +19,6 @@ namespace DTRMNS {
         }
 
         private void LoadStaff() {
-           // cmbEmployee.DataSource = bslayer.GetAllEmployeeList();
             cmbBonusType.SelectedIndex= 0;
 
             if (staff != null) {
@@ -30,7 +27,6 @@ namespace DTRMNS {
                 cmbBonusType.SelectedIndex = (int)staff.bonusType;
                 if (staff.employee != null) {
                     txtEmployee.Text = staff.name;
-                   // cmbEmployee.SelectedValue = staff.employee.IID;
                 }
                 txtTipIncome.Value = staff.tipIncome;
                 txtShort.Value = staff.shortAmount;
@@ -44,16 +40,13 @@ namespace DTRMNS {
         }
 
         private void btnSave_Click(object sender, EventArgs e) {
-           // staff.employee = bslayer.GetEmployee(cmbEmployee.SelectedValue.ToString());
             staff.bonusType = (BonusTypes)cmbBonusType.SelectedIndex;
             staff.hours = (int)txtHours.Value;
             staff.tipIncome = txtTipIncome.Value;
             staff.shortAmount = txtShort.Value;
             this.DialogResult= DialogResult.OK;
             this.Close();
-
         }
-
 
         private void NumericUpDown_Click(object sender, EventArgs e) {
             DoubleTextBox nud = (DoubleTextBox)sender;
@@ -64,7 +57,7 @@ namespace DTRMNS {
         }
 
         private void btnChooseEmployee_Click(object sender, EventArgs e) {
-            frmEmployeeSelector frm = new frmEmployeeSelector(bslayer);
+            frmEmployeeSelector frm = ActivatorUtilities.CreateInstance<frmEmployeeSelector>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK) {
                 staff.employee = frm.SelectedEmployee;
                 txtEmployee.Text = staff.employee.EmployeeName;

@@ -448,11 +448,11 @@ public class PosConfig
     #region 20.Kitchen Display Settings
     [Browsable(false)]
     [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Which distribution type to display on primary kitchen screen"), DescriptionAttribute("Select do display which preparation terminal")]
-    public string Default_Distribution_Terminal_Type_List { get; set; } = string.Empty;
+    public string Default_Distribution_IID { get; set; } = string.Empty;
 
     [Browsable(false)]
     [CategoryAttribute("20.Kitchen Display Settings"), DisplayName("Which distribution type to display on secondary kitchen screen"), DescriptionAttribute("Select do display which preparation terminal on secondary window")]
-    public string Secondary_Distribution_Terminal_Type_List { get; set; } = string.Empty;
+    public string Secondary_Distribution_IID { get; set; } = string.Empty;
 
 
     [Browsable(false)]

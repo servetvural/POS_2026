@@ -438,6 +438,29 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+    public async Task<int> Delete(T obj)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            DbSet<T> table = _db.Set<T>();
+            T existing = await table.FindAsync(obj.IID);
+
+            if (existing != null)
+            {
+                table.Remove(existing);
+                return await _db.SaveChangesAsync();
+            } else
+            {
+                return 0;
+            }
+        } catch (Exception ex)
+        {
+            string str = ex.Message;
+            return 0;
+        }
+    }
+
     public async Task<int> DeleteAll()
     {
         using var _db = GetDBContext();

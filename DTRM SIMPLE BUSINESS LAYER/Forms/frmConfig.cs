@@ -21,14 +21,16 @@ namespace DTRMNS
     /// </summary>
     public class frmConfig : Form
     {
-
-        private DTRMNS.DTRMSimpleBusiness bslayer;
-        public PosConfig config;
+        PosConfig config;
         IRepository<Shop> repoShop;
+        IRepository<TheMenu> repoMenu;
 
-        private System.Windows.Forms.Panel panel2;
+        private DTRMSimpleBusiness bslayer;
 
-        private System.Windows.Forms.Button btnSave;
+
+        private Panel panel2;
+
+        private Button btnSave;
         private BindingSource catalogListBindingSource;
         private Label label16;
         private ComboBox cmbMenuTaxRates;
@@ -36,7 +38,7 @@ namespace DTRMNS
         private Label label5;
         private ComboBox cmbMenu;
         private Button btnImportMenu;
-        private System.Windows.Forms.TabControl tabMain;
+        private TabControl tabMain;
         private TabPage tpTerminal;
         private TabPage tpShop;
         private TabPage tpOthers;
@@ -45,7 +47,7 @@ namespace DTRMNS
         private PropertyGrid pGridLuv;
         private IContainer components;
 
-       
+
         private Button btnChangeConnection;
         private PictureBox pBox;
         private Label label2;
@@ -68,35 +70,16 @@ namespace DTRMNS
         private DataGridView dgv;
         public ToolStripButton RegistrationButton;
 
-        //public frmConfig()
-        //{
-        //    InitializeComponent();
-        //}
 
-        public frmConfig(PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<Shop> _repoShop  )
+
+        public frmConfig(PosConfig configAsService, IRepository<Shop> _repoShop, IRepository<TheMenu> _repoMenu, DTRMSimpleBusiness bslayer)
         {
-            this.bslayer = bslayer;
             config = configAsService;
-
-            //if (bslayer == null)
-            //{
-            //    //Empty config required
-            //    blnEmpty = true;
-            //    config = UF.GetConfig();
-            //    if (config == null)
-            //        config = new PosConfig();
-
-            //} else
-            //{
-            //    this.config = bslayer.config;
-            //    if (config == null)
-            //        config = bslayer.config = UF.GetConfig();
-            //    if (config == null)
-            //        config = bslayer.config = new PosConfig();
-
-            //}
-            InitializeComponent();
             repoShop = _repoShop;
+            repoMenu = _repoMenu;
+
+            this.bslayer = bslayer;
+            InitializeComponent();
         }
 
 
@@ -693,11 +676,12 @@ namespace DTRMNS
             {
                 cmbMenu.ValueMember = "IID";
                 cmbMenu.DisplayMember = "MenuName";
-                cmbMenu.DataSource =await bslayer.GetMenuList();
+                cmbMenu.DataSource = await repoMenu.GetAllAsync();
                 try
                 {
                     cmbMenu.SelectedValue = config.ActiveMenuIID;
-                } catch (Exception ex) {
+                } catch (Exception ex)
+                {
                     string str = ex.Message;
                 }
             }
@@ -722,7 +706,7 @@ namespace DTRMNS
             {
                 try
                 {
-                    cmbMenuTaxRates.DataSource =await bslayer.GetAllTaxRates();
+                    cmbMenuTaxRates.DataSource = await bslayer.GetAllTaxRates();
                     //cmbMenuTaxRates.DisplayMember = "TaxPercent";
                     //cmbMenuTaxRates.ValueMember = "TaxPercent";
                 } catch
@@ -748,10 +732,10 @@ namespace DTRMNS
 
         private async void LoadLogoImages()
         {
-            GenericImage gim1 =await bslayer.GetGenericImage("Logo1");
+            GenericImage gim1 = await bslayer.GetGenericImage("Logo1");
             if (gim1 != null)
                 pBoxLogo1.Image = gim1.DisplayImage.ToImage();
-            GenericImage gim2 =await bslayer.GetGenericImage("Logo2");
+            GenericImage gim2 = await bslayer.GetGenericImage("Logo2");
             if (gim2 != null)
                 pBoxLogo2.Image = gim2.DisplayImage.ToImage();
         }
@@ -759,7 +743,7 @@ namespace DTRMNS
         {
             if (!blnEmpty)
             {
-                 Shop shop = (Shop)pGridLuv.SelectedObject;
+                Shop shop = (Shop)pGridLuv.SelectedObject;
                 shop.VoidText = (shop.VoidText.Length > 5 ? shop.VoidText.Substring(0, 5) : shop.VoidText);
                 repoShop.Save(shop);
                 bslayer.shop = shop;
@@ -768,7 +752,7 @@ namespace DTRMNS
 
         #endregion
 
-        private void btnImportMenu_Click(object sender, EventArgs e)
+        private async void btnImportMenu_Click(object sender, EventArgs e)
         {
             if (!blnEmpty)
             {
@@ -785,9 +769,7 @@ namespace DTRMNS
                         MessageBox.Show("Menu cannot be imported");
                         return;
                     }
-
-                    bslayer.SaveMenuDB(fm);
-                    bslayer.SaveMenuA(fm);
+                    await repoMenu.Save(fm);
                     LoadMenuList();
                 }
             }
@@ -802,8 +784,8 @@ namespace DTRMNS
                     MessageBox.Show("Configuration file saved");
                     if (!blnEmpty)
                     {
-                       // bslayer.config = config;
-                       SaveShop();
+                        // bslayer.config = config;
+                        SaveShop();
                     }
                     this.DialogResult = DialogResult.OK;
                     Close();
@@ -847,7 +829,7 @@ namespace DTRMNS
             {
                 DB db = frm.SelectedDB;
                 if (config == null)
-                    config = new PosConfig();                 
+                    config = new PosConfig();
                 config.Database_Instance = db.ServerIP;
                 config.Database_Name = db.DatabaseName;
                 config.Database_User_Name = db.UserName;
@@ -866,7 +848,7 @@ namespace DTRMNS
             frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo1");
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                pBoxLogo1.Image =UFWin.ByteArrayToImage( frm.gim.DisplayImage);
+                pBoxLogo1.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
             }
         }
 
@@ -875,20 +857,20 @@ namespace DTRMNS
             frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo2");
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                pBoxLogo2.Image = UFWin.ByteArrayToImage( frm.gim.DisplayImage);
+                pBoxLogo2.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
             }
         }
 
         private async void btnDeleteLogo1_Click(object sender, EventArgs e)
         {
-           await bslayer.DeleteGenericImage("Logo1");
+            await bslayer.DeleteGenericImage("Logo1");
             pBoxLogo1.Image = null;
             LoadLogoImages();
         }
 
         private async void btnDeleteLogo2_Click(object sender, EventArgs e)
         {
-          await  bslayer.DeleteGenericImage("Logo2");
+            await bslayer.DeleteGenericImage("Logo2");
             pBoxLogo2.Image = null;
             LoadLogoImages();
         }

@@ -37,7 +37,7 @@ namespace DTRMSimpleBackOffice
         IRepository<Supplier> repoSupplier;
         IRepository<StockItem> repoStockItem;
         IRepository<Bonus> repoBonus;
-        IRepository<Recipe> repoRecipe;
+        IRepository<RecipeItem> repoRecipe;
 
         private DTRMSimpleBusiness bslayer;
 
@@ -47,13 +47,13 @@ namespace DTRMSimpleBackOffice
         private BindingSource _recipeSource = new BindingSource();
 
         CategoryItem selectedCategoryItem;
-        Recipe selectedRecipeItem;
+        RecipeItem selectedRecipeItem;
 
         public frmCategoryItemList(PosConfig configAsService, IRepository<TheMenu> _repoMenu,
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
-                   IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<Recipe> _repoRecipe,
+                   IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<RecipeItem> _repoRecipe,
             DTRMSimpleBusiness bslayer, Category _category)
         {
             InitializeComponent();
@@ -85,6 +85,7 @@ namespace DTRMSimpleBackOffice
         async Task LoadCategoryItems()
         {
             dgvCategoryItem.AutoGenerateColumns = false;
+            dgvRecipe.AutoGenerateColumns = false;
 
             await FormatCategorItemGrid();
             await FormatRecipeGrid();
@@ -355,10 +356,10 @@ namespace DTRMSimpleBackOffice
                     {
                         await repoRecipe.GetListByField("CategoryItemIID", item.IID).ContinueWith(async t =>
                         {
-                            List<Recipe> recipes = t.Result;
+                            List<RecipeItem> recipes = t.Result;
                             foreach (var recipe in recipes)
                             {
-                                Recipe newRecipe = recipe.Duplicate();
+                                RecipeItem newRecipe = recipe.Duplicate();
                                 newRecipe.CategoryItemIID = duplicated.IID;
                                 await repoRecipe.Save(newRecipe);
                             }
@@ -538,7 +539,7 @@ namespace DTRMSimpleBackOffice
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
-                    Distribution distribution = frm.selectedDistributions?.First();
+                    Distribution distribution = frm.distribution;
                     if (distribution != null)
                     {
                         var selectedItems = dgvCategoryItem.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as CategoryItem).ToList();
@@ -616,7 +617,8 @@ namespace DTRMSimpleBackOffice
 
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ItemName").ToList().ForEach(c => { c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft; c.Width = 200; c.HeaderText = "Category Item"; });
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonType").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price") || c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Price")).ToList().ForEach(c => { c.Width = 70;c.DefaultCellStyle.BackColor = Color.AliceBlue; c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName.Contains("Tax")).ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.BackColor = Color.LemonChiffon; c.DefaultCellStyle.Format = "N2"; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "PadFlag").ToList().ForEach(c => { c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DistributionName").ToList().ForEach(c => { c.Width = 150; c.HeaderText = "Distribution"; });
 
@@ -624,10 +626,10 @@ namespace DTRMSimpleBackOffice
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Height").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "Font").ToList().ForEach(c => { c.Width = 150; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
 
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
-            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ButtonDisplayStyle").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.BackColor = Color.Bisque; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextImageRelation").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.BackColor = Color.Bisque; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "ImageAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.BackColor = Color.Bisque; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
+            dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "TextAlign").ToList().ForEach(c => { c.Width = 120; c.DefaultCellStyle.BackColor = Color.Bisque; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
 
             dgvCategoryItem.Columns.Cast<DataGridViewColumn>().Where(c => c.DataPropertyName == "DOrder").ToList().ForEach(c => { c.Width = 70; c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter; });
 
@@ -650,7 +652,7 @@ namespace DTRMSimpleBackOffice
         {
             if (dgvRecipe.SelectedRows.Count > 0)
             {
-                selectedRecipeItem = (Recipe)dgvRecipe.SelectedRows[0].DataBoundItem;
+                selectedRecipeItem = (RecipeItem)dgvRecipe.SelectedRows[0].DataBoundItem;
             } else
             {
                 selectedRecipeItem = null;
@@ -671,7 +673,7 @@ namespace DTRMSimpleBackOffice
         {
             if (selectedRecipeItem != null)
             {
-                using (frmRecipe frm = ActivatorUtilities.CreateInstance<frmRecipe>(ServiceHelper.Services, (Recipe)dgvRecipe.SelectedRows[0].DataBoundItem))
+                using (frmRecipe frm = ActivatorUtilities.CreateInstance<frmRecipe>(ServiceHelper.Services, (RecipeItem)dgvRecipe.SelectedRows[0].DataBoundItem))
                 {
                     if (frm.ShowDialog() == DialogResult.OK)
                         await LoadRecipeItems();
@@ -692,10 +694,10 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        List<Recipe> copiedRecipeItems = new List<Recipe>();
+        List<RecipeItem> copiedRecipeItems = new List<RecipeItem>();
         private void btnCopyRecipeItems_Click(object sender, EventArgs e)
         {
-            copiedRecipeItems = dgvRecipe.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as Recipe).ToList();
+            copiedRecipeItems = dgvRecipe.SelectedRows.Cast<DataGridViewRow>().Select(r => r.DataBoundItem as RecipeItem).ToList();
         }
 
         private async void btnPasteRecipeItems_Click(object sender, EventArgs e)
@@ -704,7 +706,7 @@ namespace DTRMSimpleBackOffice
             {
                 foreach (var recipe in copiedRecipeItems)
                 {
-                    Recipe newRecipe = recipe.Duplicate();
+                    RecipeItem newRecipe = recipe.Duplicate();
                     newRecipe.CategoryItemIID = selectedCategoryItem.IID;
                     await repoRecipe.Save(newRecipe);
                 }
@@ -733,7 +735,7 @@ namespace DTRMSimpleBackOffice
         {
             if (selectedCategoryItem != null)
             {
-                await repoRecipe.MoveUpByField((Recipe)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
+                await repoRecipe.MoveUpByField((RecipeItem)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
                 await LoadRecipeItems();
             }
         }
@@ -742,7 +744,7 @@ namespace DTRMSimpleBackOffice
         {
             if (selectedCategoryItem != null)
             {
-                await repoRecipe.MoveDownByField((Recipe)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
+                await repoRecipe.MoveDownByField((RecipeItem)dgvRecipe.SelectedRows[0].DataBoundItem, "CategoryItemIID", selectedCategoryItem.IID);
                 await LoadRecipeItems();
             }
         }

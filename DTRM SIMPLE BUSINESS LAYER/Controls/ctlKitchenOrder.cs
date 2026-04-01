@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using PosLibrary;
 
@@ -14,12 +15,16 @@ using POSWinFormLayer;
 namespace DTRMNS {
     public partial class ctlKitchenOrder : UserControl {
         PosConfig config;
+        IRepository<Debug> repoDebug;
+        IRepository<Order> repoOrder;
+
+
         public DTRMSimpleBusiness bslayer;
         public KitchenOrder korder;
         public bool blnWaiting;
         public double singleResponseTime = 0;
         public double totalSeconds;
-        public List<Distribution> terminalTypeList;
+        public Distribution distribution;
         public bool blnDisplayDetails;
 
         public bool blnBeingAltered;
@@ -39,17 +44,24 @@ namespace DTRMNS {
         }
 
 
-        public ctlKitchenOrder(PosConfig configAsService,DTRMSimpleBusiness bslayer) {
+        public ctlKitchenOrder(PosConfig configAsService,IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             config = configAsService;
+            repoDebug = _repoDebug;
+            repoOrder = _repoOrder;
+
             this.bslayer = bslayer;
 
         }
-        public ctlKitchenOrder(KitchenOrder korder, List<Distribution> terminalTypeList, bool blnWaiting,bool blnDisplayDetails) {
+        public ctlKitchenOrder(PosConfig configAsService, IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug, KitchenOrder korder, Distribution _distribution, bool blnWaiting,bool blnDisplayDetails) {
             InitializeComponent();
+            config = configAsService;
+            repoDebug = _repoDebug;
+            repoOrder = _repoOrder;
+
             this.korder = korder;
             this.Name = korder.IID;
-            this.terminalTypeList = terminalTypeList;
+            distribution = _distribution;
             this.blnWaiting = blnWaiting;
             this.blnDisplayDetails = blnDisplayDetails;
             pBar.Maximum = config.Kitchen_Prep_Bad_Time;
@@ -65,15 +77,15 @@ namespace DTRMNS {
         }
         
 
-        private void CtlKitchenOrder_Load(object sender, EventArgs e) {
+        private async void CtlKitchenOrder_Load(object sender, EventArgs e) {
             if (bslayer != null && korder != null)
-                LoadKitchenOrder();
+                await LoadKitchenOrder();
         }
 
-        public void Reload(KitchenOrder korder) {
+        public async void Reload(KitchenOrder korder) {
             this.korder = korder;
             Reset();
-            LoadKitchenOrder();
+          await  LoadKitchenOrder();
         }
 
         public void PnlMainSetAutoSize(bool blnWhat) {
@@ -136,7 +148,7 @@ namespace DTRMNS {
                 }
                 
 
-                korder.ReorderForDistributionList(terminalTypeList, false);
+                //korder.ReorderForDistributionList(terminalTypeList, false);
                 bool blnExpand = false;
                 for (int i = 0; i < korder.items.Count; i++) {
                     int step = 0;
@@ -155,7 +167,7 @@ namespace DTRMNS {
 
                         step = 3;
 
-                        if (blnWaiting && (terminalTypeList.Find(x => x.IID == koi.DistributionIID) != null) && koi.Status == KitchenOrderStatusTypes.Waiting)
+                        if (blnWaiting && (distribution.IID == koi.DistributionIID)  && koi.Status == KitchenOrderStatusTypes.Waiting)
                             ctlkoi.ActiveLabel.Font = mainFont;
                         else {
                             ctlkoi.ActiveLabel.Font = subFont;
@@ -176,7 +188,7 @@ namespace DTRMNS {
                             pnlButtons.Height = 0;
                             step = 6;
                         } else {
-                            if (blnDisplayDetails && (terminalTypeList.Find(x => x.IID == koi.DistributionIID) != null)) {
+                            if (blnDisplayDetails && (distribution.IID == koi.DistributionIID)) {
                                 GenericImage prepImage =await bslayer.GetEntityButtonPrepImage(koi.EntityButtonIID);
                                 if (prepImage != null) {
                                     ctlkoi.PBox.Visible = true;
@@ -214,14 +226,14 @@ namespace DTRMNS {
                         step = 13;
                                                 
                     } catch (Exception ex) {
-                        bslayer.SaveDebug("ctlKitchenOrder step value lien 205 : " + step.ToString());
-                        bslayer.SaveDebug("ctlKitchenOrder LoadKitchenOrder 1 " + ex.Message + " ===Stack Trace =" + ex.StackTrace);
+                        await repoDebug.Save(new Debug() { Data = "ctlKitchenOrder step value lien 205 : " + step.ToString() });
+                        await repoDebug.Save(new Debug() { Data = "ctlKitchenOrder LoadKitchenOrder 1 " + ex.Message + " ===Stack Trace =" + ex.StackTrace });
                     }               
                 
                 }
 
             } catch (Exception ex) {
-                bslayer.SaveDebug("ctlKitchenOrder  LoadKitchenOrder 2 " + ex.Message);
+               await repoDebug.Save(new Debug() { Data = "ctlKitchenOrder  LoadKitchenOrder 2 " + ex.Message });
             }
 
           //  ResumeLayout();
@@ -236,7 +248,7 @@ namespace DTRMNS {
             Reload(korder);
         }
 
-        public void Reset() {
+        public async void Reset() {
             try {
                 pnlMain.Controls.Clear();
                 pnlColor.BackColor = Color.Black;
@@ -246,7 +258,7 @@ namespace DTRMNS {
                 totalSeconds = 0;
                 singleResponseTime = 0;
             } catch (Exception ex) {
-                bslayer.SaveDebug("ctlKitchenOrder Reset " + ex.Message);
+                await repoDebug.Save(new Debug() { Data = "ctlKitchenOrder Reset " + ex.Message });
             }
         }
 
@@ -271,8 +283,8 @@ namespace DTRMNS {
             if (config.DebugMode) 
                 bslayer.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
-            korder.CompletedDateTime = DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
-            POSLayer.Models.Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
+            korder.CompletedDateTime = DateTime.Now; // DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
+            Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
@@ -281,16 +293,16 @@ namespace DTRMNS {
 
             } else {
                 foreach (KitchenOrderItem item in korder.items) {
-                    if (blnWaiting && (terminalTypeList.Find(x => x.IID == item.DistributionIID) != null) && item.Status == KitchenOrderStatusTypes.Waiting) {
+                    if (blnWaiting && (distribution.IID == item.DistributionIID)  && item.Status == KitchenOrderStatusTypes.Waiting) {
 
-                        POSLayer.Models.OrderItem oitem = relatedOrder.items.Find(x => x.EntityButtonIID == item.EntityButtonIID);
+                        OrderItem oitem = relatedOrder.items.Find(x => x.EntityButtonIID == item.EntityButtonIID);
                         if (oitem != null)
                             oitem.CompletedQuantity += item.Quantity;
                         item.Status = KitchenOrderStatusTypes.Completed;
                     }                    
                 }
 
-                bslayer.SaveOrder(relatedOrder);
+                await repoOrder.Save(relatedOrder);
                 if (config.DebugMode) 
                     bslayer.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
 

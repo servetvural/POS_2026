@@ -2,7 +2,7 @@
 
 namespace POSLayer.Models;
 
-public partial class Recipe : BaseClass
+public partial class RecipeItem : BaseClass
 {
     public string? StockItemIID { get; set; }
     public StockItem? StockItem { get; set; }
@@ -21,9 +21,9 @@ public partial class Recipe : BaseClass
 
 
 
-    public Recipe Duplicate()
+    public RecipeItem Duplicate()
     {
-          return new Recipe()
+          return new RecipeItem()
           {
               StockItemIID = StockItemIID,
               CategoryItemIID = CategoryItemIID,

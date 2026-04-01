@@ -34,6 +34,7 @@ namespace DTRMSimpleBackOffice
         IRepository<Employee> repoEmployee;
         IRepository<Supplier> repoSupplier;
         IRepository<StockItem> repoStockItem;
+        IRepository<RecipeItem> repoRecipe; 
         IRepository<Bonus> repoBonus;
 
         private DTRMSimpleBusiness bslayer;
@@ -47,8 +48,8 @@ namespace DTRMSimpleBackOffice
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
-                   IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus,
-            DTRMSimpleBusiness bslayer)
+                   IRepository<StockItem> _repoStockItem,  IRepository<Bonus> _repoBonus,
+            DTRMSimpleBusiness bslayer, IRepository<RecipeItem> repoRecipe)
         {
             InitializeComponent();
             config = configAsService;
@@ -61,6 +62,7 @@ namespace DTRMSimpleBackOffice
             repoSupplier = _repoSupplier;
             repoStockItem = _repoStockItem;
             repoBonus = _repoBonus;
+            this.repoRecipe = repoRecipe;
         }
         private async void FrmMenuEditor_Load(object sender, EventArgs e)
         {
@@ -70,7 +72,7 @@ namespace DTRMSimpleBackOffice
         #region MENU FUNCTIONS
         private async Task LoadMenuList()
         {
-            BindingList<TheMenu> menuList = new BindingList<TheMenu>(await repoMenu.GetAllAsync("categories, categories.Distribution"));
+            BindingList<TheMenu> menuList = new BindingList<TheMenu>(await repoMenu.GetAllAsync("categories, categories.Distribution, categories.Items, categories.Items.Distribution"));
 
             foreach (var menu in menuList)
             {
@@ -165,17 +167,17 @@ namespace DTRMSimpleBackOffice
         {
             POSLayerBackup backup = new POSLayerBackup()
             {
-                menus = await bslayer.GetAllMenuList(),
-                printers = await bslayer.GetAllPrinters(),
-                employees = await bslayer.GetAllEmployeeList(),
-                suppliers = await bslayer.GetAllSuppliersAsList(),
-                stockItems = await bslayer.GetAllStockItemsList(),
-                stockItemLookups = await bslayer.GetAllEntityButtonStockItemLookUps(),
-                bonuslist = await bslayer.GetAllBonusList()
+                menus = await repoMenu.GetAllAsync(),
+                printers = await repoPrinter.GetAllAsync(),
+                employees = await repoEmployee.GetAllAsync(),
+                suppliers = await repoSupplier.GetAllAsync(),
+                stockItems = await repoStockItem.GetAllAsync(),
+                recipes = await repoRecipe.GetAllAsync(),
+                bonuslist = await repoBonus.GetAllAsync()     
+                
                 //Get Generic Images 
                 // backup.genericImages = bslayer.GetImageLibraryList();
             };
-
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";

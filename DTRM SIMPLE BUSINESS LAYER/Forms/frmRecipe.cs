@@ -11,17 +11,17 @@ namespace DTRMNS
 {
     public partial class frmRecipe : Form
     {
-        IRepository<Recipe> repoRecipe;
+        IRepository<RecipeItem> repoRecipe;
         IRepository<StockItem> repoStockItem;
         IRepository<CategoryItem> repoCategoryItem;
 
-        public Recipe recipe;
+        public RecipeItem recipe;
 
         public frmRecipe()
         {
             InitializeComponent();
         }
-        public frmRecipe(IRepository<Recipe> _repoRecipe, IRepository<StockItem> _repoStockItem,
+        public frmRecipe(IRepository<RecipeItem> _repoRecipe, IRepository<StockItem> _repoStockItem,
             IRepository<CategoryItem> _repoCategoryItem, CategoryItem _categoryItem, int Order =100)
         {
             InitializeComponent();
@@ -29,14 +29,14 @@ namespace DTRMNS
             repoStockItem = _repoStockItem;
             repoCategoryItem = _repoCategoryItem;
 
-            recipe = new Recipe()
+            recipe = new RecipeItem()
             {
                 CategoryItem = _categoryItem,
                 CategoryItemIID = _categoryItem.IID   ,
                 DOrder = Order
             };
         }
-        public frmRecipe(IRepository<Recipe> _repoRecipe, IRepository<StockItem> _repoStockItem,
+        public frmRecipe(IRepository<RecipeItem> _repoRecipe, IRepository<StockItem> _repoStockItem,
            IRepository<CategoryItem> _repoCategoryItem, StockItem _stockItem, int Order = 100)
         {
             InitializeComponent();
@@ -44,15 +44,15 @@ namespace DTRMNS
             repoStockItem = _repoStockItem;
             repoCategoryItem = _repoCategoryItem;
 
-            recipe = new Recipe()
+            recipe = new RecipeItem()
             {
                 StockItem = _stockItem,
                 StockItemIID = _stockItem.IID,
                 DOrder = Order
             };
         }
-        public frmRecipe(IRepository<Recipe> _repoRecipe, IRepository<StockItem> _repoStockItem,
-            IRepository<CategoryItem> _repoCategoryItem,  Recipe _recipe, int Order = 100)
+        public frmRecipe(IRepository<RecipeItem> _repoRecipe, IRepository<StockItem> _repoStockItem,
+            IRepository<CategoryItem> _repoCategoryItem,  RecipeItem _recipe, int Order = 100)
         {
             InitializeComponent();
             repoRecipe = _repoRecipe;

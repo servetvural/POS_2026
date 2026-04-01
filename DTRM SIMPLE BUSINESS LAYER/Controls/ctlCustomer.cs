@@ -5,26 +5,32 @@ using System.Windows.Forms;
 using PosLibrary;
 
 using POSLayer.Library;
+using POSLayer.Repository.IRepository;
+using POSLayer.Models;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace DTRMNS {
     /// <summary>
     /// Summary description for ctlCustomer.
     /// </summary>
-    public class ctlCustomer : System.Windows.Forms.UserControl {
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label10;
+    public class ctlCustomer : UserControl {
+        IRepository<Customer> repoCustomer;
 
-        private DTRMNS.DTRMSimpleBusiness bslayer;
+        private Label label7;
+        private Label label10;
+
+        private DTRMSimpleBusiness bslayer;
         private Button btnAddCustomerToDatabase;
 
 
         private string CustomerIID;
-        public System.Windows.Forms.TextBox txtName;
-        public System.Windows.Forms.TextBox txtPostCode1;
-        public System.Windows.Forms.TextBox txtAddress;
-        public System.Windows.Forms.TextBox txtTown;
-        public System.Windows.Forms.TextBox txtEmail;
-        public System.Windows.Forms.TextBox txtTel;
+        public TextBox txtName;
+        public TextBox txtPostCode1;
+        public TextBox txtAddress;
+        public TextBox txtTown;
+        public TextBox txtEmail;
+        public TextBox txtTel;
 
         public bool Success;
 
@@ -38,9 +44,9 @@ namespace DTRMNS {
         private bool blnArchive;
         private bool blnPrintLocal;
         private bool blnEnforceDeliveryArchive;
-        public System.Windows.Forms.TextBox txtPostCode2;
+        public TextBox txtPostCode2;
         private Label label3;
-        private System.Windows.Forms.DataGridView dgv;
+        private DataGridView dgv;
         private BindingSource customerBindingSource;
         private Button btnSelect;
         private Panel pnlTop;
@@ -63,10 +69,12 @@ namespace DTRMNS {
             InitializeComponent();
         }
 
-        public ctlCustomer(DTRMNS.DTRMSimpleBusiness bs, GenericFunctionCall CloseFunction,
+        public ctlCustomer(IRepository<Customer> _repoCustomer, DTRMSimpleBusiness bs, GenericFunctionCall CloseFunction,
          RemoteCompleteAttachedOrder CompleteAttachedOrder,
          int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive) {
             InitializeComponent();
+            repoCustomer = _repoCustomer;
+
             bslayer = bs;
             this.CloseFunction = CloseFunction;
             this.CompleteAttachedOrder = CompleteAttachedOrder;
@@ -606,28 +614,28 @@ namespace DTRMNS {
             if (txtTel.Text.Trim().Length > 3)
                 ReloadSearch("Phone");
         }
-        private void ReloadSearch(string SearchType) {
+        private async Task ReloadSearch(string SearchType) {
             switch (SearchType) {
                 case "Name":
-                    dgv.DataSource = bslayer.SearchCustomersByName(txtName.Text.Trim().Replace("'", "''"));
+                    dgv.DataSource = await repoCustomer.GetByField("CName",txtName.Text.Trim().Replace("'", "''"));
                     break;
                 case "Address":
-                    dgv.DataSource = bslayer.SearchCustomersByAddress(txtAddress.Text.Trim().Replace("'", "''"));
+                    dgv.DataSource = await repoCustomer.GetByField("Address",txtAddress.Text.Trim().Replace("'", "''"));
                     break;
                 case "Phone":
-                    dgv.DataSource = bslayer.SearchCustomersByTel(txtTel.Text.Trim().Replace("'", "''"));
+                    dgv.DataSource = await repoCustomer.GetByField("Tel",txtTel.Text.Trim().Replace("'", "''"));
                     break;
                 case "PostCode":
-                    dgv.DataSource = bslayer.SearchCustomersByPostCode(txtPostCode1.Text.Trim().Replace("'", "''"));
+                    dgv.DataSource = await repoCustomer.GetByField("Postcode",txtPostCode1.Text.Trim().Replace("'", "''"));
                     break;
                 case "Email":
-                    dgv.DataSource = bslayer.SearchCustomersByEmail(txtEmail.Text.Trim().Replace("'", "''"));
+                    dgv.DataSource = await repoCustomer.GetByField("Email",txtEmail.Text.Trim().Replace("'", "''"));
                     break;
                 default:
                     break;
             }
         }
-        private void btnUpdateCustomer_Click(object sender, System.EventArgs e) {
+        private async void btnUpdateCustomer_Click(object sender, System.EventArgs e) {
             if (txtName.Text.Trim().Length == 0 || txtTel.Text.Trim().Length == 0) {
                 MessageBox.Show("Name and Tel fields are compulsory !");
                 return;
@@ -643,7 +651,7 @@ namespace DTRMNS {
             this.bslayer.AttachedOrder.Customer.Tel = txtTel.Text;
             this.bslayer.AttachedOrder.Customer.Email = txtEmail.Text;
 
-            if (bslayer.SaveCustomer(bslayer.AttachedOrder.Customer)) {
+            if (await repoCustomer.Save(bslayer.AttachedOrder.Customer) != null) {
                 Success = true;
                 CloseFunction();
                 if (CompleteAttachedOrder != null)
@@ -712,10 +720,10 @@ namespace DTRMNS {
             }
         }          
 
-        private void btnDeleteCustomerFromDatabase_Click(object sender, EventArgs e) {
+        private async void btnDeleteCustomerFromDatabase_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 string DeleteCustomerIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                bslayer.DeleteCustomer(DeleteCustomerIID);
+                await repoCustomer.Delete(DeleteCustomerIID);
                 btnGetByPhone_Click(null, null);
             }
         }

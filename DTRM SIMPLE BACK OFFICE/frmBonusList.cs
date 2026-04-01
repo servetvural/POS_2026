@@ -10,56 +10,47 @@ using Newtonsoft.Json;
 using POSLayer.Models;
 using System.Threading.Tasks;
 using POSLayer.Library;
+using POSLayer.Repository.IRepository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmBonusList : Form {
+        IRepository<Bonus> repoBonus;
 
-        DTRMSimpleBusiness bslayer;
         public frmBonusList() {
             InitializeComponent();
         }
-        public frmBonusList(DTRMSimpleBusiness bslayer) {
+        public frmBonusList(IRepository<Bonus> _repoBonus ) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoBonus = _repoBonus;
         }
 
         private void frmBonusList_Load(object sender, EventArgs e) {
             LoadBonusList();
         }
         private async void LoadBonusList () {
-            //DataTable dt = bslayer.GetAllBonus();
-
-            //for (int i = 0; i < dt.Rows.Count; i++) {
-            //    int daysInteger = int.Parse(dt.Rows[i]["DaysAvailable"].ToString());
-
-            //    dt.Rows[i]["DaysAvailableAsString"] = UF.GetBonusDaysAsString(daysInteger);
-            //}
-            //((DataGridViewTextBoxColumn)dgv.Columns[columnName: "colDaysAvailableAsString"]).DataPropertyName = "DaysAvailableAsString";
-            //dgv.DataSource = dt;
-
-           dgv.DataSource =await bslayer.GetAllBonusList();
-
+            dgv.DataSource = await repoBonus.GetAllAsync();
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            frmBonus frm = new frmBonus(bslayer, new Bonus());
+            frmBonus frm = ActivatorUtilities.CreateInstance<frmBonus>(ServiceHelper.Services, new Bonus());
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadBonusList();
         }
 
         private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
-                Bonus bonus = await bslayer.GetBonus(dgv.SelectedRows[0].Cells[0].Value.ToString());
-                frmBonus frm = new frmBonus(bslayer, bonus);
+                Bonus bonus = dgv.SelectedRows[0].DataBoundItem as Bonus;
+                frmBonus frm = ActivatorUtilities.CreateInstance< frmBonus>(ServiceHelper.Services, bonus);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadBonusList();
             }
         }
 
-        private void btnDelete_Click(object sender, EventArgs e) {
+        private async void btnDelete_Click(object sender, EventArgs e) {
             if (MessageBox.Show("This will delete Bonus Plan", "Delete Bonus Plan", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button3) == DialogResult.Yes) {
                 if (dgv.SelectedRows.Count > 0) {
-                    bslayer.DeleteBonus(dgv.SelectedRows[0].Cells[0].Value.ToString());
+                    await repoBonus.Delete(dgv.SelectedRows[0].DataBoundItem as Bonus);
                     LoadBonusList();
                 }
             }
@@ -79,7 +70,7 @@ namespace DTRMSimpleBackOffice {
 
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<Bonus> itemList =await bslayer.GetAllBonusList();
+            List<Bonus> itemList = await repoBonus.GetAllAsync();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -99,7 +90,7 @@ namespace DTRMSimpleBackOffice {
             }              
         }
 
-        private void btnImportFromJson_Click(object sender, EventArgs e)
+        private async void btnImportFromJson_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
@@ -116,7 +107,7 @@ namespace DTRMSimpleBackOffice {
                             List<Bonus> itemList = JsonConvert.DeserializeObject<List<Bonus>>(content);
                             foreach (Bonus item in itemList)
                             {
-                                bslayer.SaveBonus(item);
+                               await repoBonus.Save(item);
                             }
                             MessageBox.Show("Saved Bonus List");
                         } else
