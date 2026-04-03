@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using POSLayer.Context;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 

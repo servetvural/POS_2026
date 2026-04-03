@@ -1,5 +1,5 @@
 ﻿namespace DTRMSimpleBackOffice {
-    partial class frmSingleUser {
+    partial class frmUser {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -140,7 +140,7 @@
             label2.TabIndex = 69;
             label2.Text = "(Numbers Only)";
             // 
-            // frmSingleUser
+            // frmUser
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -156,9 +156,9 @@
             Controls.Add(cmbAccessLevels);
             Controls.Add(label7);
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Name = "frmSingleUser";
+            Name = "frmUser";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "USER";
+            Text = "User Details";
             Load += frmSingleUser_Load;
             ResumeLayout(false);
             PerformLayout();

@@ -1,5 +1,5 @@
 namespace DTRMSimpleBackOffice {
-    partial class frmSinglePrinter {
+    partial class frmPrinterDetails {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -215,7 +215,7 @@ namespace DTRMSimpleBackOffice {
             btnSetThis.UseVisualStyleBackColor = true;
             btnSetThis.Click += btnSetThis_Click;
             // 
-            // frmSinglePrinter
+            // frmPrinterDetails
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -239,10 +239,10 @@ namespace DTRMSimpleBackOffice {
             Controls.Add(btnCancel);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Name = "frmSinglePrinter";
+            Name = "frmPrinterDetails";
             Padding = new System.Windows.Forms.Padding(12);
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "PRINTER EDITOR";
+            Text = "Printer Details";
             Load += frmPrinterEditor_Load;
             ResumeLayout(false);
             PerformLayout();

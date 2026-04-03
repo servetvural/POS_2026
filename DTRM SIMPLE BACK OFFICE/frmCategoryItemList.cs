@@ -38,6 +38,7 @@ namespace DTRMSimpleBackOffice
         IRepository<StockItem> repoStockItem;
         IRepository<Bonus> repoBonus;
         IRepository<RecipeItem> repoRecipe;
+        IRepository<GenericImage> repoImage;
 
         private DTRMSimpleBusiness bslayer;
 
@@ -54,6 +55,7 @@ namespace DTRMSimpleBackOffice
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
                    IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<RecipeItem> _repoRecipe,
+                   IRepository<GenericImage> _repoImage,
             DTRMSimpleBusiness bslayer, Category _category)
         {
             InitializeComponent();
@@ -68,6 +70,7 @@ namespace DTRMSimpleBackOffice
             repoStockItem = _repoStockItem;
             repoBonus = _repoBonus;
             repoRecipe = _repoRecipe;
+            repoImage = _repoImage;
 
             category = _category;
 
@@ -168,7 +171,7 @@ namespace DTRMSimpleBackOffice
 
                 if (selectedCategoryItem.ButtonDisplayStyle == ButtonDisplayStyles.Image || selectedCategoryItem.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
                 {
-                    GenericImage gim = await bslayer.GetGenericImage(selectedCategoryItem.IID);
+                    GenericImage gim = await repoImage.GetByField("ReferenceIID", selectedCategoryItem.IID);
                     if (gim != null && gim.DisplayImage != null)
                     {
                         Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);

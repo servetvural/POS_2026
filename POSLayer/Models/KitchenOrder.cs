@@ -7,6 +7,8 @@ namespace POSLayer.Models;
 
 public partial class KitchenOrder : BaseClass
 {
+    public List<KitchenOrderItem> Items { get; set; }
+
     public string Reference { get; set; } = string.Empty;
     public DateTime CreatedDateTime { get; set; }
     public string OrderIID { get; set; } = null!;
@@ -15,57 +17,57 @@ public partial class KitchenOrder : BaseClass
     public int OrderNo { get; set; }
     public bool BeingModified { get; set; }
     public OrderTypes OrderType { get; set; }
-    public List<KitchenOrderItem> items { get; set; }
+    
 
     public KitchenOrder()
     {
         CreatedDateTime = DateTime.Now;
         CompletedDateTime = DateTime.Now;
-        items = new List<KitchenOrderItem>();
+        Items = new List<KitchenOrderItem>();
     }
     public void ReorderForDistributionIID(string DistributionIID, bool blnAscending)
     {
         List<KitchenOrderItem> theNewList = new List<KitchenOrderItem>();
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
             if (blnAscending)
             {
-                if (items[i].DistributionIID == DistributionIID)
-                    theNewList.Insert(0, items[i]);
+                if (Items[i].DistributionIID == DistributionIID)
+                    theNewList.Insert(0, Items[i]);
                 else
-                    theNewList.Add(items[i]);
+                    theNewList.Add(Items[i]);
             } else
             {
-                if (items[i].DistributionIID != DistributionIID)
-                    theNewList.Insert(0, items[i]);
+                if (Items[i].DistributionIID != DistributionIID)
+                    theNewList.Insert(0, Items[i]);
                 else
-                    theNewList.Add(items[i]);
+                    theNewList.Add(Items[i]);
             }
         }
-        items = theNewList;
+        Items = theNewList;
     }
 
     public void ReorderForDistributionList(List<Distribution> distributionList, bool blnAscending)
     {
         List<KitchenOrderItem> theNewList = new List<KitchenOrderItem>();
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
             if (blnAscending)
             {
 
-                if (distributionList.Find(x => x.IID == items[i].DistributionIID) != null)
-                    theNewList.Insert(0, items[i]);
+                if (distributionList.Find(x => x.IID == Items[i].DistributionIID) != null)
+                    theNewList.Insert(0, Items[i]);
                 else
-                    theNewList.Add(items[i]);
+                    theNewList.Add(Items[i]);
             } else
             {
-                if (distributionList.Find(x => x.IID == items[i].DistributionIID) == null)
-                    theNewList.Insert(0, items[i]);
+                if (distributionList.Find(x => x.IID == Items[i].DistributionIID) == null)
+                    theNewList.Insert(0, Items[i]);
                 else
-                    theNewList.Add(items[i]);
+                    theNewList.Add(Items[i]);
             }
         }
-        items = theNewList;
+        Items = theNewList;
     }
 
     public KitchenOrderStatusTypes GetStatus()
@@ -73,11 +75,11 @@ public partial class KitchenOrder : BaseClass
         bool blnCompleted = false;
         bool blnWaiting = false;
 
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
-            if (items[i].Status == KitchenOrderStatusTypes.Completed)
+            if (Items[i].Status == KitchenOrderStatusTypes.Completed)
                 blnCompleted = true;
-            if (items[i].Status == KitchenOrderStatusTypes.Waiting)
+            if (Items[i].Status == KitchenOrderStatusTypes.Waiting)
                 blnWaiting = true;
         }
         if (blnWaiting && blnCompleted)
@@ -92,9 +94,9 @@ public partial class KitchenOrder : BaseClass
     }
     public bool IsAllItemsWaiting()
     {
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
-            if (items[i].Status != KitchenOrderStatusTypes.Waiting)
+            if (Items[i].Status != KitchenOrderStatusTypes.Waiting)
                 return false;
         }
         return true;
@@ -102,14 +104,14 @@ public partial class KitchenOrder : BaseClass
     }
     public bool HasWaitingItem(Distribution _distribution)
     {
-        if (items.Any(x => x.DistributionIID == _distribution.IID && x.Status == KitchenOrderStatusTypes.Waiting))
+        if (Items.Any(x => x.DistributionIID == _distribution.IID && x.Status == KitchenOrderStatusTypes.Waiting))
             return true;
         else
             return false;
     }
     public bool IsRelative(string DistributionIID)
     {
-        return items.Find(x => x.DistributionIID == DistributionIID) != null;
+        return Items.Find(x => x.DistributionIID == DistributionIID) != null;
     }
 
     public bool IsRelative(List<Distribution> thelist)
@@ -124,10 +126,10 @@ public partial class KitchenOrder : BaseClass
     public List<string> GetDistributionIIDList()
     {
         List<string> theList = new List<string>();
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
-            if (theList.Find(x => x == items[i].DistributionIID) == null)
-                theList.Add(items[i].DistributionIID);
+            if (theList.Find(x => x == Items[i].DistributionIID) == null)
+                theList.Add(Items[i].DistributionIID);
         }
         return theList;
     }

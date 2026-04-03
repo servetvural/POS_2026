@@ -8,13 +8,9 @@ using System.IO.Ports;
 using System.Data;
 using System.Globalization;
 using PosLibrary;
-using PosLibrary.DBSpace;
 using System.Net.Mail;
 using System.Drawing.Printing;
-using Microsoft.Data.SqlClient;
 using System.Linq;
-using System.Text.Json;
-using Microsoft.AspNetCore.DataProtection.Repositories;
 using POSLayer.Repository.IRepository;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -27,41 +23,21 @@ namespace DTRMNS
 {
     public class DTRMSimpleBusiness
     {
-        public bool DBConnectionSuccessful { get; set; }
-        public string DBConnectionError { get; set; }
+        private PosConfig config { get; set; }
+        public Shop shop { get; set; }
+        public User LoggedUser { get; set; }
+        public Order AttachedOrder { get; set; }
+        public TheMenu ActiveMenu { get; set; }
+        public string ReportLockClientIP { get; set; }
+        public ConnectionStatus OfficeConnectionStatus { get; set; } = ConnectionStatus.Disconnected;
+        public string SelectedOrderItemIID { get; set; }
+        public Bitmap imgReportSnapShot { get; set; }
+        public string ApplicationVersion { get; set; } = "10.0.0.0";
+        public string StepableOrderItemGroupIID { get; set; } = "";
+        public int maxHeight { get; set; }
+        public Bonus currentBonusScheme { get; set; }
+        private CultureInfo ci { get; set; }
 
-
-        private PosConfig config;
-
-        public Shop shop;
-        public User LoggedUser;
-        public Order AttachedOrder;
-        public TheMenu ActiveMenu;
-
-        public bool blnReportLockOn;
-        public string ReportLockClientIP;
-        public ConnectionStatus OfficeConnectionStatus = ConnectionStatus.Disconnected;
-        public string SelectedOrderItemIID;
-
-        public int ArchiveProgress;
-        public int SessionLoadProgress;
-
-        [System.Xml.Serialization.XmlIgnore]
-        public Bitmap imgReportSnapShot;
-
-        public string ApplicationVersion = "5.0.0.192";
-        public int RequiredMdfFileVersion = 1016;
-
-        public string StepableOrderItemGroupIID = "";
-
-        public int maxHeight;
-
-        public Bonus currentBonusScheme;
-
-        private CultureInfo ci;
-
-
-        private string connectionString { get; set; }
 
         public event GenericFunctionCall OrderLoaded;
         public void OnOrderLoaded()
@@ -74,7 +50,6 @@ namespace DTRMNS
         {
             OrderUnloaded?.Invoke();
         }
-
 
         public event GenericFunctionCall DisplayOrder;
         public void OnDisplayOrder()
@@ -106,14 +81,14 @@ namespace DTRMNS
         IRepository<CategoryItem> repoCategoryItem;
         IRepository<Distribution> repoDistribution;
         IRepository<Printer> repoPrinter;
+        IRepository<DistributionPrinter> repoDistributionPrinter;
         IRepository<Order> repoOrder;
         IRepository<OrderItem> repoOrderItem;
         IRepository<Customer> repoCustomer;
         IRepository<Bonus> repoBonus;
         IRepository<KitchenOrder> repoKitchenOrder;
         IRepository<KitchenOrderItem> repoKitchenOrderItem;
-        IRepository<Table> repoTable;
-        IRepository<TableGroup> repoTableGroup;
+        IRepository<Table> repoTable;           
         IRepository<XOrder> repoXOrder;
         IRepository<XOrderItem> repoXOrderItem;
         IRepository<Supplier> repoSupplier;
@@ -129,15 +104,15 @@ namespace DTRMNS
             IRepository<TheMenu> _repoMenu,
             IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
-            IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter,
+            IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter, IRepository<DistributionPrinter> _repoDistributionPrinter,
             IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
             IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
-              IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
-               IRepository<Table> _repoTable, IRepository<TableGroup> _repoTableGroup,
-               IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
-               IRepository<Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
-               IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
-               IRepository<GenericImage> _repoImage)
+            IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
+            IRepository<Table> _repoTable, 
+            IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
+            IRepository<Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
+            IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
+            IRepository<GenericImage> _repoImage)
         {
             sp = _sp;
 
@@ -152,6 +127,7 @@ namespace DTRMNS
             repoCategoryItem = _repoCategoryItem;
             repoDistribution = _repoDistribution;
             repoPrinter = _repoPrinter;
+            repoDistributionPrinter = _repoDistributionPrinter;
             repoOrder = _repoOrder;
             repoOrderItem = _repoOrderItem;
             repoCustomer = _repoCustomer;
@@ -159,7 +135,6 @@ namespace DTRMNS
             repoKitchenOrder = _repoKitchenOrder;
             repoKitchenOrderItem = _repoKitchenOrderItem;
             repoTable = _repoTable;
-            repoTableGroup = _repoTableGroup;
             repoXOrder = _repoXOrder;
             repoXOrderItem = _repoXOrderItem;
             repoSupplier = _repoSupplier;
@@ -209,8 +184,8 @@ namespace DTRMNS
             ReportLockClientIP = "";
 
             if (ActiveMenu == null)
-                GetActiveMenu(false, true);
-            EnsureSessionData(); //Load SessionData from database
+                await GetActiveMenu(false, true);
+            await EnsureSession();
 
             string appPath = AppDomain.CurrentDomain.BaseDirectory;
             string sessionDirectoryPath = Path.Combine(appPath, "Sessions");
@@ -229,9 +204,9 @@ namespace DTRMNS
         {
             TheMenu fm = ActiveMenu;
             OrderItem oi;
-            for (int i = 0; i < order.items.Count; i++)
+            for (int i = 0; i < order.Items.Count; i++)
             {
-                oi = (OrderItem)order.items[i];
+                oi = (OrderItem)order.Items[i];
                 oi.Price = fm.GetItemPrice(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
@@ -241,9 +216,9 @@ namespace DTRMNS
         {
             TheMenu fm = ActiveMenu;
             OrderItem oi;
-            for (int i = 0; i < order.items.Count; i++)
+            for (int i = 0; i < order.Items.Count; i++)
             {
-                oi = (OrderItem)order.items[i];
+                oi = (OrderItem)order.Items[i];
                 oi.TaxPercent = fm.GetItemTaxRate(oi.EntityIID, oi.EntityButtonIID, orderType);
 
             }
@@ -275,14 +250,7 @@ namespace DTRMNS
                 return dt;
             } catch (Exception ex)
             {
-
-                DataTable dt = new DataTable();
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    SqlDataAdapter adapter = new SqlDataAdapter(sql, conn);
-                    adapter.Fill(dt); // Fills the table in one go
-                    return dt;
-                }
+                return null;
             } finally
             {
                 string str = "";
@@ -387,11 +355,6 @@ namespace DTRMNS
             return await repoCategory.Get(EntityIID);
         }
 
-        public async Task<List<Category>> GetAllEntities(string MenuIID)
-        {
-            return await repoCategory.GetListByField("MenuIID", MenuIID); 
-        }
-
         public double GetEBTaxPercent(CategoryItem eb)
         {
             if (AttachedOrder == null)
@@ -453,28 +416,15 @@ namespace DTRMNS
             return GetDataTable("GetTableGroups");
         }
 
-        public async Task<TableGroup> GetTableGroup(string IID)
-        {
-            return await repoTableGroup.Get(IID);
-            // return new TableGroup(GetDataTable("GetTableGroup '" + IID + "'"));
-        }
-
         public async Task<List<Table>> GetTableList(string GroupIID)
         {
             return await repoTable.GetListByField("GroupIID", GroupIID);
-            //List<Table> TableList = new List<Table>();
-            //DataTable dt = GetDataTable("GetTablesByGroup '" + GroupIID + "'");
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    TableList.Add(new Table(dt.Rows[i]));
-            //return TableList;
         }
 
         public async Task<bool> IsPrimaryTable(string TableIID)
         {
-            Table table = await GetTable(TableIID);
-            if (table == null)
-                return false;
-            return table.isPrimary;
+            return await repoTable.GetByField("IID", TableIID) is Table table && table.isPrimary;
+            
         }
         public async Task<bool> HasSubTables(string TableIID)
         {
@@ -497,10 +447,7 @@ namespace DTRMNS
                     return table;
                 } else
                 {
-                    Table subTable = await repoTable.GetDBContext().Tables.Where(x => x.ParentTableIID == TableIID).FirstOrDefaultAsync();
-
-                    //DataTable dt = GetDataTable("Select * from Tables where ParentTableIID = '" + TableIID +
-                    //                               "' order by DisplayOrder asc");
+                    Table subTable = await repoTable.GetByField("ParentTableIID", TableIID);
                     if (blnWithOrder)
                         return await BarrowTable(subTable.IID);
                     else
@@ -546,12 +493,12 @@ namespace DTRMNS
             return mainTable.TableName + "error";
         }
 
-        public void GetRidOfBlankTemporaryTablesForThisTerminalWithNoOrders()
+        public async Task GetRidOfBlankTemporaryTablesForThisTerminalWithNoOrders()
         {
             string sql = "Delete from Tables where TableType = '" + (int)TableTypes.TemporaryTable +
                          "' and CurrentOrderIID ='' and (LockedClientIP = '' or LockedClientIP = '" +
                          config.Terminal_Name + "')";
-            RunQuery(sql);
+            await RunQuery(sql);
         }
 
         public async Task<bool> AddSubTableWithTest(string rootTableIID)
@@ -584,23 +531,7 @@ namespace DTRMNS
         public async Task<List<Table>> GetTableAndSubTables(string TableIID)
         {
             return await repoTable.GetDBContext().Tables.Where(x => x.IID == TableIID || x.ParentTableIID == TableIID).ToListAsync();
-            //Table table = await GetTable(TableIID);
-            //if (table.TableType == TableTypes.TemporaryTable)
-            //    TableIID = table.ParentTableIID;
-
-            ////GetTableAndSubTables
-            //List<Table> TableList = new List<Table>();
-            //DataTable dt = GetDataTable("GetTableAndSubTables '" + TableIID + "'");
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    TableList.Add(new Table(dt.Rows[i]));
-            //return TableList;
         }
-
-        //public DataTable GetAllTables()
-        //{
-        //    return GetDataTable("GetAllTables");
-        //}
-
 
         public async Task<Table> BarrowTable(string TableIID)
         {
@@ -620,13 +551,12 @@ namespace DTRMNS
                         //set table ClientIP(busy), set table OrderIID(occupied) , set order tableIID, set order ClientIP (busy), 
                         Order order = await GetOrder(table.CurrentOrderIID);
                         order.TableIID = table.IID;
-                        order.TableName = table.TableName;
                         order.LockedClientIP = config.Terminal_Name;
                         order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
                         table.CurrentOrderIID = order.IID;
                         table.LockedClientIP = config.Terminal_Name;
-                        SaveOrder(order);
-                        SaveTable(table);
+                        await repoOrder.Save(order);
+                        await repoTable.Save(table);
                         table.AttachedOrder = order;
                         return table; //return table
                     } else
@@ -636,14 +566,13 @@ namespace DTRMNS
                         {
                             //order.customer = new Customer();
                             TableIID = table.IID,
-                            TableName = table.TableName,
                             LockedClientIP = config.Terminal_Name
                         };
                         order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
                         table.CurrentOrderIID = order.IID;
                         table.LockedClientIP = config.Terminal_Name;
-                        SaveOrder(order);
-                        SaveTable(table);
+                        await repoOrder.Save(order);
+                        await repoTable.Save(table);
                         //retun table
                         table.AttachedOrder = order;
                         return table;
@@ -656,7 +585,7 @@ namespace DTRMNS
         }
 
         ///Used to return an inhouse order
-        public void ReturnTable(Table table)
+        public async Task ReturnTable(Table table)
         {
 
             if (table.AttachedOrder == null)
@@ -664,7 +593,7 @@ namespace DTRMNS
                 table.LockedClientIP = "";
                 table.CurrentOrderIID = "";
                 table.TableCovers = 1;
-                SaveTable(table);
+                await repoTable.Save(table);
                 return;
             }
             if ((int)table.AttachedOrder.Status >= (int)StatusFlags.COMPLETED)
@@ -673,45 +602,44 @@ namespace DTRMNS
                 if (table.TableType == TableTypes.TemporaryTable)
                 {
                     //Delete table
-                    DeleteTable(table.IID);
+                    await DeleteTable(table.IID);
                 } else
                 {
                     //unbusy table, delete order details from table
                     table.LockedClientIP = "";
                     table.CurrentOrderIID = "";
                     table.TableCovers = 1;
-                    SaveTable(table);
+                    await repoTable.Save(table);
                 }
                 //delete table details from order	
                 table.AttachedOrder.TableIID = "";
             } else
             {
-                if (table.AttachedOrder.items.Count > 0)
+                if (table.AttachedOrder.Items.Count > 0)
                 {
                     //Order still active and has items so unbusy table, save table
                     table.LockedClientIP = "";
-                    SaveTable(table);
+                    await repoTable.Save(table);
 
                     //unbusy order, save order
                     table.AttachedOrder.LockedClientIP = "";
-                    SaveOrder(table.AttachedOrder);
+                    await repoOrder.Save(table.AttachedOrder);
                 } else
                 {
                     //Temporary tables should be deleted, Order should be set free
                     if (table.TableType == TableTypes.TemporaryTable)
                     {
                         //Delete table
-                        DeleteTable(table.IID);
+                        await repoTable.Delete(table.IID);
                     } else
                     {
                         //unbusy table, delete order details from table
                         table.LockedClientIP = "";
                         table.CurrentOrderIID = "";
                         table.TableCovers = 1;
-                        SaveTable(table);
+                        await repoTable.Save(table);
                     }
-                    DeleteOrderOnly(table.AttachedOrder);
-                    //DeleteOrder(table.AttachedOrder.IID);
+                    await DeleteOrderOnly(table.AttachedOrder);
                 }
             }
         }
@@ -728,49 +656,48 @@ namespace DTRMNS
                 if (table.TableType == TableTypes.TemporaryTable)
                 {
                     //Delete table
-                    DeleteTable(table.IID);
+                    await repoTable.Delete(table.IID);
                 } else
                 {
                     //unbusy table, delete order details from table
                     table.LockedClientIP = "";
                     table.CurrentOrderIID = "";
                     table.TableCovers = 1;
-                    SaveTable(table);
+                    await repoTable.Save(table);
                 }
                 //delete table details from order	
                 order.TableIID = "";
 
                 //unbusy order, save order
                 order.LockedClientIP = "";
-                SaveOrder(order);
+                await repoOrder.Save(order);
             } else
             {
-                if (order.items.Count > 0)
+                if (order.Items.Count > 0)
                 {
                     //Order still active and has items so unbusy table, save table
                     table.LockedClientIP = "";
-                    SaveTable(table);
+                    await repoTable.Save(table);
 
                     //unbusy order, save order
                     order.LockedClientIP = "";
-                    SaveOrder(order);
+                    await repoOrder.Save(order);
                 } else
                 {
                     //Temporary tables should be deleted, Order should be set free
                     if (table.TableType == TableTypes.TemporaryTable)
                     {
                         //Delete table
-                        DeleteTable(table.IID);
+                        await repoTable.Delete(table.IID);
                     } else
                     {
                         //unbusy table, delete order details from table
                         table.LockedClientIP = "";
                         table.CurrentOrderIID = "";
                         table.TableCovers = 1;
-                        SaveTable(table);
+                        await repoTable.Save(table);
                     }
-                    DeleteOrderOnly(order);
-                    //DeleteOrder(order.IID);
+                    await DeleteOrderOnly(order);
                 }
             }
         }
@@ -827,7 +754,6 @@ namespace DTRMNS
             blnTargetEmpty = !targetTable.HasActiveOrder();
 
             Order sourceOrder;
-            //Order targetOrder;
             Table subTargetTable;
 
 
@@ -847,17 +773,17 @@ namespace DTRMNS
                             //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                             targetTable.TableName = sourceTable.TableName;
 
-                            ReturnTable(sourceTable);
-                            ReturnTable(targetTable);
+                            await ReturnTable(sourceTable);
+                            await ReturnTable(targetTable);
 
                             if (blnLeaveSubTables)
                             {
                                 //transfer first sub table to primary table
-                                MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
+                                await MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
                             } else
                             {
                                 //attach subtable to new parent table
-                                SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
+                                await SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
                             }
                             return true;
 
@@ -876,20 +802,19 @@ namespace DTRMNS
                             //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                             subTargetTable.TableName = sourceTable.TableName;
 
-                            ReturnTable(targetTable);
-                            ReturnTable(sourceTable);
-                            ReturnTable(subTargetTable);
+                            await ReturnTable(targetTable);
+                            await ReturnTable(sourceTable);
+                            await ReturnTable(subTargetTable);
                             if (blnLeaveSubTables)
                             {
                                 //transfer first sub table to primary table
-                                MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
+                                await MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
                             } else
                             {
                                 //attach subtable to new parent table
-                                SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
+                                await SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
                             }
                             return true;
-                            //}
                         }
                     } else
                     {
@@ -909,8 +834,8 @@ namespace DTRMNS
                             //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                             targetTable.TableName = sourceTable.TableName;
 
-                            ReturnTable(sourceTable);
-                            ReturnTable(targetTable);
+                            await ReturnTable(sourceTable);
+                            await ReturnTable(targetTable);
                             return true;
                         } else
                         {
@@ -925,13 +850,13 @@ namespace DTRMNS
 
                             //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                             subTargetTable.TableName = sourceTable.TableName;
-                            if (CheckifPrimaryTableNameExist(subTargetTable.TableName))
+                            if (await CheckifPrimaryTableNameExist(subTargetTable.TableName))
                             {
                                 EnsureSubTableHasUniqueName(subTargetTable);
                             }
-                            ReturnTable(targetTable);
-                            ReturnTable(sourceTable);
-                            ReturnTable(subTargetTable);
+                            await ReturnTable(targetTable);
+                            await ReturnTable(sourceTable);
+                            await ReturnTable(subTargetTable);
                             return true;
                         }
                     } else
@@ -955,8 +880,8 @@ namespace DTRMNS
                         //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                         targetTable.TableName = sourceTable.TableName;
 
-                        ReturnTable(targetTable);
-                        DeleteTable(sourceTableIID);
+                        await ReturnTable(targetTable);
+                        await DeleteTable(sourceTableIID);
 
                         return true;
                     } else
@@ -964,14 +889,14 @@ namespace DTRMNS
                         ///9-sub => full primary(with sub tables)                 =>sub          primary+sub+sub       Transfer    CreateSubTable
                         ///8-sub => full primary(no sub tables)                   =>sub          primary+sub           Transfer    CreateSubTable
                         //attach subtable to new parent table
-                        ChangeParentTableIIDForSubTable(sourceTableIID, targetTableIID);
+                        await ChangeParentTableIIDForSubTable(sourceTableIID, targetTableIID);
                         sourceTable = await BarrowTable(sourceTableIID);
 
                         //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
                         // targetTable.TableName = sourceTable.TableName;
 
-                        ReturnTable(sourceTable);
-                        ReturnTable(targetTable);
+                        await ReturnTable(sourceTable);
+                        await ReturnTable(targetTable);
                         return true;
                     }
                 } else
@@ -982,36 +907,34 @@ namespace DTRMNS
             return false;
         }
 
-        private void EnsureSubTableHasUniqueName(Table t)
+        private async void EnsureSubTableHasUniqueName(Table t)
         {
             if (t == null)
                 return;
             if (!t.isPrimary)
             {
-                if (CheckifPrimaryTableNameExist(t.TableName))
+                if (await CheckifPrimaryTableNameExist(t.TableName))
                     t.TableName += t.TableName;
-                //ChangeSubTableName(t, t.TableName + t.TableName);
 
             }
         }
 
-        private bool CheckifPrimaryTableNameExist(string subName)
+        private async Task<bool> CheckifPrimaryTableNameExist(string subName)
         {
-            return GetDataTable("Select DefaultName from Tables where DefaultName = '" + subName + "'").Rows.Count > 0;
+            return await repoTable.GetByField("DefaultName", subName) != null;
+            // return GetDataTable("Select DefaultName from Tables where DefaultName = '" + subName + "'").Rows.Count > 0;
         }
 
         private Order MakeOrderFreeFromTable(Order order)
         {
-            order.TableIID = "";
-            order.TableName = "";
-            order.LockedClientIP = "";
+            order.TableIID = null;
+            order.LockedClientIP = null;
             return order;
         }
 
         private Order AttachOrderToTable(Order order, Table table)
         {
             order.TableIID = table.IID;
-            order.TableName = table.TableName;
             table.AttachedOrder = order;
             table.CurrentOrderIID = order.IID;
             return order;
@@ -1026,12 +949,43 @@ namespace DTRMNS
 
         public async Task<bool> SetNewParentTableIIDForSubTables(string oldParentTableIID, string newParentTableIID)
         {
-            return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where ParentTableIID ='" + oldParentTableIID + "'");
+            try
+            {
+                await repoTable.GetListByField("ParentTableIID", oldParentTableIID).ContinueWith(async (subTables) =>
+                {
+                    foreach (var subTable in subTables.Result)
+                    {
+                        subTable.ParentTableIID = newParentTableIID;
+                        await repoTable.Save(subTable);
+                    }
+                });
+                return true;
+            } catch
+            {
+                return false;
+            }
+            // return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where ParentTableIID ='" + oldParentTableIID + "'");
         }
 
         public async Task<bool> ChangeParentTableIIDForSubTable(string subTableIID, string newParentTableIID)
         {
-            return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where IID ='" + subTableIID + "'");
+            try
+            {
+                await repoTable.GetListByField("IID", subTableIID).ContinueWith(async (subTables) =>
+                {
+                    foreach (var subTable in subTables.Result)
+                    {
+                        subTable.ParentTableIID = newParentTableIID;
+                        await repoTable.Save(subTable);
+                    }
+                });
+                return true;
+                //return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where IID ='" + subTableIID + "'");
+            } catch
+            {
+                return false;
+            }
+
         }
 
         /// <summary>
@@ -1046,18 +1000,18 @@ namespace DTRMNS
             Table sourceTable = await BarrowTable(sourceTableIID);
             if (sourceTable.TableType == TableTypes.StaticTable)
             {
-                ReturnTable(sourceTable);
+                await ReturnTable(sourceTable);
                 return false;
             }
 
             Table targetTable = await BarrowTable(targetTableIID);
             targetTable.AttachedOrder.MergeOrder(sourceTable.AttachedOrder);
-            DeleteOrder(sourceTable.CurrentOrderIID);
+            await repoOrder.Delete(sourceTable.CurrentOrderIID);
             if (sourceTable.TableType == TableTypes.TemporaryTable)
-                DeleteTable(sourceTableIID);
+                await repoTable.Delete(sourceTableIID);
             else
                 MakeTableFreeFromOrder(sourceTable);
-            ReturnTable(targetTable);
+            await ReturnTable(targetTable);
 
             return true;
         }
@@ -1107,7 +1061,7 @@ namespace DTRMNS
                 Order order = await GetOrder(table.CurrentOrderIID);
                 if (order != null)
                 {
-                    if (order.items.Count == 0)
+                    if (order.Items.Count == 0)
                         await DeleteOrderOnly(order);
                     else
                     {
@@ -1142,13 +1096,13 @@ namespace DTRMNS
             //return DistributionList;
         }
 
-        public async Task<List<Distribution>> GetAllDistributions()             
+        public async Task<List<Distribution>> GetAllDistributions()
         {
             return await repoDistribution.GetAllAsync("Printer");
         }
         public async Task<List<Distribution>> GetAllDistributionsForMenu(string ActiveMenuIID)
         {
-            return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID,includeItems: "Printer") ?? new();
+            return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID, includeItems: "Printer") ?? new();
         }
 
         public async Task<List<DistributionView>> GetAllDistributionsAsView()
@@ -1163,7 +1117,7 @@ namespace DTRMNS
             // return new Distribution(GetDataTable("GetDistribution", DistributionIID).Rows[0]);
         }
 
-        public async  Task<bool> SaveDistribution(Distribution distribution)
+        public async Task<bool> SaveDistribution(Distribution distribution)
         {
             return (await repoDistribution.Save(distribution) != null);
             //try
@@ -1336,43 +1290,27 @@ namespace DTRMNS
 
         public bool ConfirmForSupervision()
         {
-            using (trmSupervisorLogin frm = ActivatorUtilities.CreateInstance<trmSupervisorLogin>(sp))
+            using (trmSupervisorLogin frm = ActivatorUtilities.CreateInstance<trmSupervisorLogin>(ServiceHelper.Services))
             {
                 return (frm.ShowDialog() == DialogResult.OK);
             }
         }
 
-        public async Task<OrderItem> GetOrderItem(string IID)
-        {
-            return await repoOrderItem.Get(IID);
-            //DataTable dt = GetDataTable("GetOrderItem", IID);
-            //if (dt == null)
-            //    return null;
+        //public async Task<OrderItem> GetOrderItem(string IID)
+        //{
+        //    return await repoOrderItem.Get(IID);
+        //    //DataTable dt = GetDataTable("GetOrderItem", IID);
+        //    //if (dt == null)
+        //    //    return null;
 
-            //return new OrderItem(dt.Rows[0]);
-        }
+        //    //return new OrderItem(dt.Rows[0]);
+        //}
         public async Task SaveOrderItem(OrderItem oi)
         {
-            try
-            {
-                await repoOrderItem.Save(oi);
-                //CultureInfo ci = GetDBCulture();
-                //if (RunQuery("SaveOrderItem '" +
-                //                oi.IID + "','" + oi.EntityIID + "','" + oi.OrderItemText + "'," + oi.Quantity + ",'" +
-                //                oi.Price.ToString(ci) + "','" + oi.OrderGroupIID + "','" + oi.EntityButtonIID + "','" +
-                //                oi.DistributionIID + "','" + oi.OrderIID + "'," + (int)oi.ItemType + "," +
-                //                oi.DisplayOrder + ",'" +
-                //                oi.EntityName + "'," + oi.EntityDisplayOrder + ",'" +
-                //                oi.TaxPercent.ToString(ci) + "'," + oi.CompletedQuantity))
-                //{
-
-                //}
-            } catch
-            {
-            }
+            await repoOrderItem.Save(oi);
         }
 
-        public void SaveLogItem(LogItem log)
+        public async Task SaveLogItem(LogItem log)
         {
             try
             {
@@ -1382,7 +1320,7 @@ namespace DTRMNS
                                 DRDateTime.DatetimeToMSSql(log.EventDateTime) + ",'" +
                                 log.ComputerName + "','" + log.OrderContent.Replace("'", "''") + "','" + log.Reference + "'";
 
-                RunQuery(sql);
+                await RunQuery(sql);
             } catch (Exception ex)
             {
                 string str = ex.Message;
@@ -1399,37 +1337,34 @@ namespace DTRMNS
             }
         }
 
-        public void DeleteLogItems(List<string> IIDList)
+        public async Task DeleteLogItems(List<string> IIDList)
         {
             foreach (var IID in IIDList)
             {
-                RunQuery("Delete From LogItems Where IID ='" + IID + "'");
+                await RunQuery("Delete From LogItems Where IID ='" + IID + "'");
             }
         }
-        public void DeleteAllLogItems()
+        public async Task DeleteAllLogItems()
         {
             try
             {
-                RunQuery("Delete From LogItems");
+                await RunQuery("Delete From LogItems");
             } catch { }
         }
 
-
-
-
-        public void ReturnOrder(Order order)
+        public async Task ReturnOrder(Order order)
         {
             if (order.OrderType == OrderTypes.InHouse)
                 this.ReturnTable(order);
             else
             {
-                if (order.items.Count > 0)
+                if (order.Items.Count > 0)
                 {
                     order.LockedClientIP = "";
                     order.TableIID = "";
-                    SaveOrder(order);
+                    await SaveOrder(order);
                 } else
-                    DeleteOrder(order.IID);
+                    await DeleteOrder(order.IID);
             }
         }
 
@@ -1441,15 +1376,11 @@ namespace DTRMNS
             else
             {
                 order.LockedClientIP = ClientIP;
-                SaveOrder(order);
+                await SaveOrder(order);
                 return order;
             }
         }
 
-        //private DataTable GetAllOrderItems(string OrderIID)
-        //{
-        //    return GetDataTable("GetAllOrderItems", OrderIID);
-        //}
 
 
         public async Task<List<Order>> GetOrderListForSession(string SessionIID)
@@ -1464,13 +1395,8 @@ namespace DTRMNS
 
         #endregion
 
-        #region "UTILITY FUNCTIONS"
-
-        
-
         public bool SendEmailToCustomRecepient(string ToEmail, string subject, string body, Attachment attachment)
         {
-
             if (shop == null)
             {
                 return false;
@@ -1485,67 +1411,23 @@ namespace DTRMNS
             DRSmtp.SendEmail(smtp, msg);
             return true;
         }
-        #endregion
 
-        #region "INSTRUCTION FUNCTIONS"
-      
         public async Task<bool> SaveDebug(string data)
         {
             return await RunQuery("Insert into Debug (Data) values ('" + data.Replace("'", "''") + "')");
         }
 
-        #endregion
-
         #region "SERVER PRINTER FUNCTIONS"
-
-        public async Task<List<Printer>> GetAllPrinters()
-        {
-            return await repoPrinter.GetAllAsync();
-
-            //List<ApplicationPrinter> PrinterList = new List<ApplicationPrinter>();
-            //DataTable dt = GetDataTable("Select * from PrinterView");
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    PrinterList.Add(new ApplicationPrinter(dt.Rows[i]));
-            //return PrinterList;
-        }
-
-        //public DataTable GetPrinterListDB()
-        //{
-        //    return GetDataTable("GetPrinterList", config.Terminal_Name);
-        //}
-
-        //public DataTable GetSystemPrinterListDB()
-        //{
-        //    return GetDataTable("GetSystemPrinterList");
-        //}
 
         public async Task<List<Printer>> GetPrintersByPrinterType(PrinterTypes PrinterType)
         {
             return await repoPrinter.GetDBContext().Printers.Where(x => x.PrinterType == PrinterType).ToListAsync();
-            //return GetDataTable("GetPrintersByPrinterType " + (int)PrinterType + ",'" +
-            //                       config.Terminal_Name + "'," + BoolToInt(LoggedUser.IsManagerOrMore()));
         }
 
         public async Task<Printer> GetPrinterForClient(string PrinterIID)
         {
             return await repoPrinter.GetDBContext().Printers
                 .Where(x => x.IID == PrinterIID && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
-            //DataTable dt = GetDataTable("GetPrinterForClient '" + PrinterIID + "','" + config.Terminal_Name + "'");
-            //if (dt.Rows.Count > 0)
-            //    return new ApplicationPrinter(dt.Rows[0]);
-            //else
-            //    return null;
-        }
-        public async Task<Printer> GetPrinter(string PrinterIID)
-        {
-            return await repoPrinter.GetDBContext().Printers
-        .Where(x => x.IID == PrinterIID).FirstOrDefaultAsync();
-
-            //DataTable dt = GetDataTable("GetPrinter '" + PrinterIID + "'");
-            //if (dt.Rows.Count > 0)
-            //    return new ApplicationPrinter(dt.Rows[0]);
-            //else
-            //    return null;
         }
 
         public async Task<Printer> GetDefaultReceiptPrinter()
@@ -1554,7 +1436,6 @@ namespace DTRMNS
                 return await GetPrinterForClient(config.DTClientLocalReceiptPrinterIID);
             else
                 return null;
-
         }
 
         public async Task<Printer> GetPrinterForOrderType(OrderTypes orderType)
@@ -1574,48 +1455,11 @@ namespace DTRMNS
                     return await repoPrinter.Get(config.DTClientLocalReceiptPrinterIID);
             }
         }
-        public async Task<List<Distribution>> GetDistributionListForPrinter(string ApplicationPrinterIID)
+        public async Task<List<Distribution>> GetDistributionListForPrinter(string PrinterIID)
         {
-            MessageBox.Show("bslayer GetDistributionListForPrinter");
-            return null;
-          //  return await repoDistribution.GetDBContext().Distributions.Where(x => x.PrinterIID == ApplicationPrinterIID).ToListAsync();
+            return await repoDistribution.GetDBContext().Distributions
+                .Where(d => d.DistributionPrinters.Any(dp => dp.PrinterIID == PrinterIID)).ToListAsync();
         }
-
-        public async Task<bool> SavePrinter(Printer ap)
-        {
-            return await repoPrinter.Save(ap) != null;
-        }
-        public async Task<bool> SaveUniquePrinter(string PrinterIID, OrderTypes orderType)
-        {
-            Printer printer = await repoPrinter.Get(PrinterIID);
-            if (printer == null)
-                return false;
-
-            try
-            {
-                switch (orderType)
-                {
-                    case OrderTypes.Delivery:
-                        printer.LocalTerminal = config.Terminal_Name;
-                        printer.DeliveryPrinter = true;
-                        break;
-                    case OrderTypes.TakeAwayB:
-                        printer.LocalTerminal = config.Terminal_Name;
-                        printer.TakeAwayPrinter = true;
-                        break;
-                }
-                return true;
-            } catch
-            {
-                return false;
-            }
-        }
-
-        public async Task DeletePrinter(string PrinterIID)
-        {
-            await repoPrinter.Delete(PrinterIID);
-        }
-
         public async Task<List<Printer>> GetReceiptPrinterList()
         {
             return await repoPrinter.GetAllAsync();
@@ -1684,17 +1528,10 @@ namespace DTRMNS
                 return false;
             }
         }
-        public async Task EnsureSessionData()
+        public async Task EnsureSession()
         {
-            string SessionIID = (await repoShop.GetFirst())?.CurrentSessionIID;
-            if (SessionIID == "" || !IsSessionExist(SessionIID))
+            if (!await repoSession.Any(shop.CurrentSessionIID))
                 await StartNewSession();
-        }
-
-        public bool IsSessionExist(string SessionIID)
-        {
-            DataTable dt = GetDataTable("Select * from Sessions where IID = '" + SessionIID + "'");
-            return (dt.Rows.Count > 0);
         }
 
         public async Task<SessionData> GetCurrentSession()
@@ -1773,7 +1610,7 @@ namespace DTRMNS
         /// <returns></returns>
         public bool HasAnyNonCompleteItems(KitchenOrder korder)
         {
-            foreach (KitchenOrderItem item in korder.items)
+            foreach (KitchenOrderItem item in korder.Items)
             {
                 if (item.Status != KitchenOrderStatusTypes.Completed)
                     return true;
@@ -1794,7 +1631,7 @@ namespace DTRMNS
                 korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
                 if (order.OrderType == OrderTypes.InHouse)
-                    korder.Reference = order.TableName;
+                    korder.Reference = order.Table?.TableName;
 
 
 
@@ -1837,7 +1674,7 @@ namespace DTRMNS
                 {
                     korder.OrderNo = GetKitchenOrderNumber(korder.IID);
 
-                    if (korder.items.Count > 0)
+                    if (korder.Items.Count > 0)
                     {
                         switch (order.OrderType)
                         {
@@ -1877,7 +1714,7 @@ namespace DTRMNS
         {
             try
             {
-                OrderItem oi = AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                OrderItem oi = AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                 oi.CompletedQuantity += koi.Quantity;
                 //oi.OrderItemText = koi.ItemText;
                 SaveOrderItem(oi);
@@ -1909,12 +1746,12 @@ namespace DTRMNS
             KitchenOrder oldKitchenOrder = await GetKitchenOrderForOrder(newKOrder.OrderIID);
             if (oldKitchenOrder != null)
             {
-                oldKitchenOrder.items.Clear();
-                foreach (KitchenOrderItem item in newKOrder.items)
+                oldKitchenOrder.Items.Clear();
+                foreach (KitchenOrderItem item in newKOrder.Items)
                 {
                     item.KitchenOrderIID = oldKitchenOrder.IID;
                 }
-                oldKitchenOrder.items.AddRange(newKOrder.items);
+                oldKitchenOrder.Items.AddRange(newKOrder.Items);
                 RunQuery("Delete from KitchenOrderItem where KitchenOrderIID = '" + oldKitchenOrder.IID + "'");
                 oldKitchenOrder.CreatedDateTime = DateTime.Now;
                 oldKitchenOrder.Reference = newKOrder.Reference;
@@ -1940,10 +1777,10 @@ namespace DTRMNS
         public async Task<List<Distribution>> GetDistributionList(KitchenOrder korder)
         {
             List<Distribution> theList = new List<Distribution>();
-            for (int i = 0; i < korder.items.Count; i++)
+            for (int i = 0; i < korder.Items.Count; i++)
             {
-                if (theList.Find(x => x.IID == korder.items[i].DistributionIID) == null)
-                    theList.Add(await GetDistribution(korder.items[i].DistributionIID));
+                if (theList.Find(x => x.IID == korder.Items[i].DistributionIID) == null)
+                    theList.Add(await GetDistribution(korder.Items[i].DistributionIID));
             }
             return theList;
         }
@@ -2345,7 +2182,7 @@ namespace DTRMNS
                 SessionFamily sf = (SessionFamily)DRFile.XmlDeSerialize(filename, typeof(SessionFamily), false);
                 await SaveSessionData(sf.sessionData);
                 for (int i = 0; i < sf.Orders.Count; i++)
-                   await SaveOrder(sf.Orders[i]);
+                    await SaveOrder(sf.Orders[i]);
                 File.Delete(filename);
                 return true;
             } catch
@@ -2452,13 +2289,13 @@ namespace DTRMNS
                 //with Z report applied , a new session started
                 SessionData TempSession = new SessionData();
 
-              await  SaveSessionData(TempSession);
-              await  ActivateSession(TempSession);
+                await SaveSessionData(TempSession);
+                await ActivateSession(TempSession);
 
                 //Update OrderList to get rid of orders belong to the taken ZReport
                 //Also update order session numbers
                 //DO NOT MAKE THIS SINGLE DATABASE CALL
-              await  RunQuery("UpdateSessionIIDForOrders '" + TempSession.SessionIID + "'," + (int)StatusFlags.COMPLETED);
+                await RunQuery("UpdateSessionIIDForOrders '" + TempSession.SessionIID + "'," + (int)StatusFlags.COMPLETED);
                 shop = await repoShop.GetFirst();
                 return true;
             } catch
@@ -2573,8 +2410,8 @@ namespace DTRMNS
             OrderItem oi = new OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
                 EntityButtonIID, eb.ItemName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
-                entity.CategoryName, order.items.Count, GetEBTaxPercentForGenericOrder(order, eb));
-            OrderItem thesameitem = order.items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
+                entity.CategoryName, order.Items.Count, GetEBTaxPercentForGenericOrder(order, eb));
+            OrderItem thesameitem = order.Items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
             if (thesameitem != null)
                 thesameitem.Quantity++;
             else
@@ -2660,7 +2497,7 @@ namespace DTRMNS
         }
 
         #region KITCHEN ORDERS
-       
+
         public bool SaveKitchenOrder(KitchenOrder order)
         {
             return repoKitchenOrder.Save(order) != null;
@@ -2683,24 +2520,24 @@ namespace DTRMNS
             //} else
             //    return false;
         }
-        public bool DeleteKitchenOrder(string IID, bool blnForce)
+        public async Task<bool> DeleteKitchenOrder(string IID, bool blnForce)
         {
             if (blnForce)
             {
-                RunQuery("Delete from KitchenOrderItem where KitchenOrderIID ='" + IID + "'");
-                RunQuery("Delete from KitchenOrders where IID = '" + IID + "'");
+                await RunQuery("Delete from KitchenOrderItem where KitchenOrderIID ='" + IID + "'");
+                await RunQuery("Delete from KitchenOrders where IID = '" + IID + "'");
             } else
-                RunQuery("DeleteKitchenOrder '" + IID + "'");
+                await RunQuery("DeleteKitchenOrder '" + IID + "'");
             return !IsKitchenOrderExist(IID);
 
         }
-        public void DeleteRelatedKitchenOrderForceFully(string RealOrderIID)
+        public async Task DeleteRelatedKitchenOrderForceFully(string RealOrderIID)
         {
             DataTable dt = GetDataTable("Select * from KitchenOrders where OrderIID = '" + RealOrderIID + "'");
             if (dt.Rows.Count > 0)
             {
                 for (int i = 0; i < dt.Rows.Count; i++)
-                    DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), true);
+                    await DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), true);
             }
         }
 
@@ -2770,23 +2607,6 @@ namespace DTRMNS
 
 
 
-        /// <summary>
-        /// 'iid','iid'  gibi
-        /// </summary>
-        /// <param name="theList"></param>
-        /// <returns></returns>
-        public string GetCommaSeperatedDistributionIIDListForDatabase(List<Distribution> theList)
-        {
-            string str = "";
-            for (int i = 0; i < theList.Count; i++)
-            {
-                str += "'" + theList[i].IID + "',";
-            }
-            if (str.Length > 0)
-                return str.Substring(0, str.Length - 1);
-
-            return str;
-        }
         public async Task<List<KitchenOrder>> GetKitchenOrderList()
         {
             return await repoKitchenOrder.GetAllAsync();
@@ -2803,7 +2623,7 @@ namespace DTRMNS
         {
             return await repoKitchenOrder.Get(IID, "Items");
         }
-        public async Task<List<KitchenOrder>> GetKitchenOrdersByStatus(KitchenOrderStatusTypes status, bool blnAscending,Distribution distribution)
+        public async Task<List<KitchenOrder>> GetKitchenOrdersByStatus(KitchenOrderStatusTypes status, bool blnAscending, Distribution distribution)
         {
             string asctext = blnAscending ? "asc" : "desc";
             DataTable dt = null;
@@ -2852,17 +2672,17 @@ namespace DTRMNS
                 OrderIID = order.IID
             };
 
-            for (int i = 0; i < order.items.Count; i++)
+            for (int i = 0; i < order.Items.Count; i++)
             {
                 KitchenOrderItem korderitem = new KitchenOrderItem
                 {
-                    EntityButtonIID = order.items[i].EntityButtonIID,
-                    Quantity = (int)order.items[i].Quantity,
-                    ItemText = order.items[i].OrderItemText,
+                    EntityButtonIID = order.Items[i].EntityButtonIID,
+                    Quantity = (int)order.Items[i].Quantity,
+                    ItemText = order.Items[i].OrderItemText,
                     KitchenOrderIID = korder.IID,
-                    DistributionIID = order.items[i].DistributionIID
+                    DistributionIID = order.Items[i].DistributionIID
                 };
-                korder.items.Add(korderitem);
+                korder.Items.Add(korderitem);
             }
             return korder;
         }
@@ -2884,7 +2704,7 @@ namespace DTRMNS
                 SaveDebug("157 : " + ex.Message);
             }
         }
-        public bool ShrinkKitchenOrderList()
+        public async Task<bool> ShrinkKitchenOrderList()
         {
             DataTable dt = GetDataTable("Select IID from KitchenOrders where Status = " + (int)KitchenOrderStatusTypes.Completed);
             if (dt.Rows.Count <= config.Kitchen_Max_Completed_Order_Count)
@@ -2894,7 +2714,7 @@ namespace DTRMNS
             dt = GetDataTable("Select Top " + topCount + " IID from KitchenOrders where Status = " +
                 (int)KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
             for (int i = 0; i < dt.Rows.Count; i++)
-                DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), false);
+                await DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), false);
 
             return true;
         }
@@ -2919,55 +2739,13 @@ namespace DTRMNS
         }
         #endregion
 
-        #region SUPPLIER
-        public async Task<Supplier> GetSupplier(string IID)
-        {
-            return await repoSupplier.Get(IID);
-            //return new Supplier(GetDataTable("Select * from Supplier where IID ='" + IID + "'"));
-        }
-        //public DataTable GetAllSuppliers()
-        //{
-        //    return GetDataTable("Select * from Supplier");
-        //}
+
+
         public async Task<List<Supplier>> GetAllSuppliersAsList()
         {
             return await repoSupplier.GetAllAsync();
+        }
 
-            //DataTable dt = GetDataTable("Select * from Supplier");
-            //List<Supplier> theList = new List<Supplier>();
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    theList.Add(new Supplier(dt.Rows[i]));
-            //}
-            //return theList;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="IID"></param>
-        /// <param name="blnForce">True: delete the supplier even it has stockitem in the list, False: will only delete if there is no entry in stockitem table in supplierIID column</param>
-        /// <returns></returns>
-        public async Task<bool> DeleteSupplier(string IID, bool blnForce)
-        {
-            int count = int.Parse(GetDataTable("Select count(IID) as howmany from StockItem where SupplierIID = '" +
-                IID + "'").Rows[0]["howmany"].ToString());
-            if (count > 0)
-            {
-                if (blnForce)
-                    return await RunQuery("Delete from Supplier where IID ='" + IID + "'");
-                else
-                    return false;
-            } else
-                return await RunQuery("Delete from Supplier where IID ='" + IID + "'");
-        }
-        public async Task<bool> SaveSupplier(Supplier supplier)
-        {
-            return await RunQuery("SaveSupplier " +
-                "'" + supplier.IID + "','" + supplier.SupplierName.Replace("'", "''") + "','" +
-                supplier.Tel.Replace("'", "''") + "','" + supplier.Address.Replace("'", "''") + "','" +
-                supplier.Email1 + "','" + supplier.Email2 + "','" + supplier.Whatsup.Replace("'", "''") + "'");
-        }
-        #endregion
 
         #region STOCK ITEM
         public async Task<StockItem> GetStockItem(string IID)
@@ -2975,31 +2753,7 @@ namespace DTRMNS
             return await repoStockItem.Get(IID);
             // return new StockItem(GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on Supplier.IID = StockItem.SupplierIID  where StockItem.IID = '" + IID + "'"));
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="IID"></param>
-        /// <param name="blnForce">True: will delete the stock item regardless it has an entry in EBStockItemLookUp, False: it will only be deleted if no EBStockItemLookup Entry </param>
-        /// <returns></returns>
-        public async Task<bool> DeleteStockItem(string IID, bool blnForce)
-        {
-            int count = int.Parse(GetDataTable("Select count(StockItemIID) as howmany from EntityButtonStockItemLookUp where StockItemIID = '" +
-                IID + "'").Rows[0]["howmany"].ToString());
-            if (count > 0)
-            {
-                if (blnForce)
-                    return await RunQuery("Delete from StockItem where IID ='" + IID + "'");
-                else
-                    return false;
-            } else
-                return await RunQuery("Delete from StockItem where IID ='" + IID + "'");
-        }
-        public async Task<bool> SaveStockItem(StockItem stockitem)
-        {
-            string sql = "SaveStockItem " + "'" + stockitem.IID + "','" + stockitem.StockName.Replace("'", "''") + "'," +
-        (int)stockitem.QuantityType + "," + (int)stockitem.OrderType + "," + stockitem.Conversion + ",'" + stockitem.SupplierIID + "'," + stockitem.UsedQuantity;
-            return await RunQuery(sql);
-        }
+
 
         /// <summary>
         /// Uses net quantity, it expects converted value
@@ -3028,41 +2782,6 @@ namespace DTRMNS
         public async Task<bool> SetStockItemQuantity(string stockItemIID, int Quantity)
         {
             return await RunQuery("update stockItem set UsedQuantity = " + Quantity + " where IID = '" + stockItemIID + "'");
-        }
-        public DataTable GetAllStockItems()
-        {
-            return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
-        }
-        public async Task<List<StockItem>> GetAllStockItemsList()
-        {
-            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName").ToListAsync();
-            //DataTable dtStockItems = GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID order by StockName");
-            //List<StockItem> stockItems = new List<StockItem>();
-            //foreach (DataRow dr in dtStockItems.Rows)
-            //{
-            //    stockItems.Add(new StockItem(dr));
-            //}
-            //return stockItems;
-        }
-        public async Task<List<StockItem>> SearchStockItems(string searchText)
-        {
-            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%{searchText}%' order by StockName").ToListAsync();
-            //return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' order by StockName");
-        }
-        public async Task<List<StockItem>> SearchStockItems(string searchText, string SupplierIID)
-        {
-            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%{searchText}%' and SupplierIID ='{SupplierIID}' order by StockName").ToListAsync();
-            // return GetDataTable("Select StockItem.*, SupplierName from StockItem left join supplier on supplier.IID = StockItem.SupplierIID where StockName like '%" + searchText + "%' and SupplierIID ='" + SupplierIID + "' order by StockName");
-        }
-        public async Task<List<StockItem>> GetAllStockItemsShort()
-        {
-            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select IID,StockName from StockItem order by StockName asc").ToListAsync();
-            //return GetDataTable("Select IID,StockName from StockItem order by StockName asc");
-        }
-        public async Task<List<StockItem>> GetStockItemsForSupplier(string SupplierIID)
-        {
-            return await repoStockItem.GetDBContext().Database.SqlQuery<StockItem>($"Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '{SupplierIID}'").ToListAsync();
-            //return GetDataTable("Select StockItem.*, SupplierName from stockitem left join supplier on supplier.IID = StockItem.SupplierIID where SupplierIID = '" + SupplierIID + "'");
         }
 
         #endregion
@@ -3099,18 +2818,13 @@ namespace DTRMNS
         }
 
 
-        public async Task<List<EntityButtonStockItemLookUp>> GetAllEntityButtonStockItemLookUps()
-        {
-            return await repoEntityButtonStockItemLookUp.GetAllAsync();
-        }
-
-        public bool SaveAllStockItemLookups(List<EntityButtonStockItemLookUp> lookupItems)
+        public async Task<bool> SaveAllStockItemLookups(List<EntityButtonStockItemLookUp> lookupItems)
         {
             try
             {
                 foreach (EntityButtonStockItemLookUp lookup in lookupItems)
                 {
-                    SaveEntityButtonStockItemLookUp(lookup);
+                    await SaveEntityButtonStockItemLookUp(lookup);
                 }
                 return true;
             } catch
@@ -3129,22 +2843,6 @@ namespace DTRMNS
         {
             return await repoMenu.GetDBContext().Database.SqlQuery<EntityButtonStockItemLookUp>($"SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '{EBIID}' order by DisplayOrder asc").ToListAsync();
             // return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
-        }
-
-        public async Task<EntityButtonStockItemLookUp> GetEntityButtonStockItemLookUp(string IID)
-        {
-            return await repoEntityButtonStockItemLookUp.Get(IID);
-        }
-        public async Task<bool> UpdateStockItemLookUpDisplayOrder(string IID, int newdisplayOrder)
-        {
-            EntityButtonStockItemLookUp lookup = await repoEntityButtonStockItemLookUp.Get(IID);
-            lookup.DisplayOrder = newdisplayOrder;
-            return await repoEntityButtonStockItemLookUp.Save(lookup) != null;
-        }
-
-        public async Task<bool> DeleteEntityButtonStockItemLookUp(string IID)
-        {
-            return await repoEntityButtonStockItemLookUp.Delete(IID) > 0;
         }
         public async Task<bool> SaveEntityButtonStockItemLookUp(EntityButtonStockItemLookUp lookup)
         {
@@ -3318,15 +3016,6 @@ namespace DTRMNS
 
 
         #region DiSPLAY IMAGE FUNCTIONS
-        //public async Task<GenericImage> GetImageFromDatabase(string ReferenceIID)
-        //{
-        //    return await repoImage.GetByField("ReferenceIID", ReferenceIID);
-        //    //DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
-        //    //if (dt.Rows.Count > 0)
-        //    //    return DRUF.byteArrayToImage((byte[])dt.Rows[0]["DisplayImage"]);
-        //    //else
-        //    //    return null;
-        //}
 
         public async Task<GenericImage> GetGenericImage(string ReferenceIID)
         {
@@ -3392,82 +3081,7 @@ namespace DTRMNS
             //return str;
         }
 
-        //public async Task<bool> DeletePrepImage(string ReferenceIID)
-        //{
-        //    return await repoImage.DeleteByField("ReferenceIID", ReferenceIID) > 0;
-        //    //return RunQuery("Delete from Images where ReferenceIID ='" + ReferenceIID + "'");
-        //}
 
-
-        //public DataTable GetAllImages()
-        //{
-        //    return GetDataTable("Select * from Images");
-        //}
-        public async Task<List<GenericImage>> GetAllImages()
-        {
-            return await repoImage.GetAllAsync();
-            //List<GenericImage> imageList = new List<GenericImage>();
-            //try
-            //{
-            //    DataTable dt = GetDataTable("Select * from Images");
-            //    for (int i = 0; i < dt.Rows.Count; i++)
-            //    {
-            //        GenericImage gim = new GenericImage(dt.Rows[i], true);
-            //        imageList.Add(gim);
-            //    }
-            //    return imageList;
-            //} catch
-            //{
-            //    return imageList;
-            //}
-        }
-
-        public async Task<bool> DeleteGenericImage(string referenceIID)
-        {
-            return await repoImage.DeleteByField("ReferenceIID", referenceIID) > 0;
-            // return RunQuery("Delete from Images where ReferenceIID = '" + referenceIID + "'");
-        }
-        public async Task<bool> SaveGenericImage(GenericImage gim)
-        {
-            return await repoImage.Save(gim) != null;
-            // return false;  
-            // bu onemli
-
-            //try
-            //{
-            //    SqlConnection con = new SqlConnection(ConnectionString);
-
-            //    using (SqlCommand comm = new SqlCommand("SaveGenericImage", con)
-            //    {
-            //        CommandType = CommandType.StoredProcedure
-            //    })
-            //    {
-
-            //        SqlParameter ReferenceIID = new SqlParameter("ReferenceIID", gim.ReferenceIID);
-            //        byte[] imgbuf = DRUF.imageToByteArray(gim.DisplayImage);
-            //        SqlParameter DisplayImage = new SqlParameter("DisplayImage", SqlDbType.VarBinary, imgbuf.Length)
-            //        {
-            //            Value = imgbuf
-            //        };
-
-            //        SqlParameter ExtraText = new SqlParameter("ExtraText", gim.ExtraText);
-            //        SqlParameter ImageFileName = new SqlParameter("ImageFileName", gim.ImageFileName);
-
-            //        comm.Parameters.Add(ReferenceIID);
-            //        comm.Parameters.Add(DisplayImage);
-            //        comm.Parameters.Add(ExtraText);
-            //        comm.Parameters.Add(ImageFileName);
-            //        con.Open();
-            //        int i = comm.ExecuteNonQuery();
-            //        con.Close();
-            //        return i > 0;
-            //    }
-
-            //} catch
-            //{
-            //    return false;
-            //}
-        }
 
         /// <summary>
         /// Send directoryinfo fullName to folderpath
@@ -3555,7 +3169,6 @@ namespace DTRMNS
 
                 if (options.includeTables)
                 {
-                    backup.tableGroupList = await repoTableGroup.GetAllAsync();
                     backup.tableList = await repoTable.GetAllAsync();
                 }
 
@@ -3592,7 +3205,7 @@ namespace DTRMNS
                 return null;
             }
         }
-    
+
 
 
         #endregion
@@ -3666,6 +3279,6 @@ namespace DTRMNS
         {
             return GetDataTable("Select * from OrdersView where Payment =0 and (Status = 0 || Status = 1) and SessionIID == '" + shop.CurrentSessionIID + "'");
         }
-       
+
     }
 }

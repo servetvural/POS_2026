@@ -195,7 +195,7 @@ namespace DTRMSimpleBackOffice {
             // cmdReload
             // 
             cmdReload.AutoSize = false;
-            cmdReload.Image = Properties.Resources.Reload_32;
+            cmdReload.Image = Properties.Resources.Refresh_2;
             cmdReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             cmdReload.ImageTransparentColor = System.Drawing.Color.Magenta;
             cmdReload.Name = "cmdReload";

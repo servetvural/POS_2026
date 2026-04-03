@@ -70,6 +70,7 @@ namespace DTRMSimpleBackOffice
                         User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
                         if (user == null) { return; }
 
+                        //bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
                         if (user.IsManagerOrMore())
                         {
 
@@ -158,9 +159,7 @@ namespace DTRMSimpleBackOffice
 
                         //btnQuickReports.Enabled = btnQuickReports.Visible = true;
                         btnOrderPad.Enabled = true;
-                        btnOrderPad.Visible = true;
                         btnViewDump.Enabled = true;
-                        btnViewDump.Visible = true;
                         //  btnReports.Enabled = true;
                         // btnReports.Visible = true;
                         //  btnSessionAnalysis.Enabled = true;
@@ -183,11 +182,9 @@ namespace DTRMSimpleBackOffice
                         btnKassaCalculator.Enabled = true;
 
 
-                        btnQuickReports.Enabled = btnQuickReports.Visible = true;
+                        btnQuickReports.Enabled = 
                         btnOrderPad.Enabled = true;
-                        btnOrderPad.Visible = true;
                         btnViewDump.Enabled = true;
-                        btnViewDump.Visible = true;
                         // btnReports.Enabled = true;
                         // btnReports.Visible = true;
                         // btnSessionAnalysis.Enabled = true;
@@ -212,9 +209,7 @@ namespace DTRMSimpleBackOffice
 
                         //  btnQuickReports.Enabled = btnQuickReports.Visible = true;
                         btnOrderPad.Enabled = true;
-                        btnOrderPad.Visible = true;
                         btnViewDump.Enabled = true;
-                        btnViewDump.Visible = true;
                         //   btnReports.Enabled = true;
                         //  btnReports.Visible = true;
                         //  btnSessionAnalysis.Enabled = true;
@@ -238,38 +233,34 @@ namespace DTRMSimpleBackOffice
                         btnKassaCalculator.Enabled = true;
 
 
-                        btnQuickReports.Enabled = btnQuickReports.Visible = true;
+                        btnQuickReports.Enabled = true;
                         btnOrderPad.Enabled = true;
-                        btnOrderPad.Visible = true;
                         btnViewDump.Enabled = true;
-                        btnViewDump.Visible = true;
                         btnReports.Enabled = true;
-                        btnReports.Visible = true;
                         btnSessionAnalysis.Enabled = true;
-                        btnSessionAnalysis.Visible = true;
 
                         break;
                 }
             } else
             {
 
-                btnMenu.Enabled = btnMenu.Visible =
-                btnDistributions.Enabled = btnDistributions.Visible =
-                btnUserEditor.Enabled = btnUserEditor.Visible =
-                btnPrinters.Enabled = btnPrinters.Visible =
-                btnSuppliers.Enabled = btnSuppliers.Visible =
-                btnStockItemList.Enabled = btnStockItemList.Visible =
-                btnImageList.Enabled = btnImageList.Visible =
-                btnBonusList.Enabled = btnBonusList.Visible =
-                btnEmployees.Enabled = btnEmployees.Visible =
-                btnDisplay.Enabled = btnDisplay.Visible =
-                btnStockUsage.Enabled = btnStockUsage.Visible =
-                btnKassaCalculator.Enabled = btnKassaCalculator.Visible =
-                btnQuickReports.Enabled = btnQuickReports.Visible =
-                btnOrderPad.Enabled = btnOrderPad.Visible =
-                btnViewDump.Enabled = btnViewDump.Visible =
-                btnReports.Enabled = btnReports.Visible =
-                btnSessionAnalysis.Enabled = btnSessionAnalysis.Visible = false;
+                btnMenu.Enabled = 
+                btnDistributions.Enabled =
+                btnUserEditor.Enabled = 
+                btnPrinters.Enabled =
+                btnSuppliers.Enabled = 
+                btnStockItemList.Enabled = 
+                btnImageList.Enabled = 
+                btnBonusList.Enabled = 
+                btnEmployees.Enabled = 
+                btnDisplay.Enabled =
+                btnStockUsage.Enabled = 
+                btnKassaCalculator.Enabled = 
+                btnQuickReports.Enabled = 
+                btnOrderPad.Enabled = 
+                btnViewDump.Enabled = 
+                btnReports.Enabled = 
+                btnSessionAnalysis.Enabled = false;
             }
 
             if (!blnState)
@@ -295,7 +286,7 @@ namespace DTRMSimpleBackOffice
         }
         private void btnUserEditor_Click(object sender, EventArgs e)
         {
-            frmUserEditor frm = ActivatorUtilities.CreateInstance<frmUserEditor>(ServiceHelper.Services);
+            frmUserList frm = ActivatorUtilities.CreateInstance<frmUserList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }

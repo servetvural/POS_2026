@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
+using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -52,6 +53,19 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return _db.Set<T>().Any();
+        } catch (Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> Any(string IID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            if (string.IsNullOrEmpty(IID))
+                return false;
+            return _db.Set<T>().Any(x => x.IID == IID);
         } catch (Exception ex)
         {
             return false;

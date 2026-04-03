@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -24,6 +26,7 @@ namespace DTRMNS
         PosConfig config;
         IRepository<Shop> repoShop;
         IRepository<TheMenu> repoMenu;
+        IRepository<GenericImage> repoImage;
 
         private DTRMSimpleBusiness bslayer;
 
@@ -72,11 +75,13 @@ namespace DTRMNS
 
 
 
-        public frmConfig(PosConfig configAsService, IRepository<Shop> _repoShop, IRepository<TheMenu> _repoMenu, DTRMSimpleBusiness bslayer)
+        public frmConfig(PosConfig configAsService, IRepository<Shop> _repoShop, IRepository<TheMenu> _repoMenu,
+            IRepository<GenericImage> _repoImage, DTRMSimpleBusiness bslayer)
         {
             config = configAsService;
             repoShop = _repoShop;
             repoMenu = _repoMenu;
+            repoImage = _repoImage;
 
             this.bslayer = bslayer;
             InitializeComponent();
@@ -732,10 +737,10 @@ namespace DTRMNS
 
         private async void LoadLogoImages()
         {
-            GenericImage gim1 = await bslayer.GetGenericImage("Logo1");
+            GenericImage gim1 = await repoImage.GetByField("ReferenceIID", "Logo1");
             if (gim1 != null)
                 pBoxLogo1.Image = gim1.DisplayImage.ToImage();
-            GenericImage gim2 = await bslayer.GetGenericImage("Logo2");
+            GenericImage gim2 = await repoImage.GetByField("ReferenceIID", "Logo2");
             if (gim2 != null)
                 pBoxLogo2.Image = gim2.DisplayImage.ToImage();
         }
@@ -845,7 +850,7 @@ namespace DTRMNS
 
         private void btnLoadLogo1_Click(object sender, EventArgs e)
         {
-            frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo1");
+            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance< frmGenericImageEditor>(ServiceHelper.Services, null, "Logo1");
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBoxLogo1.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
@@ -854,7 +859,7 @@ namespace DTRMNS
 
         private void btnLoadLogo2_Click(object sender, EventArgs e)
         {
-            frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, null, "Logo2");
+            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, null, "Logo2");
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBoxLogo2.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
@@ -863,14 +868,14 @@ namespace DTRMNS
 
         private async void btnDeleteLogo1_Click(object sender, EventArgs e)
         {
-            await bslayer.DeleteGenericImage("Logo1");
+            await repoImage.DeleteByField("ReferenceIID","Logo1");
             pBoxLogo1.Image = null;
             LoadLogoImages();
         }
 
         private async void btnDeleteLogo2_Click(object sender, EventArgs e)
         {
-            await bslayer.DeleteGenericImage("Logo2");
+            await repoImage.DeleteByField("ReferenceIID","Logo2");
             pBoxLogo2.Image = null;
             LoadLogoImages();
         }

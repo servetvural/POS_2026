@@ -423,7 +423,7 @@ namespace DTRMNS {
 
             DrawDoubleLine();
             DrawText(centeredString("RECEIPT" + 
-                (order.OrderType == OrderTypes.InHouse && order.TableName!=null && order.TableName != ""?" - " + order.TableName:"") +
+                (order.OrderType == OrderTypes.InHouse && order.Table !=null && order.Table?.TableName != ""?" - " + order.Table?.TableName:"") +
                 (order.OrderType == OrderTypes.DirectSale && order.Reference != null && order.Reference != "" ? " - " + order.Reference : "")
                 ));
             DrawDoubleLine();
@@ -431,7 +431,7 @@ namespace DTRMNS {
             //test
             //DrawText(reportwidthcm.ToString());
 
-            DrawText(centeredString(order.OrderDate.ToString("dd/MMM/yyyy HH:mm:ss")));
+            DrawText(centeredString(order.LastModified.ToString("dd/MMM/yyyy HH:mm:ss")));
             DrawText(centeredString(order.OrderType.ToString()));
             switch (order.OrderType) {
                 case OrderTypes.TakeAwayB:
@@ -457,7 +457,7 @@ namespace DTRMNS {
             SortedDictionary<double, double> taxlist = new SortedDictionary<double, double>();
             //float ServiceChargeTaxTotal = 0;
 
-            foreach (OrderItem item in order.items) {
+            foreach (OrderItem item in order.Items) {
                 string ItemText = item.OrderItemText.Length > 26 ? item.OrderItemText.Substring(0, 25) : item.OrderItemText;
                 DrawText(string.Format("{0,2:n0}", item.Quantity).PadRight(3) + 
                             ItemText.PadRight(26) + 
@@ -809,7 +809,7 @@ namespace DTRMNS {
 
             List<Distribution> theList =await bslayer.GetDistributionListForPrinter(aPrinter.IID);
 
-            foreach (KitchenOrderItem item in korder.items) {
+            foreach (KitchenOrderItem item in korder.Items) {
                 if (item.Status != KitchenOrderStatusTypes.Completed) {
                     if (theList.Find(x => x.IID == item.DistributionIID) != null) {
                         DrawText(string.Format("{0,-3:N0}".PadRight(4) + "{1,-32}", item.Quantity, item.ItemText));

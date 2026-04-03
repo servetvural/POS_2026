@@ -60,8 +60,6 @@ public class DatabaseBackup
     public Shop shop { get; set; }
     public SessionData currentSession { get; set; }
 
-    //Table Layout
-    public List<TableGroup> tableGroupList { get; set; }
     public List<Table> tableList { get; set; }
 
     public List<TheMenu> menuList { get; set; }
@@ -93,7 +91,6 @@ public class DatabaseBackup
         customerList = new List<Customer>();
         userList = new List<User>();
         printerList = new List<Printer>();
-        tableGroupList = new List<TableGroup>();
         tableList = new List<Table>();
         menuList = new List<TheMenu>();
 
@@ -106,7 +103,7 @@ public class DatabaseBackup
     public int ItemCount()
     {
         return customerList.Count + userList.Count + printerList.Count +
-             tableGroupList.Count + tableList.Count + menuList.Count +
+             tableList.Count + menuList.Count +
             stockManager.Suppliers.Count + stockManager.EBStockItemLookups.Count + stockManager.StockItems.Count +
             orderList.Count + xorderList.Count + kitchenOrderList.Count + debugList.Count + imageList.Count;
     }

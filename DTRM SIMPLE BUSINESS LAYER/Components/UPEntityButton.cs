@@ -190,10 +190,10 @@ namespace DTRMNS {
                         exprice = GetEBRelatedPrice(bslayer, geb);
                         break;
                     case CategoryItemTypes.PercentAddition:
-                        exprice = bslayer.AttachedOrder.GetFullTotal() * (GetEBRelatedPrice(bslayer, geb) / 100);
+                        exprice = bslayer.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100);
                         break;
                     case CategoryItemTypes.PercentDeduction:
-                        exprice = -1 * (bslayer.AttachedOrder.GetFullTotal() * (GetEBRelatedPrice(bslayer, geb) / 100));
+                        exprice = -1 * (bslayer.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100));
                         break;
                     case CategoryItemTypes.CustomAddition:
                         fgv = new TrmGetValue(NumberModes.FloatMode);

@@ -369,7 +369,7 @@ namespace DTRMNS
         private async void btnSourceToTarget_1_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.items.Count == 1)
+                SourceTable.AttachedOrder.Items.Count == 1)
                 return;
 
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -382,12 +382,12 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     oiNew.Quantity = 1;
                     oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+                    if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
                     await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
 
@@ -404,7 +404,7 @@ namespace DTRMNS
         private async void btnSourceToTarget_X_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.items.Count == 1)
+                SourceTable.AttachedOrder.Items.Count == 1)
                 return;
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
             {
@@ -416,7 +416,7 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     if (oiNew.Quantity > 1)
                     {
                         frmNumericInput frm = new frmNumericInput();
@@ -434,13 +434,13 @@ namespace DTRMNS
                     oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
+                    if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
                     try
                     {
-                        OrderItem testItem = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault();
+                        OrderItem testItem = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
                         if (testItem != null)
                         {
                             if (testItem.Quantity == 0)
@@ -463,7 +463,7 @@ namespace DTRMNS
         private async void btnSourceToTarget_ALL_Click(object sender, EventArgs e)
         {
             if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.items.Count == 1)
+                SourceTable.AttachedOrder.Items.Count == 1)
                 return;
 
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -476,7 +476,7 @@ namespace DTRMNS
                     string IID = odSourceTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
                     oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
@@ -501,7 +501,7 @@ namespace DTRMNS
         private async void btnTargetToSource_1_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
-                TargetTable.AttachedOrder.items.Count == 1)
+                TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -514,12 +514,12 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     oiNew.Quantity = 1;
                     oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+                    if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
                     await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
 
@@ -540,7 +540,7 @@ namespace DTRMNS
         private async void btnTargetToSource_X_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
-               TargetTable.AttachedOrder.items.Count == 1)
+               TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -553,7 +553,7 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     if (oiNew.Quantity > 1)
                     {
                         frmNumericInput frm = new frmNumericInput();
@@ -571,13 +571,13 @@ namespace DTRMNS
                     oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
                     //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
+                    if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
 
                     //Ensure no zero quantity item left
                     try
                     {
-                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault();
+                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
                         if (testItem != null)
                         {
                             if (testItem.Quantity == 0)
@@ -601,7 +601,7 @@ namespace DTRMNS
         private async void btnTargetToSource_ALL_Click(object sender, EventArgs e)
         {
             if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
-               TargetTable.AttachedOrder.items.Count == 1)
+               TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -614,7 +614,7 @@ namespace DTRMNS
                     string IID = odTargetTable.SelectedItemIID;
 
                     //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                     //Because it is all
                     //oiNew.Quantity = 1;
                     oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
@@ -645,8 +645,8 @@ namespace DTRMNS
                 {
                     TargetTable.TableName = frm.input;
                     if (TargetTable.AttachedOrder != null)
-                        TargetTable.AttachedOrder.TableName = TargetTable.TableName;
-                    bslayer.SaveTable(TargetTable);
+                        TargetTable.AttachedOrder.Table?.TableName = TargetTable.TableName;
+                   await bslayer.SaveTable(TargetTable);
 
                     LoadTargetTable();
                     await LoadTargetPanel();

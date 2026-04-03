@@ -81,7 +81,7 @@ namespace DTRMNS {
         private void CompletePrep(PrepDialogReturnTypes result, bool blnOpenCashDrawer) {
             this.DialogResult = DialogResult.OK;
             this.prepResult = result;
-            foreach (KitchenOrderItem item in korder.items) {
+            foreach (KitchenOrderItem item in korder.Items) {
                 if (item.Status == KitchenOrderStatusTypes.Completed)
                     bslayer.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }

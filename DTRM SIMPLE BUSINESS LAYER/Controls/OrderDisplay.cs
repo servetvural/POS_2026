@@ -575,7 +575,7 @@ namespace DTRMNS
             if (OrderToSplit == null)
                 return;
             lvwSplittingOrder.Items.Clear();
-            foreach (OrderItem oi in OrderToSplit.items)
+            foreach (OrderItem oi in OrderToSplit.Items)
             {
                 lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.CalculatedValue.ToString("N2") }));
             }
@@ -599,7 +599,7 @@ namespace DTRMNS
                 colCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
 
-            pnlCommand.Height = (OrderToDisplay != null && OrderToDisplay.items.Count > 0) ? 54 : 0;
+            pnlCommand.Height = (OrderToDisplay != null && OrderToDisplay.Items.Count > 0) ? 54 : 0;
             string[] arr = null;
             ListViewItem lvi;
             OrderItem oi;
@@ -615,7 +615,7 @@ namespace DTRMNS
             if (OrderToDisplay == null && OrderToSplit == null)
                 btnSplit.Visible = false;
 
-            if (OrderToDisplay == null && OrderToSplit != null && OrderToSplit.items.Count == 0)
+            if (OrderToDisplay == null && OrderToSplit != null && OrderToSplit.Items.Count == 0)
             {
                 //Now Ordertosplit must be deleted
                 bslayer.DeleteOrder(OrderToSplit.IID);
@@ -654,7 +654,7 @@ namespace DTRMNS
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
 
-                            if (OrderToDisplay.items.Count == 1 && OrderToDisplay.items[0].Quantity == 1)
+                            if (OrderToDisplay.Items.Count == 1 && OrderToDisplay.Items[0].Quantity == 1)
                                 btnSplit.Visible = false;
                             else
                                 btnSplit.Visible = true;
@@ -672,12 +672,12 @@ namespace DTRMNS
 
 
             string strCompletedQuantity = "";
-            for (int i = 0; i < OrderToDisplay.items.Count; i++)
+            for (int i = 0; i < OrderToDisplay.Items.Count; i++)
             {
 
                 //Display Top Item
                 blnHasSubItems = false;
-                oi = (OrderItem)OrderToDisplay.items[i];
+                oi = (OrderItem)OrderToDisplay.Items[i];
                 SingleTotal = oi.Price * oi.Quantity;
 
 
@@ -744,9 +744,9 @@ namespace DTRMNS
                 }
             }
 
-            OrderTotal = OrderToDisplay.GetFullTotal();
+            OrderTotal = OrderToDisplay.Total;
             if (OrderToDisplay.OrderType == OrderTypes.InHouse)
-                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + OrderToDisplay.TableName;
+                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + OrderToDisplay.Table?.TableName;
             else
                 lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(OrderToDisplay.OrderType); 
 
@@ -776,7 +776,7 @@ namespace DTRMNS
         {
             if (OrderToDisplay.MoneyPaid > 0)
             {
-                double fullTotal = bslayer.AttachedOrder.GetFullTotal();
+                double fullTotal = bslayer.AttachedOrder.Total;
                 double servicecharge = bslayer.AttachedOrder.ServiceCharge;
 
                 double paraustu = OrderToDisplay.MoneyPaid - fullTotal;
@@ -872,7 +872,7 @@ namespace DTRMNS
 
                     bool blnTopItem = false;
                     //Gets the top item
-                    OrderItem oi = OrderToDisplay.items.Find(delegate (OrderItem param)
+                    OrderItem oi = OrderToDisplay.Items.Find(delegate (OrderItem param)
                     { return param.IID == SelectedItemIID; });
                     if (oi != null && oi.ItemType != OrderItemTypes.NormalOrderItem)
                         blnTopItem = true;
@@ -911,7 +911,7 @@ namespace DTRMNS
                     }
 
 
-                    if (OrderToDisplay.items.Count == 0)
+                    if (OrderToDisplay.Items.Count == 0)
                         OnZeroItemsLeft();
 
                     if (blnTopItem)
@@ -942,7 +942,7 @@ namespace DTRMNS
                         if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                         {
                             //check is deletable than delete else return directly
-                            if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.items.Where(x => x.IID ==SelectedItemIID).FirstOrDefault()))
+                            if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.Items.Where(x => x.IID ==SelectedItemIID).FirstOrDefault()))
                                 return;
                         }
 
@@ -952,7 +952,7 @@ namespace DTRMNS
                         {
                             try
                             {
-                                OrderItem oi = OrderToDisplay.items.Where(x => x.IID == SelectedItemIID).FirstOrDefault();
+                                OrderItem oi = OrderToDisplay.Items.Where(x => x.IID == SelectedItemIID).FirstOrDefault();
                                 if (oi != null)
                                 {
                                     Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
@@ -977,7 +977,7 @@ namespace DTRMNS
 
                         OrderToDisplay.DecrementOrderItem(SelectedItemIID);
                         Display();
-                        if (OrderToDisplay.items.Count == 0)
+                        if (OrderToDisplay.Items.Count == 0)
                             OnZeroItemsLeft();
                     }
                 }
@@ -1097,7 +1097,7 @@ namespace DTRMNS
         }
         private void btnSplitOneDown_Click(object sender, EventArgs e)
         {
-            if (OrderToSplit != null && OrderToSplit.items.Count == 1 && OrderToSplit.items[0].Quantity == 1)
+            if (OrderToSplit != null && OrderToSplit.Items.Count == 1 && OrderToSplit.Items[0].Quantity == 1)
                 return;
             OnSplitContinuing();
             if (lvwSplittingOrder.SelectedItems.Count > 0)
@@ -1108,12 +1108,12 @@ namespace DTRMNS
                 string IID = lvwSplittingOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                OrderItem oiNew = OrderToSplit.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                OrderItem oiNew = OrderToSplit.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.OrderIID = oiNew.OrderGroupIID = OrderToDisplay.IID;
 
                 //Drop 1 from ordertosplit and save
-                if (!OrderToSplit.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+                if (!OrderToSplit.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToSplit.DeleteOrderItem(IID);
                 bslayer.SaveOrder(OrderToSplit);
 
@@ -1137,14 +1137,14 @@ namespace DTRMNS
                 string IID = lvwOrder.SelectedItems[0].Text;
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                OrderItem oiNew = OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+                OrderItem oiNew = OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
                 oiNew.Quantity = 1;
                 oiNew.OrderIID = oiNew.OrderGroupIID = OrderToSplit.IID;
 
 
 
                 //Drop 1 from ordertodisplay and save
-                if (!OrderToDisplay.items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+                if (!OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToDisplay.DeleteOrderItem(IID);
                 bslayer.SaveOrder(OrderToDisplay);
 
@@ -1163,13 +1163,13 @@ namespace DTRMNS
 
         private void btnSplitAllDown_Click(object sender, EventArgs e)
         {
-            if (OrderToSplit != null && OrderToSplit.items.Count == 1)
+            if (OrderToSplit != null && OrderToSplit.Items.Count == 1)
                 return;
             OnSplitContinuing();
             if (lvwSplittingOrder.SelectedItems.Count > 0)
             {
                 ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
-                OrderItem oi = OrderToSplit.items.Where(x => x.IID == lvi.Text).FirstOrDefault();
+                OrderItem oi = OrderToSplit.Items.Where(x => x.IID == lvi.Text).FirstOrDefault();
                 oi.OrderIID = OrderToDisplay.IID;
                 OrderToSplit.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToSplit);
@@ -1187,7 +1187,7 @@ namespace DTRMNS
             if (lvwOrder.SelectedItems.Count > 0)
             {
                 ListViewItem lvi = lvwOrder.SelectedItems[0];
-                OrderItem oi = OrderToDisplay.items.Where(x => x.IID == lvi.Text).FirstOrDefault();
+                OrderItem oi = OrderToDisplay.Items.Where(x => x.IID == lvi.Text).FirstOrDefault();
                 oi.OrderIID = oi.OrderGroupIID = OrderToSplit.IID;
                 OrderToDisplay.DeleteOrderItem(oi.IID);
                 bslayer.SaveOrder(OrderToDisplay);

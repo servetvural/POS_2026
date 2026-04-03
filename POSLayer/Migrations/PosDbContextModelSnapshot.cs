@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using POSLayer.Models;
+using POSLayer.Context;
 
 #nullable disable
 
@@ -117,6 +117,9 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
@@ -124,6 +127,8 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("IID");
+
+                    b.HasIndex("ShopIID");
 
                     b.ToTable("Bonus");
                 });
@@ -430,10 +435,15 @@ namespace POSLayer.Migrations
                     b.Property<double>("Rate")
                         .HasColumnType("float");
 
+                    b.Property<string>("ShopIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("Shortable")
                         .HasColumnType("bit");
 
                     b.HasKey("IID");
+
+                    b.HasIndex("ShopIID");
 
                     b.ToTable("Employees");
                 });
@@ -602,14 +612,14 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LockedClientIP")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("MoneyPaid")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderType")
                         .HasColumnType("int");
@@ -630,23 +640,26 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("SessionIID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("TableIID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TableName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Waiter")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserIID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("IID");
 
                     b.HasIndex("CustomerIID");
+
+                    b.HasIndex("SessionIID");
+
+                    b.HasIndex("TableIID");
+
+                    b.HasIndex("UserIID");
 
                     b.ToTable("Orders");
                 });
@@ -701,9 +714,14 @@ namespace POSLayer.Migrations
                     b.Property<double>("TaxPercent")
                         .HasColumnType("float");
 
+                    b.Property<string>("XOrderIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IID");
 
                     b.HasIndex("OrderIID");
+
+                    b.HasIndex("XOrderIID");
 
                     b.ToTable("OrderItems");
                 });
@@ -748,6 +766,51 @@ namespace POSLayer.Migrations
                     b.ToTable("Printers");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.PurchaseInvoice", b =>
+                {
+                    b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SupplierIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("IID");
+
+                    b.HasIndex("SupplierIID");
+
+                    b.ToTable("PurchaseInvoices");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.PurchaseInvoiceItem", b =>
+                {
+                    b.Property<string>("IID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PurchaseInvoiceIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("StockItemIID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("IID");
+
+                    b.HasIndex("PurchaseInvoiceIID");
+
+                    b.HasIndex("StockItemIID");
+
+                    b.ToTable("PurchaseInvoiceItem");
+                });
+
             modelBuilder.Entity("POSLayer.Models.RecipeItem", b =>
                 {
                     b.Property<string>("IID")
@@ -781,7 +844,7 @@ namespace POSLayer.Migrations
 
                     b.HasIndex("StockItemIID");
 
-                    b.ToTable("RecipeItems", (string)null);
+                    b.ToTable("RecipeItems");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Session", b =>
@@ -856,6 +919,9 @@ namespace POSLayer.Migrations
                     b.Property<double>("Pound500")
                         .HasColumnType("float");
 
+                    b.Property<string>("ShopIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -869,6 +935,8 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("IID");
+
+                    b.HasIndex("ShopIID");
 
                     b.ToTable("Sessions");
                 });
@@ -1051,7 +1119,7 @@ namespace POSLayer.Migrations
 
                     b.HasIndex("StockItemIID");
 
-                    b.ToTable("StockItemUsages", (string)null);
+                    b.ToTable("StockItemUsages");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Supplier", b =>
@@ -1237,14 +1305,14 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("LockedClientIP")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("MoneyPaid")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("OrderType")
                         .HasColumnType("int");
@@ -1265,23 +1333,26 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("SessionIID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("TableIID")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TableName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Waiter")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("UserIID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("IID");
 
                     b.HasIndex("CustomerIID");
+
+                    b.HasIndex("SessionIID");
+
+                    b.HasIndex("TableIID");
+
+                    b.HasIndex("UserIID");
 
                     b.ToTable("Xorders");
                 });
@@ -1343,17 +1414,25 @@ namespace POSLayer.Migrations
                     b.ToTable("XorderItems");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.Bonus", b =>
+                {
+                    b.HasOne("POSLayer.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopIID");
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("POSLayer.Models.Category", b =>
                 {
                     b.HasOne("POSLayer.Models.Distribution", "Distribution")
                         .WithMany()
-                        .HasForeignKey("DistributionIID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("DistributionIID");
 
                     b.HasOne("POSLayer.Models.TheMenu", "Menu")
                         .WithMany("categories")
                         .HasForeignKey("MenuIID")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Distribution");
@@ -1369,8 +1448,7 @@ namespace POSLayer.Migrations
 
                     b.HasOne("POSLayer.Models.Distribution", "Distribution")
                         .WithMany()
-                        .HasForeignKey("DistributionIID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("DistributionIID");
 
                     b.Navigation("Category");
 
@@ -1407,51 +1485,118 @@ namespace POSLayer.Migrations
                     b.Navigation("Printer");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.Employee", b =>
+                {
+                    b.HasOne("POSLayer.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopIID");
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("POSLayer.Models.KitchenOrderItem", b =>
                 {
-                    b.HasOne("POSLayer.Models.KitchenOrder", null)
-                        .WithMany("items")
+                    b.HasOne("POSLayer.Models.KitchenOrder", "KitchenOrder")
+                        .WithMany("Items")
                         .HasForeignKey("KitchenOrderIID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("KitchenOrder");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Order", b =>
                 {
                     b.HasOne("POSLayer.Models.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerIID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CustomerIID");
+
+                    b.HasOne("POSLayer.Models.Session", "Session")
+                        .WithMany("Orders")
+                        .HasForeignKey("SessionIID");
+
+                    b.HasOne("POSLayer.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableIID");
+
+                    b.HasOne("POSLayer.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserIID");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Session");
+
+                    b.Navigation("Table");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("POSLayer.Models.OrderItem", b =>
                 {
                     b.HasOne("POSLayer.Models.Order", "Order")
-                        .WithMany("items")
+                        .WithMany("Items")
                         .HasForeignKey("OrderIID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("POSLayer.Models.XOrder", null)
+                        .WithMany("Items")
+                        .HasForeignKey("XOrderIID");
+
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.PurchaseInvoice", b =>
+                {
+                    b.HasOne("POSLayer.Models.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.PurchaseInvoiceItem", b =>
+                {
+                    b.HasOne("POSLayer.Models.PurchaseInvoice", "PurchaseInvoice")
+                        .WithMany("Items")
+                        .HasForeignKey("PurchaseInvoiceIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("POSLayer.Models.StockItem", "StockItem")
+                        .WithMany("purchaseInvoiceItems")
+                        .HasForeignKey("StockItemIID");
+
+                    b.Navigation("PurchaseInvoice");
+
+                    b.Navigation("StockItem");
                 });
 
             modelBuilder.Entity("POSLayer.Models.RecipeItem", b =>
                 {
                     b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
                         .WithMany("recipes")
-                        .HasForeignKey("CategoryItemIID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CategoryItemIID");
 
                     b.HasOne("POSLayer.Models.StockItem", "StockItem")
-                        .WithMany("recipes")
-                        .HasForeignKey("StockItemIID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .WithMany("recipeItems")
+                        .HasForeignKey("StockItemIID");
 
                     b.Navigation("CategoryItem");
 
                     b.Navigation("StockItem");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.Session", b =>
+                {
+                    b.HasOne("POSLayer.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopIID");
+
+                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
@@ -1467,13 +1612,11 @@ namespace POSLayer.Migrations
                 {
                     b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
                         .WithMany("stockUsages")
-                        .HasForeignKey("CategoryItemIID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("CategoryItemIID");
 
                     b.HasOne("POSLayer.Models.StockItem", "StockItem")
                         .WithMany("stockUsages")
-                        .HasForeignKey("StockItemIID")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("StockItemIID");
 
                     b.Navigation("CategoryItem");
 
@@ -1486,13 +1629,31 @@ namespace POSLayer.Migrations
                         .WithMany()
                         .HasForeignKey("CustomerIID");
 
+                    b.HasOne("POSLayer.Models.Session", "Session")
+                        .WithMany()
+                        .HasForeignKey("SessionIID");
+
+                    b.HasOne("POSLayer.Models.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableIID");
+
+                    b.HasOne("POSLayer.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserIID");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("Session");
+
+                    b.Navigation("Table");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("POSLayer.Models.XOrderItem", b =>
                 {
-                    b.HasOne("POSLayer.Models.XOrder", "Order")
-                        .WithMany("items")
+                    b.HasOne("POSLayer.Models.Order", "Order")
+                        .WithMany()
                         .HasForeignKey("OrderIID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1524,12 +1685,12 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.KitchenOrder", b =>
                 {
-                    b.Navigation("items");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Order", b =>
                 {
-                    b.Navigation("items");
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Printer", b =>
@@ -1537,9 +1698,21 @@ namespace POSLayer.Migrations
                     b.Navigation("DistributionPrinters");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.PurchaseInvoice", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("POSLayer.Models.Session", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
                 {
-                    b.Navigation("recipes");
+                    b.Navigation("purchaseInvoiceItems");
+
+                    b.Navigation("recipeItems");
 
                     b.Navigation("stockUsages");
                 });
@@ -1553,7 +1726,7 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.XOrder", b =>
                 {
-                    b.Navigation("items");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

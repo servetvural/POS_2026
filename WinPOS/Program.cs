@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using PosLayer.Repository;
 
-using POSLayer.Models;
+using POSLayer.Context;
 using POSLayer.Repository.IRepository;
 
 namespace WinPOS;

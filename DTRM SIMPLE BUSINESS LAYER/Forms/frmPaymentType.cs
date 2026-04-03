@@ -13,7 +13,7 @@ using POSLayer.Library;
 namespace DTRMNS {
     public partial class frmPaymentType : Form {
 
-        public PaymentMethods SelectedPaymentMethod = PaymentMethods.Unknown;
+        public PaymentMethods SelectedPaymentMethod;
         public frmPaymentType() {
             InitializeComponent();
         }
@@ -25,7 +25,7 @@ namespace DTRMNS {
 
         private void btnCancel_Click(object sender, EventArgs e) {
             this.DialogResult = DialogResult.Cancel;
-            SelectedPaymentMethod = PaymentMethods.Unknown;
+            SelectedPaymentMethod = PaymentMethods.NotPaid;
             Close();
         }
 

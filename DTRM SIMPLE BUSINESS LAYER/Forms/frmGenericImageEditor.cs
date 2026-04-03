@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using POSWinFormLayer;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace DTRMNS {
     public partial class frmGenericImageEditor : Form {
-        private DTRMSimpleBusiness bslayer;
+        IRepository<GenericImage> repoImage;
+
         public GenericImage gim;
         private bool blnLockID;
         private string setID;
 
-        public frmGenericImageEditor(DTRMSimpleBusiness bslayer, GenericImage gim) {
+        public frmGenericImageEditor(IRepository<GenericImage> _repoImage,  GenericImage gim) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoImage = _repoImage;
             this.gim = gim;
         }
-        public frmGenericImageEditor(DTRMSimpleBusiness bslayer, GenericImage gim,string setID) {
+        public frmGenericImageEditor(IRepository<GenericImage> _repoImage,  GenericImage gim,string setID) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoImage = _repoImage;
             this.gim = gim;
             this.setID = setID;
             blnLockID = true;
@@ -75,9 +72,7 @@ namespace DTRMNS {
             dlg.FileName = gim.ImageFileName;
             if (dlg.ShowDialog() == DialogResult.OK) {
                 try {
-                    //await bslayer.SaveGenericImage(gim)
                     File.WriteAllBytes(dlg.FileName, gim.DisplayImage);
-                    //gim.DisplayImage.Save(dlg.FileName); //, ImageFormat.Jpeg);
                     gim.ImageFileName = dlg.FileName;
                 } catch (Exception ex) {
                     MessageBox.Show(ex.Message);
@@ -94,7 +89,7 @@ namespace DTRMNS {
             gim.ExtraText = txtExtra.Text;
             gim.DisplayImage = pbox.Image.ToByteArray();
 
-            if (await bslayer.SaveGenericImage(gim)) {
+            if (await repoImage.Save(gim) != null) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }

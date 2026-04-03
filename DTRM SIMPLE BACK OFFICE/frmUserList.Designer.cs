@@ -1,7 +1,7 @@
 ﻿using POSLayer.Models;
 
 namespace DTRMSimpleBackOffice {
-    partial class frmUserEditor {
+    partial class frmUserList {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -29,21 +29,23 @@ namespace DTRMSimpleBackOffice {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUserEditor));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUserList));
             dgv = new System.Windows.Forms.DataGridView();
-            userBindingSource = new System.Windows.Forms.BindingSource(components);
-            barMain = new System.Windows.Forms.ToolStrip();
-            cmdAdd = new System.Windows.Forms.ToolStripButton();
-            cmdEdit = new System.Windows.Forms.ToolStripButton();
-            cmdDelete = new System.Windows.Forms.ToolStripButton();
             colIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             userNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             userPasswordDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             colAccessLevel = new System.Windows.Forms.DataGridViewTextBoxColumn();
             DOrder = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            userBindingSource = new System.Windows.Forms.BindingSource(components);
+            barMain = new System.Windows.Forms.ToolStrip();
+            cmdAdd = new System.Windows.Forms.ToolStripButton();
+            cmdEdit = new System.Windows.Forms.ToolStripButton();
+            cmdDelete = new System.Windows.Forms.ToolStripButton();
             tsSort = new System.Windows.Forms.ToolStripButton();
             tsMoveUp = new System.Windows.Forms.ToolStripButton();
             tsMoveDown = new System.Windows.Forms.ToolStripButton();
+            btnClose = new System.Windows.Forms.ToolStripButton();
+            btnReload = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             ((System.ComponentModel.ISupportInitialize)userBindingSource).BeginInit();
             barMain.SuspendLayout();
@@ -74,55 +76,9 @@ namespace DTRMSimpleBackOffice {
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 25;
             dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(945, 672);
+            dgv.Size = new System.Drawing.Size(975, 389);
             dgv.TabIndex = 0;
             dgv.CellDoubleClick += dgv_CellDoubleClick;
-            // 
-            // userBindingSource
-            // 
-            userBindingSource.DataSource = typeof(User);
-            // 
-            // barMain
-            // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete, tsSort, tsMoveUp, tsMoveDown });
-            barMain.Location = new System.Drawing.Point(0, 0);
-            barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(945, 54);
-            barMain.TabIndex = 5;
-            barMain.Text = "toolStrip1";
-            // 
-            // cmdAdd
-            // 
-            cmdAdd.Image = Properties.Resources.arti32;
-            cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
-            cmdAdd.Name = "cmdAdd";
-            cmdAdd.Size = new System.Drawing.Size(59, 51);
-            cmdAdd.Text = "Add User";
-            cmdAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            cmdAdd.Click += btnAddUser_Click;
-            // 
-            // cmdEdit
-            // 
-            cmdEdit.Image = Properties.Resources.MatReport_32;
-            cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
-            cmdEdit.Name = "cmdEdit";
-            cmdEdit.Size = new System.Drawing.Size(57, 51);
-            cmdEdit.Text = "Edit User";
-            cmdEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            cmdEdit.Click += btnEditUser_Click;
-            // 
-            // cmdDelete
-            // 
-            cmdDelete.Image = Properties.Resources.eksi32;
-            cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
-            cmdDelete.Name = "cmdDelete";
-            cmdDelete.Size = new System.Drawing.Size(70, 51);
-            cmdDelete.Text = "Delete User";
-            cmdDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            cmdDelete.Click += btnDeleteUser_Click;
             // 
             // colIID
             // 
@@ -164,6 +120,55 @@ namespace DTRMSimpleBackOffice {
             DOrder.ReadOnly = true;
             DOrder.Width = 70;
             // 
+            // userBindingSource
+            // 
+            userBindingSource.DataSource = typeof(User);
+            // 
+            // barMain
+            // 
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdAdd, cmdEdit, cmdDelete, btnReload, tsSort, tsMoveUp, tsMoveDown, btnClose });
+            barMain.Location = new System.Drawing.Point(0, 0);
+            barMain.Name = "barMain";
+            barMain.Size = new System.Drawing.Size(975, 54);
+            barMain.TabIndex = 5;
+            barMain.Text = "toolStrip1";
+            // 
+            // cmdAdd
+            // 
+            cmdAdd.AutoSize = false;
+            cmdAdd.Image = Properties.Resources.arti32;
+            cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdAdd.Name = "cmdAdd";
+            cmdAdd.Size = new System.Drawing.Size(60, 51);
+            cmdAdd.Text = "Add User";
+            cmdAdd.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdAdd.Click += btnAddUser_Click;
+            // 
+            // cmdEdit
+            // 
+            cmdEdit.AutoSize = false;
+            cmdEdit.Image = Properties.Resources.MatReport_32;
+            cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdEdit.Name = "cmdEdit";
+            cmdEdit.Size = new System.Drawing.Size(60, 51);
+            cmdEdit.Text = "Edit User";
+            cmdEdit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdEdit.Click += btnEditUser_Click;
+            // 
+            // cmdDelete
+            // 
+            cmdDelete.AutoSize = false;
+            cmdDelete.Image = Properties.Resources.eksi32;
+            cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
+            cmdDelete.Name = "cmdDelete";
+            cmdDelete.Size = new System.Drawing.Size(60, 51);
+            cmdDelete.Text = "Delete";
+            cmdDelete.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            cmdDelete.Click += btnDeleteUser_Click;
+            // 
             // tsSort
             // 
             tsSort.AutoSize = false;
@@ -200,18 +205,42 @@ namespace DTRMSimpleBackOffice {
             tsMoveDown.Text = "toolStripButton1";
             tsMoveDown.Click += tsMoveDown_Click;
             // 
-            // frmUserEditor
+            // btnClose
+            // 
+            btnClose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            btnClose.AutoSize = false;
+            btnClose.Image = Properties.Resources.Cancel;
+            btnClose.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnClose.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnClose.Name = "btnClose";
+            btnClose.Size = new System.Drawing.Size(60, 51);
+            btnClose.Text = "Close";
+            btnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnClose.Click += btnClose_Click;
+            // 
+            // btnReload
+            // 
+            btnReload.AutoSize = false;
+            btnReload.Image = Properties.Resources.Refresh_2;
+            btnReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnReload.Name = "btnReload";
+            btnReload.Size = new System.Drawing.Size(60, 51);
+            btnReload.Text = "Reload";
+            btnReload.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            // 
+            // frmUserList
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(945, 726);
+            ClientSize = new System.Drawing.Size(975, 443);
             Controls.Add(dgv);
             Controls.Add(barMain);
             Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            Name = "frmUserEditor";
+            Name = "frmUserList";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "USER  EDITOR";
+            Text = "Users";
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += frmUserEditor_Load;
             ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
@@ -240,5 +269,7 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripButton tsSort;
         private System.Windows.Forms.ToolStripButton tsMoveUp;
         private System.Windows.Forms.ToolStripButton tsMoveDown;
+        private System.Windows.Forms.ToolStripButton btnClose;
+        private System.Windows.Forms.ToolStripButton btnReload;
     }
 }

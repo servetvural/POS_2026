@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using Microsoft.EntityFrameworkCore;
 
+using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Views;
@@ -14,6 +15,7 @@ public interface IRepository<T> where T : BaseClass
     PosDbContext GetDBContext();
     Task<bool> IsDatabaseExist();
     Task<bool> Any();
+    Task<bool> Any(string IID);
     Task<T> Get(string IID, string includeItems = "");
     Task<T> GetFirst(string includeItems = "");
     Task<T> GetByField(string fieldName, object value, string includeItems = "");       

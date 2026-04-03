@@ -173,5 +173,10 @@ namespace DTRMNS {
                 await LoadSuppliers();
             }
         }
+
+        private void btnClose2_Click(object sender, EventArgs e)
+        {
+            
+        }
     }
 }

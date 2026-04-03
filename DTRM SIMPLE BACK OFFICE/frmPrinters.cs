@@ -96,18 +96,18 @@ namespace DTRMSimpleBackOffice
 
         private async void btnAdd_Click(object sender, EventArgs e)
         {
-            frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, new Printer());
+            frmPrinterDetails frm = ActivatorUtilities.CreateInstance<frmPrinterDetails>(ServiceHelper.Services, new Printer());
             if (frm.ShowDialog() == DialogResult.OK)
-               await LoadPrinters();
+                await LoadPrinters();
         }
 
         private async void btnEdit_Click(object sender, EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                frmSinglePrinter frm = ActivatorUtilities.CreateInstance<frmSinglePrinter>(ServiceHelper.Services, (Printer)dgv.SelectedRows[0].DataBoundItem);
+                frmPrinterDetails frm = ActivatorUtilities.CreateInstance<frmPrinterDetails>(ServiceHelper.Services, (Printer)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
-                  await  LoadPrinters();
+                    await LoadPrinters();
             }
         }
 
@@ -118,7 +118,7 @@ namespace DTRMSimpleBackOffice
                 if (MessageBox.Show("You are about to delete Printer from the system", "Delete Printer", MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
                     await repoPrinter.Delete(((Printer)dgv.SelectedRows[0].DataBoundItem).IID);
-                  await  LoadPrinters();
+                    await LoadPrinters();
                 }
             }
         }
@@ -131,7 +131,7 @@ namespace DTRMSimpleBackOffice
 
         private async void chkAllPrinters_Click(object sender, EventArgs e)
         {
-           await LoadPrinters();
+            await LoadPrinters();
         }
 
         private async void btnPrintTestPage_Click(object sender, EventArgs e)
@@ -239,6 +239,16 @@ namespace DTRMSimpleBackOffice
                 await repoPrinter.MoveDown((Printer)dgv.SelectedRows[0].DataBoundItem);
                 await LoadPrinters();
             }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private async void btnReload_Click(object sender, EventArgs e)
+        {
+            await LoadPrinters();
         }
     }
 }

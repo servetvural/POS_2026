@@ -54,6 +54,7 @@ namespace DTRMNS {
             tsSort = new System.Windows.Forms.ToolStripButton();
             tsMoveUp = new System.Windows.Forms.ToolStripButton();
             tsMoveDown = new System.Windows.Forms.ToolStripButton();
+            btnClose2 = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
             ((System.ComponentModel.ISupportInitialize)supplierBindingSource).BeginInit();
             panel1.SuspendLayout();
@@ -85,7 +86,7 @@ namespace DTRMNS {
             dgv.ReadOnly = true;
             dgv.RowHeadersWidth = 25;
             dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(1034, 612);
+            dgv.Size = new System.Drawing.Size(987, 359);
             dgv.TabIndex = 6;
             dgv.CellDoubleClick += dgv_CellDoubleClick;
             // 
@@ -165,11 +166,11 @@ namespace DTRMNS {
             panel1.Controls.Add(btnClose);
             panel1.Controls.Add(btnSave);
             panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            panel1.Location = new System.Drawing.Point(0, 666);
+            panel1.Location = new System.Drawing.Point(0, 413);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
             panel1.Padding = new System.Windows.Forms.Padding(12);
-            panel1.Size = new System.Drawing.Size(1034, 81);
+            panel1.Size = new System.Drawing.Size(987, 81);
             panel1.TabIndex = 45;
             // 
             // btnSelect
@@ -178,12 +179,15 @@ namespace DTRMNS {
             btnSelect.FlatAppearance.BorderSize = 0;
             btnSelect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             btnSelect.ForeColor = System.Drawing.SystemColors.ControlText;
-            btnSelect.Location = new System.Drawing.Point(584, 12);
-            btnSelect.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSelect.Image = Properties.Resources.tickgreen;
+            btnSelect.Location = new System.Drawing.Point(537, 12);
+            btnSelect.Margin = new System.Windows.Forms.Padding(4, 3, 20, 3);
             btnSelect.Name = "btnSelect";
             btnSelect.Size = new System.Drawing.Size(146, 57);
             btnSelect.TabIndex = 44;
             btnSelect.Text = "SELECT";
+            btnSelect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnSelect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             btnSelect.UseVisualStyleBackColor = false;
             btnSelect.Click += btnSelect_Click;
             // 
@@ -193,12 +197,15 @@ namespace DTRMNS {
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             btnClose.ForeColor = System.Drawing.SystemColors.ControlText;
-            btnClose.Location = new System.Drawing.Point(730, 12);
-            btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnClose.Image = Properties.Resources.Cancel;
+            btnClose.Location = new System.Drawing.Point(683, 12);
+            btnClose.Margin = new System.Windows.Forms.Padding(4, 3, 20, 3);
             btnClose.Name = "btnClose";
             btnClose.Size = new System.Drawing.Size(146, 57);
             btnClose.TabIndex = 42;
             btnClose.Text = "CANCEL";
+            btnClose.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnClose.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             btnClose.UseVisualStyleBackColor = false;
             btnClose.Click += btnClose_Click;
             // 
@@ -207,22 +214,25 @@ namespace DTRMNS {
             btnSave.Dock = System.Windows.Forms.DockStyle.Right;
             btnSave.FlatAppearance.BorderSize = 0;
             btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            btnSave.Location = new System.Drawing.Point(876, 12);
+            btnSave.Image = Properties.Resources.save32;
+            btnSave.Location = new System.Drawing.Point(829, 12);
             btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnSave.Name = "btnSave";
             btnSave.Size = new System.Drawing.Size(146, 57);
             btnSave.TabIndex = 43;
             btnSave.Text = "SAVE";
+            btnSave.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnSave.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             btnSave.UseVisualStyleBackColor = false;
             btnSave.Visible = false;
             btnSave.Click += btnSave_Click;
             // 
             // barMain
             // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnEdit, btnDelete, btnReload, btnExportAsJson, btnImportFromJson, tsSort, tsMoveUp, tsMoveDown });
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnAdd, btnEdit, btnDelete, btnReload, btnExportAsJson, btnImportFromJson, tsSort, tsMoveUp, tsMoveDown, btnClose2 });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(1034, 54);
+            barMain.Size = new System.Drawing.Size(987, 54);
             barMain.TabIndex = 54;
             barMain.Text = "toolStrip1";
             // 
@@ -261,7 +271,7 @@ namespace DTRMNS {
             // 
             // btnReload
             // 
-            btnReload.Image = Properties.Resources.Reload_32;
+            btnReload.Image = Properties.Resources.Refresh_2;
             btnReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnReload.Name = "btnReload";
@@ -328,11 +338,24 @@ namespace DTRMNS {
             tsMoveDown.Text = "toolStripButton1";
             tsMoveDown.Click += tsMoveDown_Click;
             // 
+            // btnClose2
+            // 
+            btnClose2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            btnClose2.AutoSize = false;
+            btnClose2.Image = Properties.Resources.Cancel;
+            btnClose2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            btnClose2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnClose2.Name = "btnClose2";
+            btnClose2.Size = new System.Drawing.Size(60, 51);
+            btnClose2.Text = "Close";
+            btnClose2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnClose2.Click += btnClose_Click;
+            // 
             // frmSupplierList
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1034, 747);
+            ClientSize = new System.Drawing.Size(987, 494);
             Controls.Add(dgv);
             Controls.Add(barMain);
             Controls.Add(panel1);
@@ -376,5 +399,6 @@ namespace DTRMNS {
         private System.Windows.Forms.DataGridViewTextBoxColumn email2DataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn whatsupDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn DOrder;
+        private System.Windows.Forms.ToolStripButton btnClose2;
     }
 }

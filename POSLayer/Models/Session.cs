@@ -5,6 +5,10 @@ namespace POSLayer.Models;
 
 public partial class Session      : BaseClass
 {
+    public string? ShopIID { get; set; }
+    public Shop? Shop { get; set; }
+
+
     public DateTime StartDate { get; set; } = DateTime.Now;
 
     public DateTime? EndDate { get; set; }
@@ -54,4 +58,9 @@ public partial class Session      : BaseClass
     public double X2total { get; set; }
 
     public double X3total { get; set; }
+
+    public List<Order> Orders { get; set; } = new();
+
+
+    //public double UnCompletedOrdersCalculatedValue => 
 }

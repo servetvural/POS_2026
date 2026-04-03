@@ -9,11 +9,14 @@ namespace POSLayer.Models;
 public partial class KitchenOrderItem : BaseClass
 {
 
+    public string KitchenOrderIID { get; set; } = null!;
+    public KitchenOrder KitchenOrder { get; set; } // Navigation Property
+
     public int Quantity { get; set; }
 
     public string ItemText { get; set; } = null!;
 
-    public string KitchenOrderIID { get; set; } = null!;
+   
 
     public string DistributionIID { get; set; } = null!;
 

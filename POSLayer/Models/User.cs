@@ -7,11 +7,11 @@ namespace POSLayer.Models;
 
 public partial class User : BaseClass
 {
-    public string? UserName { get; set; } = "unknown";
+    public string? UserName { get; set; } = "UnKnown";
 
     public string? UserPassword { get; set; } = string.Empty;
 
-    public POSLayer.Library.AccessLevels AccessLevel { get; set; }   = AccessLevels.User;
+    public AccessLevels AccessLevel { get; set; }   = AccessLevels.User;
 
     public User()
     {

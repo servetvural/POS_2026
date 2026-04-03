@@ -16,17 +16,17 @@ using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmUserEditor : Form
+    public partial class frmUserList : Form
     {
 
         IRepository<User> repoUser;
 
         private BindingSource _userSource = new BindingSource();
-        public frmUserEditor()
+        public frmUserList()
         {
             InitializeComponent();
         }
-        public frmUserEditor(IRepository<User> _repoUser)
+        public frmUserList(IRepository<User> _repoUser)
         {
             InitializeComponent();
             repoUser = _repoUser;
@@ -44,7 +44,7 @@ namespace DTRMSimpleBackOffice {
 
         private async void btnAddUser_Click(object sender, System.EventArgs e)
         {
-            frmSingleUser frm = ActivatorUtilities.CreateInstance<frmSingleUser>(ServiceHelper.Services);
+            frmUser frm = ActivatorUtilities.CreateInstance<frmUser>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
                 await LoadUsers();
         }
@@ -52,7 +52,7 @@ namespace DTRMSimpleBackOffice {
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                frmSingleUser frm = ActivatorUtilities.CreateInstance<frmSingleUser>(ServiceHelper.Services, (User)dgv.SelectedRows[0].DataBoundItem);
+                frmUser frm = ActivatorUtilities.CreateInstance<frmUser>(ServiceHelper.Services, (User)dgv.SelectedRows[0].DataBoundItem);
                 if (frm.ShowDialog() == DialogResult.OK)
                     await LoadUsers();
             }
@@ -93,6 +93,11 @@ namespace DTRMSimpleBackOffice {
                 await repoUser.MoveDown((User)dgv.SelectedRows[0].DataBoundItem);
                 await LoadUsers();
             }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

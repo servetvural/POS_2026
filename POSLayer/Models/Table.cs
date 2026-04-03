@@ -27,7 +27,7 @@ public partial class Table : BaseClass
 
     public int Height { get; set; } = 50;
 
-    public string? GroupIID { get; set; } = "0";
+    public string? GroupIID { get; set; }
 
     public string? ParentTableIID { get; set; }
 
@@ -47,7 +47,7 @@ public partial class Table : BaseClass
     {
        return new Table() {
             IID = IID,
-            TableName = TableName,
+            Number = Number,
             TableCovers = TableCovers,
             TableType = TableType,
             LockedClientIP = LockedClientIP,
@@ -69,7 +69,7 @@ public partial class Table : BaseClass
             ParentTableIID = IID,
             TableCovers = TableCovers,
             TableType = TableTypes.TemporaryTable,
-            TableName = TableName,
+            Number = Number,
             Shape = Shape
         };
     }

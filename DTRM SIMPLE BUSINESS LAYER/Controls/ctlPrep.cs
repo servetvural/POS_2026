@@ -18,10 +18,10 @@ namespace DTRMNS {
         }
 
         private void LoadKitchenOrder() {
-            dgv.DataSource = korder.items;
+            dgv.DataSource = korder.Items;
 
-            for (int i=0; i < korder.items.Count; i++) {
-                if (korder.items[i].Status == KitchenOrderStatusTypes.Completed)
+            for (int i=0; i < korder.Items.Count; i++) {
+                if (korder.Items[i].Status == KitchenOrderStatusTypes.Completed)
                     dgv.Rows[i].Cells[4].Value = (System.Drawing.Image)Properties.Resources.okay;
             }
 
@@ -30,7 +30,7 @@ namespace DTRMNS {
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewImageCell cellTick = dgv.Rows[e.RowIndex].Cells[4] as DataGridViewImageCell;
-            KitchenOrderItem koi = (KitchenOrderItem)korder.items[e.RowIndex];
+            KitchenOrderItem koi = (KitchenOrderItem)korder.Items[e.RowIndex];
             POSLayer.Models.OrderItem oi = null;
 
             switch (e.ColumnIndex)
@@ -50,7 +50,7 @@ namespace DTRMNS {
                         //koi.Modified = ModificationFlag.Completed;
                         //koi.ModifiedQuantity = koi.Quantity;
 
-                        oi = bslayer.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                        oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                         oi.OrderItemText = koi.ItemText;
                         bslayer.SaveOrderItem(oi);
                     }
@@ -78,7 +78,7 @@ namespace DTRMNS {
                                 //koi.Modified = ModificationFlag.Completed;
                                 //koi.ModifiedQuantity = koi.Quantity;
 
-                                oi = bslayer.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                                oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                                 oi.OrderItemText = koi.ItemText;
                                 bslayer.SaveOrderItem(oi);
                             }
@@ -111,7 +111,7 @@ namespace DTRMNS {
                     dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText;
                     dgv.Refresh();
 
-                    oi = bslayer.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                    oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                     oi.OrderItemText = koi.ItemText;
                     bslayer.SaveOrderItem(oi);
                     break;
@@ -154,7 +154,7 @@ namespace DTRMNS {
 
             for (int i = 0; i < dgv.Rows.Count; i++) {
                 DataGridViewImageCell cellTick = dgv.Rows[i].Cells[4] as DataGridViewImageCell;
-                KitchenOrderItem koi = (KitchenOrderItem)korder.items[i];
+                KitchenOrderItem koi = (KitchenOrderItem)korder.Items[i];
                 koi.Status = newStatus;
 
                 if (newStatus== KitchenOrderStatusTypes.Completed)                     

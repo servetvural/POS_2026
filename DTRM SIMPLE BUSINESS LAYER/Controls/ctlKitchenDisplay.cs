@@ -105,9 +105,9 @@ namespace DTRMNS {
             return ctl.singleResponseTime;
         }
 
-        private void Ctl_OrderDeleteRequested(string IID){
+        private async void Ctl_OrderDeleteRequested(string IID){
             try {
-                if (bslayer.DeleteKitchenOrder(IID, false)) {
+                if (await bslayer.DeleteKitchenOrder(IID, false)) {
                     pnlCompletedOrders.Controls.RemoveByKey(IID);
                     OrderDeleted(IID);
 

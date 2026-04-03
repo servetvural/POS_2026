@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
-
+﻿using System.ComponentModel;
 using POSLayer.Models;
 
 namespace POSLayer.Library;
@@ -19,7 +14,7 @@ public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAd
 
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
 public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
-public enum PaymentMethods { Unknown, Cash, Card, Online }
+public enum PaymentMethods { NotPaid, Cash, Card, Online }
 public enum AutoPaymentMethods { Selective, AutoCash }
 public enum PrinterTypes { Unknown, Kitchen, Receipt, Mutant }   
 public enum PrinterVisibilityTypes { Local, Global }

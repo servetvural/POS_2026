@@ -150,10 +150,10 @@ namespace DTRMNS {
 
                 //korder.ReorderForDistributionList(terminalTypeList, false);
                 bool blnExpand = false;
-                for (int i = 0; i < korder.items.Count; i++) {
+                for (int i = 0; i < korder.Items.Count; i++) {
                     int step = 0;
                     try {
-                        KitchenOrderItem koi = korder.items[i];
+                        KitchenOrderItem koi = korder.Items[i];
                         step = 1;
                         ctlKitchenOrderItem ctlkoi = new ctlKitchenOrderItem();
                         ctlkoi.ActiveLabel.Text = "";
@@ -286,16 +286,16 @@ namespace DTRMNS {
             korder.CompletedDateTime = DateTime.Now; // DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
             Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
-                foreach (KitchenOrderItem item in korder.items) {
+                foreach (KitchenOrderItem item in korder.Items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
                 }
                 bslayer.SaveKitchenOrder(korder);
 
             } else {
-                foreach (KitchenOrderItem item in korder.items) {
+                foreach (KitchenOrderItem item in korder.Items) {
                     if (blnWaiting && (distribution.IID == item.DistributionIID)  && item.Status == KitchenOrderStatusTypes.Waiting) {
 
-                        OrderItem oitem = relatedOrder.items.Find(x => x.EntityButtonIID == item.EntityButtonIID);
+                        OrderItem oitem = relatedOrder.Items.Find(x => x.EntityButtonIID == item.EntityButtonIID);
                         if (oitem != null)
                             oitem.CompletedQuantity += item.Quantity;
                         item.Status = KitchenOrderStatusTypes.Completed;

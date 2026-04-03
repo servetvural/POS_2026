@@ -5,9 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 using POSLayer.Library;
+using POSLayer.Models;
 using POSLayer.Views;
 
-namespace POSLayer.Models;
+namespace POSLayer.Context;
 
 public partial class PosDbContext : DbContext
 {
@@ -86,7 +87,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<Table> Tables { get; set; }
 
-    public virtual DbSet<TableGroup> TableGroups { get; set; }
+    //public virtual DbSet<TableGroup> TableGroups { get; set; }
 
     // public virtual DbSet<TaxPercentList> TaxPercentLists { get; set; }
 
@@ -112,8 +113,13 @@ public partial class PosDbContext : DbContext
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseSqlServer("Server=Servet2022\\SQLExpress;Database=DTRM;User Id=sa;Password=servetvural;TrustServerCertificate=True;Encrypt=True;");
 
+
+    public virtual DbSet<PurchaseInvoice> PurchaseInvoices { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        //modelBuilder.Entity<Order>().ToTable("Orders");
+        //modelBuilder.Entity<XOrder>().ToTable("XOrders"); // This 
 
         // Define PKs for all entities inheriting from BaseClass
         foreach (var entityType in modelBuilder.Model.GetEntityTypes()
@@ -143,77 +149,77 @@ public partial class PosDbContext : DbContext
 
 
 
-        // Configure One-to-Many: Menu -> Category
-        modelBuilder.Entity<Category>()
-            .HasOne(c => c.Menu)
-            .WithMany(m => m.categories)
-            .HasForeignKey(c => c.MenuIID)
-            .OnDelete(DeleteBehavior.NoAction);
+        //// Configure One-to-Many: Menu -> Category
+        //modelBuilder.Entity<Category>()
+        //    .HasOne(c => c.Menu)
+        //    .WithMany(m => m.categories)
+        //    .HasForeignKey(c => c.MenuIID)
+        //    .OnDelete(DeleteBehavior.NoAction);
 
-        // Configure Optional One-to-Many: Distribution -> Category
-        modelBuilder.Entity<Category>()
-            .HasOne(c => c.Distribution)
-            .WithMany() // No collection on Distribution for this
-            .HasForeignKey(c => c.DistributionIID)
-            .OnDelete(DeleteBehavior.SetNull);
+        //// Configure Optional One-to-Many: Distribution -> Category
+        //modelBuilder.Entity<Category>()
+        //    .HasOne(c => c.Distribution)
+        //    .WithMany() // No collection on Distribution for this
+        //    .HasForeignKey(c => c.DistributionIID)
+        //    .OnDelete(DeleteBehavior.SetNull);
 
-        // Configure Optional One-to-Many: Distribution -> CategoryItem
-        modelBuilder.Entity<CategoryItem>()
-            .HasOne(ci => ci.Distribution)
-            .WithMany()
-            .HasForeignKey(ci => ci.DistributionIID)
-            .OnDelete(DeleteBehavior.SetNull);
-
-
-
-        modelBuilder.Entity<StockItemUsage>(entity =>
-        {
-            entity.ToTable("StockItemUsages");
-
-            entity.HasOne(dp => dp.StockItem)
-                .WithMany(d => d.stockUsages)
-                .HasForeignKey(dp => dp.StockItemIID)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(dp => dp.CategoryItem)
-                .WithMany(p => p.stockUsages)
-                .HasForeignKey(dp => dp.CategoryItemIID)
-                .OnDelete(DeleteBehavior.SetNull);
-        });
-
-
-        modelBuilder.Entity<RecipeItem>(entity =>
-        {
-            entity.ToTable("RecipeItems");
-
-            entity.HasOne(dp => dp.StockItem)
-                .WithMany(d => d.recipes)
-                .HasForeignKey(dp => dp.StockItemIID)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            entity.HasOne(dp => dp.CategoryItem)
-                .WithMany(p => p.recipes)
-                .HasForeignKey(dp => dp.CategoryItemIID)
-                .OnDelete(DeleteBehavior.Cascade);
-        });
+        //// Configure Optional One-to-Many: Distribution -> CategoryItem
+        //modelBuilder.Entity<CategoryItem>()
+        //    .HasOne(ci => ci.Distribution)
+        //    .WithMany()
+        //    .HasForeignKey(ci => ci.DistributionIID)
+        //    .OnDelete(DeleteBehavior.SetNull);
 
 
 
-        // Relationship: Customer -> Order
-        modelBuilder.Entity<Order>()
-            .HasOne(o => o.Customer)      // Order has one Customer
-            .WithMany(c => c.Orders)      // Customer has many Orders
-            .HasForeignKey(o => o.CustomerIID)
-            .OnDelete(DeleteBehavior.Restrict); // Usually, deleting a customer shouldn't delete all their orders automatically
+        //modelBuilder.Entity<StockItemUsage>(entity =>
+        //{
+        //    entity.ToTable("StockItemUsages");
 
-        // Your existing Order -> OrderItem relationship
-        modelBuilder.Entity<Order>()
-            .HasMany(o => o.items)
-            .WithOne(oi => oi.Order)
-            .HasForeignKey(oi => oi.OrderIID);
+        //    entity.HasOne(dp => dp.StockItem)
+        //        .WithMany(d => d.stockUsages)
+        //        .HasForeignKey(dp => dp.StockItemIID)
+        //        .OnDelete(DeleteBehavior.SetNull);
+
+        //    entity.HasOne(dp => dp.CategoryItem)
+        //        .WithMany(p => p.stockUsages)
+        //        .HasForeignKey(dp => dp.CategoryItemIID)
+        //        .OnDelete(DeleteBehavior.SetNull);
+        //});
 
 
-       
+        //modelBuilder.Entity<RecipeItem>(entity =>
+        //{
+        //    entity.ToTable("RecipeItems");
+
+        //    entity.HasOne(dp => dp.StockItem)
+        //        .WithMany(d => d.recipeItems)
+        //        .HasForeignKey(dp => dp.StockItemIID)
+        //        .OnDelete(DeleteBehavior.SetNull);
+
+        //    entity.HasOne(dp => dp.CategoryItem)
+        //        .WithMany(p => p.recipes)
+        //        .HasForeignKey(dp => dp.CategoryItemIID)
+        //        .OnDelete(DeleteBehavior.Cascade);
+        //});
+
+
+
+        //// Relationship: Customer -> Order
+        //modelBuilder.Entity<Order>()
+        //    .HasOne(o => o.Customer)      // Order has one Customer
+        //    .WithMany(c => c.Orders)      // Customer has many Orders
+        //    .HasForeignKey(o => o.CustomerIID)
+        //    .OnDelete(DeleteBehavior.Restrict); // Usually, deleting a customer shouldn't delete all their orders automatically
+
+        //// Your existing Order -> OrderItem relationship
+        //modelBuilder.Entity<Order>()
+        //    .HasMany(o => o.Items)
+        //    .WithOne(oi => oi.Order)
+        //    .HasForeignKey(oi => oi.OrderIID);
+
+
+
 
         OnModelCreatingPartial(modelBuilder);
     }

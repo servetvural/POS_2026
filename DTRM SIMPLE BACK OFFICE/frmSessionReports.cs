@@ -672,7 +672,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private async void btnAddOrderItem_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string orderIID = dgvOrders.SelectedRows[0].Cells["colOrderIID"].Value.ToString();
-                frmEntityButtonSelector frm = new frmEntityButtonSelector(bslayer, bslayer.ActiveMenu.IID);
+                frmCategoryItemSelector frm = new frmCategoryItemSelector(bslayer, bslayer.ActiveMenu.IID);
                 if (frm.ShowDialog() == DialogResult.OK) {
                     Order order =await bslayer.GetOrder(orderIID);
                     for (int i = 0; i < frm.SelectedEntiyButtonIIDList.Count; i++) {

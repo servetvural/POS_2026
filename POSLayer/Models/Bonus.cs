@@ -4,6 +4,10 @@ namespace POSLayer.Models;
 
 public partial class Bonus : BaseClass
 {
+
+    public string? ShopIID { get; set; }
+    public Shop? Shop { get; set; }
+
     public string PlanName { get; set; } = string.Empty;
 
     public string PlanDescription { get; set; } = string.Empty;

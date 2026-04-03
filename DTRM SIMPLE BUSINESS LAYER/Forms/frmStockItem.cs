@@ -7,6 +7,7 @@ using POSLayer.Models;
 using POSLayer.Library;
 using POSWinFormLayer;
 using POSLayer.Repository.IRepository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMNS
 {
@@ -223,13 +224,13 @@ namespace DTRMNS
 
         private async void btnDeleteImage_Click(object sender, EventArgs e)
         {
-            await bslayer.DeleteGenericImage(stockItem.IID);
+            await repoImage.DeleteByField("ReferenceIID",stockItem.IID);
             pBox.BackgroundImage = null;
         }
 
         private void btnLoadImageFromDatabase_Click(object sender, EventArgs e)
         {
-            frmImageList frm = new frmImageList(bslayer, true);
+            frmImageList frm = ActivatorUtilities.CreateInstance< frmImageList>(ServiceHelper.Services, true);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBox.BackgroundImage = frm.SelectedImage;

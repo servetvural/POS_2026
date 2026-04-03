@@ -2425,9 +2425,9 @@ namespace DTRMNS
                     {
                         bool blnExist = false;
                         //Check if this compulsary item exist in the order
-                        for (int x = 0; x < bslayer.AttachedOrder.items.Count; x++)
+                        for (int x = 0; x < bslayer.AttachedOrder.Items.Count; x++)
                         {
-                            OrderItem oi = (OrderItem)bslayer.AttachedOrder.items[x];
+                            OrderItem oi = (OrderItem)bslayer.AttachedOrder.Items[x];
                             if (oi.EntityButtonIID == upeb.entitybutton.IID)
                             {
                                 blnExist = true;
@@ -2446,8 +2446,8 @@ namespace DTRMNS
         {
 
             //Ensure AttachedOrder Username 
-            if (string.IsNullOrEmpty(bslayer.AttachedOrder.Waiter))
-                bslayer.AttachedOrder.Waiter = bslayer.LoggedUser.UserName;
+            if (string.IsNullOrEmpty(bslayer.AttachedOrder.UserIID))
+                bslayer.AttachedOrder.UserIID = bslayer.LoggedUser.IID;
 
             //if (config.Customer_Display_Type != CustomerDisplayTypes.NONE)
             //    bslayer.CDSendMessage("TOTAL" + DRFormat.Space(config.Customer_Display_Text_Length - 9) + "0.00", CDAreas.All);
@@ -2620,7 +2620,7 @@ namespace DTRMNS
                     POSLayer.Models.KitchenOrder korder = null;
 
                     POSLayer.Models.Order order = bslayer.AttachedOrder.GetOrderWithKitchenableItems();
-                    if (order.items.Count == 0)
+                    if (order.Items.Count == 0)
                         bslayer.DeleteKitchenOrdersForOrder(bslayer.AttachedOrder.IID);
                     else
                     {
@@ -2648,7 +2648,7 @@ namespace DTRMNS
 
                 } else
                 {
-                    if (bslayer.AttachedOrder.items.Count > 0)
+                    if (bslayer.AttachedOrder.Items.Count > 0)
                     {
                         bslayer.AttachedOrder.Status = UF.UpdateStatus(bslayer.AttachedOrder.Status, NewOrderStatus, true);
                         if (bslayer.AttachedOrder.Status == POSLayer.Library.StatusFlags.UNKNOWN ||
@@ -2761,7 +2761,7 @@ namespace DTRMNS
 
                 if (blnArchive)
                 {
-                    if (bslayer.AttachedOrder.Payment == PaymentMethods.Unknown)
+                    if (bslayer.AttachedOrder.Payment == PaymentMethods.NotPaid)
                     {
                         switch (bslayer.AttachedOrder.OrderType)
                         {
@@ -2881,7 +2881,7 @@ namespace DTRMNS
                     if (!config.Table_Orders_Always_Shrinked)
                         bslayer.AttachedOrder.ShrinkOrder();
 
-                    bslayer.AttachedOrder.OrderDate = DateTime.Now;
+                    bslayer.AttachedOrder.LastModified = DateTime.Now;
                     bslayer.AttachedOrder.Status = StatusFlags.COMPLETED;
                 }
                 if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
@@ -2962,7 +2962,7 @@ namespace DTRMNS
 
             if (bslayer.AttachedOrder != null)
             {
-                double total = bslayer.AttachedOrder.GetFullTotal();
+                double total = bslayer.AttachedOrder.Total;
                 if (total == 0)
                     return;
                 if (total > 0 && (bslayer.AttachedOrder.OrderType != OrderTypes.Delivery))
@@ -3165,7 +3165,7 @@ namespace DTRMNS
 
             bool blnOrderHasItems = false;
             if (bslayer.AttachedOrder != null)
-                blnOrderHasItems = bslayer.AttachedOrder.items.Count > 0;
+                blnOrderHasItems = bslayer.AttachedOrder.Items.Count > 0;
             switch (view)
             {
                 case ViewTypes.UnloadedOrderView:
@@ -3206,7 +3206,7 @@ namespace DTRMNS
                     mnuPrintAsInvoice.Visible = false;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = (config.Hold_Order_Available &&
                         (bslayer.AttachedOrder != null) &&
-                        (bslayer.AttachedOrder.items.Count > 0));
+                        (bslayer.AttachedOrder.Items.Count > 0));
 
                     //Second Row
                     mnuDrawerCalculator.Visible = config.Drawer_Calculator_Visible;
@@ -3307,7 +3307,7 @@ namespace DTRMNS
                     btnDone.Visible = false;
                     mnuPrintAsInvoice.Visible = false;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = ((bslayer.AttachedOrder != null) &&
-                       (bslayer.AttachedOrder.items.Count > 0) && config.Hold_Order_Available);
+                       (bslayer.AttachedOrder.Items.Count > 0) && config.Hold_Order_Available);
 
                     //Second Row
                     mnuDrawerCalculator.Visible = false;
@@ -3936,7 +3936,7 @@ namespace DTRMNS
 
         private void btnHoldOrder_Click(object sender, EventArgs e)
         {
-            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
+            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -3963,7 +3963,7 @@ namespace DTRMNS
         }
         private void btnHoldAndReceipt_Click(object sender, EventArgs e)
         {
-            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
+            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -3982,7 +3982,7 @@ namespace DTRMNS
         {
             // if (bslayer.AttachedOrder != null) {
 
-            lblOrderTotal.Text = bslayer.AttachedOrder.GetFullTotal().ToString("c");
+            lblOrderTotal.Text = bslayer.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
             if (bslayer.AttachedOrder.MoneyPaid == 0)
@@ -3993,7 +3993,7 @@ namespace DTRMNS
         }
         private void btnPrintCashFinalPaymentWithReceipt_Click(object sender, System.EventArgs e)
         {
-            lblOrderTotal.Text = bslayer.AttachedOrder.GetFullTotal().ToString("c");
+            lblOrderTotal.Text = bslayer.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
             if (bslayer.AttachedOrder.MoneyPaid == 0)
@@ -4050,7 +4050,7 @@ namespace DTRMNS
         private void btnSubTotalFullAmount_Click(object sender, EventArgs e)
         {
             float m = 0f;
-            lblPayedIn.Text = bslayer.AttachedOrder.GetFullTotal().ToString("c");
+            lblPayedIn.Text = bslayer.AttachedOrder.Total.ToString("c");
             lblMoneyBack.Text = m.ToString();
         }
 
@@ -4185,7 +4185,7 @@ namespace DTRMNS
         {
             if (OrderScreen.HasSelection())
             {
-                OrderItem oi = bslayer.AttachedOrder.items.Where(x => x.IID == OrderScreen.SelectedItemIID).FirstOrDefault();
+                OrderItem oi = bslayer.AttachedOrder.Items.Where(x => x.IID == OrderScreen.SelectedItemIID).FirstOrDefault();
                 if (oi == null)
                     return;
 
@@ -4283,7 +4283,7 @@ namespace DTRMNS
             List<OrdersView> porders = await repoOrder.GetOrdersView();
 
             List<OrdersView> pendingOrders = (await repoOrder.GetOrdersView())
-                .Where(x => x.Payment == PaymentMethods.Unknown && x.Status == StatusFlags.PENDING && x.SessionIID == bslayer.shop.CurrentSessionIID).ToList();
+                .Where(x => x.Payment == PaymentMethods.NotPaid && x.Status == StatusFlags.PENDING && x.SessionIID == bslayer.shop.CurrentSessionIID).ToList();
 
             //DataTable dt = bslayer.GetDataTable("select IID from OrdersView Where payment = 0 and Status = " + (int)StatusFlags.PENDING + " and SessionIID = '" + bslayer.GetCurrentSessionIID() + "'");
 
@@ -4306,7 +4306,7 @@ namespace DTRMNS
                 btn.Tag = order;
 
 
-                double OrderFullTotal = order.GetFullTotal();
+                double OrderFullTotal = order.Total;
                 btn.Text = OrderFullTotal.ToString("n2");
                 btn.PriceText = OrderFullTotal.ToString("n2");
 
@@ -4430,7 +4430,7 @@ namespace DTRMNS
 
         private async void pendingOrder_Click(object sender, EventArgs e)
         {
-            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
+            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.Items.Count > 0)
                 return;
             btnHoldOrder_Click(null, null);
 
@@ -4498,7 +4498,7 @@ namespace DTRMNS
 
         private async void DoHolding(string ColorName, bool blnPrint)
         {
-            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.items.Count > 0)
+            if (bslayer.AttachedOrder != null && bslayer.AttachedOrder.Items.Count > 0)
             {
                 if (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED ||
                     bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED)
@@ -4587,7 +4587,7 @@ namespace DTRMNS
             PrepDialogReturnTypes prepResult = PrepDialogReturnTypes.Hold;
 
             Order order = bslayer.AttachedOrder.GetOrderWithKitchenableItems();
-            if (order.items.Count == 0)
+            if (order.Items.Count == 0)
                 bslayer.DeleteKitchenOrdersForOrder(bslayer.AttachedOrder.IID);
             else
             {

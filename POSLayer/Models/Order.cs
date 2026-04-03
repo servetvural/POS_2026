@@ -1,50 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using POSLayer.Library;
 
 namespace POSLayer.Models;
 
-public partial class Order  : BaseClass
-{                
-    public string? TableIID { get; set; }   = string.Empty; 
-    public string? TableName { get; set; }      = string.Empty;
-    public DateTime OrderDate { get; set; } = DateTime.Now;
-    public int Covers { get; set; } = 1;
-    public OrderTypes OrderType { get; set; } = OrderTypes.InHouse;
-    public PaymentMethods Payment { get; set; } = PaymentMethods.Unknown;  
-    public string? SessionIID { get; set; }  = string.Empty;
-    public StatusFlags Status { get; set; } = StatusFlags.NEW;
-    public string? LockedClientIP { get; set; }   = string.Empty;
-    public string Instruction { get; set; } = string.Empty;
-    public double MoneyPaid { get; set; }
-    public string? PaymentFlag { get; set; }   = string.Empty;   
-    public string? Reference { get; set; }   = string.Empty;
-    public double ServiceChargeRate { get; set; }
-    public double ServiceChargeTaxRate { get; set; }
+public partial class Order : BaseOrder
+{
+    public Order()
+    {
 
-    public string? Waiter { get; set; }
-
-
-    public List<OrderItem> items { get; set; } = new List<OrderItem>();
-
-    public string? CustomerIID { get; set; } = string.Empty;
-    public Customer Customer { get; set; } // Navigation property
-
-
-
-    [NotMapped]
-    public string Title { get; set; } = string.Empty;
-
-    [NotMapped]
-    public bool blnPrinted { get; set; }
-    [NotMapped]
-    public int RequestCount { get; set; }
-    [NotMapped]
-    public bool blnItemsChanged { get; set; }
-
-
-
-
-
+    }
     public Order(OrderTypes OrderType)
     {
         this.OrderType = OrderType;
@@ -55,58 +20,108 @@ public partial class Order  : BaseClass
         this.ServiceChargeTaxRate = ServiceChargeTaxRate;
     }
 
-    public double GetFullTotal()
-    {
-        return CalculatedValue + ServiceCharge;
-    }
 
-    /// <summary>
-    /// Tax Inclusive Item Total
-    /// </summary>
-    /// <returns></returns>
-    public double CalculatedValue
+    public Order Clone()
     {
-        get
+        Order order = new()
         {
-            return items.Sum(x => x.CalculatedValue);
-        }
-    }
+            IID = IID,
+            TableIID = TableIID,
+            LastModified = LastModified,
+            Covers = Covers,
+            OrderType = OrderType,
+            Status = Status,
+            blnPrinted = blnPrinted,
+            CustomerIID = CustomerIID,
+            Payment = Payment,
+            PaymentFlag = PaymentFlag,
+            RequestCount = RequestCount,
+            LockedClientIP = LockedClientIP,
+            SessionIID = SessionIID,
+            Instruction = Instruction,
+            MoneyPaid = MoneyPaid,
+            Reference = Reference,
 
-    /// <summary>
-    /// Total of All Items with Taxes
-    /// </summary>
-    /// <returns></returns>
-    public double CalculatedVat
-    {
-        get {
-            return items.Sum(x => x.CalculatedVat);
-        }
-    }
+            ServiceChargeRate = ServiceChargeRate,
+            ServiceChargeTaxRate = ServiceChargeTaxRate
+        };
 
-    /// <summary>
-    /// Total of All items without taxes
-    /// </summary>
-    /// <returns></returns>
-    public double CalculatedExVat
-    {
-        get
+
+        foreach (OrderItem item in Items)
         {
-            return items.Sum(x => x.CalculatedExVat);
+            order.Items.Add(item.Clone(false));
         }
+        return order;
     }
 
-    public double ServiceCharge
+    public Order Clone(bool blnIncludeItems)
     {
-        get
+        Order order = new()
         {
-            return CalculatedExVat * ServiceChargeRate / 100;
+            IID = IID,
+            TableIID = TableIID,
+            LastModified = LastModified,
+            Covers = Covers,
+            OrderType = OrderType,
+            Status = Status,
+            blnPrinted = blnPrinted,
+            CustomerIID = CustomerIID,
+            Payment = Payment,
+            PaymentFlag = PaymentFlag,
+            RequestCount = RequestCount,
+            LockedClientIP = LockedClientIP,
+            SessionIID = SessionIID,
+            Instruction = Instruction,
+            MoneyPaid = MoneyPaid,
+            Reference = Reference,
+
+            ServiceChargeRate = ServiceChargeRate,
+            ServiceChargeTaxRate = ServiceChargeTaxRate
+        };
+
+        if (blnIncludeItems)
+        {
+            foreach (OrderItem item in Items)
+            {
+                order.Items.Add(item.Clone(false));
+            }
         }
+        return order;
     }
 
-    public double GetServiceChargeTax()
+
+    public Order Duplicate(int secondDifference)
     {
-        return ServiceCharge * ServiceChargeTaxRate / 100;
+        Order order = new()
+        {
+            LastModified = LastModified.AddSeconds(secondDifference),
+            Covers = Covers,
+            OrderType = OrderType,
+            Status = Status,
+            blnPrinted = blnPrinted,
+            CustomerIID = CustomerIID,
+            Payment = Payment,
+            PaymentFlag = PaymentFlag,
+            RequestCount = RequestCount,
+            LockedClientIP = LockedClientIP,
+            SessionIID = SessionIID,
+            Instruction = Instruction,
+            MoneyPaid = MoneyPaid,
+            Reference = Reference,
+
+            ServiceChargeRate = ServiceChargeRate,
+            ServiceChargeTaxRate = ServiceChargeTaxRate
+        };
+
+        foreach (OrderItem item in Items)
+        {
+            order.Items.Add(item.Duplicate(order.IID, true));
+        }
+
+        return order;
     }
+
+
 
 
     public void SetTable(string TableIID)
@@ -128,9 +143,9 @@ public partial class Order  : BaseClass
     /// <returns></returns>
     public bool MergeOrder(Order norder)
     {
-        for (int i = 0; i < norder.items.Count; i++)
+        for (int i = 0; i < norder.Items.Count; i++)
         {
-            OrderItem oi = (OrderItem)norder.items[i];
+            OrderItem oi = (OrderItem)norder.Items[i];
             oi.OrderIID = this.IID;
             this.AddIncrementOrderItem(oi);
         }
@@ -140,10 +155,10 @@ public partial class Order  : BaseClass
     public bool ShrinkOrder()
     {
         List<OrderItem> shrinkableItems = new List<OrderItem>();
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < Items.Count; i++)
         {
-            if (items[i].OrderGroupIID != IID)
-                shrinkableItems.Add(items[i]);
+            if (Items[i].OrderGroupIID != IID)
+                shrinkableItems.Add(Items[i]);
         }
         OrderItem incItem = null;
         for (int i = 0; i < shrinkableItems.Count; i++)
@@ -158,13 +173,13 @@ public partial class Order  : BaseClass
                 shrinkableItems[i].OrderGroupIID = IID;
         }
 
-        var toRemove = items.Where(x => x.Quantity <= 0).ToList();
+        var toRemove = Items.Where(x => x.Quantity <= 0).ToList();
         foreach (var item in toRemove)
         {
-            items.Remove(item);
+            Items.Remove(item);
         }
-        string ordergroupshrunkguid = ShortGuid.NewDateBasedGuid(OrderDate);
-        foreach (var item in items)
+        string ordergroupshrunkguid = ShortGuid.NewDateBasedGuid(LastModified);
+        foreach (var item in Items)
         {
             item.OrderGroupIID = ordergroupshrunkguid;
         }
@@ -174,10 +189,10 @@ public partial class Order  : BaseClass
     public Order ShrinkOrder(Order order)
     {
         List<OrderItem> shrinkableItems = new List<OrderItem>();
-        for (int i = 0; i < order.items.Count; i++)
+        for (int i = 0; i < order.Items.Count; i++)
         {
-            if (order.items[i].OrderGroupIID != IID)
-                shrinkableItems.Add(order.items[i]);
+            if (order.Items[i].OrderGroupIID != IID)
+                shrinkableItems.Add(order.Items[i]);
         }
         OrderItem incItem = null;
         for (int i = 0; i < shrinkableItems.Count; i++)
@@ -192,10 +207,10 @@ public partial class Order  : BaseClass
                 shrinkableItems[i].OrderGroupIID = IID;
         }
 
-        for (int i = order.items.Count - 1; i >= 0; i--)
+        for (int i = order.Items.Count - 1; i >= 0; i--)
         {
-            if (order.items[i].Quantity == 0)
-                order.items.RemoveAt(i);
+            if (order.Items[i].Quantity == 0)
+                order.Items.RemoveAt(i);
         }
 
         return order;
@@ -205,7 +220,7 @@ public partial class Order  : BaseClass
     {
         string OrderGroupIID = "";
         int count = 0;
-        foreach (OrderItem item in items)
+        foreach (OrderItem item in Items)
         {
             if (item.OrderGroupIID != OrderGroupIID)
             {
@@ -224,13 +239,13 @@ public partial class Order  : BaseClass
         Order duplicateOrder = Clone(false);
         //duplicateOrder.items.Clear();
 
-        foreach (OrderItem existingItem in items)
+        foreach (OrderItem existingItem in Items)
         {
-            OrderItem givenOrderItem = givenOrder.items.Where(x => x.EntityButtonIID == existingItem.EntityButtonIID).FirstOrDefault();
+            OrderItem givenOrderItem = givenOrder.Items.Where(x => x.EntityButtonIID == existingItem.EntityButtonIID).FirstOrDefault();
             if (givenOrderItem == null)
             {
                 //new item doesn't exist in old order so put all of it to result order
-                duplicateOrder.items.Add(existingItem.Clone(false));
+                duplicateOrder.Items.Add(existingItem.Clone(false));
             } else
             {
                 //new item exist in old order 
@@ -239,7 +254,7 @@ public partial class Order  : BaseClass
                     //but new item quantity is more now
                     OrderItem tempItem = existingItem.Clone(false);
                     tempItem.Quantity = existingItem.Quantity - givenOrderItem.Quantity;
-                    duplicateOrder.items.Add(tempItem);
+                    duplicateOrder.Items.Add(tempItem);
                 }
             }
         }
@@ -249,7 +264,7 @@ public partial class Order  : BaseClass
 
     public bool HasItemsForKitchen()
     {
-        foreach (OrderItem item in items)
+        foreach (OrderItem item in Items)
         {
             if (item.CompletedQuantity < item.Quantity)
                 return true;
@@ -268,14 +283,14 @@ public partial class Order  : BaseClass
 
         Order duplicateOrder = Clone(false);
 
-        foreach (OrderItem existingItem in ShrunkOrder.items)
+        foreach (OrderItem existingItem in ShrunkOrder.Items)
         {
             //If this item needs to be prepared or printed in the kitchen
             if (existingItem.CompletedQuantity < existingItem.Quantity)
             {
                 OrderItem newItem = existingItem.Clone(false);
                 newItem.Quantity = existingItem.Quantity - existingItem.CompletedQuantity;
-                duplicateOrder.items.Add(newItem);
+                duplicateOrder.Items.Add(newItem);
             }
         }
 
@@ -284,145 +299,8 @@ public partial class Order  : BaseClass
 
 
 
-    public Order()
-    {
-
-    }
-
-    public Order Clone()
-    {
-        Order order = new()
-        {
-            IID = IID,
-            TableIID = TableIID,
-            OrderDate = OrderDate,
-            Covers = Covers,
-            OrderType = OrderType,
-            Status = Status,
-            blnPrinted = blnPrinted,
-            CustomerIID = CustomerIID,
-            Payment = Payment,
-            PaymentFlag = PaymentFlag,
-            RequestCount = RequestCount,
-            LockedClientIP = LockedClientIP,
-            SessionIID = SessionIID,
-            Instruction = Instruction,
-            MoneyPaid = MoneyPaid,
-
-            TableName = TableName,
-            Reference = Reference,
-
-            ServiceChargeRate = ServiceChargeRate,
-            ServiceChargeTaxRate = ServiceChargeTaxRate
-        };
 
 
-        foreach (OrderItem item in items)
-        {
-            order.items.Add(item.Clone(false));
-        }
-        return order;
-    }
-
-    public Order Clone(bool blnIncludeItems)
-    {
-        Order order = new()
-        {
-            IID = IID,
-            TableIID = TableIID,
-            OrderDate = OrderDate,
-            Covers = Covers,
-            OrderType = OrderType,
-            Status = Status,
-            blnPrinted = blnPrinted,
-            CustomerIID = CustomerIID,
-            Payment = Payment,
-            PaymentFlag = PaymentFlag,
-            RequestCount = RequestCount,
-            LockedClientIP = LockedClientIP,
-            SessionIID = SessionIID,
-            Instruction = Instruction,
-            MoneyPaid = MoneyPaid,
-
-            TableName = TableName,
-            Reference = Reference,
-
-            ServiceChargeRate = ServiceChargeRate,
-            ServiceChargeTaxRate = ServiceChargeTaxRate
-        };
-
-        if (blnIncludeItems)
-        {
-            foreach (OrderItem item in items)
-            {
-                order.items.Add(item.Clone(false));
-            }
-        }
-        return order;
-    }
-
-
-    public Order Duplicate(int secondDifference)
-    {
-        Order order = new()
-        {
-            OrderDate = OrderDate.AddSeconds(secondDifference),
-            Covers = Covers,
-            OrderType = OrderType,
-            Status = Status,
-            blnPrinted = blnPrinted,
-            CustomerIID = CustomerIID,
-            Payment = Payment,
-            PaymentFlag = PaymentFlag,
-            RequestCount = RequestCount,
-            LockedClientIP = LockedClientIP,
-            SessionIID = SessionIID,
-            Instruction = Instruction,
-            MoneyPaid = MoneyPaid,
-
-            TableName = TableName,
-            Reference = Reference,
-
-            ServiceChargeRate = ServiceChargeRate,
-            ServiceChargeTaxRate = ServiceChargeTaxRate
-        };
-
-        foreach (OrderItem item in items)
-        {
-            order.items.Add(item.Duplicate(order.IID, true));
-        }
-
-        return order;
-    }
-
-
-    /// <summary>
-    /// Returns OrderGroupIID at all times, if non exist cReates a new one and returns it
-    /// </summary>
-    /// <param name="ParentOrderItemIID"></param>
-    /// <param name="EntityIID"></param>
-    /// <param name="OrderGroupIID"></param>
-    /// <param name="SizeBarItemIID"></param>
-    /// <param name="DivisionalOrderGroupIID"></param>
-    /// <param name="DivisionText"></param>
-    /// <param name="Quantity"></param>
-    /// <param name="CalculationRatio"></param>
-    /// <param name="SizeButtonOrEntityButtonPrice"></param>
-    /// <param name="EntityButtonIID"></param>
-    /// <param name="OrderItemText"></param>
-    /// <param name="TopItem"></param>
-    /// <param name="DivisionalDisplayOrder"></param>
-    /// <param name="distributioniid"></param>
-    /// <param name="Instruction"></param>
-    /// <param name="ItemType"></param>
-    /// <param name="dorder"></param>
-    /// <param name="EntityName"></param>
-    /// <param name="SBButtonText"></param>
-    /// <param name="EntityDisplayOrder"></param>
-    /// <param name="SizeBarIID"></param>
-    /// <param name="TaxPercent"></param>
-    /// <param name="DistributionName"></param>
-    /// <returns></returns>
     public string AddOrderItem(string EntityIID, string OrderGroupIID,
        double Quantity, double Price, string EntityButtonIID, string OrderItemText, string distributioniid,
        OrderItemTypes ItemType, int dorder, string EntityName, int EntityDisplayOrder, double TaxPercent)
@@ -435,27 +313,27 @@ public partial class Order  : BaseClass
 
         //Add this at the end of the list as top item
         oi.OrderGroupIID = ShortGuid.NewGuid().ToString();
-        items.Add(oi);
+        Items.Add(oi);
         blnItemsChanged = true;
         return oi.OrderGroupIID;
     }
     public string AddOrderItem(OrderItem oi)
     {
         //Add this at the end of the list as top item
-        items.Add(oi);
+        Items.Add(oi);
         blnItemsChanged = true;
         return oi.OrderGroupIID;
     }
-    
+
     public void DeleteOrderItem(string OrderItemIID)
     {
         if (OrderItemIID != null && OrderItemIID != "")
         {
-            foreach (OrderItem item in items)
+            foreach (OrderItem item in Items)
             {
                 if (item.IID == OrderItemIID)
                 {
-                    items.Remove(item);
+                    Items.Remove(item);
                     blnItemsChanged = true;
                     return;
                 }
@@ -474,13 +352,13 @@ public partial class Order  : BaseClass
 
     public OrderItem GetIncrementableItem(string EntityButtonIID, string DistributionIID, string OrderGroupIID)
     {
-        return items.Where(x => x.EntityButtonIID == EntityButtonIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
+        return Items.Where(x => x.EntityButtonIID == EntityButtonIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
     }
     public void IncrementOrderItem(string OrderItemIID)
     {
         try
         {
-            items.Where(x => x.IID == OrderItemIID).FirstOrDefault().Quantity++;
+            Items.Where(x => x.IID == OrderItemIID).FirstOrDefault().Quantity++;
             blnItemsChanged = true;
         } catch { }
     }
@@ -490,7 +368,7 @@ public partial class Order  : BaseClass
         if (string.IsNullOrEmpty(OrderItemIID))
             return;
 
-        OrderItem oi = items.Where(x => x.IID ==OrderItemIID).FirstOrDefault();
+        OrderItem oi = Items.Where(x => x.IID == OrderItemIID).FirstOrDefault();
         if (oi == null)
             return;
 
@@ -515,7 +393,7 @@ public partial class Order  : BaseClass
     public string GetAllOrderItemsText(bool AddPrice = true)
     {
         string str = "";
-        foreach (OrderItem item in items)
+        foreach (OrderItem item in Items)
         {
             string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
             if (AddPrice)
@@ -526,7 +404,7 @@ public partial class Order  : BaseClass
 
         return str;
     }
-   
+
     public bool IsCustomerDetailsRequired
     {
         get
@@ -547,15 +425,5 @@ public partial class Order  : BaseClass
                     return false;
             }
         }
-    }
-
-    public string ToSimpleString()
-    {
-        string content = "Orginial ORDER @   " + OrderDate.ToString() + "   Total= " + GetFullTotal().ToString("N2").PadLeft(10, ' ') + "   Reference = " + Reference + Environment.NewLine;
-        foreach (var item in items)
-        {
-            content += "  " + item.ToSimpleString() + Environment.NewLine;
-        }
-        return content;
     }
 }

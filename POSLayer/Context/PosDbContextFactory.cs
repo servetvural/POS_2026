@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace POSLayer.Models;
+namespace POSLayer.Context;
 
 
 public class PosDbContextFactory : IDesignTimeDbContextFactory<PosDbContext>

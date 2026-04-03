@@ -36,6 +36,7 @@ namespace DTRMSimpleBackOffice
         IRepository<StockItem> repoStockItem;
         IRepository<RecipeItem> repoRecipe; 
         IRepository<Bonus> repoBonus;
+        IRepository<GenericImage> repoImage;
 
         private DTRMSimpleBusiness bslayer;
 
@@ -48,12 +49,12 @@ namespace DTRMSimpleBackOffice
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
-                   IRepository<StockItem> _repoStockItem,  IRepository<Bonus> _repoBonus,
-            DTRMSimpleBusiness bslayer, IRepository<RecipeItem> repoRecipe)
+                   IRepository<StockItem> _repoStockItem,  IRepository<Bonus> _repoBonus, IRepository<GenericImage> _repoImage,
+            DTRMSimpleBusiness _bslayer, IRepository<RecipeItem> _repoRecipe)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
+            bslayer = _bslayer;
             repoMenu = _repoMenu;
             repoCategory = _repoCategory;
             repoCategoryItem = _repoCategoryItem;
@@ -62,7 +63,8 @@ namespace DTRMSimpleBackOffice
             repoSupplier = _repoSupplier;
             repoStockItem = _repoStockItem;
             repoBonus = _repoBonus;
-            this.repoRecipe = repoRecipe;
+            repoImage = _repoImage;
+            repoRecipe = _repoRecipe;
         }
         private async void FrmMenuEditor_Load(object sender, EventArgs e)
         {
@@ -262,7 +264,7 @@ namespace DTRMSimpleBackOffice
                             }
 
                             //Save stock item lookups
-                            if (bslayer.SaveAllStockItemLookups(backup.stockItemLookups))
+                            if (await bslayer.SaveAllStockItemLookups(backup.stockItemLookups))
                             {
                                 statusMessage += "Stock Item Lookups Saved " + Environment.NewLine;
                             }
@@ -342,7 +344,7 @@ namespace DTRMSimpleBackOffice
 
                 if (category.ButtonDisplayStyle == ButtonDisplayStyles.Image || category.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText)
                 {
-                    GenericImage gim = await bslayer.GetGenericImage(category.IID);
+                    GenericImage gim = await repoImage.GetByField("ReferenceIID", category.IID);
                     if (gim != null && gim.DisplayImage != null)
                     {
                         Image btnImage = UFWin.ByteArrayToImage(gim.DisplayImage);

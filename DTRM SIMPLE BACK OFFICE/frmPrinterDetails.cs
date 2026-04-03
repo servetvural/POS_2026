@@ -9,12 +9,12 @@ using POSLayer.Library;
 using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmSinglePrinter : Form
+    public partial class frmPrinterDetails : Form
     {
         PosConfig config;
         IRepository<Printer> repoPrinter;
         public Printer printer;
-        public frmSinglePrinter(PosConfig configAsService, IRepository<Printer> _repoPrinter, Printer printer)
+        public frmPrinterDetails(PosConfig configAsService, IRepository<Printer> _repoPrinter, Printer printer)
         {
             InitializeComponent();
             config = configAsService;

@@ -11,23 +11,26 @@ using System.Threading.Tasks;
 using POSLayer.Models;
 using POSWinFormLayer;
 using POSLayer.Library;
+using POSLayer.Repository.IRepository;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMNS {
     public partial class frmImageList : Form {
 
+        IRepository<GenericImage> repoImage;
+
         private frmSimpleProgress frmProg;
 
 
-        private DTRMSimpleBusiness bslayer;
         public Image SelectedImage;
         public string SelectedImageReferenceIID;
         private bool blnSelectEnabled;
         public frmImageList() {
             InitializeComponent();
         }
-        public frmImageList(DTRMSimpleBusiness bslayer, bool blnSelectEnabled) {
+        public frmImageList(IRepository<GenericImage> _repoImage,  bool blnSelectEnabled) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoImage = _repoImage;
             this.blnSelectEnabled = blnSelectEnabled;
             btnSelect.Visible = blnSelectEnabled;
         }
@@ -40,7 +43,7 @@ namespace DTRMNS {
             lvwImages.Items.Clear();
            
             imgList.Images.Clear();
-            List<GenericImage> allImages=await bslayer.GetAllImages();
+            List<GenericImage> allImages = await repoImage.GetAllAsync();
 
             foreach (var gim in allImages)
             {
@@ -69,11 +72,11 @@ namespace DTRMNS {
         }
 
 
-        private void btnSelect_Click(object sender, EventArgs e) {
+        private async void btnSelect_Click(object sender, EventArgs e) {
             if (blnSelectEnabled) {
                 if (lvwImages.SelectedItems.Count > 0) {
                     SelectedImageReferenceIID = lvwImages.SelectedItems[0].ImageKey;
-                    SelectedImage =UFWin.ByteArrayToImage( bslayer.GetGenericImage(SelectedImageReferenceIID).Result.DisplayImage);
+                    SelectedImage =UFWin.ByteArrayToImage((await repoImage.GetByField("ReferenceIID", SelectedImageReferenceIID)).DisplayImage);
                     this.DialogResult = DialogResult.OK;
                     Close();
                 }
@@ -96,9 +99,9 @@ namespace DTRMNS {
                 btnZoom_Click(null, null);
         }
 
-        private void btnDelete_Click(object sender, EventArgs e) {
+        private async void btnDelete_Click(object sender, EventArgs e) {
             if (lvwImages.SelectedItems.Count > 0) {
-                bslayer.DeleteGenericImage(lvwImages.SelectedItems[0].ImageKey);
+                await repoImage.Delete(lvwImages.SelectedItems[0].ImageKey);
                 LoadImages();
             }
         }
@@ -111,7 +114,7 @@ namespace DTRMNS {
                     if (dlg.ShowDialog() == DialogResult.OK) {
                         DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
                         for (int i = 0; i < lvwImages.SelectedItems.Count; i++) {
-                            GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                            GenericImage gim = await repoImage.GetByField("ReferenceIID", lvwImages.SelectedItems[i].ImageKey);
 
 
                             string filename = dinfo.FullName + "\\" + gim.ImageFileName;
@@ -126,9 +129,9 @@ namespace DTRMNS {
         }
 
 
-        private void btnZoom_Click(object sender, EventArgs e) {
+        private async void btnZoom_Click(object sender, EventArgs e) {
             if (lvwImages.SelectedItems.Count > 0) {
-                SelectedImage =UFWin.ByteArrayToImage( bslayer.GetGenericImage(lvwImages.SelectedItems[0].ImageKey).Result.DisplayImage);
+                SelectedImage =UFWin.ByteArrayToImage((await repoImage.GetByField("ReferenceIID", lvwImages.SelectedItems[0].ImageKey)).DisplayImage);
                 frmImageDialog frm = new frmImageDialog(SelectedImage);
                 frm.ShowDialog();
             }
@@ -155,7 +158,7 @@ namespace DTRMNS {
                     ImageFileName = fileshortname
                 };
 
-                frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, gim);
+                frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, gim);
                 if (frm.ShowDialog() == DialogResult.OK) {
                     LoadImages();
                 }
@@ -166,15 +169,13 @@ namespace DTRMNS {
             if (lvwImages.SelectedItems.Count > 0) {
                 ListViewItem lvi = lvwImages.SelectedItems[0];
                 
-                GenericImage gim =await bslayer.GetGenericImage(lvi.ImageKey);
+                GenericImage gim = await repoImage.GetByField("ReferenceIID",lvi.ImageKey);
 
-                frmGenericImageEditor frm = new frmGenericImageEditor(bslayer, gim);
+                frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, gim);
                 if (frm.ShowDialog() == DialogResult.OK) {
                     int index = lvi.Index;
                     lvwImages.Items.RemoveAt(index);
-                    //lvwImages.Items.RemoveByKey(lvwImages.SelectedItems[0].ImageKey);
                     lvwImages.Items.Insert(index, CreateListViewItem(gim));
-                   // LoadImages();
                 }
             }
         }
@@ -204,13 +205,7 @@ namespace DTRMNS {
             List<GenericImage> imageList = new();
 
             try {
-                imageList = await bslayer.GetAllImages();
-               
-                //DataTable dt = bslayer.db.GetDataTable("Select * from Images");
-                //for (int i = 0; i < dt.Rows.Count; i++) {
-                //    GenericImage gim = new GenericImage(dt.Rows[i], true);
-                //    imageList.Add(gim);
-                //}
+                imageList = await repoImage.GetAllAsync();
             } catch {
                 MessageBox.Show("There are errors during list creation.");
                 return;
@@ -278,7 +273,7 @@ namespace DTRMNS {
                 MessageBox.Show("Error " + ex.Message);
             }
         }
-        private void LoadFunction() {
+        private async Task LoadFunction() {
             int percent = 0;
 
             try {
@@ -286,7 +281,7 @@ namespace DTRMNS {
 
                 if (imageList != null) {
                     foreach (GenericImage gim in imageList) {
-                        bslayer.SaveGenericImage(gim);
+                       await repoImage.Save(gim);
                         bgLoader.ReportProgress(percent++);
                     }
                 }
@@ -347,29 +342,29 @@ namespace DTRMNS {
 
         private async void txtSetWidth_KeyDown(object sender, KeyEventArgs e) {
             for (int i= 0; i < lvwImages.SelectedItems.Count; i++) {
-                GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                GenericImage gim = await repoImage.GetByField("ReferenceIID",lvwImages.SelectedItems[i].ImageKey);
                 int width = int.Parse(txtSetWidth.Text);
                 Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
                 double ratio = UFWin.RatioTimesWidthForHeight(img);
                 gim.DisplayImage =UFWin.ReSizeImageTo(img, width, (int)(width*ratio), true).ToByteArray();
-                await bslayer.SaveGenericImage(gim);
+                await repoImage.Save(gim);
             }
         }
 
         private async void txtSetHeight_KeyDown(object sender, KeyEventArgs e) {
             for (int i = 0; i < lvwImages.SelectedItems.Count; i++) {
-                GenericImage gim =await bslayer.GetGenericImage(lvwImages.SelectedItems[i].ImageKey);
+                GenericImage gim = await repoImage.GetByField("ReferenceIID", lvwImages.SelectedItems[i].ImageKey);
                 int height = int.Parse(txtSetHeight.Text);
                 Image img = UFWin.ByteArrayToImage(gim.DisplayImage);
                 double ratio = UFWin.RatioTimesHeightForWidth(img);
                 gim.DisplayImage =UFWin.ReSizeImageTo(img, (int)(height * ratio), height, true).ToByteArray();
-                await bslayer.SaveGenericImage(gim);
+                await repoImage.Save(gim);
             }
         }
 
         private async void btnExportAsJson_Click(object sender, EventArgs e)
         {
-            List<GenericImage> itemList = await bslayer.GetAllImages(); // await bslayer.GetImageLibraryList();
+            List<GenericImage> itemList = await repoImage.GetAllAsync();
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
@@ -406,7 +401,7 @@ namespace DTRMNS {
                             List<GenericImage> itemList = JsonConvert.DeserializeObject<List<GenericImage>>(content);
                             foreach (GenericImage item in itemList)
                             {
-                               await bslayer.SaveGenericImage(item);
+                               await repoImage.Save(item);
                             }
                             MessageBox.Show("Saved Image List");
                             LoadImages();

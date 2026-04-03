@@ -504,7 +504,7 @@ namespace DTRMNS
                 {
                     Order order = await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
                     dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
-                    rowheights.Add(order.items.Count * 15 + 7);
+                    rowheights.Add(order.Items.Count * 15 + 7);
                 }
                 dgv.DataSource = dt;
 
@@ -616,11 +616,11 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
+                Order order = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
 
                 if (order != null)
                 {
-                    order.Payment = POSLayer.Library.PaymentMethods.Unknown;
+                    order.Payment = PaymentMethods.NotPaid;
                     order.PaymentFlag = "";
                     await bslayer.SaveOrder(order);
                     await LoadOrders(true);
@@ -687,7 +687,7 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                POSLayer.Models.Order order = await bslayer.GetOrder(SelectedIID);
+                Order order = await bslayer.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse)
                 {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
@@ -699,7 +699,7 @@ namespace DTRMNS
                 {
                     if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED))
                     {
-                        if (bslayer.AttachedOrder.Payment == POSLayer.Library.PaymentMethods.Unknown)
+                        if (bslayer.AttachedOrder.Payment == PaymentMethods.NotPaid)
                         {
                             PassControlEvent(new ctlPayment(new GenericFunctionCall(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
@@ -708,7 +708,7 @@ namespace DTRMNS
                             return;
                         }
                         bslayer.AttachedOrder.Status = POSLayer.Library.StatusFlags.COMPLETED;
-                        bslayer.SaveOrder(bslayer.AttachedOrder);
+                       await bslayer.SaveOrder(bslayer.AttachedOrder);
                         UnloadOrderEvent();
                         PassControlEvent(this);
                         await LoadOrders(true);

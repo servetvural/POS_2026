@@ -27,6 +27,8 @@ public partial class StockItem : BaseClass
 
     public List<StockItemUsage> stockUsages { get; set; } = new();
 
-    public List<RecipeItem> recipes { get; set; } = new();
+    public List<RecipeItem> recipeItems { get; set; } = new();
+
+    public List<PurchaseInvoiceItem> purchaseInvoiceItems { get; set; } = new();
 
 }

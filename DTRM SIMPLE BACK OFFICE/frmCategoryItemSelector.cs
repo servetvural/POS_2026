@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using DTRMNS;
 
 namespace DTRMSimpleBackOffice {
-    public partial class frmEntityButtonSelector : Form {
+    public partial class frmCategoryItemSelector : Form {
 
         private DataSet ds = new DataSet();
 
@@ -19,7 +19,7 @@ namespace DTRMSimpleBackOffice {
         private string MenuIID;
 
         public List<string> SelectedEntiyButtonIIDList;
-        public frmEntityButtonSelector(DTRMSimpleBusiness bslayer, string MenuIID) {
+        public frmCategoryItemSelector(DTRMSimpleBusiness bslayer, string MenuIID) {
             InitializeComponent();
             this.bslayer = bslayer;
             this.MenuIID = MenuIID;

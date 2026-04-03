@@ -14,16 +14,16 @@ using POSLayer.Repository.IRepository;
 
 namespace DTRMSimpleBackOffice
 {
-    public partial class frmSingleUser : Form
+    public partial class frmUser : Form
     {
         IRepository<User> repoUser;
         public User user;
 
-        public frmSingleUser()
+        public frmUser()
         {
             InitializeComponent();
         }
-        public frmSingleUser(IRepository<User> _repoUser, User user = null)
+        public frmUser(IRepository<User> _repoUser, User user = null)
         {
             InitializeComponent();
             repoUser = _repoUser;
