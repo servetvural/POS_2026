@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace POSLayer.Models;
 
@@ -53,14 +54,20 @@ public partial class Session      : BaseClass
 
     public double OnlineTotal { get; set; }
 
-    public double X1total { get; set; }
+    public double X1Total { get; set; }
 
-    public double X2total { get; set; }
+    public double X2Total { get; set; }
 
-    public double X3total { get; set; }
+    public double X3Total { get; set; }
 
     public List<Order> Orders { get; set; } = new();
 
+    public double Total => Orders.Sum(x => x.Total);
+
+
 
     //public double UnCompletedOrdersCalculatedValue => 
+    [NotMapped]
+    public double GrossSessionTotalUncompleted { get; set; }
+
 }

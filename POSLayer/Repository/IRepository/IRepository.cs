@@ -42,16 +42,12 @@ public interface IRepository<T> where T : BaseClass
 
 
 
-    //Task<List<PrinterView>> GetPrinterView();
-    Task<List<SessionData>> GetSessionSumView();
-    Task<List<StockItemUsage>> GetStockItemUsageView();
+    //Task<List<SessionData>> GetSessionSumView();
+    //Task<List<StockItemUsage>> GetStockItemUsageView();
 
-    //Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView();
-    Task<List<DistributionView>> GetDistributionView();
-    Task<List<OrdersView>> GetOrdersView();
+    //Task<List<DistributionView>> GetDistributionView();
+    //Task<List<OrdersView>> GetOrdersView();
 
-
-    //Task<string> CurrentSessionIID();
 
     Task<List<double>> GetAllTaxRatesForMenu(string MenuIID);
 
@@ -68,4 +64,9 @@ public interface IRepository<T> where T : BaseClass
     #endregion
 
     Task<GenericImage> GetImageAsync(string EntityIID);
+
+    Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment);
+    Task<List<Order>> GetPendingOrdersForSession(string sessionIID);
+
+    Task<List<Category>> GetCategoryTotalsForSession(string sessionIID);
 }

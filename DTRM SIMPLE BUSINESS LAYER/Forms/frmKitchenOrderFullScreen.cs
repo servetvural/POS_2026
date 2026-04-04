@@ -5,18 +5,22 @@ using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 using POSWinFormLayer;
 
 namespace DTRMNS {
     public partial class frmKitchenOrderFullScreen : Form {
         PosConfig config;
+        IRepository<GenericImage> repoImage;
         private DTRMSimpleBusiness bslayer;
         private KitchenOrderItem korderitem;
-        public frmKitchenOrderFullScreen(PosConfig configAsService, DTRMSimpleBusiness bslayer, KitchenOrderItem korderitem) {
+        public frmKitchenOrderFullScreen(PosConfig configAsService, IRepository<GenericImage> _repoImage,  KitchenOrderItem korderitem) {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
+            repoImage = _repoImage;
+
+            bslayer = DTRMSimpleBusiness.Instance;
             this.korderitem = korderitem;
         }
 
@@ -26,7 +30,7 @@ namespace DTRMNS {
         }
 
         private async void LoadKitchenOrderItem() {
-            GenericImage prepImage =await bslayer.GetEntityButtonPrepImage(korderitem.EntityButtonIID);
+            GenericImage prepImage =await repoImage.Get("ReferenceIID",korderitem.CategoryItemIID);
             if (prepImage != null) {
                 ctlkoi.PBox.Visible = true;
                 ctlkoi.ActiveLabel.Text = korderitem.ItemText;                

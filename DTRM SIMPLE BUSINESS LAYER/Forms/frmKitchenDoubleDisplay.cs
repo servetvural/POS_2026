@@ -15,12 +15,12 @@ namespace DTRMNS {
         IRepository<Distribution> repoDistribution;
 
         private DTRMSimpleBusiness bslayer;
-        public frmKitchenDoubleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer) {
+        public frmKitchenDoubleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution) {
             InitializeComponent();
             config = configAsService;
             repoDistribution = _repoDistribution;
 
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
         public frmKitchenDoubleDisplay(DTRMSimpleBusiness bslayer) {
             InitializeComponent();
@@ -61,7 +61,7 @@ namespace DTRMNS {
         }
 
         private async void CtlKitchenFirst_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Default_Distribution_IID));
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(ServiceHelper.Services, true, await repoDistribution.Get(config.Default_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK) {
                 config.Default_Distribution_IID = frm.distribution.IID;
                 UF.SaveConfig(config);
@@ -70,7 +70,7 @@ namespace DTRMNS {
         }
 
         private async void CtlKitchenSecond_DisplayTypeWillBeChange() {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Secondary_Distribution_IID));
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(ServiceHelper.Services, true, await repoDistribution.Get(config.Secondary_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK) {
                 config.Secondary_Distribution_IID = frm.distribution.IID;
                 UF.SaveConfig(config);

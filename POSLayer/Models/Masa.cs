@@ -6,7 +6,7 @@ using POSLayer.Library;
 
 namespace POSLayer.Models;
 
-public partial class Table : BaseClass
+public partial class Masa : BaseClass
 {
     public int Number { get; set; }
 
@@ -16,9 +16,11 @@ public partial class Table : BaseClass
 
     public string LockedClientIP { get; set; } = string.Empty;
 
-    public string CurrentOrderIID { get; set; } = string.Empty;
+    //public string? OrderIID { get; set; }
+    
+    public virtual Order? Order { get; set; }
 
-    public TableTypes TableType { get; set; } = TableTypes.TemporaryTable;
+
     public int XLocation { get; set; }
 
     public int YLocation { get; set; }
@@ -29,12 +31,7 @@ public partial class Table : BaseClass
 
     public string? GroupIID { get; set; }
 
-    public string? ParentTableIID { get; set; }
-
-    public ButtonShapeTypes Shape { get; set; }
-
     public string? DefaultName { get; set; } = "Table ?";
-    public bool isPrimary { get { return TableType == TableTypes.StaticTable; } }
 
     [NotMapped]
     public string KitchenOrderNumber { get; set; }
@@ -43,34 +40,18 @@ public partial class Table : BaseClass
     public Order AttachedOrder { get; set; }
 
 
-    public Table Clone()
+    public Masa Clone()
     {
-       return new Table() {
+       return new Masa() {
             IID = IID,
             Number = Number,
             TableCovers = TableCovers,
-            TableType = TableType,
             LockedClientIP = LockedClientIP,
-            CurrentOrderIID = CurrentOrderIID,
            XLocation = XLocation,
            YLocation = YLocation,
             Width = Width,
             Height = Height,
             GroupIID = GroupIID,
-            ParentTableIID = ParentTableIID,
-            Shape = Shape,
-        };
-    }
-
-    public Table CreateSubTable()
-    {
-        return new Table()
-        {
-            ParentTableIID = IID,
-            TableCovers = TableCovers,
-            TableType = TableTypes.TemporaryTable,
-            Number = Number,
-            Shape = Shape
         };
     }
 
@@ -89,18 +70,15 @@ public partial class Table : BaseClass
 
     public bool HasActiveOrder()
     {
-        if (string.IsNullOrEmpty(this.CurrentOrderIID))
-            return false;
-        else
-            return true;
+        return Order != null;
     }
     public void AttachOrder(Order order)
     {
-        this.AttachedOrder = order;
+        Order = order;
     }
     public void DetachOrder()
     {
-        this.AttachedOrder = null;
+        Order = null;
     }
 
 }

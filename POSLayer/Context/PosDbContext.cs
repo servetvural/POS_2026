@@ -14,7 +14,7 @@ public partial class PosDbContext : DbContext
 {
     public PosDbContext()
     {
-        
+
     }
 
     public PosDbContext(DbContextOptions<PosDbContext> options)
@@ -81,11 +81,11 @@ public partial class PosDbContext : DbContext
     public virtual DbSet<StockItem> StockItems { get; set; }
 
     public virtual DbSet<RecipeItem> RecipeItems { get; set; }
-    public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
+   // public virtual DbSet<StockItemUsage> StockItemUsages { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
-    public virtual DbSet<Table> Tables { get; set; }
+    public virtual DbSet<Masa> Tables { get; set; }
 
     //public virtual DbSet<TableGroup> TableGroups { get; set; }
 
@@ -144,7 +144,11 @@ public partial class PosDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-
+        modelBuilder.Entity<Masa>()
+            .HasOne(t => t.Order)      // Table has one Order
+            .WithOne(o => o.Table)           // Order has one Table
+            .HasForeignKey<Order>(o => o.TableIID) // FK is on the Order table
+            .IsRequired(false);              // Explicitly mark as optional
 
 
 

@@ -17,9 +17,9 @@ namespace DTRMNS.Forms {
         private DTRMSimpleBusiness bslayer;
         public Expense expense;
 
-        public frmExpense(DTRMSimpleBusiness bslayer, Expense expense) {
+        public frmExpense(  Expense expense) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
             this.expense = expense;
         }
 

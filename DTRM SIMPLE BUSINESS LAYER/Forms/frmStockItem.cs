@@ -17,7 +17,6 @@ namespace DTRMNS
         IRepository<Supplier> repoSupplier;
         IRepository<GenericImage> repoImage;
 
-        private DTRMSimpleBusiness bslayer;
         public StockItem stockItem;
         private UndoItem oldItem;
         private bool blnModified;
@@ -39,8 +38,6 @@ namespace DTRMNS
             repoStockItem = _repoStockItem;
             repoSupplier = _repoSupplier;
             repoImage = _repoImage;
-
-            this.bslayer = bslayer;
             this.stockItem = stockItem;
         }
 
@@ -75,7 +72,7 @@ namespace DTRMNS
 
             try
             {
-                gim = await bslayer.GetGenericImage(stockItem.IID);
+                gim = await DTRMSimpleBusiness.Instance.GetGenericImage(stockItem.IID);
                 pBox.BackgroundImage = gim?.DisplayImage.ToImage();
                 txtImageFile.Text = gim?.ImageFileName;
             } catch (Exception ex)
@@ -87,7 +84,7 @@ namespace DTRMNS
         private async void btnCancel_Click(object sender, EventArgs e)
         {
             if (blnModified)
-                await bslayer.SetStockItemQuantity(stockItem.IID, originalValue);
+                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, originalValue);
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -138,7 +135,7 @@ namespace DTRMNS
                     blnConverted = true
                 };
                 stockItem.UsedQuantity = 0;
-                await bslayer.SetStockItemQuantity(stockItem.IID, 0);
+                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, 0);
                 txtUsedQuantity.Text = "0";
                 btnSet0.Image = global::DTRMNS.Properties.Resources.ActionUndo;
                 btnSet0.Text = "";
@@ -148,7 +145,7 @@ namespace DTRMNS
             {
                 //Already set to 0 so converted back
                 stockItem.UsedQuantity = oldItem.Quantity;
-                await bslayer.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
+                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
                 txtUsedQuantity.Text = oldItem.Quantity.ToString();
                 btnSet0.Text = "Set  0";
                 btnSet0.Image = null;
@@ -174,7 +171,7 @@ namespace DTRMNS
                         blnConverted = true
                     };
                     stockItem.UsedQuantity = val;
-                    bslayer.SetStockItemQuantity(stockItem.IID, val);
+                    DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, val);
                     txtUsedQuantity.Text = val.ToString();
                     btnSetCustom.Image = global::DTRMNS.Properties.Resources.ActionUndo;
                     btnSetCustom.Text = "";
@@ -185,7 +182,7 @@ namespace DTRMNS
             {
                 //Already set to custom so convert back 
                 stockItem.UsedQuantity = oldItem.Quantity;
-                bslayer.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
+                DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
                 txtUsedQuantity.Text = oldItem.Quantity.ToString();
                 btnSetCustom.Text = "Set ?";
                 btnSetCustom.Image = null;

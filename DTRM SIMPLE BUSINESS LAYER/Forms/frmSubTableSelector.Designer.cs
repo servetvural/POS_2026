@@ -100,7 +100,6 @@
             this.btnAddSubTable.TabStop = false;
             this.btnAddSubTable.Text = "ADD\r\nTABLE";
             this.btnAddSubTable.UseVisualStyleBackColor = false;
-            this.btnAddSubTable.Click += new System.EventHandler(this.btnAddSubTable_Click);
             // 
             // chkChangeTable
             // 
@@ -140,7 +139,6 @@
             this.btnPrintAllTables.TabStop = false;
             this.btnPrintAllTables.Text = "PRINT ALL TABLES";
             this.btnPrintAllTables.UseVisualStyleBackColor = false;
-            this.btnPrintAllTables.Click += new System.EventHandler(this.btnPrintAllTables_Click);
             // 
             // btnJoinAllTables
             // 

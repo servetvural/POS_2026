@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -18,7 +9,6 @@ using POSLayer.Repository.IRepository;
 namespace DTRMSimpleBackOffice {
     public partial class frmUserList : Form
     {
-
         IRepository<User> repoUser;
 
         private BindingSource _userSource = new BindingSource();
@@ -41,7 +31,6 @@ namespace DTRMSimpleBackOffice {
             _userSource.DataSource = await repoUser.GetAllAsync();
             dgv.DataSource = _userSource;
         }
-
         private async void btnAddUser_Click(object sender, System.EventArgs e)
         {
             frmUser frm = ActivatorUtilities.CreateInstance<frmUser>(ServiceHelper.Services);
@@ -85,7 +74,6 @@ namespace DTRMSimpleBackOffice {
                 await LoadUsers();
             }
         }
-
         private async void tsMoveDown_Click(object sender, EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
@@ -94,7 +82,6 @@ namespace DTRMSimpleBackOffice {
                 await LoadUsers();
             }
         }
-
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();

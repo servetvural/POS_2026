@@ -12,19 +12,15 @@ using PosLibrary;
 namespace DTRMSimpleBackOffice {
     public partial class frmBonus : Form {
         IRepository<Bonus> repoBonus;
-
-        private DTRMSimpleBusiness bslayer;
         private Bonus bonus;
 
         private int[] vals = new int[21];
         
 
-        public frmBonus(IRepository<Bonus> _repoBonus, DTRMSimpleBusiness bslayer, Bonus bonus) {
+        public frmBonus(IRepository<Bonus> _repoBonus,  Bonus bonus) {
             InitializeComponent();
             repoBonus = _repoBonus;
 
-
-            this.bslayer = bslayer;
             this.bonus = bonus;
         }
 
@@ -300,7 +296,7 @@ namespace DTRMSimpleBackOffice {
             }
 
             //remove this line 24 / 3 / 2024
-            bslayer.SetSuitableBonus();
+            DTRMSimpleBusiness.Instance.SetSuitableBonus();
         }
     }
 }

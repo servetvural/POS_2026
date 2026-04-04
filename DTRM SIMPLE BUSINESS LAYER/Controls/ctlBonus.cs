@@ -11,7 +11,6 @@ namespace DTRMNS.Controls {
     public partial class ctlBonus : UserControl {
         PosConfig config;
 
-        private DTRMSimpleBusiness bslayer;
         private bool blnUpdating;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -32,23 +31,22 @@ namespace DTRMNS.Controls {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int ProgressBarWidth {  get { return pBar.Width; }  set { pBar.Width = value; } }
 
-        public ctlBonus(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
+        public ctlBonus(PosConfig configAsService) {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
         }
 
         public void Activate() {           
 
-            bslayer.SetSuitableBonus();              
+             DTRMSimpleBusiness.Instance.SetSuitableBonus();              
         }
 
         public void UpdateBonusDisplay() {
             blnUpdating = true;
-            if (bslayer != null && bslayer.currentBonusScheme != null) {
-                double ciro = bslayer.GetCurrentSessionXSum();
+            if (DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.currentBonusScheme != null) {
+                double ciro =  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum();
 
-                BonusStatus status = bslayer.currentBonusScheme.GetBonusStatus(ciro);
+                BonusStatus status =  DTRMSimpleBusiness.Instance.currentBonusScheme.GetBonusStatus(ciro);
 
 
                 if (config.Display_Session_Total_On_Bonus_Bar)

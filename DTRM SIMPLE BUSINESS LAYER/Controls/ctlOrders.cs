@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using POSWinFormLayer;
 using POSLayer.Views;
 using POSLayer.Repository.IRepository;
+using System.Linq;
 
 namespace DTRMNS
 {
@@ -20,6 +21,7 @@ namespace DTRMNS
     public class ctlOrders : UserControl
     {
         PosConfig config;
+        IRepository<Order> repoOrder;
 
         private System.Windows.Forms.Panel panel1;
         private Button btnLoadOrder;
@@ -56,14 +58,15 @@ namespace DTRMNS
 
         //private UtilityLibrary UF;
         private List<int> rowheights;
-        public ctlOrders(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, DTRMSimpleBusiness bslayer)
         {
             InitializeComponent();
             config = configAsService;
+            repoOrder = _repoOrder;
             this.bslayer = bslayer;
         }
 
-        public ctlOrders(PosConfig configAsService, DTRMSimpleBusiness bslayer, GenericFunctionCall UnloadOrder,
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, DTRMSimpleBusiness bslayer, GenericFunctionCall UnloadOrder,
             GenericFunctionCall LoadAttachedOrder,
             GenericFunctionCall DetachPanel,
             PassControl AttachPanel,
@@ -72,6 +75,9 @@ namespace DTRMNS
 
             InitializeComponent();
             config = configAsService;
+            repoOrder = _repoOrder;
+
+
             this.bslayer = bslayer;
             UnloadOrderEvent = UnloadOrder;
             LoadAttachedOrderEvent = LoadAttachedOrder;
@@ -471,55 +477,60 @@ namespace DTRMNS
         }
         #endregion
 
-        private void frmOrders_Load(object sender, System.EventArgs e)
+        private async void frmOrders_Load(object sender, System.EventArgs e)
         {
-            if (bslayer.LoggedUser.AccessLevel != AccessLevels.User && bslayer.LoggedUser.AccessLevel != AccessLevels.Manager)
+            if ( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User &&  DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.Manager)
                 btnDeleteOrder.Visible = true;
-            lblTotal.Visible = !(bslayer.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
-            btnUnsetPaymentMethod.Visible = !(bslayer.LoggedUser.AccessLevel == AccessLevels.User);
-            LoadOrders(true);
+            lblTotal.Visible = !( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
+            btnUnsetPaymentMethod.Visible = !( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User);
+            await LoadOrders(true);
         }
 
         private async Task LoadOrders(bool blnViewAllOrders)
         {
             try
             {
-                DataTable dt = bslayer.GetAllOrdersForSessionDateOrderly(bslayer.shop.CurrentSessionIID, OrderByTypes.Descending);
-                //Add columns here
+                List<Order> orders = await repoOrder.GetListByField("SessionIID",  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
 
-                dt.Columns.Add("OrderItemsDetailed");
-                dt.Columns.Add("StatusName");
-                dt.Columns.Add("OrderTypeName");
-                dt.Columns.Add("PaymentMethodName");
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    dt.Rows[i]["StatusName"] = ((StatusFlags)int.Parse(dt.Rows[i]["Status"].ToString())).ToString();
-                    dt.Rows[i]["OrderTypeName"] = ((OrderTypes)int.Parse(dt.Rows[i]["OrderType"].ToString())).ToString();
-                    dt.Rows[i]["PaymentMethodName"] = ((PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString())).ToString();
-                }
+                //DataTable dt =  DTRMSimpleBusiness.Instance.GetAllOrdersForSessionDateOrderly( DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, OrderByTypes.Descending);
+   
 
-                int maxdetailed = dt.Rows.Count > config.Order_List_Detailed_Orders_Max_Counter ? config.Order_List_Detailed_Orders_Max_Counter : dt.Rows.Count;
-                rowheights = new List<int>();
-                for (int i = 0; i < maxdetailed; i++)
-                {
-                    Order order = await bslayer.GetOrder(dt.Rows[i]["IID"].ToString());
-                    dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
-                    rowheights.Add(order.Items.Count * 15 + 7);
-                }
-                dgv.DataSource = dt;
+                //dt.Columns.Add("OrderItemsDetailed");
+                //dt.Columns.Add("StatusName");
+                //dt.Columns.Add("OrderTypeName");
+                //dt.Columns.Add("PaymentMethodName");
+                //for (int i = 0; i < dt.Rows.Count; i++)
+                //{
+                //    dt.Rows[i]["StatusName"] = ((StatusFlags)int.Parse(dt.Rows[i]["Status"].ToString())).ToString();
+                //    dt.Rows[i]["OrderTypeName"] = ((OrderTypes)int.Parse(dt.Rows[i]["OrderType"].ToString())).ToString();
+                //    dt.Rows[i]["PaymentMethodName"] = ((PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString())).ToString();
+                //}
+
+                //int maxdetailed = orders.Count > config.Order_List_Detailed_Orders_Max_Counter ? config.Order_List_Detailed_Orders_Max_Counter : orders.Count;
+                //rowheights = new List<int>();
+                //for (int i = 0; i < maxdetailed; i++)
+                //{
+                //    Order order = await  DTRMSimpleBusiness.Instance.GetOrder(dt.Rows[i]["IID"].ToString());
+                //    dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
+                //    rowheights.Add(order.Items.Count * 15 + 7);
+                //}
+                dgv.DataSource = orders;
 
 
-                string currentSessionIID = bslayer.shop.CurrentSessionIID;
-                double cashTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
-                double cardTotal = bslayer.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
-                double unpaidTotal = bslayer.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
+                // string currentSessionIID =  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
+                double cashTotal = orders.Where(x => x.Payment == PaymentMethods.Cash).Sum(x => x.Total); //   DTRMSimpleBusiness.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
+                double cardTotal = orders.Where(x => x.Payment == PaymentMethods.Card).Sum(x => x.Total); //  DTRMSimpleBusiness.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
+                double unpaidTotal = orders.Sum(x => x.Balance); //  DTRMSimpleBusiness.Instance.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
 
-                lblTotal.Text = "Session Total : " + bslayer.GetCurrentSessionXSum().ToString("c") +
+                //lblTotal.Text = "Session Total : " +  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum().ToString("c") +
+                //    "  Cash= " + cashTotal.ToString("c") +
+                //    " ,Card= " + cardTotal.ToString("c") +
+                //    " ,Unpaid= " + unpaidTotal.ToString("c");
+
+                lblTotal.Text = "Session Total : " + orders.Sum(x => x.Total).ToString("c") +
                     "  Cash= " + cashTotal.ToString("c") +
                     " ,Card= " + cardTotal.ToString("c") +
                     " ,Unpaid= " + unpaidTotal.ToString("c");
-
-
 
 
                 vScroll.Maximum = dgv.RowCount;
@@ -544,31 +555,30 @@ namespace DTRMNS
         private async void LoadSelectedOrder()
         {
             string SelectedIID = "";
-            Table table = null;
+            Masa table = null;
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await bslayer.GetOrder(SelectedIID);
+                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse)
                 {
                     if (order.Status == StatusFlags.COMPLETED)
                     {
-                        table = new Table()
+                        table = new Masa()
                         {
                             TableName = "Temp" + order.IID,
                             TableCovers = order.Covers
                         };
                         order.TableIID = table.IID;
-                        await bslayer.SaveOrder(order);
+                        await  DTRMSimpleBusiness.Instance.SaveOrder(order);
                         table.LockedClientIP = config.Terminal_Name;
                         table.AttachOrder(order);
-                        table.CurrentOrderIID = order.IID;
 
-                        bslayer.SaveTable(table);
-                        await bslayer.BarrowTable(table.IID);
+                        await  DTRMSimpleBusiness.Instance.SaveTable(table);
+                        await  DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
                     } else
                     {
-                        table = await bslayer.BarrowTable(order.TableIID);
+                        table = await  DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
                     }
                     if (table == null)
                     {
@@ -576,14 +586,14 @@ namespace DTRMNS
                         return;
                     } else
                     {
-                        bslayer.AttachedOrder = table.AttachedOrder;
+                         DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
                         LoadAttachedOrderEvent();
                         DetachPanelEvent();
                     }
                 } else
                 {
-                    order = await bslayer.BarrowOrder(order.IID, config.Terminal_Name);
-                    bslayer.AttachedOrder = order;
+                    order = await  DTRMSimpleBusiness.Instance.BarrowOrder(order.IID, config.Terminal_Name);
+                     DTRMSimpleBusiness.Instance.AttachedOrder = order;
                     LoadAttachedOrderEvent();
                     DetachPanelEvent();
 
@@ -596,7 +606,7 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                    bslayer.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
+                     DTRMSimpleBusiness.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
                 LoadOrders(true);
             }
         }
@@ -616,13 +626,13 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
+                Order order = await  DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
                 if (order != null)
                 {
                     order.Payment = PaymentMethods.NotPaid;
                     order.PaymentFlag = "";
-                    await bslayer.SaveOrder(order);
+                    await  DTRMSimpleBusiness.Instance.SaveOrder(order);
                     await LoadOrders(true);
                 }
             }
@@ -642,15 +652,15 @@ namespace DTRMNS
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                Order order = await bslayer.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
-                Printer printer = await bslayer.GetPrinterForOrderType(order.OrderType);
+                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                Printer printer = await  DTRMSimpleBusiness.Instance.GetPrinterForOrderType(order.OrderType);
                 if (printer != null)
-                    bslayer.PrintReceipt(order.IID, printer, 1);
+                     DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, printer, 1);
                 else
                 {
-                    trmPrinterSelector trm = new trmPrinterSelector(bslayer, PrinterTypes.Receipt);
+                    trmPrinterSelector trm = new trmPrinterSelector(PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
-                        bslayer.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
+                         DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
 
                 }
 
@@ -687,19 +697,19 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await bslayer.GetOrder(SelectedIID);
+                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.InHouse)
                 {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
                 }
-                bslayer.AttachedOrder = await bslayer.BarrowOrder(SelectedIID, config.Terminal_Name);
+                 DTRMSimpleBusiness.Instance.AttachedOrder = await  DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
-                if (bslayer.AttachedOrder != null)
+                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 {
-                    if (((int)bslayer.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED))
+                    if (((int) DTRMSimpleBusiness.Instance.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED))
                     {
-                        if (bslayer.AttachedOrder.Payment == PaymentMethods.NotPaid)
+                        if ( DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                         {
                             PassControlEvent(new ctlPayment(new GenericFunctionCall(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
@@ -707,8 +717,8 @@ namespace DTRMNS
 
                             return;
                         }
-                        bslayer.AttachedOrder.Status = POSLayer.Library.StatusFlags.COMPLETED;
-                       await bslayer.SaveOrder(bslayer.AttachedOrder);
+                         DTRMSimpleBusiness.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.COMPLETED;
+                       await  DTRMSimpleBusiness.Instance.SaveOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
                         UnloadOrderEvent();
                         PassControlEvent(this);
                         await LoadOrders(true);

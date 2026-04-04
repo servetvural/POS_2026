@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -40,6 +41,9 @@ public partial class Category : BaseClass
     public TextImageRelationX TextImageRelation { get; set; } = TextImageRelationX.ImageBeforeText;
     public ContentAlignmentX ImageAlign { get; set; }    = ContentAlignmentX.MiddleCenter;
 
+
+    [NotMapped]
+    public double CategoryTotal { get; set; }
 
     public CategoryItem GetEntityButton(string EntityButtonId)
     {

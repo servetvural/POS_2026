@@ -7,27 +7,25 @@ using POSLayer.Models;
 
 namespace DTRMNS {
    public partial class trmPrinterSelector : Form {
-      private DTRMSimpleBusiness bslayer;
       public Printer SelectedPrinter;
       private PrinterTypes PrinterType;
 
       public trmPrinterSelector() {
          InitializeComponent();
       }
-      public trmPrinterSelector(DTRMSimpleBusiness bslayer, PrinterTypes PrinterType) {
+      public trmPrinterSelector( PrinterTypes PrinterType) {
          InitializeComponent();
-         this.bslayer = bslayer;
-         this.PrinterType = PrinterType;
+            this.PrinterType = PrinterType;
          LoadPrinters();
       }
 
       private void LoadPrinters() {
-         dgv.DataSource = bslayer.GetPrintersByPrinterType(PrinterType);
+         dgv.DataSource = DTRMSimpleBusiness.Instance.GetPrintersByPrinterType(PrinterType);
       }
 
       private async void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
       {
-         SelectedPrinter = await bslayer.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+         SelectedPrinter = await DTRMSimpleBusiness.Instance.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
          this.DialogResult = DialogResult.OK;
          this.Close();
       }

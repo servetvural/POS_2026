@@ -10,41 +10,29 @@ namespace DTRMNS{
         public string IID { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string TableNumber { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public TableTypes TableType { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public ButtonShapeTypes Shape { get; set; }
 
-        public bool IsPrimary {
-            get { return TableType == TableTypes.StaticTable; }
-        }
 
         public TableButton() {
             IID = "";
             TableNumber = "";
-            TableType = TableTypes.TemporaryTable;
         }
 
-        public TableButton(string IID, string TableNumber, TableTypes TableType, int x, int y, int Width, int Height) {
+        public TableButton(string IID, string TableNumber, int x, int y, int Width, int Height) {
             this.IID = IID;
             this.TableNumber = TableNumber;
             Text = TableNumber;
-            this.TableType = TableType;
-            if (this.TableType == TableTypes.TemporaryTable)
-                this.BackColor = Color.Purple;
             Location = new Point(x, y);
             Size = new Size(Width, Height);
         }
 
-        public TableButton(string IID, string TableNumber, TableTypes TableType, int x, int y, int Width, int Height,
+        public TableButton(string IID, string TableNumber, int x, int y, int Width, int Height,
             ButtonShapeTypes Shape) {
             this.IID = IID;
             this.TableNumber = TableNumber;
             Text = TableNumber;
-            this.TableType = TableType;
-            if (this.TableType == TableTypes.TemporaryTable)
-                this.BackColor = Color.Purple;
             Location = new Point(x, y);
             Size = new Size(Width, Height);
             this.Shape = Shape;

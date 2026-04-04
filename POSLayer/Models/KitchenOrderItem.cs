@@ -20,7 +20,7 @@ public partial class KitchenOrderItem : BaseClass
 
     public string DistributionIID { get; set; } = null!;
 
-    public string EntityButtonIID { get; set; } = null!;
+    public string CategoryItemIID { get; set; } = null!;
 
     public KitchenOrderStatusTypes Status { get; set; }
 

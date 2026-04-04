@@ -9,9 +9,9 @@ namespace DTRMNS {
         public frmPassword() {
             InitializeComponent();
         }
-        public frmPassword(DTRMSimpleBusiness bslayer, string msg) {
+        public frmPassword(string msg) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
             lblMessage.Text = msg;
         }
         private void frmPassword_Load(object sender, EventArgs e) {
@@ -40,9 +40,9 @@ namespace DTRMNS {
                 //if (bslayer == null)
                 //    bslayer = new DTRMSimpleBusiness(UF.GetConfig());
                 //else
-                //    bslayer.config = UF.GetConfig();
+                //     DTRMSimpleBusiness.Instance.config = UF.GetConfig();
 
-                //if (bslayer.DoStartThings()) {
+                //if ( DTRMSimpleBusiness.Instance.DoStartThings()) {
                 //    this.DialogResult = DialogResult.OK;
                 //    Close();
                 //}

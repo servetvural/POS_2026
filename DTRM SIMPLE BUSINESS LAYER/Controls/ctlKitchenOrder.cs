@@ -17,7 +17,7 @@ namespace DTRMNS {
         PosConfig config;
         IRepository<Debug> repoDebug;
         IRepository<Order> repoOrder;
-
+        IRepository<GenericImage> repoImage;
 
         public DTRMSimpleBusiness bslayer;
         public KitchenOrder korder;
@@ -29,9 +29,9 @@ namespace DTRMNS {
 
         public bool blnBeingAltered;
 
-        Font mainFont;// = new Font("Arial", bslayer.config.Kitchen_Large_Font_Size, FontStyle.Bold);
-        Font subFont; // = new Font("Arial", bslayer.config.Kitchen_Small_Font_Size, FontStyle.Regular);
-        Font detailFont; // = new Font("Arial", bslayer.config.Kitchen_Detail_Font_Size, FontStyle.Regular);
+        Font mainFont;// = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Large_Font_Size, FontStyle.Bold);
+        Font subFont; // = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Small_Font_Size, FontStyle.Regular);
+        Font detailFont; // = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Detail_Font_Size, FontStyle.Regular);
 
         public event KitchenEventHandler OrderCompleteRequested;
         public void OnOrderCompleted(KitchenOrder kitchenOrder) {
@@ -44,11 +44,13 @@ namespace DTRMNS {
         }
 
 
-        public ctlKitchenOrder(PosConfig configAsService,IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug, DTRMSimpleBusiness bslayer) {
+        public ctlKitchenOrder(PosConfig configAsService,IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug,
+            IRepository<GenericImage> _repoImage, DTRMSimpleBusiness bslayer) {
             InitializeComponent();
             config = configAsService;
             repoDebug = _repoDebug;
             repoOrder = _repoOrder;
+            repoImage = _repoImage;
 
             this.bslayer = bslayer;
 
@@ -189,7 +191,7 @@ namespace DTRMNS {
                             step = 6;
                         } else {
                             if (blnDisplayDetails && (distribution.IID == koi.DistributionIID)) {
-                                GenericImage prepImage =await bslayer.GetEntityButtonPrepImage(koi.EntityButtonIID);
+                                GenericImage prepImage =await repoImage.GetByField("ReferenceIID", koi.CategoryItemIID);
                                 if (prepImage != null) {
                                     ctlkoi.PBox.Visible = true;
                                     ctlkoi.DetailLabel.Visible = true;
@@ -265,7 +267,7 @@ namespace DTRMNS {
         private void BtnDone_Click(object sender, EventArgs e) {
 
             if (blnWaiting) {
-                korder.BeingModified = bslayer.IsKitchenOrderBeingModified(korder.IID);
+                korder.BeingModified =  DTRMSimpleBusiness.Instance.IsKitchenOrderBeingModified(korder.IID);
                 if (!korder.BeingModified) {
                     MarkOrderItemsAsCompletedAsRequestedQuantity();
                     OrderCompleteRequested(korder);
@@ -281,21 +283,21 @@ namespace DTRMNS {
 
         private async void MarkOrderItemsAsCompletedAsRequestedQuantity() {
             if (config.DebugMode) 
-                bslayer.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
+                 DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
-            korder.CompletedDateTime = DateTime.Now; // DateTime.Parse(bslayer.GetDataTable("Select getdate()").Rows[0][0].ToString());
-            Order relatedOrder = await bslayer.GetOrder(korder.OrderIID);
+            korder.CompletedDateTime = DateTime.Now; // DateTime.Parse( DTRMSimpleBusiness.Instance.GetDataTable("Select getdate()").Rows[0][0].ToString());
+            Order relatedOrder = await  DTRMSimpleBusiness.Instance.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.Items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
                 }
-                bslayer.SaveKitchenOrder(korder);
+                 DTRMSimpleBusiness.Instance.SaveKitchenOrder(korder);
 
             } else {
                 foreach (KitchenOrderItem item in korder.Items) {
                     if (blnWaiting && (distribution.IID == item.DistributionIID)  && item.Status == KitchenOrderStatusTypes.Waiting) {
 
-                        OrderItem oitem = relatedOrder.Items.Find(x => x.EntityButtonIID == item.EntityButtonIID);
+                        OrderItem oitem = relatedOrder.Items.Find(x => x.CategoryItemIID == item.CategoryItemIID);
                         if (oitem != null)
                             oitem.CompletedQuantity += item.Quantity;
                         item.Status = KitchenOrderStatusTypes.Completed;
@@ -304,11 +306,11 @@ namespace DTRMNS {
 
                 await repoOrder.Save(relatedOrder);
                 if (config.DebugMode) 
-                    bslayer.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
+                     DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
 
-                bslayer.SaveKitchenOrder(korder);
+                 DTRMSimpleBusiness.Instance.SaveKitchenOrder(korder);
                 if (config.DebugMode)
-                    bslayer.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
+                     DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
                 
             }
 
@@ -319,7 +321,7 @@ namespace DTRMNS {
                     
         }
 
-        private void TmrMain_Tick(object sender, EventArgs e) {
+        private async void TmrMain_Tick(object sender, EventArgs e) {
             if (blnWaiting) {
                 
                 double waitingtime = DateTime.Now.Subtract(korder.CreatedDateTime).TotalSeconds;
@@ -352,32 +354,32 @@ namespace DTRMNS {
                 else
                     pBar.Visible = false;
 
-                pnlPayment.Visible = !bslayer.isOrderPaid(korder.OrderIID);
+                pnlPayment.Visible = !(await repoOrder.Get(korder.OrderIID, "Items")).isPaid;
             }         
         }
 
         private async void BtnPrint_Click(object sender, EventArgs e) {
-            Printer printer = await bslayer.GetDefaultReceiptPrinter();  
+            Printer printer = await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();  
             if (printer == null)
                 return;
 
-            bslayer.PrintForKitchen(korder, printer);
+             DTRMSimpleBusiness.Instance.PrintForKitchen(korder, printer);
         }
 
         private async void BtnPrintAsReceipt_Click(object sender, EventArgs e) {
-            Printer printer =await bslayer.GetDefaultReceiptPrinter(); 
+            Printer printer =await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(); 
             if (printer == null)
                 return;
 
-            bslayer.PrintReceipt(korder.OrderIID, printer, 1);
+             DTRMSimpleBusiness.Instance.PrintReceipt(korder.OrderIID, printer, 1);
         }
 
         private async void BtnPrintWithDetails_Click(object sender, EventArgs e) {
-            Printer printer = await bslayer.GetDefaultReceiptPrinter();
+            Printer printer = await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();
             if (printer == null)
                 return;
 
-            bslayer.PrintForKitchen(korder, printer, true);
+             DTRMSimpleBusiness.Instance.PrintForKitchen(korder, printer, true);
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e) {

@@ -5,7 +5,7 @@ namespace POSLayer.Library;
 
 public class SessionFamily
 {
-    public SessionData sessionData { get; set; }
+    public Session session { get; set; }
     public List<Order> Orders { get; set; }
 
 }

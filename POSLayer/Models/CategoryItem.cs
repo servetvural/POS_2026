@@ -19,7 +19,7 @@ public partial class CategoryItem : BaseClass
     public int AvailableFor { get; set; } = (int)AvailabilityTypes.All;
 
 
-    public int Compulsary { get; set; }
+    public bool Compulsary { get; set; }
     public string Barcode { get; set; } = string.Empty;
     public double SaleTax { get; set; }
     public double SitinTax { get; set; }

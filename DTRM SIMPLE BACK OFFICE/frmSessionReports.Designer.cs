@@ -1385,7 +1385,6 @@ namespace DTRMSimpleBackOffice {
             this.btnEnsureSessionData.Size = new System.Drawing.Size(115, 51);
             this.btnEnsureSessionData.Text = "Ensure Session Data";
             this.btnEnsureSessionData.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.btnEnsureSessionData.Click += new System.EventHandler(this.btnEnsureSessionData_Click);
             // 
             // btnCheck
             // 

@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-
-using DTRMNS;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -31,9 +23,7 @@ namespace DTRMSimpleBackOffice
         }
         private void frmSingleUser_Load(object sender, EventArgs e)
         {
-
             LoadUser();
-
         }
         private void LoadUser()
         {
@@ -68,7 +58,6 @@ namespace DTRMSimpleBackOffice
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
-
         private async void btnSave_Click(object sender, EventArgs e)
         {
             if (txtUserName.Text.Trim().Length == 0)

@@ -21,7 +21,8 @@ namespace DTRMNS
         string menuIID;
 
         private BindingSource _distributionSource = new BindingSource();
-        public frmDistributionSelector(IRepository<Distribution> _repoDistribution, Distribution _distribution, string _menuIID)
+        public frmDistributionSelector(IRepository<Distribution> _repoDistribution, Distribution _distribution, 
+            string _menuIID)
         {
             InitializeComponent();
             repoDistribution = _repoDistribution;

@@ -8,6 +8,7 @@ using PosLibrary;
 using POSLayer.Library;
 using POSLayer.Models;
 using System.Threading.Tasks;
+using POSLayer.Repository.IRepository;
 
 
 namespace DTRMNS
@@ -15,23 +16,22 @@ namespace DTRMNS
     public partial class ctlTables : UserControl
     {
         PosConfig config;
+        IRepository<Masa> repoTable;
 
         private GenericFunctionCall CloseFunction;
         private GenericEventHandler ButtonClickHandler;
         private GenericEventHandler DirectButtonClickHandler;
-        private DTRMNS.DTRMSimpleBusiness bslayer;
         private bool blnChangeOrderType;
         private TableButton SourceTable;
 
         private GenericFunctionCall CloseOrderItemEntityInteractionEvent;
 
-        private string SelectedGroup;
 
-        public ctlTables(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public ctlTables(PosConfig configAsService, IRepository<Masa> _repoTable)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
+            repoTable = _repoTable;
         }
 
         public ctlTables(GenericFunctionCall CloseFunction,
@@ -61,12 +61,12 @@ namespace DTRMNS
 
         private async void LoadTables()
         {
-            List<Table> tablelist = await bslayer.GetTableList(SelectedGroup);
+            List<Masa> tablelist = await repoTable.GetAllAsync();
 
             pnlTables.Controls.Clear();
             //pnlTables.BackColor = Color.AliceBlue;
 
-            Table table;
+            Masa table;
             string locker = "";
             for (int i = 0; i < tablelist.Count; i++)
             {
@@ -98,7 +98,7 @@ namespace DTRMNS
                         if (btn.Text != table.DefaultName)
                         {
                             table.TableName = table.DefaultName;
-                            bslayer.SaveTable(table);
+                             DTRMSimpleBusiness.Instance.SaveTable(table);
                             btn.Text = table.DefaultName;
                         }
                     }
@@ -108,8 +108,6 @@ namespace DTRMNS
                 btn.ForeColor = Color.Black;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
-                btn.Shape = table.Shape;
-                btn.TableType = table.TableType;
                 btn.Click += new System.EventHandler(this.btnQuickTableButton_Click);
                 pnlTables.Controls.Add(btn);
                 locker = "";
@@ -123,93 +121,57 @@ namespace DTRMNS
                 if (SourceTable == null)
                 {
                     //Identify Source Table
-                    SourceTable = (TableButton)sender;
+                    SourceTable = sender as TableButton;
 
                     return;
                 } else
                 {
-                    bool blnLeaveSubTables = false;
-                    if (SourceTable.IsPrimary)
-                    {
-                        if (await bslayer.HasSubTables(SourceTable.IID))
-                        {
-                            blnLeaveSubTables = MessageBox.Show("Do you want to move sub tables as well?",
-                                                    "Move ALL",
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question,
-                                                    MessageBoxDefaultButton.Button2) == DialogResult.No;
-                        }
-                    }
-                    bslayer.MoveTable(SourceTable.IID, ((TableButton)sender).IID, blnLeaveSubTables);
+                    await DTRMSimpleBusiness.Instance.MoveTable(SourceTable.IID, ((TableButton)sender).IID);
 
                     chkChangeTable.Checked = false;
                     LoadTables();
                     return;
                 }
             }
-            if (chkAddSubTable.Checked)
-            {
-                Table table = await bslayer.GetTable(((TableButton)sender).IID);
-                Table subTable = null;
-                if (table.HasActiveOrder())
-                {
-                    subTable = await bslayer.AddSubTable(table.IID);
-                    DirectButtonClickHandler(subTable.IID, e);
-
-                } else
-                    ButtonClickHandler(sender, e);
-                CloseFunction();
-                //directly load the newly created sub table would be better
-                return;
-            }
-
+            
             if (chkPrintOrder.Checked)
             {
                 if (!string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID))
                 {
                     TableButton tableButton = (TableButton)sender;
                     bool blnPrinted = false;
-                    if (await bslayer.HasSubTables(tableButton.IID))
+
+                    Masa table = await DTRMSimpleBusiness.Instance.BarrowTable(tableButton.IID);
+                    if (table.AttachedOrder != null)
                     {
-                        List<Table> tablelist = await bslayer.GetTableAndSubTables(tableButton.IID);
-                        for (int i = 0; i < tablelist.Count; i++)
-                        {
-                            blnPrinted = await bslayer.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1,
-                                config.DTClientLocalReceiptPrinterIID);
-                        }
-                    } else
-                    {
-                        Table table = await bslayer.BarrowTable(tableButton.IID);
-                        if (table.AttachedOrder != null)
-                        {
-                            blnPrinted = await bslayer.PrintEntireOrder(table.AttachedOrder, true, false, 1,
-                                config.DTClientLocalReceiptPrinterIID);
-                        }
+                        blnPrinted = await DTRMSimpleBusiness.Instance.PrintEntireOrder(table.AttachedOrder, true, false, 1,
+                            config.DTClientLocalReceiptPrinterIID);
                     }
+
                     if (blnPrinted && config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                            bslayer.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
+                             DTRMSimpleBusiness.Instance.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
                 }
             }
 
             if (blnChangeOrderType)
             {
-                Table table = await bslayer.GetTable(((TableButton)sender).IID);
-                if (table.CurrentOrderIID != null && table.CurrentOrderIID != "")
+                Masa table = await repoTable.Get((sender as TableButton).IID);
+                if (table.Order != null)
                     MessageBox.Show("Table already has an order");
                 else
                 {
                     //Delete the incoming new order with the newly allocated table
-                    await bslayer.DeleteOrderOnly(table.AttachedOrder);
+                    await  DTRMSimpleBusiness.Instance.DeleteOrderOnly(table.AttachedOrder);
                     //Dispatch this order to this table
-                    table.AttachedOrder = bslayer.AttachedOrder;
-                    table.CurrentOrderIID = bslayer.AttachedOrder.IID;
-                    bslayer.SaveTable(table);
+                    table.AttachedOrder =  DTRMSimpleBusiness.Instance.AttachedOrder;
+                    await  DTRMSimpleBusiness.Instance.SaveTable(table);
                     //Dispatch newly allocated table to this order
-                    bslayer.AttachedOrder.TableIID = table.IID;
-                    bslayer.AttachedOrder.Status = StatusFlags.DONE;
-                    bslayer.AttachedOrder.Title = "T " + table.TableName + " C " + table.TableCovers.ToString();
+                     DTRMSimpleBusiness.Instance.AttachedOrder.TableIID = table.IID;
+                     DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.DONE;
+                     DTRMSimpleBusiness.Instance.AttachedOrder.Title = "T " + table.TableName + " C " + table.TableCovers.ToString();
                     HandlePriceChange(OrderTypes.InHouse);
-                    bslayer.OnDisplayOrder();
+                     DTRMSimpleBusiness.Instance.OnDisplayOrder();
                 }
                 return;
             }
@@ -227,8 +189,8 @@ namespace DTRMNS
             {
                 SourceTable = (TableButton)sender;
 
-                Table STable = await bslayer.GetTable(SourceTable.IID);
-                if (String.IsNullOrEmpty(STable.CurrentOrderIID))
+                Masa STable = await repoTable.Get(SourceTable.IID);
+                if (STable.Order == null)
                 {
 
                     //No Order on this table to split so abort process
@@ -237,11 +199,11 @@ namespace DTRMNS
                 } else
                 {
                     //Now properly barrowtable for system lock, so no one can do any operation on it
-                    STable = await bslayer.BarrowTable(SourceTable.IID);
-                    frmTableSplitter frm = new frmTableSplitter(bslayer, STable);
+                    STable = await  DTRMSimpleBusiness.Instance.BarrowTable(SourceTable.IID);
+                    frmTableSplitter frm = new frmTableSplitter( STable);
                     frm.ShowDialog();
 
-                    bslayer.ReturnTable(STable);
+                     DTRMSimpleBusiness.Instance.ReturnTable(STable);
                 }
                 chkSplitTable.Checked = false;
                 LoadTables();
@@ -262,9 +224,9 @@ namespace DTRMNS
             CloseOrderItemEntityInteractionEvent();
 
             //Do recalculation
-            bslayer.RePriceOrderForOrderType(bslayer.AttachedOrder, RequestedType);
-            bslayer.ReTaxOrderForOrderType(bslayer.AttachedOrder, RequestedType);
-            bslayer.AttachedOrder.OrderType = RequestedType;
+             DTRMSimpleBusiness.Instance.RePriceOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, RequestedType);
+             DTRMSimpleBusiness.Instance.ReTaxOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, RequestedType);
+             DTRMSimpleBusiness.Instance.AttachedOrder.OrderType = RequestedType;
             CloseFunction();
 
         }
@@ -283,11 +245,11 @@ namespace DTRMNS
             switch (whattodo)
             {
                 case DialogResult.Yes:
-                    Table table = await bslayer.GetTable(TableIID);
+                    Masa table = await  DTRMSimpleBusiness.Instance.GetTable(TableIID);
                     if (table != null)
                     {
                         table.LockedClientIP = "";
-                        bslayer.SaveTable(table);
+                         DTRMSimpleBusiness.Instance.SaveTable(table);
                     }
                     this.LoadTables();
                     break;
@@ -320,7 +282,7 @@ namespace DTRMNS
         {
             pnlGroups.Controls.Clear();
 
-            DataTable dt = bslayer.GetAllTableGroups();
+            DataTable dt =  DTRMSimpleBusiness.Instance.GetAllTableGroups();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 RadioButton btn = new RadioButton();
@@ -362,7 +324,6 @@ namespace DTRMNS
             if (rb.Checked)
             {
                 rb.FlatAppearance.BorderSize = 1;
-                SelectedGroup = rb.Tag.ToString();
                 LoadTables();
             } else
                 rb.FlatAppearance.BorderSize = 0;
@@ -371,14 +332,14 @@ namespace DTRMNS
 
         private async void RenameTable(string TableIID)
         {
-            Table table = await bslayer.GetTable(TableIID);
+            Masa table = await  DTRMSimpleBusiness.Instance.GetTable(TableIID);
             if (table != null)
             {
                 trmInput frm = new trmInput(table.TableName);
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
                     table.TableName = frm.input;
-                    bslayer.SaveTable(table);
+                     DTRMSimpleBusiness.Instance.SaveTable(table);
                 }
             }
         }

@@ -17,6 +17,6 @@ public class StockManager
     public string Reference { get; set; }
     public List<StockItem> StockItems { get; set; }
     public List<Supplier> Suppliers { get; set; }
-    public List<EntityButtonStockItemLookUp> EBStockItemLookups { get; set; }
+    public List<RecipeItem> Recipes { get; set; }
 
 }

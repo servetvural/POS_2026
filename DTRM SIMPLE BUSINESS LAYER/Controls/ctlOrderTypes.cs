@@ -183,47 +183,47 @@ namespace DTRMNS {
         #endregion
 
         private void btnInHouse_Click(object sender, System.EventArgs e) {
-            if (bslayer.AttachedOrder.OrderType != OrderTypes.InHouse) {
-                ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(bslayer.sp, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.InHouse) {
+                ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(ServiceHelper.Services, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
                 AttachPanelEvent(ct);
             } else
                 CloseFunction();
         }
         private void btnDirectSale_Click(object sender, EventArgs e) {
-            if (bslayer.AttachedOrder.OrderType != OrderTypes.DirectSale) {
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.DirectSale) {
                 RequestedType = OrderTypes.DirectSale;
                 try {
-                    if (bslayer.AttachedOrder.TableIID.Length > 0)
-                        bslayer.FreeTheTable(bslayer.AttachedOrder.TableIID);
+                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
                 } catch { }
                 HandlePriceChange();
-                bslayer.OnDisplayOrder();
+                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
             } else
                 CloseFunction();
         }
         private void btnTakeAway_Click(object sender, System.EventArgs e) {
-            if (bslayer.AttachedOrder.OrderType != OrderTypes.TakeAwayB) {
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.TakeAwayB) {
                 RequestedType = OrderTypes.TakeAwayB;
                 try {
-                    if (bslayer.AttachedOrder.TableIID.Length > 0)
-                        bslayer.FreeTheTable(bslayer.AttachedOrder.TableIID);
+                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
                 } catch { }
                 HandlePriceChange();
-                bslayer.OnDisplayOrder();
+                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
             } else
                 CloseFunction();
         }
 
         private void btnDelivery_Click(object sender, System.EventArgs e) {
-            if (bslayer.AttachedOrder.OrderType != OrderTypes.Delivery) {
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery) {
                 RequestedType = OrderTypes.Delivery;
                 try {
-                    if (bslayer.AttachedOrder.TableIID.Length > 0)
-                        bslayer.FreeTheTable(bslayer.AttachedOrder.TableIID);
+                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
                 } catch { }
                 HandlePriceChange();
                 EnsureCompulsoryExtrasEvent();
-                bslayer.OnDisplayOrder();
+                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
             } else
                 CloseFunction();
         }
@@ -236,9 +236,9 @@ namespace DTRMNS {
             //Close tabpages to ensure the last open top order item having completed effect
             CloseOrderItemEntityInteractionEvent();
             //Do recalculation
-            bslayer.RePriceOrderForOrderType(bslayer.AttachedOrder, this.RequestedType);
-            bslayer.ReTaxOrderForOrderType(bslayer.AttachedOrder, this.RequestedType);
-            bslayer.AttachedOrder.OrderType = this.RequestedType;
+             DTRMSimpleBusiness.Instance.RePriceOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, this.RequestedType);
+             DTRMSimpleBusiness.Instance.ReTaxOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, this.RequestedType);
+             DTRMSimpleBusiness.Instance.AttachedOrder.OrderType = this.RequestedType;
             CloseFunction();
         }
 

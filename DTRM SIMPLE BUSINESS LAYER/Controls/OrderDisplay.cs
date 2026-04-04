@@ -19,9 +19,6 @@ namespace DTRMNS
     {
         PosConfig config;
 
-        public DTRMNS.DTRMSimpleBusiness bslayer;
-
-
         private System.Windows.Forms.ColumnHeader IID;
         private System.Windows.Forms.ColumnHeader OrderItemText;
         private System.Windows.Forms.ColumnHeader colQuantity;
@@ -39,7 +36,6 @@ namespace DTRMNS
         private Button btnDeleteItem;
         private Timer tmrSaat;
 
-        //private Order AttachedOrder;
         private System.ComponentModel.IContainer components;
         private ImageList ilSmall;
         private Panel pnlTop;
@@ -120,11 +116,10 @@ namespace DTRMNS
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int SplitDisplayHeight { get { return pnlSplit.Height; } set { pnlSplit.Height = value; } }
 
-        public OrderDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public OrderDisplay(PosConfig configAsService)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
         }
 
         public void AttachBusinessLayer()
@@ -134,7 +129,7 @@ namespace DTRMNS
                     if (config != null)
                     {
                         ilSmall.ImageSize = new Size((int)config.Order_Item_Display_Height, (int)config.Order_Item_Display_Height);
-                        bslayer.DisplayOrder += new GenericFunctionCall(Display);
+                         DTRMSimpleBusiness.Instance.DisplayOrder += new GenericFunctionCall(Display);
                     }
             } catch
             {
@@ -163,409 +158,398 @@ namespace DTRMNS
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.IID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colQuantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.OrderItemText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.CalculatedValue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colQty = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colOrderItemText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lvwOrder = new System.Windows.Forms.ListView();
-            this.colCompletedQuantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ilSmall = new System.Windows.Forms.ImageList(this.components);
-            this.pnlDown = new System.Windows.Forms.Panel();
-            this.lblScrollDown = new System.Windows.Forms.Label();
-            this.pnlCommand = new System.Windows.Forms.Panel();
-            this.btnViewKitchen = new System.Windows.Forms.Button();
-            this.btnPlus1 = new System.Windows.Forms.Button();
-            this.btnMinusOne = new System.Windows.Forms.Button();
-            this.btnDeleteItem = new System.Windows.Forms.Button();
-            this.tmrSaat = new System.Windows.Forms.Timer(this.components);
-            this.pnlTop = new System.Windows.Forms.Panel();
-            this.btnSplit = new System.Windows.Forms.Button();
-            this.lblScrollUp = new System.Windows.Forms.Label();
-            this.lvwSplittingOrder = new System.Windows.Forms.ListView();
-            this.colSplitIID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colSplitQuantity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colSplitOrderItemText = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colSplitCalculatedValue = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pnlSplit = new System.Windows.Forms.Panel();
-            this.pnlSplitActions = new System.Windows.Forms.Panel();
-            this.btnSplitAllUp = new System.Windows.Forms.Button();
-            this.btnSplitAllDown = new System.Windows.Forms.Button();
-            this.btnSplitOneUp = new System.Windows.Forms.Button();
-            this.btnSplitOneDown = new System.Windows.Forms.Button();
-            this.pnlDown.SuspendLayout();
-            this.pnlCommand.SuspendLayout();
-            this.pnlTop.SuspendLayout();
-            this.pnlSplit.SuspendLayout();
-            this.pnlSplitActions.SuspendLayout();
-            this.SuspendLayout();
+            components = new Container();
+            IID = new ColumnHeader();
+            colQuantity = new ColumnHeader();
+            OrderItemText = new ColumnHeader();
+            CalculatedValue = new ColumnHeader();
+            colQty = new ColumnHeader();
+            colOrderItemText = new ColumnHeader();
+            lvwOrder = new ListView();
+            colCompletedQuantity = new ColumnHeader();
+            ilSmall = new ImageList(components);
+            pnlDown = new Panel();
+            lblScrollDown = new Label();
+            pnlCommand = new Panel();
+            btnViewKitchen = new Button();
+            btnPlus1 = new Button();
+            btnMinusOne = new Button();
+            btnDeleteItem = new Button();
+            tmrSaat = new Timer(components);
+            pnlTop = new Panel();
+            btnSplit = new Button();
+            lblScrollUp = new Label();
+            lvwSplittingOrder = new ListView();
+            colSplitIID = new ColumnHeader();
+            colSplitQuantity = new ColumnHeader();
+            colSplitOrderItemText = new ColumnHeader();
+            colSplitCalculatedValue = new ColumnHeader();
+            pnlSplit = new Panel();
+            pnlSplitActions = new Panel();
+            btnSplitAllUp = new Button();
+            btnSplitAllDown = new Button();
+            btnSplitOneUp = new Button();
+            btnSplitOneDown = new Button();
+            pnlDown.SuspendLayout();
+            pnlCommand.SuspendLayout();
+            pnlTop.SuspendLayout();
+            pnlSplit.SuspendLayout();
+            pnlSplitActions.SuspendLayout();
+            SuspendLayout();
             // 
             // IID
             // 
-            this.IID.Text = "";
-            this.IID.Width = 0;
+            IID.Text = "";
+            IID.Width = 0;
             // 
             // colQuantity
             // 
-            this.colQuantity.Text = "";
-            this.colQuantity.Width = 35;
+            colQuantity.Text = "";
+            colQuantity.Width = 35;
             // 
             // OrderItemText
             // 
-            this.OrderItemText.Text = "Order Items";
-            this.OrderItemText.Width = 178;
+            OrderItemText.Text = "Order Items";
+            OrderItemText.Width = 178;
             // 
             // CalculatedValue
             // 
-            this.CalculatedValue.Text = "Price";
-            this.CalculatedValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.CalculatedValue.Width = 74;
+            CalculatedValue.Text = "Price";
+            CalculatedValue.TextAlign = HorizontalAlignment.Right;
+            CalculatedValue.Width = 74;
             // 
             // lvwOrder
             // 
-            this.lvwOrder.BackColor = System.Drawing.Color.Black;
-            this.lvwOrder.BackgroundImageTiled = true;
-            this.lvwOrder.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lvwOrder.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.IID,
-            this.colQuantity,
-            this.OrderItemText,
-            this.CalculatedValue,
-            this.colCompletedQuantity});
-            this.lvwOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvwOrder.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvwOrder.ForeColor = System.Drawing.Color.White;
-            this.lvwOrder.FullRowSelect = true;
-            this.lvwOrder.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lvwOrder.HideSelection = false;
-            this.lvwOrder.Location = new System.Drawing.Point(0, 400);
-            this.lvwOrder.MultiSelect = false;
-            this.lvwOrder.Name = "lvwOrder";
-            this.lvwOrder.Size = new System.Drawing.Size(320, 291);
-            this.lvwOrder.SmallImageList = this.ilSmall;
-            this.lvwOrder.TabIndex = 0;
-            this.lvwOrder.UseCompatibleStateImageBehavior = false;
-            this.lvwOrder.View = System.Windows.Forms.View.Details;
-            this.lvwOrder.SelectedIndexChanged += new System.EventHandler(this.lvwOrder_SelectedIndexChanged);
-            this.lvwOrder.Click += new System.EventHandler(this.lvwOrder_Click);
+            lvwOrder.BackColor = Color.Black;
+            lvwOrder.BackgroundImageTiled = true;
+            lvwOrder.BorderStyle = BorderStyle.None;
+            lvwOrder.Columns.AddRange(new ColumnHeader[] { IID, colQuantity, OrderItemText, CalculatedValue, colCompletedQuantity });
+            lvwOrder.Dock = DockStyle.Fill;
+            lvwOrder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lvwOrder.ForeColor = Color.White;
+            lvwOrder.FullRowSelect = true;
+            lvwOrder.HeaderStyle = ColumnHeaderStyle.None;
+            lvwOrder.Location = new Point(0, 400);
+            lvwOrder.MultiSelect = false;
+            lvwOrder.Name = "lvwOrder";
+            lvwOrder.Size = new Size(353, 291);
+            lvwOrder.SmallImageList = ilSmall;
+            lvwOrder.TabIndex = 0;
+            lvwOrder.UseCompatibleStateImageBehavior = false;
+            lvwOrder.View = View.Details;
+            lvwOrder.SelectedIndexChanged += lvwOrder_SelectedIndexChanged;
+            lvwOrder.Click += lvwOrder_Click;
             // 
             // colCompletedQuantity
             // 
-            this.colCompletedQuantity.Text = "";
-            this.colCompletedQuantity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.colCompletedQuantity.Width = 28;
+            colCompletedQuantity.Text = "";
+            colCompletedQuantity.TextAlign = HorizontalAlignment.Right;
+            colCompletedQuantity.Width = 28;
             // 
             // ilSmall
             // 
-            this.ilSmall.ColorDepth = System.Windows.Forms.ColorDepth.Depth16Bit;
-            this.ilSmall.ImageSize = new System.Drawing.Size(64, 64);
-            this.ilSmall.TransparentColor = System.Drawing.Color.Transparent;
+            ilSmall.ColorDepth = ColorDepth.Depth16Bit;
+            ilSmall.ImageSize = new Size(64, 64);
+            ilSmall.TransparentColor = Color.Transparent;
             // 
             // pnlDown
             // 
-            this.pnlDown.BackColor = System.Drawing.Color.Black;
-            this.pnlDown.Controls.Add(this.lblScrollDown);
-            this.pnlDown.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlDown.Location = new System.Drawing.Point(0, 691);
-            this.pnlDown.Name = "pnlDown";
-            this.pnlDown.Size = new System.Drawing.Size(320, 42);
-            this.pnlDown.TabIndex = 27;
+            pnlDown.BackColor = Color.Black;
+            pnlDown.Controls.Add(lblScrollDown);
+            pnlDown.Dock = DockStyle.Bottom;
+            pnlDown.Location = new Point(0, 691);
+            pnlDown.Name = "pnlDown";
+            pnlDown.Size = new Size(353, 42);
+            pnlDown.TabIndex = 27;
             // 
             // lblScrollDown
             // 
-            this.lblScrollDown.BackColor = System.Drawing.Color.Black;
-            this.lblScrollDown.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblScrollDown.Font = new System.Drawing.Font("Arial", 14F);
-            this.lblScrollDown.ForeColor = System.Drawing.Color.White;
-            this.lblScrollDown.Location = new System.Drawing.Point(0, 0);
-            this.lblScrollDown.Name = "lblScrollDown";
-            this.lblScrollDown.Size = new System.Drawing.Size(320, 42);
-            this.lblScrollDown.TabIndex = 0;
-            this.lblScrollDown.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblScrollDown.BackColor = Color.Black;
+            lblScrollDown.Dock = DockStyle.Fill;
+            lblScrollDown.Font = new Font("Arial", 14F);
+            lblScrollDown.ForeColor = Color.White;
+            lblScrollDown.Location = new Point(0, 0);
+            lblScrollDown.Name = "lblScrollDown";
+            lblScrollDown.Size = new Size(353, 42);
+            lblScrollDown.TabIndex = 0;
+            lblScrollDown.TextAlign = ContentAlignment.MiddleRight;
             // 
             // pnlCommand
             // 
-            this.pnlCommand.BackColor = System.Drawing.Color.Black;
-            this.pnlCommand.Controls.Add(this.btnViewKitchen);
-            this.pnlCommand.Controls.Add(this.btnPlus1);
-            this.pnlCommand.Controls.Add(this.btnMinusOne);
-            this.pnlCommand.Controls.Add(this.btnDeleteItem);
-            this.pnlCommand.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlCommand.Location = new System.Drawing.Point(0, 357);
-            this.pnlCommand.Name = "pnlCommand";
-            this.pnlCommand.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.pnlCommand.Size = new System.Drawing.Size(320, 43);
-            this.pnlCommand.TabIndex = 28;
+            pnlCommand.BackColor = Color.Black;
+            pnlCommand.Controls.Add(btnViewKitchen);
+            pnlCommand.Controls.Add(btnPlus1);
+            pnlCommand.Controls.Add(btnMinusOne);
+            pnlCommand.Controls.Add(btnDeleteItem);
+            pnlCommand.Dock = DockStyle.Top;
+            pnlCommand.Location = new Point(0, 357);
+            pnlCommand.Name = "pnlCommand";
+            pnlCommand.Padding = new Padding(0, 4, 0, 0);
+            pnlCommand.Size = new Size(353, 43);
+            pnlCommand.TabIndex = 28;
             // 
             // btnViewKitchen
             // 
-            this.btnViewKitchen.AutoEllipsis = true;
-            this.btnViewKitchen.BackColor = System.Drawing.Color.Black;
-            this.btnViewKitchen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnViewKitchen.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnViewKitchen.FlatAppearance.BorderSize = 0;
-            this.btnViewKitchen.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnViewKitchen.Font = new System.Drawing.Font("Arial", 26F, System.Drawing.FontStyle.Bold);
-            this.btnViewKitchen.ForeColor = System.Drawing.Color.White;
-            this.btnViewKitchen.Image = global::DTRMNS.Properties.Resources.chef32;
-            this.btnViewKitchen.Location = new System.Drawing.Point(250, 4);
-            this.btnViewKitchen.Margin = new System.Windows.Forms.Padding(1);
-            this.btnViewKitchen.Name = "btnViewKitchen";
-            this.btnViewKitchen.Size = new System.Drawing.Size(70, 39);
-            this.btnViewKitchen.TabIndex = 27;
-            this.btnViewKitchen.UseVisualStyleBackColor = false;
-            this.btnViewKitchen.Click += new System.EventHandler(this.btnViewKitchen_Click);
+            btnViewKitchen.AutoEllipsis = true;
+            btnViewKitchen.BackColor = Color.Black;
+            btnViewKitchen.BackgroundImageLayout = ImageLayout.Stretch;
+            btnViewKitchen.Dock = DockStyle.Right;
+            btnViewKitchen.FlatAppearance.BorderSize = 0;
+            btnViewKitchen.FlatStyle = FlatStyle.Flat;
+            btnViewKitchen.Font = new Font("Arial", 26F, FontStyle.Bold);
+            btnViewKitchen.ForeColor = Color.White;
+            btnViewKitchen.Image = Properties.Resources.chef32;
+            btnViewKitchen.Location = new Point(283, 4);
+            btnViewKitchen.Margin = new Padding(1);
+            btnViewKitchen.Name = "btnViewKitchen";
+            btnViewKitchen.Size = new Size(70, 39);
+            btnViewKitchen.TabIndex = 27;
+            btnViewKitchen.UseVisualStyleBackColor = false;
+            btnViewKitchen.Click += btnViewKitchen_Click;
             // 
             // btnPlus1
             // 
-            this.btnPlus1.AutoEllipsis = true;
-            this.btnPlus1.BackColor = System.Drawing.Color.Black;
-            this.btnPlus1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnPlus1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnPlus1.FlatAppearance.BorderSize = 0;
-            this.btnPlus1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPlus1.Font = new System.Drawing.Font("Arial", 26F, System.Drawing.FontStyle.Bold);
-            this.btnPlus1.ForeColor = System.Drawing.Color.White;
-            this.btnPlus1.Image = global::DTRMNS.Properties.Resources.arti148;
-            this.btnPlus1.Location = new System.Drawing.Point(130, 4);
-            this.btnPlus1.Margin = new System.Windows.Forms.Padding(1);
-            this.btnPlus1.Name = "btnPlus1";
-            this.btnPlus1.Size = new System.Drawing.Size(70, 39);
-            this.btnPlus1.TabIndex = 26;
-            this.btnPlus1.UseVisualStyleBackColor = false;
-            this.btnPlus1.Click += new System.EventHandler(this.btnPlus1_Click);
+            btnPlus1.AutoEllipsis = true;
+            btnPlus1.BackColor = Color.Black;
+            btnPlus1.BackgroundImageLayout = ImageLayout.Stretch;
+            btnPlus1.Dock = DockStyle.Left;
+            btnPlus1.FlatAppearance.BorderSize = 0;
+            btnPlus1.FlatStyle = FlatStyle.Flat;
+            btnPlus1.Font = new Font("Arial", 26F, FontStyle.Bold);
+            btnPlus1.ForeColor = Color.White;
+            btnPlus1.Image = Properties.Resources.arti148;
+            btnPlus1.Location = new Point(130, 4);
+            btnPlus1.Margin = new Padding(1);
+            btnPlus1.Name = "btnPlus1";
+            btnPlus1.Size = new Size(70, 39);
+            btnPlus1.TabIndex = 26;
+            btnPlus1.UseVisualStyleBackColor = false;
+            btnPlus1.Click += btnPlus1_Click;
             // 
             // btnMinusOne
             // 
-            this.btnMinusOne.AutoEllipsis = true;
-            this.btnMinusOne.BackColor = System.Drawing.Color.Black;
-            this.btnMinusOne.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnMinusOne.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnMinusOne.FlatAppearance.BorderSize = 0;
-            this.btnMinusOne.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMinusOne.Font = new System.Drawing.Font("Arial", 26F, System.Drawing.FontStyle.Bold);
-            this.btnMinusOne.ForeColor = System.Drawing.Color.White;
-            this.btnMinusOne.Image = global::DTRMNS.Properties.Resources.eksi148;
-            this.btnMinusOne.Location = new System.Drawing.Point(60, 4);
-            this.btnMinusOne.Margin = new System.Windows.Forms.Padding(1);
-            this.btnMinusOne.Name = "btnMinusOne";
-            this.btnMinusOne.Size = new System.Drawing.Size(70, 39);
-            this.btnMinusOne.TabIndex = 25;
-            this.btnMinusOne.UseVisualStyleBackColor = false;
-            this.btnMinusOne.Click += new System.EventHandler(this.btnMinusOne_Click);
+            btnMinusOne.AutoEllipsis = true;
+            btnMinusOne.BackColor = Color.Black;
+            btnMinusOne.BackgroundImageLayout = ImageLayout.Stretch;
+            btnMinusOne.Dock = DockStyle.Left;
+            btnMinusOne.FlatAppearance.BorderSize = 0;
+            btnMinusOne.FlatStyle = FlatStyle.Flat;
+            btnMinusOne.Font = new Font("Arial", 26F, FontStyle.Bold);
+            btnMinusOne.ForeColor = Color.White;
+            btnMinusOne.Image = Properties.Resources.eksi148;
+            btnMinusOne.Location = new Point(60, 4);
+            btnMinusOne.Margin = new Padding(1);
+            btnMinusOne.Name = "btnMinusOne";
+            btnMinusOne.Size = new Size(70, 39);
+            btnMinusOne.TabIndex = 25;
+            btnMinusOne.UseVisualStyleBackColor = false;
+            btnMinusOne.Click += btnMinusOne_Click;
             // 
             // btnDeleteItem
             // 
-            this.btnDeleteItem.AutoEllipsis = true;
-            this.btnDeleteItem.BackColor = System.Drawing.Color.Black;
-            this.btnDeleteItem.BackgroundImage = global::DTRMNS.Properties.Resources.eksi48;
-            this.btnDeleteItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnDeleteItem.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnDeleteItem.FlatAppearance.BorderSize = 0;
-            this.btnDeleteItem.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeleteItem.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDeleteItem.ForeColor = System.Drawing.Color.White;
-            this.btnDeleteItem.Location = new System.Drawing.Point(0, 4);
-            this.btnDeleteItem.Margin = new System.Windows.Forms.Padding(1);
-            this.btnDeleteItem.Name = "btnDeleteItem";
-            this.btnDeleteItem.Size = new System.Drawing.Size(60, 39);
-            this.btnDeleteItem.TabIndex = 24;
-            this.btnDeleteItem.UseVisualStyleBackColor = false;
-            this.btnDeleteItem.Click += new System.EventHandler(this.btnDeleteItem_Click);
+            btnDeleteItem.AutoEllipsis = true;
+            btnDeleteItem.BackColor = Color.Black;
+            btnDeleteItem.BackgroundImage = Properties.Resources.eksi48;
+            btnDeleteItem.BackgroundImageLayout = ImageLayout.Zoom;
+            btnDeleteItem.Dock = DockStyle.Left;
+            btnDeleteItem.FlatAppearance.BorderSize = 0;
+            btnDeleteItem.FlatStyle = FlatStyle.Flat;
+            btnDeleteItem.Font = new Font("Arial", 9F, FontStyle.Bold);
+            btnDeleteItem.ForeColor = Color.White;
+            btnDeleteItem.Location = new Point(0, 4);
+            btnDeleteItem.Margin = new Padding(1);
+            btnDeleteItem.Name = "btnDeleteItem";
+            btnDeleteItem.Size = new Size(60, 39);
+            btnDeleteItem.TabIndex = 24;
+            btnDeleteItem.UseVisualStyleBackColor = false;
+            btnDeleteItem.Click += btnDeleteItem_Click;
             // 
             // tmrSaat
             // 
-            this.tmrSaat.Enabled = true;
-            this.tmrSaat.Interval = 1000;
-            this.tmrSaat.Tick += new System.EventHandler(this.tmrSaat_Tick);
+            tmrSaat.Enabled = true;
+            tmrSaat.Interval = 1000;
+            tmrSaat.Tick += tmrSaat_Tick;
             // 
             // pnlTop
             // 
-            this.pnlTop.BackColor = System.Drawing.Color.Black;
-            this.pnlTop.Controls.Add(this.btnSplit);
-            this.pnlTop.Controls.Add(this.lblScrollUp);
-            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(320, 42);
-            this.pnlTop.TabIndex = 27;
+            pnlTop.BackColor = Color.Black;
+            pnlTop.Controls.Add(btnSplit);
+            pnlTop.Controls.Add(lblScrollUp);
+            pnlTop.Dock = DockStyle.Top;
+            pnlTop.Location = new Point(0, 0);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new Size(353, 42);
+            pnlTop.TabIndex = 27;
             // 
             // btnSplit
             // 
-            this.btnSplit.AutoEllipsis = true;
-            this.btnSplit.BackColor = System.Drawing.Color.Black;
-            this.btnSplit.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnSplit.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSplit.FlatAppearance.BorderSize = 0;
-            this.btnSplit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSplit.Font = new System.Drawing.Font("Arial", 26F, System.Drawing.FontStyle.Bold);
-            this.btnSplit.ForeColor = System.Drawing.Color.White;
-            this.btnSplit.Image = global::DTRMNS.Properties.Resources.Split32Down;
-            this.btnSplit.Location = new System.Drawing.Point(0, 0);
-            this.btnSplit.Margin = new System.Windows.Forms.Padding(1);
-            this.btnSplit.Name = "btnSplit";
-            this.btnSplit.Size = new System.Drawing.Size(70, 42);
-            this.btnSplit.TabIndex = 27;
-            this.btnSplit.UseVisualStyleBackColor = false;
-            this.btnSplit.Visible = false;
-            this.btnSplit.Click += new System.EventHandler(this.btnSplit_Click);
+            btnSplit.AutoEllipsis = true;
+            btnSplit.BackColor = Color.Black;
+            btnSplit.BackgroundImageLayout = ImageLayout.Stretch;
+            btnSplit.Dock = DockStyle.Left;
+            btnSplit.FlatAppearance.BorderSize = 0;
+            btnSplit.FlatStyle = FlatStyle.Flat;
+            btnSplit.Font = new Font("Arial", 26F, FontStyle.Bold);
+            btnSplit.ForeColor = Color.White;
+            btnSplit.Image = Properties.Resources.Split32Down;
+            btnSplit.Location = new Point(0, 0);
+            btnSplit.Margin = new Padding(1);
+            btnSplit.Name = "btnSplit";
+            btnSplit.Size = new Size(70, 42);
+            btnSplit.TabIndex = 27;
+            btnSplit.UseVisualStyleBackColor = false;
+            btnSplit.Visible = false;
+            btnSplit.Click += btnSplit_Click;
             // 
             // lblScrollUp
             // 
-            this.lblScrollUp.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblScrollUp.ForeColor = System.Drawing.Color.White;
-            this.lblScrollUp.Location = new System.Drawing.Point(130, 0);
-            this.lblScrollUp.Name = "lblScrollUp";
-            this.lblScrollUp.Size = new System.Drawing.Size(190, 42);
-            this.lblScrollUp.TabIndex = 26;
-            this.lblScrollUp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            lblScrollUp.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblScrollUp.ForeColor = Color.White;
+            lblScrollUp.Location = new Point(130, 0);
+            lblScrollUp.Name = "lblScrollUp";
+            lblScrollUp.Size = new Size(190, 42);
+            lblScrollUp.TabIndex = 26;
+            lblScrollUp.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lvwSplittingOrder
             // 
-            this.lvwSplittingOrder.BackColor = System.Drawing.Color.Black;
-            this.lvwSplittingOrder.BackgroundImageTiled = true;
-            this.lvwSplittingOrder.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lvwSplittingOrder.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colSplitIID,
-            this.colSplitQuantity,
-            this.colSplitOrderItemText,
-            this.colSplitCalculatedValue});
-            this.lvwSplittingOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvwSplittingOrder.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lvwSplittingOrder.ForeColor = System.Drawing.Color.White;
-            this.lvwSplittingOrder.FullRowSelect = true;
-            this.lvwSplittingOrder.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.lvwSplittingOrder.HideSelection = false;
-            this.lvwSplittingOrder.Location = new System.Drawing.Point(0, 0);
-            this.lvwSplittingOrder.MultiSelect = false;
-            this.lvwSplittingOrder.Name = "lvwSplittingOrder";
-            this.lvwSplittingOrder.Size = new System.Drawing.Size(320, 273);
-            this.lvwSplittingOrder.SmallImageList = this.ilSmall;
-            this.lvwSplittingOrder.TabIndex = 30;
-            this.lvwSplittingOrder.UseCompatibleStateImageBehavior = false;
-            this.lvwSplittingOrder.View = System.Windows.Forms.View.Details;
+            lvwSplittingOrder.BackColor = Color.Black;
+            lvwSplittingOrder.BackgroundImageTiled = true;
+            lvwSplittingOrder.BorderStyle = BorderStyle.None;
+            lvwSplittingOrder.Columns.AddRange(new ColumnHeader[] { colSplitIID, colSplitQuantity, colSplitOrderItemText, colSplitCalculatedValue });
+            lvwSplittingOrder.Dock = DockStyle.Fill;
+            lvwSplittingOrder.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lvwSplittingOrder.ForeColor = Color.White;
+            lvwSplittingOrder.FullRowSelect = true;
+            lvwSplittingOrder.HeaderStyle = ColumnHeaderStyle.None;
+            lvwSplittingOrder.Location = new Point(0, 0);
+            lvwSplittingOrder.MultiSelect = false;
+            lvwSplittingOrder.Name = "lvwSplittingOrder";
+            lvwSplittingOrder.Size = new Size(353, 273);
+            lvwSplittingOrder.SmallImageList = ilSmall;
+            lvwSplittingOrder.TabIndex = 30;
+            lvwSplittingOrder.UseCompatibleStateImageBehavior = false;
+            lvwSplittingOrder.View = View.Details;
             // 
             // colSplitIID
             // 
-            this.colSplitIID.Text = "";
-            this.colSplitIID.Width = 0;
+            colSplitIID.Text = "";
+            colSplitIID.Width = 0;
             // 
             // colSplitQuantity
             // 
-            this.colSplitQuantity.Text = "";
-            this.colSplitQuantity.Width = 35;
+            colSplitQuantity.Text = "";
+            colSplitQuantity.Width = 35;
             // 
             // colSplitOrderItemText
             // 
-            this.colSplitOrderItemText.Text = "Order Items";
-            this.colSplitOrderItemText.Width = 178;
+            colSplitOrderItemText.Text = "Order Items";
+            colSplitOrderItemText.Width = 178;
             // 
             // colSplitCalculatedValue
             // 
-            this.colSplitCalculatedValue.Text = "Price";
-            this.colSplitCalculatedValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.colSplitCalculatedValue.Width = 74;
+            colSplitCalculatedValue.Text = "Price";
+            colSplitCalculatedValue.TextAlign = HorizontalAlignment.Right;
+            colSplitCalculatedValue.Width = 74;
             // 
             // pnlSplit
             // 
-            this.pnlSplit.BackColor = System.Drawing.Color.Black;
-            this.pnlSplit.Controls.Add(this.lvwSplittingOrder);
-            this.pnlSplit.Controls.Add(this.pnlSplitActions);
-            this.pnlSplit.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlSplit.Location = new System.Drawing.Point(0, 42);
-            this.pnlSplit.Name = "pnlSplit";
-            this.pnlSplit.Size = new System.Drawing.Size(320, 315);
-            this.pnlSplit.TabIndex = 31;
-            this.pnlSplit.Visible = false;
+            pnlSplit.BackColor = Color.Black;
+            pnlSplit.Controls.Add(lvwSplittingOrder);
+            pnlSplit.Controls.Add(pnlSplitActions);
+            pnlSplit.Dock = DockStyle.Top;
+            pnlSplit.Location = new Point(0, 42);
+            pnlSplit.Name = "pnlSplit";
+            pnlSplit.Size = new Size(353, 315);
+            pnlSplit.TabIndex = 31;
+            pnlSplit.Visible = false;
             // 
             // pnlSplitActions
             // 
-            this.pnlSplitActions.BackColor = System.Drawing.Color.Black;
-            this.pnlSplitActions.Controls.Add(this.btnSplitAllUp);
-            this.pnlSplitActions.Controls.Add(this.btnSplitAllDown);
-            this.pnlSplitActions.Controls.Add(this.btnSplitOneUp);
-            this.pnlSplitActions.Controls.Add(this.btnSplitOneDown);
-            this.pnlSplitActions.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlSplitActions.Location = new System.Drawing.Point(0, 273);
-            this.pnlSplitActions.Name = "pnlSplitActions";
-            this.pnlSplitActions.Size = new System.Drawing.Size(320, 42);
-            this.pnlSplitActions.TabIndex = 31;
+            pnlSplitActions.BackColor = Color.Black;
+            pnlSplitActions.Controls.Add(btnSplitAllUp);
+            pnlSplitActions.Controls.Add(btnSplitAllDown);
+            pnlSplitActions.Controls.Add(btnSplitOneUp);
+            pnlSplitActions.Controls.Add(btnSplitOneDown);
+            pnlSplitActions.Dock = DockStyle.Bottom;
+            pnlSplitActions.Location = new Point(0, 273);
+            pnlSplitActions.Name = "pnlSplitActions";
+            pnlSplitActions.Size = new Size(353, 42);
+            pnlSplitActions.TabIndex = 31;
             // 
             // btnSplitAllUp
             // 
-            this.btnSplitAllUp.BackColor = System.Drawing.Color.Black;
-            this.btnSplitAllUp.BackgroundImage = global::DTRMNS.Properties.Resources.BlueMultiUp;
-            this.btnSplitAllUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSplitAllUp.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSplitAllUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSplitAllUp.Location = new System.Drawing.Point(210, 0);
-            this.btnSplitAllUp.Name = "btnSplitAllUp";
-            this.btnSplitAllUp.Size = new System.Drawing.Size(70, 42);
-            this.btnSplitAllUp.TabIndex = 0;
-            this.btnSplitAllUp.UseVisualStyleBackColor = false;
-            this.btnSplitAllUp.Click += new System.EventHandler(this.btnSplitAllUp_Click);
+            btnSplitAllUp.BackColor = Color.Black;
+            btnSplitAllUp.BackgroundImage = Properties.Resources.BlueMultiUp;
+            btnSplitAllUp.BackgroundImageLayout = ImageLayout.Zoom;
+            btnSplitAllUp.Dock = DockStyle.Left;
+            btnSplitAllUp.FlatStyle = FlatStyle.Flat;
+            btnSplitAllUp.Location = new Point(210, 0);
+            btnSplitAllUp.Name = "btnSplitAllUp";
+            btnSplitAllUp.Size = new Size(70, 42);
+            btnSplitAllUp.TabIndex = 0;
+            btnSplitAllUp.UseVisualStyleBackColor = false;
+            btnSplitAllUp.Click += btnSplitAllUp_Click;
             // 
             // btnSplitAllDown
             // 
-            this.btnSplitAllDown.BackColor = System.Drawing.Color.Black;
-            this.btnSplitAllDown.BackgroundImage = global::DTRMNS.Properties.Resources.BlueMultiDown;
-            this.btnSplitAllDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSplitAllDown.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSplitAllDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSplitAllDown.Location = new System.Drawing.Point(140, 0);
-            this.btnSplitAllDown.Name = "btnSplitAllDown";
-            this.btnSplitAllDown.Size = new System.Drawing.Size(70, 42);
-            this.btnSplitAllDown.TabIndex = 1;
-            this.btnSplitAllDown.UseVisualStyleBackColor = false;
-            this.btnSplitAllDown.Click += new System.EventHandler(this.btnSplitAllDown_Click);
+            btnSplitAllDown.BackColor = Color.Black;
+            btnSplitAllDown.BackgroundImage = Properties.Resources.BlueMultiDown;
+            btnSplitAllDown.BackgroundImageLayout = ImageLayout.Zoom;
+            btnSplitAllDown.Dock = DockStyle.Left;
+            btnSplitAllDown.FlatStyle = FlatStyle.Flat;
+            btnSplitAllDown.Location = new Point(140, 0);
+            btnSplitAllDown.Name = "btnSplitAllDown";
+            btnSplitAllDown.Size = new Size(70, 42);
+            btnSplitAllDown.TabIndex = 1;
+            btnSplitAllDown.UseVisualStyleBackColor = false;
+            btnSplitAllDown.Click += btnSplitAllDown_Click;
             // 
             // btnSplitOneUp
             // 
-            this.btnSplitOneUp.BackColor = System.Drawing.Color.Black;
-            this.btnSplitOneUp.BackgroundImage = global::DTRMNS.Properties.Resources.BlueUp;
-            this.btnSplitOneUp.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSplitOneUp.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSplitOneUp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSplitOneUp.Location = new System.Drawing.Point(70, 0);
-            this.btnSplitOneUp.Name = "btnSplitOneUp";
-            this.btnSplitOneUp.Size = new System.Drawing.Size(70, 42);
-            this.btnSplitOneUp.TabIndex = 2;
-            this.btnSplitOneUp.UseVisualStyleBackColor = false;
-            this.btnSplitOneUp.Click += new System.EventHandler(this.btnSplitOneUp_Click);
+            btnSplitOneUp.BackColor = Color.Black;
+            btnSplitOneUp.BackgroundImage = Properties.Resources.BlueUp;
+            btnSplitOneUp.BackgroundImageLayout = ImageLayout.Zoom;
+            btnSplitOneUp.Dock = DockStyle.Left;
+            btnSplitOneUp.FlatStyle = FlatStyle.Flat;
+            btnSplitOneUp.Location = new Point(70, 0);
+            btnSplitOneUp.Name = "btnSplitOneUp";
+            btnSplitOneUp.Size = new Size(70, 42);
+            btnSplitOneUp.TabIndex = 2;
+            btnSplitOneUp.UseVisualStyleBackColor = false;
+            btnSplitOneUp.Click += btnSplitOneUp_Click;
             // 
             // btnSplitOneDown
             // 
-            this.btnSplitOneDown.BackColor = System.Drawing.Color.Black;
-            this.btnSplitOneDown.BackgroundImage = global::DTRMNS.Properties.Resources.BlueDown;
-            this.btnSplitOneDown.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnSplitOneDown.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSplitOneDown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSplitOneDown.Location = new System.Drawing.Point(0, 0);
-            this.btnSplitOneDown.Name = "btnSplitOneDown";
-            this.btnSplitOneDown.Size = new System.Drawing.Size(70, 42);
-            this.btnSplitOneDown.TabIndex = 3;
-            this.btnSplitOneDown.UseVisualStyleBackColor = false;
-            this.btnSplitOneDown.Click += new System.EventHandler(this.btnSplitOneDown_Click);
+            btnSplitOneDown.BackColor = Color.Black;
+            btnSplitOneDown.BackgroundImage = Properties.Resources.BlueDown;
+            btnSplitOneDown.BackgroundImageLayout = ImageLayout.Zoom;
+            btnSplitOneDown.Dock = DockStyle.Left;
+            btnSplitOneDown.FlatStyle = FlatStyle.Flat;
+            btnSplitOneDown.Location = new Point(0, 0);
+            btnSplitOneDown.Name = "btnSplitOneDown";
+            btnSplitOneDown.Size = new Size(70, 42);
+            btnSplitOneDown.TabIndex = 3;
+            btnSplitOneDown.UseVisualStyleBackColor = false;
+            btnSplitOneDown.Click += btnSplitOneDown_Click;
             // 
             // OrderDisplay
             // 
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.Controls.Add(this.lvwOrder);
-            this.Controls.Add(this.pnlCommand);
-            this.Controls.Add(this.pnlDown);
-            this.Controls.Add(this.pnlSplit);
-            this.Controls.Add(this.pnlTop);
-            this.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Name = "OrderDisplay";
-            this.Size = new System.Drawing.Size(320, 733);
-            this.pnlDown.ResumeLayout(false);
-            this.pnlCommand.ResumeLayout(false);
-            this.pnlTop.ResumeLayout(false);
-            this.pnlSplit.ResumeLayout(false);
-            this.pnlSplitActions.ResumeLayout(false);
-            this.ResumeLayout(false);
+            BackColor = Color.FromArgb(192, 192, 0);
+            Controls.Add(lvwOrder);
+            Controls.Add(pnlCommand);
+            Controls.Add(pnlDown);
+            Controls.Add(pnlSplit);
+            Controls.Add(pnlTop);
+            Cursor = Cursors.Hand;
+            Name = "OrderDisplay";
+            Size = new Size(353, 733);
+            pnlDown.ResumeLayout(false);
+            pnlCommand.ResumeLayout(false);
+            pnlTop.ResumeLayout(false);
+            pnlSplit.ResumeLayout(false);
+            pnlSplitActions.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
         #endregion
@@ -577,7 +561,7 @@ namespace DTRMNS
             lvwSplittingOrder.Items.Clear();
             foreach (OrderItem oi in OrderToSplit.Items)
             {
-                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.CalculatedValue.ToString("N2") }));
+                lvwSplittingOrder.Items.Add(new ListViewItem(new string[] { oi.IID, oi.Quantity.ToString(), oi.OrderItemText, oi.Total.ToString("N2") }));
             }
         }
 
@@ -590,11 +574,11 @@ namespace DTRMNS
 
             btnSplit.Visible = false;
 
-            if (bslayer.AttachedOrder != null)
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
                 btnViewKitchen.Visible = config.Display_Kitchen_Chef_on_Display &&
-                    ((bslayer.AttachedOrder.OrderType == OrderTypes.DirectSale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
-                    (bslayer.AttachedOrder.OrderType == OrderTypes.InHouse && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
+                    (( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
+                    ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
 
                 colCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
@@ -618,7 +602,7 @@ namespace DTRMNS
             if (OrderToDisplay == null && OrderToSplit != null && OrderToSplit.Items.Count == 0)
             {
                 //Now Ordertosplit must be deleted
-                bslayer.DeleteOrder(OrderToSplit.IID);
+                 DTRMSimpleBusiness.Instance.DeleteOrder(OrderToSplit.IID);
                 OrderToSplit = null;
                 SplitStatus = SplittingStatus.Normal;
                 btnSplit.Visible = false;
@@ -698,7 +682,7 @@ namespace DTRMNS
 
                 arr = new String[5]{oi.IID, oi.Quantity.ToString("f0"),
                                         oi.OrderItemText ,
-                                         oi.CalculatedValue.ToString("c"),strCompletedQuantity};
+                                         oi.Total.ToString("c"),strCompletedQuantity};
 
                 ListViewItem toplvi = new ListViewItem(arr);
 
@@ -746,26 +730,26 @@ namespace DTRMNS
 
             OrderTotal = OrderToDisplay.Total;
             if (OrderToDisplay.OrderType == OrderTypes.InHouse)
-                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + OrderToDisplay.Table?.TableName;
+                lblScrollUp.Text =  DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + OrderToDisplay.Table?.TableName;
             else
-                lblScrollUp.Text = bslayer.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(OrderToDisplay.OrderType); 
+                lblScrollUp.Text =  DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(OrderToDisplay.OrderType); 
 
             if (config.Order_Screen_Display_Service_Charge)
                 pnlDown.Height = 52;
             else
                 pnlDown.Height = 42;
 
-            if (bslayer.shop.ServiceChargeRate > 0 && bslayer.AttachedOrder != null)
+            if ( DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0 &&  DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
                 lblScrollDown.Text = "";
                 if (config.Order_Screen_Display_Service_Charge)
-                    lblScrollDown.Text = "Service Charge " + bslayer.AttachedOrder.ServiceCharge.ToString("c") + " " + Environment.NewLine;
+                    lblScrollDown.Text = "Service Charge " +  DTRMSimpleBusiness.Instance.AttachedOrder.ServiceCharge.ToString("c") + " " + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + (OrderTotal).ToString("c") + " ";
             } else
                 lblScrollDown.Text = OrderTotal.ToString("c") + " ";
 
-            if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
             {
                 pnlCommand.Visible = btnSplit.Visible = false;
             }
@@ -776,8 +760,8 @@ namespace DTRMNS
         {
             if (OrderToDisplay.MoneyPaid > 0)
             {
-                double fullTotal = bslayer.AttachedOrder.Total;
-                double servicecharge = bslayer.AttachedOrder.ServiceCharge;
+                double fullTotal =  DTRMSimpleBusiness.Instance.AttachedOrder.Total;
+                double servicecharge =  DTRMSimpleBusiness.Instance.AttachedOrder.ServiceCharge;
 
                 double paraustu = OrderToDisplay.MoneyPaid - fullTotal;
                 pnlDown.Height = 80;
@@ -785,7 +769,7 @@ namespace DTRMNS
                     pnlDown.Height = 100;
 
                 lblScrollDown.Text = "";
-                if (bslayer.shop.ServiceChargeRate > 0 && config.Order_Screen_Display_Service_Charge)
+                if ( DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0 && config.Order_Screen_Display_Service_Charge)
                     lblScrollDown.Text = "Service Charge " + string.Format("{0,15:0.00}", servicecharge.ToString("c")) + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + string.Format("{0,15:0.00}", fullTotal.ToString("c")) +
@@ -847,16 +831,16 @@ namespace DTRMNS
         private void lvwOrder_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvwOrder.SelectedItems.Count > 0)
-                bslayer.SelectedOrderItemIID = SelectedItemIID = lvwOrder.SelectedItems[0].Text;
+                 DTRMSimpleBusiness.Instance.SelectedOrderItemIID = SelectedItemIID = lvwOrder.SelectedItems[0].Text;
             else
-                bslayer.SelectedOrderItemIID = SelectedItemIID = null;
+                 DTRMSimpleBusiness.Instance.SelectedOrderItemIID = SelectedItemIID = null;
         }
 
 
 
         private async void btnDeleteItem_Click(object sender, EventArgs e)
         {
-            if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
                 return;
 
             //DELETE SUB ROUTINE
@@ -864,9 +848,9 @@ namespace DTRMNS
             {
                 if (HasSelection())
                 {
-                    if (OrderToDisplay.Status != StatusFlags.NEW && config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                    if (OrderToDisplay.Status != StatusFlags.NEW && config.Deleting_OrderItem_Requires_Supervision &&  DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
                     {
-                        if (!bslayer.ConfirmForSupervision())
+                        if (! DTRMSimpleBusiness.Instance.ConfirmForSupervision())
                             return;
                     }
 
@@ -880,28 +864,28 @@ namespace DTRMNS
                     if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                     {
                         //check is deletable than delete else return directly
-                        if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(oi))
+                        if (! DTRMSimpleBusiness.Instance.CanDeleteKitchenOrderItemIfPrepared(oi))
                             return;
                     }
 
                     OrderToDisplay.DeleteOrderItem(SelectedItemIID);
 
                     //XXX logdelete
-                    if (bslayer.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
+                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
                     {
                         try
                         {
-                            Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
+                            Order oldOrder = await  DTRMSimpleBusiness.Instance.GetOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
                             if (oldOrder != null)
                             {
-                                bslayer.SaveLogItem(new LogItem()
+                                 DTRMSimpleBusiness.Instance.SaveLogItem(new LogItem()
                                 {
                                     OrderItemText = oi.OrderItemText,
                                     Quantity = oi.Quantity,
                                     OrderContent = oldOrder.ToSimpleString(),
                                     Reason = "Deleted",
                                     ComputerName = config.Terminal_Name,
-                                    Reference = bslayer.AttachedOrder.Reference
+                                    Reference =  DTRMSimpleBusiness.Instance.AttachedOrder.Reference
                                 });
                             }
                         } catch (Exception ex)
@@ -926,46 +910,46 @@ namespace DTRMNS
         {
             try
             {
-                if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
+                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
                     return;
                 if (HasSelection())
                 {
                     if (OrderToDisplay != null)
                     {
 
-                        if (config.Deleting_OrderItem_Requires_Supervision && bslayer.LoggedUser.AccessLevel == AccessLevels.User)
+                        if (config.Deleting_OrderItem_Requires_Supervision &&  DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
                         {
-                            if (!bslayer.ConfirmForSupervision())
+                            if (! DTRMSimpleBusiness.Instance.ConfirmForSupervision())
                                 return;
                         }
 
                         if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                         {
                             //check is deletable than delete else return directly
-                            if (!bslayer.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.Items.Where(x => x.IID ==SelectedItemIID).FirstOrDefault()))
+                            if (! DTRMSimpleBusiness.Instance.CanDeleteKitchenOrderItemIfPrepared(OrderToDisplay.Items.Where(x => x.IID ==SelectedItemIID).FirstOrDefault()))
                                 return;
                         }
 
                         //XXX logdelete
 
-                        if (bslayer.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
+                        if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
                         {
                             try
                             {
                                 OrderItem oi = OrderToDisplay.Items.Where(x => x.IID == SelectedItemIID).FirstOrDefault();
                                 if (oi != null)
                                 {
-                                    Order oldOrder = await bslayer.GetOrder(bslayer.AttachedOrder.IID);
+                                    Order oldOrder = await  DTRMSimpleBusiness.Instance.GetOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
                                     if (oldOrder != null)
                                     {
-                                        bslayer.SaveLogItem(new LogItem()
+                                         DTRMSimpleBusiness.Instance.SaveLogItem(new LogItem()
                                         {
                                             OrderItemText = oi.OrderItemText,
                                             Quantity = 1,
                                             OrderContent = oldOrder.ToSimpleString(),
                                             Reason = "Decremented",
                                             ComputerName = config.Terminal_Name,
-                                            Reference = bslayer.AttachedOrder.Reference
+                                            Reference =  DTRMSimpleBusiness.Instance.AttachedOrder.Reference
                                         });
                                     }
                                 }
@@ -990,7 +974,7 @@ namespace DTRMNS
         {
             try
             {
-                if (bslayer.AttachedOrder != null && (bslayer.AttachedOrder.Status == StatusFlags.COMPLETED || bslayer.AttachedOrder.Status == StatusFlags.ARCHIVED))
+                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
                     return;
 
                 if (OrderToDisplay != null && HasSelection())
@@ -1011,8 +995,8 @@ namespace DTRMNS
         }
         private void UpdateClock()
         {
-            if (bslayer != null && OrderToDisplay == null)
-                lblScrollUp.Text = DateTime.Now.ToLongTimeString() + " | " + bslayer.LoggedUser.UserName;
+            if (DTRMSimpleBusiness.Instance != null && OrderToDisplay == null)
+                lblScrollUp.Text = DateTime.Now.ToLongTimeString() + " | " +  DTRMSimpleBusiness.Instance.LoggedUser.UserName;
         }
 
         private void btnSplit_Click(object sender, EventArgs e)
@@ -1032,8 +1016,8 @@ namespace DTRMNS
 
         private void DoSplit()
         {
-            bslayer.SaveOrder(bslayer.AttachedOrder);
-            OrderToSplit = bslayer.AttachedOrder;
+             DTRMSimpleBusiness.Instance.SaveOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+            OrderToSplit =  DTRMSimpleBusiness.Instance.AttachedOrder;
             OnSplitStarting();
 
         }
@@ -1050,7 +1034,7 @@ namespace DTRMNS
             if (OrderToSplit != null)
                 OrderToSplit.ShrinkOrder();
 
-            bslayer.SaveOrder(OrderToSplit);
+             DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
             OrderToSplit = null;
 
 
@@ -1072,8 +1056,8 @@ namespace DTRMNS
                 } else
                 {
                     //this is where you just waist the ordertodisplay 
-                    bslayer.DeleteOrder(OrderToDisplay.IID);
-                    bslayer.AttachedOrder = null;
+                     DTRMSimpleBusiness.Instance.DeleteOrder(OrderToDisplay.IID);
+                     DTRMSimpleBusiness.Instance.AttachedOrder = null;
                 }
             }
             OnSplitEnding();
@@ -1115,11 +1099,11 @@ namespace DTRMNS
                 //Drop 1 from ordertosplit and save
                 if (!OrderToSplit.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToSplit.DeleteOrderItem(IID);
-                bslayer.SaveOrder(OrderToSplit);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
 
                 //Add new item to ordertodisplay and save
                 OrderToDisplay.AddOrderItem(oiNew);
-                bslayer.SaveOrder(OrderToDisplay);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToDisplay);
 
                 Display();
             }
@@ -1146,15 +1130,15 @@ namespace DTRMNS
                 //Drop 1 from ordertodisplay and save
                 if (!OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                     OrderToDisplay.DeleteOrderItem(IID);
-                bslayer.SaveOrder(OrderToDisplay);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToDisplay);
 
                 //Add new item to ordertosplit and save
-                OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.EntityButtonIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
+                OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.CategoryItemIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
                 if (oiToIncrement == null)
                     OrderToSplit.AddOrderItem(oiNew);
                 else
                     oiToIncrement.Quantity++;
-                bslayer.SaveOrder(OrderToSplit);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
 
                 Display();
             }
@@ -1172,10 +1156,10 @@ namespace DTRMNS
                 OrderItem oi = OrderToSplit.Items.Where(x => x.IID == lvi.Text).FirstOrDefault();
                 oi.OrderIID = OrderToDisplay.IID;
                 OrderToSplit.DeleteOrderItem(oi.IID);
-                bslayer.SaveOrder(OrderToSplit);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
                 OrderToDisplay.AddOrderItem(oi);
                 OrderToDisplay.ShrinkOrder();
-                bslayer.SaveOrder(OrderToDisplay);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToDisplay);
                 Display();
             }
             OnSplitContinuing();
@@ -1190,10 +1174,10 @@ namespace DTRMNS
                 OrderItem oi = OrderToDisplay.Items.Where(x => x.IID == lvi.Text).FirstOrDefault();
                 oi.OrderIID = oi.OrderGroupIID = OrderToSplit.IID;
                 OrderToDisplay.DeleteOrderItem(oi.IID);
-                bslayer.SaveOrder(OrderToDisplay);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToDisplay);
                 OrderToSplit.AddOrderItem(oi);
                 OrderToSplit.ShrinkOrder();
-                bslayer.SaveOrder(OrderToSplit);
+                 DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
                 Display();
             }
             OnSplitContinuing();

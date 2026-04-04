@@ -1,23 +1,30 @@
 using System;
-using System.Xml;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
+using System.Drawing.Printing;
+using System.Globalization;
 using System.IO;
 using System.IO.Ports;
-using System.Data;
-using System.Globalization;
-using PosLibrary;
-using System.Net.Mail;
-using System.Drawing.Printing;
 using System.Linq;
-using POSLayer.Repository.IRepository;
+using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml;
+
+using CoreWCF.IdentityModel.Protocols.WSTrust;
+
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 using POSLayer.Views;
-using Microsoft.Extensions.DependencyInjection;
+
+using PosLibrary;
 
 namespace DTRMNS
 {
@@ -69,7 +76,50 @@ namespace DTRMNS
             ImmediateDebugOccured?.Invoke(str);
         }
 
-        public readonly IServiceProvider sp;
+        // 1. Private static field to hold the single instance
+        private static readonly Lazy<DTRMSimpleBusiness> _instance =
+            new Lazy<DTRMSimpleBusiness>(() => new DTRMSimpleBusiness());
+
+        // 2. Public static property to access the instance
+        public static DTRMSimpleBusiness Instance => _instance.Value;
+
+        // 3. PRIVATE constructor prevents 'new Bslayer()' elsewhere
+        private DTRMSimpleBusiness()
+        {
+            config = ServiceHelper.GetService<PosConfig>();
+            repoShop = ServiceHelper.GetRepository<Shop>();
+            repoSession = ServiceHelper.GetRepository<Session>();
+            repoEmployee = ServiceHelper.GetRepository<Employee>();
+            repoMenu = ServiceHelper.GetRepository<TheMenu>();
+            repoUser = ServiceHelper.GetRepository<User>();
+            repoDebug = ServiceHelper.GetRepository<Debug>();
+            repoCategory = ServiceHelper.GetRepository<Category>();
+            repoCategoryItem = ServiceHelper.GetRepository<CategoryItem>();
+            repoRecipeItem = ServiceHelper.GetRepository<RecipeItem>();
+            repoDistribution = ServiceHelper.GetRepository<Distribution>();
+            repoPrinter = ServiceHelper.GetRepository<Printer>();
+            repoDistributionPrinter = ServiceHelper.GetRepository<DistributionPrinter>();
+            repoOrder = ServiceHelper.GetRepository<Order>();
+            repoOrderItem = ServiceHelper.GetRepository<OrderItem>();
+            repoCustomer    = ServiceHelper.GetRepository<Customer>();
+            repoBonus = ServiceHelper.GetRepository<Bonus>();
+            repoKitchenOrder = ServiceHelper.GetRepository<KitchenOrder>();
+            repoKitchenOrderItem = ServiceHelper.GetRepository<KitchenOrderItem>();
+            repoTable = ServiceHelper.GetRepository<Masa>();
+              repoXOrder = ServiceHelper.GetRepository<XOrder>();
+            repoXOrderItem = ServiceHelper.GetRepository<XOrderItem>();
+            repoSupplier = ServiceHelper.GetRepository<Supplier>();
+               repoStockItem = ServiceHelper.GetRepository<StockItem>();
+            repoImage = ServiceHelper.GetRepository<GenericImage>();
+
+            //shop = repoShop.GetFirst().Result;
+            InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            shop = await repoShop.GetFirst();
+        }
 
         IRepository<Shop> repoShop;
         IRepository<Session> repoSession;
@@ -79,6 +129,7 @@ namespace DTRMNS
         IRepository<Debug> repoDebug;
         IRepository<Category> repoCategory;
         IRepository<CategoryItem> repoCategoryItem;
+        IRepository<RecipeItem> repoRecipeItem;
         IRepository<Distribution> repoDistribution;
         IRepository<Printer> repoPrinter;
         IRepository<DistributionPrinter> repoDistributionPrinter;
@@ -88,34 +139,30 @@ namespace DTRMNS
         IRepository<Bonus> repoBonus;
         IRepository<KitchenOrder> repoKitchenOrder;
         IRepository<KitchenOrderItem> repoKitchenOrderItem;
-        IRepository<Table> repoTable;           
+        IRepository<Masa> repoTable;
         IRepository<XOrder> repoXOrder;
         IRepository<XOrderItem> repoXOrderItem;
         IRepository<Supplier> repoSupplier;
-        IRepository<EntityButtonStockItemLookUp> repoEntityButtonStockItemLookUp;
         IRepository<StockItem> repoStockItem;
         IRepository<StockItemUsage> repoStockItemUsage;
         IRepository<GenericImage> repoImage;
 
-        public DTRMSimpleBusiness(IServiceProvider _sp,
-            PosConfig configAsService, IRepository<Shop> _repoShop,
+        private DTRMSimpleBusiness(PosConfig configAsService, IRepository<Shop> _repoShop,
             IRepository<Session> _repoSession,
             IRepository<Employee> _repoEmployee,
             IRepository<TheMenu> _repoMenu,
             IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
-            IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
+            IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem, IRepository<RecipeItem> _repoRecipeItem,
             IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter, IRepository<DistributionPrinter> _repoDistributionPrinter,
             IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
             IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
             IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
-            IRepository<Table> _repoTable, 
+            IRepository<Masa> _repoTable,
             IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
-            IRepository<Supplier> _repoSupplier, IRepository<EntityButtonStockItemLookUp> _repoEntityButtonStockItemLookUp,
+            IRepository<Supplier> _repoSupplier, 
             IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
             IRepository<GenericImage> _repoImage)
         {
-            sp = _sp;
-
             config = configAsService;
             repoShop = _repoShop;
             repoSession = _repoSession;
@@ -125,6 +172,7 @@ namespace DTRMNS
             repoDebug = _repoDebug;
             repoCategory = _repoCategory;
             repoCategoryItem = _repoCategoryItem;
+            repoRecipeItem = _repoRecipeItem;
             repoDistribution = _repoDistribution;
             repoPrinter = _repoPrinter;
             repoDistributionPrinter = _repoDistributionPrinter;
@@ -138,11 +186,12 @@ namespace DTRMNS
             repoXOrder = _repoXOrder;
             repoXOrderItem = _repoXOrderItem;
             repoSupplier = _repoSupplier;
-            repoEntityButtonStockItemLookUp = _repoEntityButtonStockItemLookUp;
             repoStockItem = _repoStockItem;
             repoStockItemUsage = _repoStockItemUsage;
 
             repoImage = _repoImage;
+
+            shop = repoShop.GetFirst().Result;
         }
 
 
@@ -207,7 +256,7 @@ namespace DTRMNS
             for (int i = 0; i < order.Items.Count; i++)
             {
                 oi = (OrderItem)order.Items[i];
-                oi.Price = fm.GetItemPrice(oi.EntityIID, oi.EntityButtonIID, orderType);
+                oi.Price = fm.GetItemPrice(oi.CategoryItemIID, orderType);
 
             }
         }
@@ -219,8 +268,7 @@ namespace DTRMNS
             for (int i = 0; i < order.Items.Count; i++)
             {
                 oi = (OrderItem)order.Items[i];
-                oi.TaxPercent = fm.GetItemTaxRate(oi.EntityIID, oi.EntityButtonIID, orderType);
-
+                oi.TaxPercent = fm.GetItemTaxRate( oi.CategoryItemIID, orderType);
             }
         }
 
@@ -316,15 +364,15 @@ namespace DTRMNS
             return menu?.IID ?? "";
         }
 
-        public async Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
-        {
-            List<OrdersView> orders = await repoOrder.GetOrdersView();
+        //public async Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
+        //{
+        // //   List<OrdersView> orders = await repoOrder.GetOrdersView();
 
-            //DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
-            //return float.Parse(dt.Rows[0]["Total"].ToString());
+        //    //DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
+        //    //return float.Parse(dt.Rows[0]["Total"].ToString());
 
-            return orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.CalculatedValue);
-        }
+        //    return repoSession .Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.CalculatedValue);
+        //}
 
         public async Task<List<Debug>> GetDebugList()
         {
@@ -416,168 +464,73 @@ namespace DTRMNS
             return GetDataTable("GetTableGroups");
         }
 
-        public async Task<List<Table>> GetTableList(string GroupIID)
+        public async Task<List<Masa>> GetTableList(string GroupIID)
         {
             return await repoTable.GetListByField("GroupIID", GroupIID);
         }
-
-        public async Task<bool> IsPrimaryTable(string TableIID)
+        public async Task<List<Masa>> GetTableAndSubTables(string TableIID)
         {
-            return await repoTable.GetByField("IID", TableIID) is Table table && table.isPrimary;
-            
-        }
-        public async Task<bool> HasSubTables(string TableIID)
-        {
-            Table table = await GetTable(TableIID);
-            if (table.TableType == TableTypes.TemporaryTable)
-            {
-                TableIID = table.ParentTableIID;
-                return true;
-            }
-            return GetDataTable("GetTableAndSubTables '" + TableIID + "'").Rows.Count > 1;
+            return await repoTable.GetDBContext().Tables.Where(x => x.IID == TableIID).ToListAsync();
         }
 
-        public async Task<Table> GetFirstSubTable(string TableIID, bool blnWithOrder)
+        public async Task<Masa> BarrowTable(string TableIID)
         {
             try
             {
-                Table table = await GetTable(TableIID);
-                if (table.TableType == TableTypes.TemporaryTable)
-                {
-                    return table;
-                } else
-                {
-                    Table subTable = await repoTable.GetByField("ParentTableIID", TableIID);
-                    if (blnWithOrder)
-                        return await BarrowTable(subTable.IID);
-                    else
-                        return subTable;
-                }
-            } catch
-            {
-                return null;
-            }
-        }
-        public string GetFirstSubTableIID(string TableIID)
-        {
-            DataTable dt = GetDataTable("Select * from Tables where ParentTableIID = '" + TableIID +
-                                                   "' order by DisplayOrder asc");
-            if (dt.Rows.Count > 0)
-                return dt.Rows[0]["IID"].ToString();
-            else
-                return "";
-        }
+                return await repoTable.Get(TableIID, "Order");
 
-        public async Task<string> GenerateSubTableName(Table mainTable)
-        {
-            List<Table> subTableList = await GetTableAndSubTables(mainTable.IID);
-            bool blnFound;// = false;
+                //if (table?.CurrentOrder != null)
+                //{
+                //    // Access order details
+                //    var orderId = table.CurrentOrder.Id;
+                //} else
+                //{
+                //    // Table is empty/available
+                //}
 
-            for (int i = 65; i < 70; i++)
-            {
-                string str = ((char)i).ToString();
-                blnFound = false;
-                for (int x = 0; x < subTableList.Count; x++)
-                {
-                    if (subTableList[x].TableName == mainTable.TableName + str)
-                    {
-                        blnFound = true;
-                        break;
-                    }
-                }
-                if (!blnFound)
-                {
-                    return mainTable.TableName + str;
-                }
-            }
-            return mainTable.TableName + "error";
-        }
 
-        public async Task GetRidOfBlankTemporaryTablesForThisTerminalWithNoOrders()
-        {
-            string sql = "Delete from Tables where TableType = '" + (int)TableTypes.TemporaryTable +
-                         "' and CurrentOrderIID ='' and (LockedClientIP = '' or LockedClientIP = '" +
-                         config.Terminal_Name + "')";
-            await RunQuery(sql);
-        }
 
-        public async Task<bool> AddSubTableWithTest(string rootTableIID)
-        {
-            if (string.IsNullOrEmpty(rootTableIID))
-                return false;
-            else
-            {
-                Table mainTable = await GetParentTable(rootTableIID);
-                Table subTable = mainTable.CreateSubTable();
-                subTable.TableName = await GenerateSubTableName(mainTable);
-                return await SaveTable(subTable);
-            }
-        }
-        public async Task<Table> AddSubTable(string rootTableIID)
-        {
-            if (string.IsNullOrEmpty(rootTableIID))
-                return null;
-            else
-            {
-                Table mainTable = await GetParentTable(rootTableIID);
-                Table subTable = mainTable.CreateSubTable();
-                subTable.TableName = await GenerateSubTableName(mainTable);
-                if (await SaveTable(subTable))
-                    return subTable;
-                else
-                    return null;
-            }
-        }
-        public async Task<List<Table>> GetTableAndSubTables(string TableIID)
-        {
-            return await repoTable.GetDBContext().Tables.Where(x => x.IID == TableIID || x.ParentTableIID == TableIID).ToListAsync();
-        }
+                ////Get Table 
+                //Table table = await GetTable(TableIID);
 
-        public async Task<Table> BarrowTable(string TableIID)
-        {
-            try
-            {
-                //Get Table 
-                Table table = await GetTable(TableIID);
-
-                if (table.IsBusy(config.Terminal_Name))
-                    //if busy return null
-                    return null;
-                else
-                {
-                    if (!string.IsNullOrEmpty(table.CurrentOrderIID))
-                    {
-                        //if table has order attached to it
-                        //set table ClientIP(busy), set table OrderIID(occupied) , set order tableIID, set order ClientIP (busy), 
-                        Order order = await GetOrder(table.CurrentOrderIID);
-                        order.TableIID = table.IID;
-                        order.LockedClientIP = config.Terminal_Name;
-                        order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
-                        table.CurrentOrderIID = order.IID;
-                        table.LockedClientIP = config.Terminal_Name;
-                        await repoOrder.Save(order);
-                        await repoTable.Save(table);
-                        table.AttachedOrder = order;
-                        return table; //return table
-                    } else
-                    {
-                        //create a new order
-                        Order order = new Order(OrderTypes.InHouse)
-                        {
-                            //order.customer = new Customer();
-                            TableIID = table.IID,
-                            LockedClientIP = config.Terminal_Name
-                        };
-                        order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
-                        table.CurrentOrderIID = order.IID;
-                        table.LockedClientIP = config.Terminal_Name;
-                        await repoOrder.Save(order);
-                        await repoTable.Save(table);
-                        //retun table
-                        table.AttachedOrder = order;
-                        return table;
-                    }
-                }
+                //if (table.IsBusy(config.Terminal_Name))
+                //    //if busy return null
+                //    return null;
+                //else
+                //{
+                //    if (!string.IsNullOrEmpty(table.OrderIID))
+                //    {
+                //        //if table has order attached to it
+                //        //set table ClientIP(busy), set table OrderIID(occupied) , set order tableIID, set order ClientIP (busy), 
+                //        Order order = await GetOrder(table.OrderIID);
+                //        order.TableIID = table.IID;
+                //        order.LockedClientIP = config.Terminal_Name;
+                //        order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
+                //        table.OrderIID = order.IID;
+                //        table.LockedClientIP = config.Terminal_Name;
+                //        await repoOrder.Save(order);
+                //        await repoTable.Save(table);
+                //        table.AttachedOrder = order;
+                //        return table; //return table
+                //    } else
+                //    {
+                //        //create a new order
+                //        Order order = new Order(OrderTypes.InHouse)
+                //        {
+                //            //order.customer = new Customer();
+                //            TableIID = table.IID,
+                //            LockedClientIP = config.Terminal_Name
+                //        };
+                //        order.Title = "Table " + table.TableName + " C " + order.Covers.ToString();
+                //        table.OrderIID = order.IID;
+                //        table.LockedClientIP = config.Terminal_Name;
+                //        await repoOrder.Save(order);
+                //        await repoTable.Save(table);
+                //        //retun table
+                //        table.AttachedOrder = order;
+                //        return table;
+                //    }
+                //}
             } catch
             {
                 return null;
@@ -585,32 +538,25 @@ namespace DTRMNS
         }
 
         ///Used to return an inhouse order
-        public async Task ReturnTable(Table table)
+        public async Task ReturnTable(Masa table)
         {
 
             if (table.AttachedOrder == null)
             {
                 table.LockedClientIP = "";
-                table.CurrentOrderIID = "";
+                table.Order = null;
                 table.TableCovers = 1;
                 await repoTable.Save(table);
                 return;
             }
             if ((int)table.AttachedOrder.Status >= (int)StatusFlags.COMPLETED)
             {
-                //Temporary tables should be deleted, Order should be set free
-                if (table.TableType == TableTypes.TemporaryTable)
-                {
-                    //Delete table
-                    await DeleteTable(table.IID);
-                } else
-                {
-                    //unbusy table, delete order details from table
-                    table.LockedClientIP = "";
-                    table.CurrentOrderIID = "";
-                    table.TableCovers = 1;
-                    await repoTable.Save(table);
-                }
+                //unbusy table, delete order details from table
+                table.LockedClientIP = "";
+                table.Order = null;
+                table.TableCovers = 1;
+                await repoTable.Save(table);
+
                 //delete table details from order	
                 table.AttachedOrder.TableIID = "";
             } else
@@ -626,19 +572,12 @@ namespace DTRMNS
                     await repoOrder.Save(table.AttachedOrder);
                 } else
                 {
-                    //Temporary tables should be deleted, Order should be set free
-                    if (table.TableType == TableTypes.TemporaryTable)
-                    {
-                        //Delete table
-                        await repoTable.Delete(table.IID);
-                    } else
-                    {
-                        //unbusy table, delete order details from table
-                        table.LockedClientIP = "";
-                        table.CurrentOrderIID = "";
-                        table.TableCovers = 1;
-                        await repoTable.Save(table);
-                    }
+                    //unbusy table, delete order details from table
+                    table.LockedClientIP = "";
+                    table.Order = null;
+                    table.TableCovers = 1;
+                    await repoTable.Save(table);
+
                     await DeleteOrderOnly(table.AttachedOrder);
                 }
             }
@@ -647,24 +586,18 @@ namespace DTRMNS
         ///Used to return an inhouse order , this function is ONLY CALLED BY RETURN ORDER
         private async void ReturnTable(Order order)
         {
-            Table table = await GetTable(order.TableIID);
+            Masa table = await GetTable(order.TableIID);
             if (table == null)
                 return;
             if ((int)order.Status >= (int)StatusFlags.COMPLETED)
             {
-                //Temporary tables should be deleted, Order should be set free
-                if (table.TableType == TableTypes.TemporaryTable)
-                {
-                    //Delete table
-                    await repoTable.Delete(table.IID);
-                } else
-                {
-                    //unbusy table, delete order details from table
-                    table.LockedClientIP = "";
-                    table.CurrentOrderIID = "";
-                    table.TableCovers = 1;
-                    await repoTable.Save(table);
-                }
+
+                //unbusy table, delete order details from table
+                table.LockedClientIP = "";
+                table.Order = null;
+                table.TableCovers = 1;
+                await repoTable.Save(table);
+
                 //delete table details from order	
                 order.TableIID = "";
 
@@ -684,54 +617,19 @@ namespace DTRMNS
                     await repoOrder.Save(order);
                 } else
                 {
-                    //Temporary tables should be deleted, Order should be set free
-                    if (table.TableType == TableTypes.TemporaryTable)
-                    {
-                        //Delete table
-                        await repoTable.Delete(table.IID);
-                    } else
-                    {
-                        //unbusy table, delete order details from table
-                        table.LockedClientIP = "";
-                        table.CurrentOrderIID = "";
-                        table.TableCovers = 1;
-                        await repoTable.Save(table);
-                    }
+                    //unbusy table, delete order details from table
+                    table.LockedClientIP = "";
+                    table.Order = null;
+                    table.TableCovers = 1;
+                    await repoTable.Save(table);
+
                     await DeleteOrderOnly(order);
                 }
             }
         }
 
-        /// <summary>
-        /// TABLE MOVE ACTION
-        ///==========================
-        ///parameter(primary or sub TableIID, primary)
-        ///return (bool)
-        /// 
-        ///1-primary(NoSub)  => empty primary                 =>primary      primary               OrderTransfer
-        ///     if (blnSourcePrimary && !blnSourceHasSubTables && blnTargetPrimary && blnTargetEmpty)
-        ///2-primary(YesSub) => empty primary                 =>primary+sub  primary+sub           OrderTransfer for primary + TableTransfer for sub tables
-        ///     if (blnSourcePrimary && blnSourceHasSubTables && blnTargetPrimary && blnTargetEmpty)
-        ///3-primary(NoSub) => full primary(no sub tables)           =>primary      primary+sub           OrderTransfer    CreateSubTable
-        ///     if (blnSourcePrimary && !blnSourceHasSubTables && blnTargetPrimary && !blnTargetEmpty && !blnTargetHasSubTables)
-        ///4-primary(YesSub) => full primary(no sub tables)   =>primary+sub  primary+sub+sub       Transfer(with subs including source primary becomes sub)   CreateSubTable 
-        ///     if (blnSourcePrimary && blnSourceHasSubTables && blnTargetPrimary && !blnTargetEmpty && !blnTargetHasSubTables)
-        ///5-primary(NoSub) => full primary(with sub tables)         =>primary      primary+sub+sub       Transfer    CreateSubTable
-        ///     if (blnSourcePrimary && !blnSourceHasSubTables && blnTargetPrimary && !blnTargetEmpty && blnTargetHasSubTables)
-        ///6-primary(YesSub) => full primary(with sub tables) =>primary+sub  primary+sub+sub+sub   Transfer(with subs including source primary becomes sub)    CreateSubTable
-        ///     if (blnSourcePrimary && blnSourceHasSubTables && blnTargetPrimary && !blnTargetEmpty && blnTargetHasSubTables)
-        ///7-sub => empty primary                             =>sub          primary               Transfer
-        ///     if (!blnSourcePrimary && blnTargetPrimary && blnTargetEmpty)
-        ///8-sub => full primary(no sub tables)               =>sub          primary+sub           Transfer    CreateSubTable
-        ///     if (!blnSourcePrimary && blnTargetPrimary && !blnTargetEmpty && !blnTargetHasSubTables)
-        ///9-sub => full primary(with sub tables)             =>sub          primary+sub+sub       Transfer    CreateSubTable
-        ///     if (!blnSourcePrimary && blnTargetPrimary && !blnTargetEmpty && blnTargetHasSubTables)
-        /// 
-        /// </summary>
-        /// <param name="sourceTableIID"></param>
-        /// <param name="targetTableIID"></param>
-        /// <returns></returns>
-        public async Task<bool> MoveTable(string sourceTableIID, string targetTableIID, bool blnLeaveSubTables)
+
+        public async Task<bool> MoveTable(string sourceTableIID, string targetTableIID)
         {
             bool blnSourcePrimary;
             bool blnTargetPrimary;
@@ -739,190 +637,32 @@ namespace DTRMNS
             bool blnSourceHasSubTables;
             bool blnTargetHasSubTables;
 
-            Table sourceTable = await GetTable(sourceTableIID);
-            if (sourceTable.HasActiveOrder())
+            Masa sourceTable = await repoTable.Get(sourceTableIID);
+            if (sourceTable.Order != null)
                 sourceTable = await BarrowTable(sourceTableIID);
             else
                 return false;
-            Table targetTable = await GetTable(targetTableIID);
+            Masa targetTable = await repoTable.Get(targetTableIID);
             if (targetTable.HasActiveOrder())
                 targetTable = await BarrowTable(targetTableIID);
-            blnSourcePrimary = sourceTable.TableType == TableTypes.StaticTable;
-            blnSourceHasSubTables = await HasSubTables(sourceTableIID);
-            blnTargetHasSubTables = await HasSubTables(targetTableIID);
-            blnTargetPrimary = targetTable.TableType == TableTypes.StaticTable;
             blnTargetEmpty = !targetTable.HasActiveOrder();
 
             Order sourceOrder;
-            Table subTargetTable;
+            Masa subTargetTable;
 
-
-            if (blnSourcePrimary)
+            if (blnTargetEmpty)
             {
-                if (blnSourceHasSubTables)
-                {
-                    if (blnTargetPrimary)
-                    {
-                        if (blnTargetEmpty)
-                        {
-                            ///2-primary(YesSub) => empty primary                     =>primary+sub  primary+sub           OrderTransfer for primary + TableTransfer for sub tables
-                            sourceOrder = MakeOrderFreeFromTable(sourceTable.AttachedOrder);
-                            sourceTable = MakeTableFreeFromOrder(sourceTable);
-                            AttachOrderToTable(sourceOrder, targetTable);
+                ///2-primary(YesSub) => empty primary                     =>primary+sub  primary+sub           OrderTransfer for primary + TableTransfer for sub tables
+                sourceOrder = MakeOrderFreeFromTable(sourceTable.Order);
+                sourceTable = MakeTableFreeFromOrder(sourceTable);
+                AttachOrderToTable(sourceOrder, targetTable);
 
-                            //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                            targetTable.TableName = sourceTable.TableName;
+                await ReturnTable(sourceTable);
+                await ReturnTable(targetTable);
 
-                            await ReturnTable(sourceTable);
-                            await ReturnTable(targetTable);
-
-                            if (blnLeaveSubTables)
-                            {
-                                //transfer first sub table to primary table
-                                await MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
-                            } else
-                            {
-                                //attach subtable to new parent table
-                                await SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
-                            }
-                            return true;
-
-                        } else
-                        {
-                            //if (blnTargetHasSubTables) {
-                            ///6-primary(YesSub) => full primary(with sub tables) =>primary+sub  primary+sub+sub+sub   Transfer(with subs including source primary becomes sub)    CreateSubTable
-                            ///4-primary(YesSub) => full primary(no sub tables)   =>primary+sub  primary+sub+sub       Transfer(with subs including source primary becomes sub)   CreateSubTable 
-
-                            sourceOrder = MakeOrderFreeFromTable(sourceTable.AttachedOrder);
-                            sourceTable = MakeTableFreeFromOrder(sourceTable);
-                            //create new target table
-                            subTargetTable = await AddSubTable(targetTableIID);
-                            AttachOrderToTable(sourceOrder, subTargetTable);
-
-                            //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                            subTargetTable.TableName = sourceTable.TableName;
-
-                            await ReturnTable(targetTable);
-                            await ReturnTable(sourceTable);
-                            await ReturnTable(subTargetTable);
-                            if (blnLeaveSubTables)
-                            {
-                                //transfer first sub table to primary table
-                                await MoveTable(GetFirstSubTableIID(sourceTableIID), sourceTableIID, false);
-                            } else
-                            {
-                                //attach subtable to new parent table
-                                await SetNewParentTableIIDForSubTables(sourceTableIID, targetTableIID);
-                            }
-                            return true;
-                        }
-                    } else
-                    {
-                        MessageBox.Show("Not implemented 1");
-                    }
-                } else
-                {
-                    if (blnTargetPrimary)
-                    {
-                        if (blnTargetEmpty)
-                        {
-                            ///1-primary(NoSub)  => empty primary                     =>primary      primary               OrderTransfer
-                            sourceOrder = MakeOrderFreeFromTable(sourceTable.AttachedOrder);
-                            sourceTable = MakeTableFreeFromOrder(sourceTable);
-                            AttachOrderToTable(sourceOrder, targetTable);
-
-                            //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                            targetTable.TableName = sourceTable.TableName;
-
-                            await ReturnTable(sourceTable);
-                            await ReturnTable(targetTable);
-                            return true;
-                        } else
-                        {
-                            ///5-primary(NoSub) => full primary(with sub tables)         =>primary      primary+sub+sub       Transfer    CreateSubTable
-                            ///3-primary(NoSub) => full primary(no sub tables)           =>primary      primary+sub           OrderTransfer    CreateSubTable
-
-                            sourceOrder = MakeOrderFreeFromTable(sourceTable.AttachedOrder);
-                            sourceTable = MakeTableFreeFromOrder(sourceTable);
-                            //create new target table
-                            subTargetTable = await AddSubTable(targetTableIID);
-                            AttachOrderToTable(sourceOrder, subTargetTable);
-
-                            //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                            subTargetTable.TableName = sourceTable.TableName;
-                            if (await CheckifPrimaryTableNameExist(subTargetTable.TableName))
-                            {
-                                EnsureSubTableHasUniqueName(subTargetTable);
-                            }
-                            await ReturnTable(targetTable);
-                            await ReturnTable(sourceTable);
-                            await ReturnTable(subTargetTable);
-                            return true;
-                        }
-                    } else
-                    {
-                        MessageBox.Show("Not implemented 2");
-                    }
-                }
-
-            } else
-            {
-                if (blnTargetPrimary)
-                {
-                    if (blnTargetEmpty)
-                    {
-                        ///7-sub => empty primary                                     =>sub          primary               Transfer
-
-                        sourceOrder = MakeOrderFreeFromTable(sourceTable.AttachedOrder);
-                        sourceTable = MakeTableFreeFromOrder(sourceTable);
-
-                        AttachOrderToTable(sourceOrder, targetTable);
-                        //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                        targetTable.TableName = sourceTable.TableName;
-
-                        await ReturnTable(targetTable);
-                        await DeleteTable(sourceTableIID);
-
-                        return true;
-                    } else
-                    {
-                        ///9-sub => full primary(with sub tables)                 =>sub          primary+sub+sub       Transfer    CreateSubTable
-                        ///8-sub => full primary(no sub tables)                   =>sub          primary+sub           Transfer    CreateSubTable
-                        //attach subtable to new parent table
-                        await ChangeParentTableIIDForSubTable(sourceTableIID, targetTableIID);
-                        sourceTable = await BarrowTable(sourceTableIID);
-
-                        //possibly renamed subtable is becoming a primary table so carry the subtable name ot new primary table
-                        // targetTable.TableName = sourceTable.TableName;
-
-                        await ReturnTable(sourceTable);
-                        await ReturnTable(targetTable);
-                        return true;
-                    }
-                } else
-                {
-                    MessageBox.Show("Not implemented 3");
-                }
+                return true;
             }
             return false;
-        }
-
-        private async void EnsureSubTableHasUniqueName(Table t)
-        {
-            if (t == null)
-                return;
-            if (!t.isPrimary)
-            {
-                if (await CheckifPrimaryTableNameExist(t.TableName))
-                    t.TableName += t.TableName;
-
-            }
-        }
-
-        private async Task<bool> CheckifPrimaryTableNameExist(string subName)
-        {
-            return await repoTable.GetByField("DefaultName", subName) != null;
-            // return GetDataTable("Select DefaultName from Tables where DefaultName = '" + subName + "'").Rows.Count > 0;
         }
 
         private Order MakeOrderFreeFromTable(Order order)
@@ -932,61 +672,21 @@ namespace DTRMNS
             return order;
         }
 
-        private Order AttachOrderToTable(Order order, Table table)
+        private Order AttachOrderToTable(Order order, Masa table)
         {
             order.TableIID = table.IID;
-            table.AttachedOrder = order;
-            table.CurrentOrderIID = order.IID;
+            table.Order = order;
             return order;
         }
 
-        private Table MakeTableFreeFromOrder(Table table)
+        private Masa MakeTableFreeFromOrder(Masa table)
         {
-            table.CurrentOrderIID = "";
+            table.Order = null;
             table.LockedClientIP = "";
             return table;
         }
 
-        public async Task<bool> SetNewParentTableIIDForSubTables(string oldParentTableIID, string newParentTableIID)
-        {
-            try
-            {
-                await repoTable.GetListByField("ParentTableIID", oldParentTableIID).ContinueWith(async (subTables) =>
-                {
-                    foreach (var subTable in subTables.Result)
-                    {
-                        subTable.ParentTableIID = newParentTableIID;
-                        await repoTable.Save(subTable);
-                    }
-                });
-                return true;
-            } catch
-            {
-                return false;
-            }
-            // return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where ParentTableIID ='" + oldParentTableIID + "'");
-        }
 
-        public async Task<bool> ChangeParentTableIIDForSubTable(string subTableIID, string newParentTableIID)
-        {
-            try
-            {
-                await repoTable.GetListByField("IID", subTableIID).ContinueWith(async (subTables) =>
-                {
-                    foreach (var subTable in subTables.Result)
-                    {
-                        subTable.ParentTableIID = newParentTableIID;
-                        await repoTable.Save(subTable);
-                    }
-                });
-                return true;
-                //return await RunQuery("update Tables set ParentTableIID ='" + newParentTableIID + "' where IID ='" + subTableIID + "'");
-            } catch
-            {
-                return false;
-            }
-
-        }
 
         /// <summary>
         /// TABLE MERGE ACTION
@@ -997,26 +697,23 @@ namespace DTRMNS
         /// <returns></returns>
         public async Task<bool> MergeTable(string sourceTableIID, string targetTableIID)
         {
-            Table sourceTable = await BarrowTable(sourceTableIID);
-            if (sourceTable.TableType == TableTypes.StaticTable)
-            {
-                await ReturnTable(sourceTable);
-                return false;
-            }
+            Masa sourceTable = await BarrowTable(sourceTableIID);
 
-            Table targetTable = await BarrowTable(targetTableIID);
-            targetTable.AttachedOrder.MergeOrder(sourceTable.AttachedOrder);
-            await repoOrder.Delete(sourceTable.CurrentOrderIID);
-            if (sourceTable.TableType == TableTypes.TemporaryTable)
-                await repoTable.Delete(sourceTableIID);
-            else
-                MakeTableFreeFromOrder(sourceTable);
-            await ReturnTable(targetTable);
+            await ReturnTable(sourceTable);
+            return false;
 
-            return true;
+
+            //Table targetTable = await BarrowTable(targetTableIID);
+            //targetTable.AttachedOrder.MergeOrder(sourceTable.AttachedOrder);
+            //await repoOrder.Delete(sourceTable.CurrentOrderIID);
+
+            //MakeTableFreeFromOrder(sourceTable);
+            //await ReturnTable(targetTable);
+
+            //return true;
         }
 
-        public async Task<Table> GetTable(string TableIID)
+        public async Task<Masa> GetTable(string TableIID)
         {
             return await repoTable.Get(TableIID);
             //DataTable dt =await GetDataTable("GetTable", TableIID);
@@ -1026,39 +723,19 @@ namespace DTRMNS
             //    return null;
         }
 
-        public async Task<Table> GetParentTable(string TableIID)
+
+        public async Task<bool> SaveTable(Masa masa)
         {
-            return await GetTable(TableIID);
-            //if (testTable.TableType == TableTypes.StaticTable)
-            //    return testTable;
-            //else
-            //    return GetTable(testTable.ParentTableIID);
+            return await repoTable.Save(masa) != null;
         }
 
-        public async Task<bool> SaveTable(Table table)
-        {
-            if (table.DefaultName == null)
-                table.DefaultName = table.TableName;
-            return await RunQuery("SaveTable '" + table.IID + "'," + table.Number + ",'" +
-                               table.TableName + "'," + table.TableCovers + ",'" + table.LockedClientIP + "','" +
-                               table.CurrentOrderIID + "'," + (int)table.TableType + "," + table.XLocation + "," +
-                               table.YLocation +
-                               "," + table.Width + "," + table.Height + ",'" + table.GroupIID + "','" +
-                               table.ParentTableIID + "'," + (int)table.Shape + ",'" + table.DefaultName + "'");
-        }
-
-        public async Task DeleteTable(string TableIID)
-        {
-            await repoTable.Delete(TableIID);
-            //RunQuery("DeleteTable", TableIID);
-        }
 
         public async void FreeTheTable(string TableIID)
         {
-            Table table = await GetTable(TableIID);
+            Masa table = await GetTable(TableIID);
             if (table != null)
             {
-                Order order = await GetOrder(table.CurrentOrderIID);
+                Order order = table.Order; // await GetOrder(table.OrderIID);
                 if (order != null)
                 {
                     if (order.Items.Count == 0)
@@ -1070,15 +747,11 @@ namespace DTRMNS
                         await SaveOrder(order);
                     }
                 }
-                if (table.TableType == TableTypes.TemporaryTable)
-                    await DeleteTable(TableIID);
-                else
-                {
-                    table.CurrentOrderIID = "";
-                    table.LockedClientIP = "";
-                    table.TableCovers = 1;
-                    SaveTable(table);
-                }
+
+                table.Order = null;
+                table.LockedClientIP = "";
+                table.TableCovers = 1;
+                await SaveTable(table);
             }
         }
 
@@ -1086,30 +759,12 @@ namespace DTRMNS
 
         #region "DISTRIBUTION FUNCTIONS"
 
-        public async Task<List<Distribution>> GetDistributionList(string ActiveMenuIID)
-        {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == ActiveMenuIID).OrderBy(x => x.DOrder).ToListAsync();
-            //List<Distribution> DistributionList = new List<Distribution>();
-            //DataTable dt = GetDataTable("GetDistributions", ActiveMenuIID);
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    DistributionList.Add(new Distribution(dt.Rows[i]));
-            //return DistributionList;
-        }
 
-        public async Task<List<Distribution>> GetAllDistributions()
-        {
-            return await repoDistribution.GetAllAsync("Printer");
-        }
         public async Task<List<Distribution>> GetAllDistributionsForMenu(string ActiveMenuIID)
         {
             return await repoDistribution.GetListByField("ParentMenuIID", ActiveMenuIID, includeItems: "Printer") ?? new();
         }
 
-        public async Task<List<DistributionView>> GetAllDistributionsAsView()
-        {
-            return await repoDistribution.GetDistributionView();
-            //return GetDataTable($"SELECT * FROM Distribution where ParentMenuIID = {ActiveMenuIID}  order by DisplayOrder");
-        }
 
         public async Task<Distribution> GetDistribution(string DistributionIID)
         {
@@ -1117,30 +772,7 @@ namespace DTRMNS
             // return new Distribution(GetDataTable("GetDistribution", DistributionIID).Rows[0]);
         }
 
-        public async Task<bool> SaveDistribution(Distribution distribution)
-        {
-            return (await repoDistribution.Save(distribution) != null);
-            //try
-            //{
-            //    return RunQuery("SaveDistribution '" + ft.IID + "','" + ft.DistributionName + "','" +
-            //                       ft.ShortName + "','" + ft.PrinterIID + "','" + ft.ParentMenuIID + "'," + ft.DisplayOrder);
-            //} catch
-            //{
-            //    return false;
-            //}
-        }
 
-        public async Task<bool> DeleteDistribution(string DistributionIID)
-        {
-            return (await repoDistribution.Delete(DistributionIID) > 0);
-            //return RunQuery("DeleteDistribution", DistributionIID);
-        }
-
-        public async Task<bool> DeleteAllDistributionsForMenu(string MenuIID)
-        {
-            return await repoDistribution.GetDBContext().Distributions.Where(x => x.MenuIID == MenuIID).ExecuteDeleteAsync() > 0;
-            //return RunQuery("DeleteAllDistributionsForMenu", MenuIID);
-        }
 
         #endregion
 
@@ -1206,24 +838,8 @@ namespace DTRMNS
             //    return null;
         }
 
-        public async Task<OrdersView> GetOrderView(string IID)
-        {
-            return (await repoOrder.GetOrdersView()).Where(x => x.IID == IID).FirstOrDefault();
-        }
 
-        public bool isOrderPaid(string OrderIID)
-        {
-            try
-            {
-                DataTable dt = GetDataTable("select  cast((MoneyPaid - CalculatedValue) as decimal)  as isPaid from OrdersView where IID = '" + OrderIID + "'");
-                string str = dt.Rows[0]["isPaid"].ToString();
-                decimal val = decimal.Parse(str);
-                return val >= 0;
-            } catch
-            {
-                return false;
-            }
-        }
+
         public async Task<bool> SaveOrder(Order order)
         {
             CultureInfo ci = GetDBCulture();
@@ -1234,33 +850,8 @@ namespace DTRMNS
                     order.SessionIID = shop.CurrentSessionIID;
 
                 if (await repoOrder.Save(order) != null)
-                //RunQuery("SaveOrder  '" + order.IID + "','" + order.TableIID + "'," +
-                //            DRDateTime.DatetimeToMSSql(order.OrderDate) + "," +
-                //            order.Covers + "," + (int)order.OrderType + "," + (int)order.Payment + ",'" +
-                //            order.CustomerIID + "','" + order.SessionIID + "'," + (int)order.Status + ",'" +
-                //            order.LockedClientIP + "','" + order.Instruction + "'," + order.MoneyPaid.ToString(ci) +
-                //            ",'" +
-                //            order.PaymentFlag + "','" +
-                //            order.TableName + "','" + order.CName + "','" + order.Postcode + "','" + order.Address +
-                //            "','" + order.Buzzer + "','" +
-                //            order.Town + "','" + order.Tel + "','" + order.Mobile + "','" + order.Email + "','" +
-                //            order.UserName + "','" + order.Reference + "','" + order.ServiceChargeRate + "','" + order.ServiceChargeTaxRate + "'"))
-                {
-
-                    //for (int i = 0; i < order.items.Count; i++)
-                    //    SaveOrderItem((OrderItem)order.items[i]);
-
-                    //DataTable dtItems = this.GetAllOrderItems(order.IID);
-
-                    //for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
-                    //{
-                    //    OrderItem oi = order.GetOrderItem(dtItems.Rows[i]["IID"].ToString());
-                    //    if (oi == null)
-                    //        RunQuery("DeleteOrderItem", dtItems.Rows[i]["IID"].ToString());
-
-                    //}
                     return true;
-                } else
+                else
                     return false;
             } catch
             {
@@ -1534,9 +1125,9 @@ namespace DTRMNS
                 await StartNewSession();
         }
 
-        public async Task<SessionData> GetCurrentSession()
+        public async Task<Session> GetCurrentSession()
         {
-            return await GetSessionDataDynamic(shop.CurrentSessionIID);
+            return await repoSession.Get(shop.CurrentSessionIID);
         }
 
         #endregion
@@ -1635,7 +1226,7 @@ namespace DTRMNS
 
 
 
-                using (frmPrep frm = ActivatorUtilities.CreateInstance<frmPrep>(sp, this, korder))
+                using (frmPrep frm = ActivatorUtilities.CreateInstance<frmPrep>(ServiceHelper.Services, this, korder))
                 {
                     frm.ShowDialog();
                     prepDialogResult = frm.prepResult;
@@ -1714,7 +1305,7 @@ namespace DTRMNS
         {
             try
             {
-                OrderItem oi = AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                OrderItem oi = AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                 oi.CompletedQuantity += koi.Quantity;
                 //oi.OrderItemText = koi.ItemText;
                 SaveOrderItem(oi);
@@ -1856,7 +1447,7 @@ namespace DTRMNS
 
         public int ViewReceipt(Graphics g, string orderiid, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = ActivatorUtilities.CreateInstance<ReportGenerator>(sp, g, this, printer, 2);
+            ReportGenerator generator = ActivatorUtilities.CreateInstance<ReportGenerator>(ServiceHelper.Services, g, this, printer, 2);
             generator.PrintReceipt(orderiid);
             return generator.FinalLength;
         }
@@ -1904,28 +1495,31 @@ namespace DTRMNS
 
         public async Task<bool> RemoveZeroOrdersOfCurrentSessionAndCreateNewSession()
         {
-            SessionData SessionToArchive;
             try
             {
-                SessionToArchive = await GetSessionDataDynamic(shop.CurrentSessionIID);
+                Session SessionToArchive = await repoSession.Get(shop.CurrentSessionIID, "Orders");
 
                 //This is a second before where the current session to be archived
 
+                SessionToArchive.Orders.Where(x => x.Status == StatusFlags.COMPLETED).ToList().ForEach(x => x.Status = StatusFlags.ARCHIVED);
 
-                if (await RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.SessionIID}' And Status = 3"))
-                {
+
+                //if (await RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.IID}' And Status = 3"))
+                //{
+                    if (await repoSession.Save(SessionToArchive) != null)                { 
+
 
                     //Handle start new session things
-                    SessionData sd = await GetLatestSession();
-                    if (sd == null)
+                    Session session = await GetLatestSession();
+                    if (session == null)
                     {
                         await StartNewSession();
                     } else
                     {
-                        if (SessionToArchive.SessionIID == sd.SessionIID)
+                        if (SessionToArchive.IID == session.IID)
                         {
-                            SessionToArchive.SessionEndDateTime = DateTime.Now;
-                            await SaveSessionData(SessionToArchive);
+                            SessionToArchive.EndDate = DateTime.Now;
+                            await repoSession.Save(SessionToArchive);
                             await StartNewSession();
                         }
                     }
@@ -1973,49 +1567,44 @@ namespace DTRMNS
             return GetDataTable("GetSessionList");
         }
 
-        public async Task<SessionData> GetSessionDataDynamic(string SessionIID)
-        {
-            return (await repoSession.GetSessionSumView()).Where(x => x.SessionIID == SessionIID).FirstOrDefault();
-            //return new SessionData(GetDataTable("GetSessionDynamic", SessionIID));
-        }
-        public async Task<bool> SaveSessionData(string SessionIID)
-        {
-            return await SaveSessionData(await GetSessionDataDynamic(SessionIID));
-        }
+        //public async Task<Session> GetSessionDataDynamic(string SessionIID)
+        //{
+        //    return await repoSession.Get(SessionIID);
+        //}
 
-        public async Task<bool> SaveSessionData(SessionData ses)
-        {
+        //public async Task<bool> SaveSessionData(SessionData ses)
+        //{
 
-            return await RunQuery("SaveSessionData '" + ses.SessionIID + "'," +
-                               DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime) +
-                               "," + DRDateTime.DatetimeToMSSql(ses.SessionEndDateTime) + ",'" +
-                               ses.GrossSessionTotal.ToString(ci) + "','" +
-                               ses.X1Total.ToString(ci) + "','" + ses.X2Total.ToString(ci) + "','" + ses.X3Total.ToString(ci) + "'");
-        }
+        //    return await RunQuery("SaveSessionData '" + ses.SessionIID + "'," +
+        //                       DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime) +
+        //                       "," + DRDateTime.DatetimeToMSSql(ses.SessionEndDateTime) + ",'" +
+        //                       ses.GrossSessionTotal.ToString(ci) + "','" +
+        //                       ses.X1Total.ToString(ci) + "','" + ses.X2Total.ToString(ci) + "','" + ses.X3Total.ToString(ci) + "'");
+        //}
 
-        public async Task<bool> SaveDrawerSessionData(SessionData ses)
-        {
-            CultureInfo ci = GetDBCulture();
-            return await RunQuery("SaveDrawerSessionData '" + ses.SessionIID + "','" + ses.peny1.ToString(ci) +
-                               "','" + ses.peny2.ToString(ci) +
-                               "','" + ses.peny5.ToString(ci) +
-                               "','" + ses.peny10.ToString(ci) +
-                               "','" + ses.peny20.ToString(ci) +
-                               "','" + ses.peny50.ToString(ci) +
-                               "','" + ses.pound1.ToString(ci) +
-                               "','" + ses.pound2.ToString(ci) +
-                               "','" + ses.pound5.ToString(ci) +
-                               "','" + ses.pound10.ToString(ci) +
-                               "','" + ses.pound20.ToString(ci) +
-                               "','" + ses.pound50.ToString(ci) +
-                               "','" + ses.pound100.ToString(ci) +
-                               "','" + ses.pound200.ToString(ci) +
-                               "','" + ses.pound500.ToString(ci) +
-                               "','" + ses.pound1000.ToString(ci) +
-                               "','" + ses.CashTotal.ToString(ci) +
-                               "','" + ses.CardTotal.ToString(ci) +
-                               "','" + ses.OnlineTotal.ToString(ci) + "'");
-        }
+        //public async Task<bool> SaveDrawerSessionData(SessionData ses)
+        //{
+        //    CultureInfo ci = GetDBCulture();
+        //    return await RunQuery("SaveDrawerSessionData '" + ses.SessionIID + "','" + ses.peny1.ToString(ci) +
+        //                       "','" + ses.peny2.ToString(ci) +
+        //                       "','" + ses.peny5.ToString(ci) +
+        //                       "','" + ses.peny10.ToString(ci) +
+        //                       "','" + ses.peny20.ToString(ci) +
+        //                       "','" + ses.peny50.ToString(ci) +
+        //                       "','" + ses.pound1.ToString(ci) +
+        //                       "','" + ses.pound2.ToString(ci) +
+        //                       "','" + ses.pound5.ToString(ci) +
+        //                       "','" + ses.pound10.ToString(ci) +
+        //                       "','" + ses.pound20.ToString(ci) +
+        //                       "','" + ses.pound50.ToString(ci) +
+        //                       "','" + ses.pound100.ToString(ci) +
+        //                       "','" + ses.pound200.ToString(ci) +
+        //                       "','" + ses.pound500.ToString(ci) +
+        //                       "','" + ses.pound1000.ToString(ci) +
+        //                       "','" + ses.CashTotal.ToString(ci) +
+        //                       "','" + ses.CardTotal.ToString(ci) +
+        //                       "','" + ses.OnlineTotal.ToString(ci) + "'");
+        //}
 
 
         /// <summary>
@@ -2023,7 +1612,7 @@ namespace DTRMNS
         /// </summary>
         /// <param name="givenSession"></param>
         /// <returns></returns>
-        public int GetAvailableXReportSlot(SessionData givenSession)
+        public int GetAvailableXReportSlot(Session givenSession)
         {
             if (givenSession.X1Total == 0)
                 return 1;
@@ -2044,7 +1633,7 @@ namespace DTRMNS
         /// </summary>
         /// <param name="givenSession"></param>
         /// <returns></returns>
-        public bool WillReportEndUpAs_Z_Report(SessionData givenSession)
+        public bool WillReportEndUpAs_Z_Report(Session givenSession)
         {
             int availableXLocation = 0;
             if (givenSession.X1Total == 0)
@@ -2058,7 +1647,7 @@ namespace DTRMNS
             return availableXLocation == config.Maximum_XReport_Count;
         }
 
-        public bool Is_Z_ReportTimeNow(SessionData givenSession)
+        public bool Is_Z_ReportTimeNow(Session givenSession)
         {
             if (givenSession.X1Total > 0 && config.Maximum_XReport_Count == 1)
                 return true;
@@ -2084,30 +1673,27 @@ namespace DTRMNS
         {
             try
             {
-                SessionFamily sf = new SessionFamily
-                {
-                    sessionData = await GetSessionDataDynamic(SessionIID)
-                };
+                Session session = await repoSession.Get(SessionIID, "Orders, Orders.Items");
 
-                string SessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
-                    sf.sessionData.SessionEndDateTime.Value, "xml");
+                string SessionFileName = DRFile.GenerateFileName(session.StartDate, session.EndDate.Value, "xml");
+
                 if (File.Exists(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName))
                     return false;
 
-
-                if (sf.sessionData.SessionEndDateTime == sf.sessionData.SessionStartDateTime)
+                if (session.EndDate == null)
                 {
-                    sf.sessionData.SessionEndDateTime = DateTime.Now;
+                    session.EndDate = DateTime.Now;
                 }
-                await SaveSessionData(sf.sessionData);
-                sf.Orders = await GetOrderListForSession(SessionIID);
-                DRFile.XmlSerialize(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName, sf,
-                    typeof(SessionFamily), false);
-
-                //This deletes the session from database all together
-                await repoSession.Delete(SessionIID);
-
-                return true;
+                if (await repoSession.Save(session) != null)
+                {
+                    if (DRFile.XmlSerialize(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName, session, typeof(Session), false))
+                    {
+                        //This deletes the session from database all together
+                        await repoSession.Delete(SessionIID);
+                    }
+                    return true;
+                } else
+                    return false;
             } catch
             {
                 return false;
@@ -2119,34 +1705,33 @@ namespace DTRMNS
         {
             try
             {
-                SessionFamily sf = new SessionFamily
-                {
-                    sessionData = await GetSessionDataDynamic(SessionIID)
-                };
+                Session session = await repoSession.Get(SessionIID, "Orders, Orders.Items");
 
-                string SessionFileName = DRFile.GenerateFileName(sf.sessionData.SessionStartDateTime,
-                    sf.sessionData.SessionEndDateTime.Value, "xml");
+                string SessionFileName = DRFile.GenerateFileName(session.StartDate, session.EndDate.Value, "xml");
+
                 if (File.Exists(directoryPath + "\\" + SessionFileName))
                     return false;
 
 
-                if (sf.sessionData.SessionEndDateTime == sf.sessionData.SessionStartDateTime)
+                if (session.EndDate == null)
                 {
-                    sf.sessionData.SessionEndDateTime = DateTime.Now;
+                    session.EndDate = DateTime.Now;
                 }
-                SaveSessionData(sf.sessionData);
-                sf.Orders = await GetOrderListForSession(SessionIID);
-                if (!DRFile.XmlSerialize(directoryPath + "\\" + SessionFileName, sf, typeof(SessionFamily), false))
+                if (await repoSession.Save(session) != null)
+                {
+                    if (DRFile.XmlSerialize(directoryPath + "\\" + SessionFileName, session, typeof(Session), false))
+                    {
+                        //This deletes the session from database all together
+                        if (blnDeleteSessionFromDatabase)
+                        {
+                            await repoSession.Delete(SessionIID);
+                        }
+                        return true;
+                    } else
+                        return false;
+                }   else 
                     return false;
 
-                //This deletes the session from database all together
-                if (blnDeleteSessionFromDatabase)
-                {
-                    await repoSession.Delete(SessionIID);
-                    //RunQuery("DeleteSession", SessionIID);
-                }
-
-                return true;
             } catch (Exception ex)
             {
                 string str = ex.Message;
@@ -2155,20 +1740,18 @@ namespace DTRMNS
         }
 
 
-        public bool ReloadSessionFromDirectory(DateTime startDate, DateTime endDate)
+        public async Task<bool> ReloadSessionFromDirectory(DateTime startDate, DateTime endDate)
         {
             try
             {
                 string SessionFileName = DRFile.GenerateFileName(startDate, endDate, "xml");
-                SessionFamily sf =
-                    (SessionFamily)
-                    DRFile.XmlDeSerialize(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName,
-                        typeof(SessionFamily), false);
-                SaveSessionData(sf.sessionData);
-                for (int i = 0; i < sf.Orders.Count; i++)
-                    SaveOrder(sf.Orders[i]);
-                File.Delete(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName);
-                return true;
+                Session session =(Session)DRFile.XmlDeSerialize(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName, typeof(Session), false);
+                if (await repoSession.Save(session) != null)
+                {
+                    File.Delete(DRFile.GetApplicationPath() + UF.SessionDirName + "\\" + SessionFileName);
+                    return true;
+                } else
+                    return false;
             } catch
             {
                 return false;
@@ -2179,12 +1762,13 @@ namespace DTRMNS
         {
             try
             {
-                SessionFamily sf = (SessionFamily)DRFile.XmlDeSerialize(filename, typeof(SessionFamily), false);
-                await SaveSessionData(sf.sessionData);
-                for (int i = 0; i < sf.Orders.Count; i++)
-                    await SaveOrder(sf.Orders[i]);
-                File.Delete(filename);
-                return true;
+                Session session= (Session)DRFile.XmlDeSerialize(filename, typeof(Session), false);
+                if (await repoSession.Save(session) != null)
+                {
+                    File.Delete(filename);
+                    return true;
+                } else
+                    return false;
             } catch
             {
                 return false;
@@ -2193,10 +1777,10 @@ namespace DTRMNS
 
 
 
-        public async Task<SessionData> GetLatestSession()
+        public async Task<Session> GetLatestSession()
         {
             Session latestSession = await repoSession.GetDBContext().Database.SqlQuery<Session>($"select * from sessions where startdate in ( SELECT  Max(sessions.StartDate) AS Startdate FROM sessions)").FirstOrDefaultAsync();
-            return await GetSessionDataDynamic(latestSession.IID);
+            return await repoSession.Get(latestSession.IID);
 
             //DataTable dt = GetDataTable("GetLatestSession");
             //if (dt.Rows.Count > 0)
@@ -2235,7 +1819,7 @@ namespace DTRMNS
             DataTable dt = GetSessionList();
             dt.Clear();
 
-            System.Globalization.CultureInfo culture = new System.Globalization.CultureInfo("en-GB");
+            CultureInfo culture = new CultureInfo("en-GB");
 
             string[] files = Directory.GetFiles(sessionDirectory);
 
@@ -2287,26 +1871,19 @@ namespace DTRMNS
             {
 
                 //with Z report applied , a new session started
-                SessionData TempSession = new SessionData();
+                Session TempSession = new Session();
 
-                await SaveSessionData(TempSession);
-                await ActivateSession(TempSession);
+                TempSession = await repoSession.Save(TempSession);
+                shop.CurrentSessionIID = TempSession.IID;
+                await repoShop.Save(shop);
 
-                //Update OrderList to get rid of orders belong to the taken ZReport
-                //Also update order session numbers
-                //DO NOT MAKE THIS SINGLE DATABASE CALL
-                await RunQuery("UpdateSessionIIDForOrders '" + TempSession.SessionIID + "'," + (int)StatusFlags.COMPLETED);
-                shop = await repoShop.GetFirst();
+                string sql = $"UPDATE Orders SET SessionIID = '{TempSession.IID}' WHERE Status < " + (int)StatusFlags.COMPLETED;
+                repoOrder.GetDBContext().Database.ExecuteSqlRaw(sql);
                 return true;
             } catch
             {
                 return false;
             }
-        }
-
-        public async Task ActivateSession(SessionData ses)
-        {
-            await RunQuery("ActivateSession '" + ses.SessionIID + "'," + DRDateTime.DatetimeToMSSql(ses.SessionStartDateTime));
         }
 
 
@@ -2318,14 +1895,30 @@ namespace DTRMNS
         public async Task<bool> PreserveSessionOrdesToX(string SessionIID)
         {
             //Move and delete Orders FROM orders and OrderItem table to xorders and xOrderItem table
-            return await RunQuery("MoveOrdersToXOrdersForSession '" + SessionIID + "'");
+            List<Order> orders = await repoOrder.GetListByField("SessionIID", SessionIID, "Items");
+
+            foreach (var order in orders)
+            {
+                if (await repoXOrder.Save(order.ToXOrder()) == null)
+                    return false;
+            }
+            return true;
         }
 
         public async Task<bool> GetXOrdersBackForSession(string SessionIID)
         {
             //Move and delete XOrders from xOrders and xOrderItem table to orders and orderitem table
-            return await RunQuery("MoveXOrdersToOrdersForSession '" + SessionIID + "'");
+            List<XOrder> xorders = await repoXOrder.GetListByField("SessionIID", SessionIID, "Items");
+
+            foreach (var xorder in xorders)
+            {
+                if (await repoOrder.Save(xorder.ToOrder()) == null)
+                    return false;
+            }
+            return true;
         }
+
+       
 
         #endregion
 
@@ -2403,15 +1996,15 @@ namespace DTRMNS
         #endregion
 
 
-        public async Task<OrderItem> DirectCreateTopOrderItemForOrder(Order order, string EntityButtonIID, bool blnSaveOrder = false)
+        public async Task<OrderItem> DirectCreateTopOrderItemForOrder(Order order, string CategoryItemIID, bool blnSaveOrder = false)
         {
-            CategoryItem eb = await GetJustEntityButton(EntityButtonIID);
+            CategoryItem eb = await GetJustEntityButton(CategoryItemIID);
             Category entity = await GetEntity(eb.CategoryIID);
-            OrderItem oi = new OrderItem(order.IID, entity.IID, POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
+            OrderItem oi = new OrderItem(order.IID,  POSLayer.Library.ShortGuid.NewGuid().ToString(), 1,
                 UF.GetRelatedPrice(null, entity, eb, order),
-                EntityButtonIID, eb.ItemName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
-                entity.CategoryName, order.Items.Count, GetEBTaxPercentForGenericOrder(order, eb));
-            OrderItem thesameitem = order.Items.Find(x => x.EntityButtonIID == eb.IID && x.DistributionIID == eb.DistributionIID);
+                CategoryItemIID, eb.ItemName, entity.DistributionIID, OrderItemTypes.NormalOrderItem, 0,
+                 order.Items.Count, GetEBTaxPercentForGenericOrder(order, eb));
+            OrderItem thesameitem = order.Items.Find(x => x.CategoryItemIID == eb.IID && x.DistributionIID == eb.DistributionIID);
             if (thesameitem != null)
                 thesameitem.Quantity++;
             else
@@ -2444,11 +2037,11 @@ namespace DTRMNS
         {
             try
             {
-                return
-                    int.Parse(
-                        GetDataTable(
-                            "select count(PadFlag) as PadItems from EntityButton where PadFlag > 0 and ParentMenuIID = '" +
-                            config.ActiveMenuIID + "'").Rows[0]["PadItems"].ToString()) > 0;
+                return false;
+                //int.Parse(
+                //        GetDataTable(
+                //            "select count(PadFlag) as PadItems from EntityButton where PadFlag > 0 and ParentMenuIID = '" +
+                //            config.ActiveMenuIID + "'").Rows[0]["PadItems"].ToString()) > 0;
             } catch
             {
                 return false;
@@ -2676,7 +2269,7 @@ namespace DTRMNS
             {
                 KitchenOrderItem korderitem = new KitchenOrderItem
                 {
-                    EntityButtonIID = order.Items[i].EntityButtonIID,
+                    CategoryItemIID = order.Items[i].CategoryItemIID,
                     Quantity = (int)order.Items[i].Quantity,
                     ItemText = order.Items[i].OrderItemText,
                     KitchenOrderIID = korder.IID,
@@ -2723,7 +2316,7 @@ namespace DTRMNS
         {
             try
             {
-                return DateTime.Parse(GetDataTable("Select KitchenModified from Luv").Rows[0]["KitchenModified"].ToString());
+                return shop.KitchenModified;
             } catch { }
             return DateTime.Now;
         }
@@ -2789,178 +2382,8 @@ namespace DTRMNS
         #region EB  STOCKITEM FUNCTIONS
 
 
-        public async Task<StockManager> GetStockManager(int startfrom = 0)
-        {
-            StockManager sm = new StockManager();
+       
 
-            sm.Suppliers = await repoSupplier.GetAllAsync();
-            sm.EBStockItemLookups = await repoEntityButtonStockItemLookUp.GetAllAsync();
-            sm.StockItems = await repoStockItem.GetAllAsync();
-
-            return sm;
-        }
-
-        public async Task<bool> SaveStockManager(StockManager sm)
-        {
-            foreach (var supplier in sm.Suppliers)
-            {
-                await repoSupplier.Save(supplier);
-            }
-            foreach (var stockItem in sm.StockItems)
-            {
-                await repoStockItem.Save(stockItem);
-            }
-            foreach (var item in sm.EBStockItemLookups)
-            {
-                await repoEntityButtonStockItemLookUp.Save(item);
-            }
-            return true;
-        }
-
-
-        public async Task<bool> SaveAllStockItemLookups(List<EntityButtonStockItemLookUp> lookupItems)
-        {
-            try
-            {
-                foreach (EntityButtonStockItemLookUp lookup in lookupItems)
-                {
-                    await SaveEntityButtonStockItemLookUp(lookup);
-                }
-                return true;
-            } catch
-            {
-                return false;
-            }
-
-        }
-
-        /// <summary>
-        /// EntityButtonStockItemLookUp + StockName 
-        /// </summary>
-        /// <param name="EBIID"></param>
-        /// <returns></returns>
-        public async Task<List<EntityButtonStockItemLookUp>> GetStockItemsForEB(string EBIID)
-        {
-            return await repoMenu.GetDBContext().Database.SqlQuery<EntityButtonStockItemLookUp>($"SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '{EBIID}' order by DisplayOrder asc").ToListAsync();
-            // return GetDataTable("SELECT EntityButtonStockItemLookUp.*, StockItem.StockName FROM EntityButtonStockItemLookUp left join StockItem on StockItemIID = StockItem.IID where EntityButtonIID = '" + EBIID + "' order by DisplayOrder asc");
-        }
-        public async Task<bool> SaveEntityButtonStockItemLookUp(EntityButtonStockItemLookUp lookup)
-        {
-            return await repoEntityButtonStockItemLookUp.Save(lookup) != null;
-        }
-
-        /// <summary>
-        /// When you run this function you should delete the orderitems.
-        /// This can only be done once and at the end of the session.
-        /// </summary>
-        /// <param name="blnIncrement"></param> UsedQuantity + newValue / if false just UsedQuantity
-        /// <returns></returns>
-        public async Task<bool> TransferStockItemUsageNow()
-        {
-            bool blnIncrement = true;
-            return await RunQuery("update stockItem set UsedQuantity = (Select SessionQuantity from StockItemUsage where StockItem.IID = StockItemUsage.StockItemIID) " + (blnIncrement ? " + UsedQuantity" : "") +
-                " where stockItem.IID in (Select StockItemIID from StockItemUsage)");
-        }
-
-
-        public async Task<StockItemUsage> GetSingleStockItemUsageAsObject(string StockItemIID)
-        {
-            return await repoStockItemUsage.GetDBContext().Database.SqlQuery<StockItemUsage>($"Select * from StockItemUsage where StockItemIID = '{StockItemIID}'").FirstOrDefaultAsync();
-            //DataTable dt = GetDataTable("Select * from StockItemUsage where StockItemIID = '" + StockItemIID + "'");
-            //if (dt.Rows.Count > 0)
-            //    return new StockItemUsage(dt);
-            //else
-            //    return null;
-        }
-
-        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsages(bool OrderableOnly)
-        {
-
-            if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName);
-            //return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
-            else
-            {
-                return repoMenu.GetStockItemUsageView().Result.OrderBy(x => x.StockItem.SupplierName);
-                //return GetDataTable("Select * from StockItemUsage order by SupplierName asc");
-            }
-        }
-        public List<string> GetSupplierIIDListWhichHasOrderableStockItems()
-        {
-            List<string> theList = new List<string>();
-            DataTable dt = GetDataTable("select SupplierIID from stockitemusage where orderablequantity > 0");
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                theList.Add(dt.Rows[i]["SupplierIID"].ToString());
-            }
-            return theList;
-        }
-        public DataTable GetStockItemUsageWithSearch(bool OrderableOnly, string searchText)
-        {
-            if (OrderableOnly)
-                return GetDataTable("Select * from StockItemUsage where OrderableQuantity >= 1  and StockName Like '%" + searchText + "%' order by SupplierName asc");
-            else
-            {
-                //return GetDataTable("Select * from StockItemUsage where TotalQuantity > 0 order by SupplierName asc");
-                return GetDataTable("Select * from StockItemUsage  where StockName Like '%" + searchText + "%'  order by SupplierName asc");
-            }
-        }
-        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplier(string SupplierIID, bool OrderableOnly)
-        {
-            if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName).ToList();
-            //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1  order by SupplierName asc");
-            else
-            {
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID).OrderBy(x => x.StockItem.SupplierName).ToList();
-                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' order by SupplierName asc");
-            }
-        }
-        public async Task<IEnumerable<StockItemUsage>> GetStockItemUsageBySupplierWithSearch(string SupplierIID, bool OrderableOnly, string searchText)
-        {
-            if (OrderableOnly)
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.OrderableQuantity >= 1 && x.StockItem.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.StockItem.SupplierName).ToList();
-            //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "' and  OrderableQuantity >= 1 and StockName Like '%" + searchText + "%' order by SupplierName asc");
-            else
-            {
-                return repoMenu.GetStockItemUsageView().Result.Where(x => x.StockItem.SupplierIID == SupplierIID && x.StockItem.StockName.Contains(searchText, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.StockItem.SupplierName).ToList();
-                //return GetDataTable("Select * from StockItemUsage where supplierIID ='" + SupplierIID + "'  and StockName Like '%" + searchText + "%' order by SupplierName asc");
-            }
-        }
-        public async Task<IEnumerable<StockItemUsage>> GetOrderableStockUsage()
-        {
-            return repoMenu.GetStockItemUsageView().Result.Where(x => x.OrderableQuantity >= 1).OrderBy(x => x.StockItem.SupplierName).ToList();
-            //return GetDataTable("Select OrderableQuantity as HowMany, OrderableType, StockName, SupplierName from StockItemUsage where OrderableQuantity >= 1 order by SupplierName asc");
-        }
-
-
-
-        /// <summary>
-        /// conversion 24  and UsedQuantity 50 than the result will be  (50 % 24) = 2, simply modulus of the used quantity (kalan)
-        /// Call this function carefully. It is non-reversable.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<bool> RemoveOrderedStockUsage(bool blnConvertableOnly)
-        {
-            if (blnConvertableOnly)
-                return await RunQuery("update stockitem set UsedQuantity = (UsedQuantity % Conversion)");
-            else
-                return await RunQuery("Update StockItem set UsedQuantity =0");
-        }
-
-        public async Task<bool> PrintStockUsage(Printer printer)
-        {
-            return new ReportGenerator(this, printer, 2).PrintStockUsage(await GetStockItemUsages(true), null);
-        }
-        public bool PrintStockUsage(Printer printer, IEnumerable<StockItemUsage> stockUsages, string SupplierName)
-        {
-            return new ReportGenerator(this, printer, 2).PrintStockUsage(stockUsages, SupplierName);
-        }
-
-        public DataTable GetEntityButtonStockItemRecipeFromStockItem(string StockItemIID)
-        {
-            return GetDataTable("Select * from EntityButtonStockItemRecipe where StockItemIID ='" + StockItemIID + "'");
-        }
         public bool PrintDataTable(Printer printer, DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
         {
 
@@ -3006,11 +2429,6 @@ namespace DTRMNS
             return exporter.csvText;
         }
 
-        public string GetOrderableStockItemUsageAsCsvText()
-        {
-            return "no need to implement";
-            //return GenerateCsvTextFromDataTable(GetOrderableStockUsage());
-        }
 
         #endregion
 
@@ -3020,65 +2438,36 @@ namespace DTRMNS
         public async Task<GenericImage> GetGenericImage(string ReferenceIID)
         {
             return await repoImage.GetByField("ReferenceIID", ReferenceIID);
-            // return await repoImage.GetDBContext().Images.Where(x => x.ReferenceIID == ReferenceIID).FirstOrDefaultAsync();
-            //DataTable dt = GetDataTable("Select * from Images where ReferenceIID ='" + ReferenceIID + "'");
-            //if (dt.Rows.Count > 0)
-            //    return new GenericImage(dt);
-            //else
-            //    return null;
+
         }
 
-        public async Task<GenericImage> GetEntityButtonPrepImage(string EntityButtonIID)
+        public async Task<GenericImage> GetCategoryItemPrepImage(string CategoryItemIID)
         {
-            GenericImage gim = await GetGenericImage(EntityButtonIID);
+            GenericImage gim = await GetGenericImage(CategoryItemIID);
             if (gim == null)
                 return null;
 
-            gim.ExtraText = GetEntityButtonStockItemText(EntityButtonIID) + gim.ExtraText;
+            gim.ExtraText = GetCategoryItemStockItemText(CategoryItemIID) + gim.ExtraText;
             return gim;
         }
-        public async Task<string> GetEntityButtonStockItemText(string EntityButtonIID)
+        public async Task<string> GetCategoryItemStockItemText(string CategoryItemIID)
         {
-            List<EntityButtonStockItemLookUp> lookupList = await GetStockItemsForEB(EntityButtonIID);
+            List<RecipeItem> recipeItems = await repoRecipeItem.GetListByField("CategoryItemIID", CategoryItemIID, "StockItem");
             string str = "";
-            foreach (var item in lookupList)
+            foreach (var item in recipeItems)
             {
-
-                //double val = double.Parse(dt.Rows[i]["Quantity"].ToString());
                 if (item.Quantity == 0)
                 {
-                    str += item.Comment; // dt.Rows[i]["Comment"].ToString();
+                    str += item.Comment; 
                     str += "\r\n";
                 } else
                 {
-                    str += item.Comment + " "; // dt.Rows[i]["Comment"].ToString() + "  ";
-                    str += item.StockName ?? "";
+                    str += item.Comment + " ";
+                    str += item.StockItemName ?? "";
                     str += "\r\n";
                 }
             }
             return str;
-
-
-
-            //DataTable dt = GetStockItemsForEB(EntityButtonIID);
-
-            //string str = "";
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //{
-            //    double val = double.Parse(dt.Rows[i]["Quantity"].ToString());
-            //    if (val == 0)
-            //    {
-            //        str += dt.Rows[i]["Comment"].ToString();
-            //        str += "\r\n";
-            //    } else
-            //    {
-            //        str += dt.Rows[i]["Comment"].ToString() + "  ";
-            //        if (dt.Rows[i]["StockName"] != null)
-            //            str += dt.Rows[i]["StockName"].ToString();
-            //        str += "\r\n";
-            //    }
-            //}
-            //return str;
         }
 
 
@@ -3162,7 +2551,7 @@ namespace DTRMNS
 
                 if (options.includeCurrentSession)
                 {
-                    backup.currentSession = new SessionData(await repoSession.Get(shop.CurrentSessionIID));
+                    backup.currentSession = await repoSession.Get(shop.CurrentSessionIID);
                     //DataTable dtCurrentSession = GetDataTable("Select * from Sessions where IID = '" + shop.CurrentSessionIID + "'");
                     //backup.currentSession = new SessionData(dtCurrentSession);
                 }
@@ -3206,6 +2595,48 @@ namespace DTRMNS
             }
         }
 
+        public async Task<StockManager> GetStockManager(int startfrom = 0)
+        {
+            StockManager sm = new StockManager();
+
+            sm.Suppliers = await repoSupplier.GetAllAsync();
+            sm.Recipes = await repoRecipeItem.GetAllAsync();
+            sm.StockItems = await repoStockItem.GetAllAsync();
+
+            return sm;
+        }
+
+        public async Task<bool> SaveStockManager(StockManager sm)
+        {
+            foreach (var supplier in sm.Suppliers)
+            {
+                await repoSupplier.Save(supplier);
+            }
+            foreach (var stockItem in sm.StockItems)
+            {
+                await repoStockItem.Save(stockItem);
+            }
+            foreach (var item in sm.Recipes)
+            {
+                await repoRecipeItem.Save(item);
+            }
+            return true;
+        }
+        public async Task<bool> SaveAllRecipes(List<RecipeItem> recipes)
+        {
+            try
+            {
+                foreach (RecipeItem recipe in recipes)
+                {
+                    await repoRecipeItem.Save(recipe);
+                }
+                return true;
+            } catch
+            {
+                return false;
+            }
+
+        }
 
 
         #endregion

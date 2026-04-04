@@ -10,44 +10,63 @@ public partial class OrderItem   : BaseOrderItem
     {
     }
 
-    public OrderItem(string OrderIID, string EntityIID, string OrderGroupIID,
-    double Quantity, double SizeButtonOrEntityButtonPrice, string EntityButtonIID, string OrderItemText,
+    public OrderItem(string OrderIID,  string OrderGroupIID,
+    double Quantity, double SizeButtonOrEntityButtonPrice, string CategoryItemIID, string OrderItemText,
      string distributioniid, OrderItemTypes ItemType, int DOrder,
-       string EntityName, int EntityDisplayOrder, double TaxPercent)
+       int CategoryDisplayOrder, double TaxPercent)
     {
         this.OrderIID = OrderIID;
-        this.EntityIID = EntityIID;
         this.OrderItemText = OrderItemText;
         this.Quantity = Quantity;
         this.Price = SizeButtonOrEntityButtonPrice;
         this.OrderGroupIID = OrderGroupIID;
 
-        this.EntityButtonIID = EntityButtonIID;
+        this.CategoryItemIID = CategoryItemIID;
         this.DistributionIID = distributioniid;
         this.ItemType = ItemType;
         this.DOrder = DOrder;
 
-        this.EntityName = EntityName;
-        this.EntityDisplayOrder = EntityDisplayOrder;
+        this.CategoryDisplayOrder = CategoryDisplayOrder;
         this.TaxPercent = TaxPercent;
+    }
+
+    public XOrderItem ToXOrderItem()
+    {
+        XOrderItem xItem = new XOrderItem()
+        {
+            IID = this.IID,
+            DOrder = this.DOrder,
+            OrderIID = this.OrderIID,
+            CategoryItemIID = this.CategoryItemIID,
+            DistributionIID = this.DistributionIID,
+            CategoryDisplayOrder = this.CategoryDisplayOrder,
+            OrderItemText = this.OrderItemText,
+            Quantity = this.Quantity,
+            Price = this.Price,
+            OrderGroupIID = this.OrderGroupIID,
+            ItemType = this.ItemType,
+            TaxPercent = this.TaxPercent,
+            CompletedQuantity = this.CompletedQuantity
+        };
+        return xItem;
     }
 
     public OrderItem Clone(bool blnNewGroup)
     {
-        OrderItem oi = new OrderItem(this.OrderIID, this.EntityIID,
+        OrderItem oi = new OrderItem(this.OrderIID, 
              blnNewGroup ? ShortGuid.NewGuid().ToString() : this.OrderGroupIID, this.Quantity,
-             this.Price, this.EntityButtonIID, this.OrderItemText,
-             this.DistributionIID, this.ItemType, this.DOrder, this.EntityName, this.EntityDisplayOrder,
+             this.Price, this.CategoryItemIID, this.OrderItemText,
+             this.DistributionIID, this.ItemType, this.DOrder,  this.CategoryDisplayOrder,
             this.TaxPercent);
         oi.CompletedQuantity = this.CompletedQuantity;
         return oi;
     }
     public OrderItem Duplicate(string newParentOrderIID, bool blnNewGroup)
     {
-        OrderItem oi = new OrderItem(newParentOrderIID, this.EntityIID,
+        OrderItem oi = new OrderItem(newParentOrderIID, 
              blnNewGroup ? ShortGuid.NewGuid().ToString() : this.OrderGroupIID, this.Quantity,
-             this.Price, this.EntityButtonIID, this.OrderItemText,
-             this.DistributionIID, this.ItemType, this.DOrder, this.EntityName, this.EntityDisplayOrder,
+             this.Price, this.CategoryItemIID, this.OrderItemText,
+             this.DistributionIID, this.ItemType, this.DOrder,  this.CategoryDisplayOrder,
             this.TaxPercent);
         oi.CompletedQuantity = this.CompletedQuantity;
         return oi;

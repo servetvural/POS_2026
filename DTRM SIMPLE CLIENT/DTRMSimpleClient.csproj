@@ -109,4 +109,10 @@
   <ItemGroup Label="EmbeddedResource items now included by globbing that were not in the original project file">
     <EmbeddedResource Remove="trmLock.resx" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

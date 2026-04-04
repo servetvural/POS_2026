@@ -14,6 +14,6 @@ public class DTRMBackup
     public List<Supplier> suppliers { get; set; } = new List<Supplier>();
     public List<StockItem> stockItems { get; set; } = new List<StockItem>();
     public List<Bonus> bonuslist { get; set; } = new List<Bonus>();
-    public List<EntityButtonStockItemLookUp> stockItemLookups { get; set; } = new List<EntityButtonStockItemLookUp>();
+    public List<RecipeItem> recipes { get; set; } = new List<RecipeItem>();
 
 }

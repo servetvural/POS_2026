@@ -6,6 +6,7 @@ namespace POSLayer.Models;
 
 public partial class Order : BaseOrder
 {
+    public List<OrderItem> Items { get; set; } = new();
     public Order()
     {
 
@@ -18,6 +19,38 @@ public partial class Order : BaseOrder
     {
         this.ServiceChargeRate = ServiceChargeRate;
         this.ServiceChargeTaxRate = ServiceChargeTaxRate;
+    }
+
+
+    public XOrder ToXOrder()
+    {
+        XOrder xorder = new XOrder()
+        {
+            IID = this.IID,
+            DOrder = this.DOrder,
+            OrderDate = this.OrderDate,
+            SessionIID = this.SessionIID,
+            TableIID = this.TableIID,
+            CustomerIID = this.CustomerIID,
+            UserIID = this.UserIID,
+            LastModified = this.LastModified,
+            Covers = this.Covers,
+            OrderType = this.OrderType,
+            Payment = this.Payment,
+            Status = this.Status,
+            LockedClientIP = this.LockedClientIP,
+            Instruction = this.Instruction,
+            PaymentFlag = this.PaymentFlag,
+            Reference = this.Reference,
+            ServiceChargeRate = this.ServiceChargeRate,
+            ServiceChargeTaxRate = this.ServiceChargeTaxRate
+        };
+        foreach (var item in Items)
+        {
+            xorder.Items.Add(item.ToXOrderItem());
+        }
+        return xorder;
+
     }
 
 
@@ -163,7 +196,7 @@ public partial class Order : BaseOrder
         OrderItem incItem = null;
         for (int i = 0; i < shrinkableItems.Count; i++)
         {
-            incItem = GetIncrementableItem(shrinkableItems[i].EntityButtonIID, shrinkableItems[i].DistributionIID, IID);
+            incItem = GetIncrementableItem(shrinkableItems[i].CategoryItemIID, shrinkableItems[i].DistributionIID, IID);
             if (incItem != null)
             {
                 incItem.Quantity += shrinkableItems[i].Quantity;
@@ -197,7 +230,7 @@ public partial class Order : BaseOrder
         OrderItem incItem = null;
         for (int i = 0; i < shrinkableItems.Count; i++)
         {
-            incItem = order.GetIncrementableItem(shrinkableItems[i].EntityButtonIID, shrinkableItems[i].DistributionIID, order.IID);
+            incItem = order.GetIncrementableItem(shrinkableItems[i].CategoryItemIID, shrinkableItems[i].DistributionIID, order.IID);
             if (incItem != null)
             {
                 incItem.Quantity += shrinkableItems[i].Quantity;
@@ -241,7 +274,7 @@ public partial class Order : BaseOrder
 
         foreach (OrderItem existingItem in Items)
         {
-            OrderItem givenOrderItem = givenOrder.Items.Where(x => x.EntityButtonIID == existingItem.EntityButtonIID).FirstOrDefault();
+            OrderItem givenOrderItem = givenOrder.Items.Where(x => x.CategoryItemIID == existingItem.CategoryItemIID).FirstOrDefault();
             if (givenOrderItem == null)
             {
                 //new item doesn't exist in old order so put all of it to result order
@@ -301,15 +334,15 @@ public partial class Order : BaseOrder
 
 
 
-    public string AddOrderItem(string EntityIID, string OrderGroupIID,
-       double Quantity, double Price, string EntityButtonIID, string OrderItemText, string distributioniid,
-       OrderItemTypes ItemType, int dorder, string EntityName, int EntityDisplayOrder, double TaxPercent)
+    public string AddOrderItem(string OrderGroupIID,
+       double Quantity, double Price, string CategoryItemIID, string OrderItemText, string distributioniid,
+       OrderItemTypes ItemType, int dorder,  int CategoryDisplayOrder, double TaxPercent)
     {
 
-        OrderItem oi = new OrderItem(this.IID, EntityIID, OrderGroupIID, Quantity,
-            Price, EntityButtonIID, OrderItemText,
+        OrderItem oi = new OrderItem(this.IID, OrderGroupIID, Quantity,
+            Price, CategoryItemIID, OrderItemText,
            distributioniid, ItemType, dorder,
-           EntityName, EntityDisplayOrder, TaxPercent);
+            CategoryDisplayOrder, TaxPercent);
 
         //Add this at the end of the list as top item
         oi.OrderGroupIID = ShortGuid.NewGuid().ToString();
@@ -343,16 +376,16 @@ public partial class Order : BaseOrder
 
     public void AddIncrementOrderItem(OrderItem newItem)
     {
-        OrderItem incrementableItem = GetIncrementableItem(newItem.EntityButtonIID, newItem.DistributionIID, newItem.OrderGroupIID);
+        OrderItem incrementableItem = GetIncrementableItem(newItem.CategoryItemIID, newItem.DistributionIID, newItem.OrderGroupIID);
         if (incrementableItem == null)
             AddOrderItem(newItem);
         else
             incrementableItem.Quantity += newItem.Quantity;
     }
 
-    public OrderItem GetIncrementableItem(string EntityButtonIID, string DistributionIID, string OrderGroupIID)
+    public OrderItem GetIncrementableItem(string CategoryItemIID, string DistributionIID, string OrderGroupIID)
     {
-        return Items.Where(x => x.EntityButtonIID == EntityButtonIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
+        return Items.Where(x => x.CategoryItemIID == CategoryItemIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
     }
     public void IncrementOrderItem(string OrderItemIID)
     {
@@ -397,7 +430,7 @@ public partial class Order : BaseOrder
         {
             string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
             if (AddPrice)
-                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.CalculatedValue) + "\r\n";
+                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.Total) + "\r\n";
             else
                 str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10), item.Quantity, itemtext) + "\r\n";
         }

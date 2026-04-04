@@ -25,11 +25,8 @@ namespace DTRMNS
         PosConfig config;
         IRepository<Supplier> repoSupplier;
         IRepository<StockItem> repoStockItem;
-                                    IRepository<StockItemUsage> repoStockItemUsage;
-
-        DTRMSimpleBusiness bslayer;
-
-        public  StockItem selectedStockItem;
+        IRepository<StockItemUsage> repoStockItemUsage;
+        public StockItem selectedStockItem;
 
         private BindingSource _supplierSource = new BindingSource();
         private BindingSource _stockItemSource = new BindingSource();
@@ -39,15 +36,13 @@ namespace DTRMNS
             InitializeComponent();
         }
         public frmStockItemList(PosConfig configAsService, IRepository<Supplier> _repoSupplier, IRepository<StockItem> _repoStockItem,
-            IRepository<StockItemUsage> _repoStockItemUsage, DTRMSimpleBusiness bslayer)
+            IRepository<StockItemUsage> _repoStockItemUsage)
         {
             InitializeComponent();
             config = configAsService;
             repoSupplier = _repoSupplier;
             repoStockItem = _repoStockItem;
             repoStockItemUsage = _repoStockItemUsage;
-
-            this.bslayer = bslayer;
             rbAll.Checked = true;
         }
 
@@ -260,7 +255,7 @@ namespace DTRMNS
                 if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string filename = dlg.FileName.EndsWith(".csv") ? dlg.FileName : dlg.FileName + ".csv";
-                    if (DataGridViewCsvExporter.Export(filename, bslayer.GenerateCsvTextFromDataTable(dt)))
+                    if (DataGridViewCsvExporter.Export(filename, DTRMSimpleBusiness.Instance.GenerateCsvTextFromDataTable(dt)))
                     {
                         if (MessageBox.Show("Do you want to open the file?", "Export Completed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(filename);
@@ -281,11 +276,11 @@ namespace DTRMNS
                     // Filter using 'LIKE' for partial matches (search as you type)
                     _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%'", txtSearch.Text.Trim());
 
-                //  dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim());
+                //  dgv.DataSource =  DTRMSimpleBusiness.Instance.SearchStockItems(txtSearch.Text.Trim());
                 else
                 {
                     _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%' and SupplierIID = '{1}", txtSearch.Text.Trim(), cmbSuppliers.SelectedItem);
-                    // dgv.DataSource = bslayer.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
+                    // dgv.DataSource =  DTRMSimpleBusiness.Instance.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
 
                 }
                 txtSearch.Text = "";
@@ -340,11 +335,11 @@ namespace DTRMNS
             if (selectedStockItem != null)
             {
 
-               // string StockItemIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-               // dgvUsage.DataSource = bslayer.GetEntityButtonStockItemRecipeFromStockItem(selectedStockItem.IID);
-               
+                // string StockItemIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
+                // dgvUsage.DataSource =  DTRMSimpleBusiness.Instance.GetEntityButtonStockItemRecipeFromStockItem(selectedStockItem.IID);
+
                 _usageSource.DataSource = await repoStockItemUsage.GetListByField("StockItemIID", selectedStockItem.IID, "CategoryItem,StockItem");
-                  dgvUsage.DataSource = _usageSource;
+                dgvUsage.DataSource = _usageSource;
 
                 //  vScrolldgvUsage.Maximum = dgvUsage.RowCount;
             } else
@@ -359,7 +354,7 @@ namespace DTRMNS
             //    string EntityButtonIID = dgvUsage.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
             //    string StockItemIID = dgvUsage.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
 
-            //    frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer, bslayer.GetEntityButtonStockItemLookUp(EntityButtonIID, StockItemIID));
+            //    frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer,  DTRMSimpleBusiness.Instance.GetEntityButtonStockItemLookUp(EntityButtonIID, StockItemIID));
             //    if (frm.ShowDialog() == DialogResult.OK)
             //        LoadUsage();
             //}
@@ -396,7 +391,7 @@ namespace DTRMNS
                         cols = new List<int>(arrcols);
                     }
 
-                    bslayer.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
+                    DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
                        "Stock Items Report " + DateTime.Now.ToString("dd MM yyyy HH:mm"), cols, true);
                 }
             }

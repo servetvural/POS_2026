@@ -33,11 +33,11 @@ namespace DTRMNS {
         {
             InitializeComponent();
         }
-        public frmScreenSaver(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public frmScreenSaver(PosConfig configAsService)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         private void frmScreenSaver_Load(object sender, EventArgs e)

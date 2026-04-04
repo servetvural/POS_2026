@@ -12,16 +12,12 @@ using DTRMNS;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmCategoryItemSelector : Form {
-
         private DataSet ds = new DataSet();
-
-        private DTRMSimpleBusiness bslayer;
         private string MenuIID;
 
         public List<string> SelectedEntiyButtonIIDList;
-        public frmCategoryItemSelector(DTRMSimpleBusiness bslayer, string MenuIID) {
+        public frmCategoryItemSelector(string MenuIID) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.MenuIID = MenuIID;
             SelectedEntiyButtonIIDList = new List<string>();
         }
@@ -32,7 +28,7 @@ namespace DTRMSimpleBackOffice {
 
         private void LoadEntityButtonList() {
             try {
-                ds.Tables.Add(bslayer.GetDataTable("Select IID, EntityButtonName from EntityButton where ParentMenuIID = '" + MenuIID + "' order by ParentEntityIID, DisplayOrder"));
+                ds.Tables.Add(DTRMSimpleBusiness.Instance.GetDataTable("Select IID, EntityButtonName from EntityButton where ParentMenuIID = '" + MenuIID + "' order by ParentEntityIID, DisplayOrder"));
 
                 dgvEntityButton.DataSource = ds.Tables[0];
             }

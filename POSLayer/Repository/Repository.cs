@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Xml.Linq;
 
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -684,31 +685,32 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     //}
 
 
-    public async Task<List<SessionData>> GetSessionSumView()
-    {
-        var sql = @"SELECT  TOP (100) PERCENT Sessions.IID, Sessions.StartDate, Sessions.EndDate, COUNT(OrdersView.IID) AS OrderCount, SUM(ISNULL(OrdersView.CalculatedValue, 0)) AS GrossSessionTotal, Sessions.X1Total, 
-                         Sessions.X2Total, Sessions.X3Total, Sessions.peny1, Sessions.peny2, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound2, 
-                         Sessions.pound5, Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CashTotal, 
-                         Sessions.CardTotal, Sessions.OnlineTotal, ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0) AS GrossSessionTotalUncompleted
-                FROM Sessions LEFT OUTER JOIN
-                         UncompletedOrdersSessionSum ON Sessions.IID = UncompletedOrdersSessionSum.SessionIID LEFT OUTER JOIN
-                         OrdersView AS OrdersView ON Sessions.IID = OrdersView.SessionIID
-                GROUP BY Sessions.IID, Sessions.StartDate, Sessions.EndDate, Sessions.peny1, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound5, 
-                         Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CardTotal, 
-                         Sessions.OnlineTotal, Sessions.CashTotal, Sessions.pound2, Sessions.peny2, Sessions.X1Total, Sessions.X2Total, Sessions.X3Total, 
-                         ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0)";
-        return await GetDBContext().Set<SessionData>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<SessionData>> GetSessionSumView()
+    //{
+    //    var sql = @"SELECT  TOP (100) PERCENT Sessions.IID, Sessions.StartDate, Sessions.EndDate, COUNT(OrdersView.IID) AS OrderCount, SUM(ISNULL(OrdersView.CalculatedValue, 0)) AS GrossSessionTotal, Sessions.X1Total, 
+    //                     Sessions.X2Total, Sessions.X3Total, Sessions.peny1, Sessions.peny2, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound2, 
+    //                     Sessions.pound5, Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CashTotal, 
+    //                     Sessions.CardTotal, Sessions.OnlineTotal, ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0) AS GrossSessionTotalUncompleted
+    //            FROM Sessions LEFT OUTER JOIN
+    //                     UncompletedOrdersSessionSum ON Sessions.IID = UncompletedOrdersSessionSum.SessionIID LEFT OUTER JOIN
+    //                     OrdersView AS OrdersView ON Sessions.IID = OrdersView.SessionIID
+    //            GROUP BY Sessions.IID, Sessions.StartDate, Sessions.EndDate, Sessions.peny1, Sessions.peny5, Sessions.peny10, Sessions.peny20, Sessions.peny50, Sessions.pound1, Sessions.pound5, 
+    //                     Sessions.pound10, Sessions.pound20, Sessions.pound50, Sessions.pound100, Sessions.pound200, Sessions.pound500, Sessions.pound1000, Sessions.CardTotal, 
+    //                     Sessions.OnlineTotal, Sessions.CashTotal, Sessions.pound2, Sessions.peny2, Sessions.X1Total, Sessions.X2Total, Sessions.X3Total, 
+    //                     ISNULL(UncompletedOrdersSessionSum.GrossSessionTotalUncompleted, 0)";
+    //    return await GetDBContext().Set<SessionData>().FromSqlRaw(sql).ToListAsync();
+    //}
 
-    public async Task<List<StockItemUsage>> GetStockItemUsageView()
-    {
-        var sql = @"SELECT  Distribution.IID, Distribution.DistributionName, Distribution.ShortName, Distribution.DisplayOrder, Distribution.ParentMenuIID, Menu.MenuName, Distribution.PrinterIID, 
-                         ApplicationPrinter.ApplicationName AS PrinterNetworkName
-                FROM Distribution LEFT OUTER JOIN
-                         ApplicationPrinter ON Distribution.PrinterIID = ApplicationPrinter.IID LEFT OUTER JOIN
-                         Menu ON Distribution.ParentMenuIID = Menu.IID";
-        return await GetDBContext().Set<StockItemUsage>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<StockItemUsage>> GetStockItemUsageView()
+    //{
+    //    var sql = @"SELECT  Distribution.IID, Distribution.DistributionName, Distribution.ShortName, Distribution.DisplayOrder, Distribution.ParentMenuIID, Menu.MenuName, Distribution.PrinterIID, 
+    //                     ApplicationPrinter.ApplicationName AS PrinterNetworkName
+    //            FROM Distribution LEFT OUTER JOIN
+    //                     ApplicationPrinter ON Distribution.PrinterIID = ApplicationPrinter.IID LEFT OUTER JOIN
+    //                     Menu ON Distribution.ParentMenuIID = Menu.IID";
+    //    return await GetDBContext().Set<StockItemUsage>().FromSqlRaw(sql).ToListAsync();
+    //}
+
     //public async Task<List<EntityButtonStockItemRecipe>> GetEntityButtonStockItemRecipeView()
     //{
     //    var sql = @"SELECT StockItem.StockName, EntityButton.EntityButtonName, EntityButtonStockItemLookUp.EntityButtonIID, EntityButtonStockItemLookUp.StockItemIID, EntityButtonStockItemLookUp.QuantityType, 
@@ -719,51 +721,51 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     //    return await GetDBContext().Set<EntityButtonStockItemRecipe>().FromSqlRaw(sql).ToListAsync();
     //}
 
-    public async Task<List<DistributionView>> GetDistributionView()
-    {
-        var sql = @"SELECT Distribution.IID, Distribution.DistributionName, Distribution.ShortName, Distribution.DisplayOrder, Distribution.ParentMenuIID, Menu.MenuName, Distribution.PrinterIID, 
-                         ApplicationPrinter.ApplicationName AS PrinterNetworkName
-                  FROM Distribution LEFT OUTER JOIN
-                         ApplicationPrinter ON Distribution.PrinterIID = ApplicationPrinter.IID LEFT OUTER JOIN
-                         Menu ON Distribution.ParentMenuIID = Menu.IID";
-        return await GetDBContext().Set<DistributionView>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<DistributionView>> GetDistributionView()
+    //{
+    //    var sql = @"SELECT Distribution.IID, Distribution.DistributionName, Distribution.ShortName, Distribution.DisplayOrder, Distribution.ParentMenuIID, Menu.MenuName, Distribution.PrinterIID, 
+    //                     ApplicationPrinter.ApplicationName AS PrinterNetworkName
+    //              FROM Distribution LEFT OUTER JOIN
+    //                     ApplicationPrinter ON Distribution.PrinterIID = ApplicationPrinter.IID LEFT OUTER JOIN
+    //                     Menu ON Distribution.ParentMenuIID = Menu.IID";
+    //    return await GetDBContext().Set<DistributionView>().FromSqlRaw(sql).ToListAsync();
+    //}
 
-    public async Task<List<OrdersView>> GetOrdersView()
-    {
-        var sql = @"SELECT TOP (100) PERCENT Orders.IID, Orders.TableIID, Orders.OrderDate, Orders.Covers, Orders.OrderType, Orders.Payment, Orders.CustomerIID, Orders.SessionIID, Orders.Status, 
-                         Orders.LockedClientIP, Orders.Instruction, Orders.MoneyPaid, Orders.TableName, Orders.CName, Orders.Postcode, Orders.Address, Orders.Buzzer, Orders.Town, Orders.Tel, 
-                         Orders.Mobile, Orders.Email, Orders.UserName, COUNT(OrderItem.IID) AS ItemCount, Orders.TableName + ' ' + Orders.CName + ', ' + Orders.Address AS CustomerDetails, Orders.PaymentFlag, 
-                         Orders.Reference, KitchenOrders.OrderNo AS KitchenOrderNo, SUM(ROUND(ISNULL(OrderItem.Quantity * OrderItem.Price, 0) + (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) 
-                         - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) * Orders.ServiceChargeRate / 100, 2)) AS CalculatedValue, 
-                         SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent), 2)) AS CalculatedVat, SUM(ROUND(ISNULL(OrderItem.Quantity * OrderItem.Price, 
-                         0) - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent), 2)) AS CalculatedExVatValue, SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) 
-                         - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) * Orders.ServiceChargeRate / 100, 2)) AS ServiceCharge, 
-                         SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) 
-                         * Orders.ServiceChargeRate / 100 * Orders.ServiceChargeTaxRate / 100, 2)) AS ServiceChargeTax
-                    FROM Orders LEFT OUTER JOIN
-                         KitchenOrders ON Orders.IID = KitchenOrders.OrderIID LEFT OUTER JOIN
-                         OrderItem ON Orders.IID = OrderItem.ParentOrderIID
-                    GROUP BY Orders.IID, Orders.TableIID, Orders.OrderDate, Orders.Covers, Orders.OrderType, Orders.Payment, Orders.CustomerIID, Orders.SessionIID, Orders.Status, Orders.LockedClientIP, 
-                         Orders.Instruction, Orders.LockedClientIP, Orders.Instruction, Orders.MoneyPaid, Orders.TableName, Orders.CName, Orders.Postcode, Orders.Address, Orders.Buzzer, Orders.Town, 
-                         Orders.Tel, Orders.Mobile, Orders.Email, Orders.UserName, Orders.TableName + ' ' + Orders.CName + ', ' + Orders.Address, Orders.PaymentFlag, Orders.Reference, 
-                         KitchenOrders.OrderNo
-                    ORDER BY Orders.OrderDate";
-        return await GetDBContext().Set<OrdersView>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<OrdersView>> GetOrdersView()
+    //{
+    //    var sql = @"SELECT TOP (100) PERCENT Orders.IID, Orders.TableIID, Orders.OrderDate, Orders.Covers, Orders.OrderType, Orders.Payment, Orders.CustomerIID, Orders.SessionIID, Orders.Status, 
+    //                     Orders.LockedClientIP, Orders.Instruction, Orders.MoneyPaid, Orders.TableName, Orders.CName, Orders.Postcode, Orders.Address, Orders.Buzzer, Orders.Town, Orders.Tel, 
+    //                     Orders.Mobile, Orders.Email, Orders.UserName, COUNT(OrderItem.IID) AS ItemCount, Orders.TableName + ' ' + Orders.CName + ', ' + Orders.Address AS CustomerDetails, Orders.PaymentFlag, 
+    //                     Orders.Reference, KitchenOrders.OrderNo AS KitchenOrderNo, SUM(ROUND(ISNULL(OrderItem.Quantity * OrderItem.Price, 0) + (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) 
+    //                     - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) * Orders.ServiceChargeRate / 100, 2)) AS CalculatedValue, 
+    //                     SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent), 2)) AS CalculatedVat, SUM(ROUND(ISNULL(OrderItem.Quantity * OrderItem.Price, 
+    //                     0) - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent), 2)) AS CalculatedExVatValue, SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) 
+    //                     - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) * Orders.ServiceChargeRate / 100, 2)) AS ServiceCharge, 
+    //                     SUM(ROUND((ISNULL(OrderItem.Quantity * OrderItem.Price, 0) - (ISNULL(OrderItem.Quantity * OrderItem.Price, 0) * OrderItem.TaxPercent) / (100 + OrderItem.TaxPercent)) 
+    //                     * Orders.ServiceChargeRate / 100 * Orders.ServiceChargeTaxRate / 100, 2)) AS ServiceChargeTax
+    //                FROM Orders LEFT OUTER JOIN
+    //                     KitchenOrders ON Orders.IID = KitchenOrders.OrderIID LEFT OUTER JOIN
+    //                     OrderItem ON Orders.IID = OrderItem.ParentOrderIID
+    //                GROUP BY Orders.IID, Orders.TableIID, Orders.OrderDate, Orders.Covers, Orders.OrderType, Orders.Payment, Orders.CustomerIID, Orders.SessionIID, Orders.Status, Orders.LockedClientIP, 
+    //                     Orders.Instruction, Orders.LockedClientIP, Orders.Instruction, Orders.MoneyPaid, Orders.TableName, Orders.CName, Orders.Postcode, Orders.Address, Orders.Buzzer, Orders.Town, 
+    //                     Orders.Tel, Orders.Mobile, Orders.Email, Orders.UserName, Orders.TableName + ' ' + Orders.CName + ', ' + Orders.Address, Orders.PaymentFlag, Orders.Reference, 
+    //                     KitchenOrders.OrderNo
+    //                ORDER BY Orders.OrderDate";
+    //    return await GetDBContext().Set<OrdersView>().FromSqlRaw(sql).ToListAsync();
+    //}
 
-    public async Task<List<TaxSummary>> GetTaxSummaryView()
-    {
-        var sql = @"SELECT Orders.SessionIID, Sessions.StartDate, Sessions.EndDate, OrderItem.TaxPercent, SUM(ROUND(OrderItem.Quantity * OrderItem.Price, 2)) AS GrossTotal, 
-                         SUM(ROUND((OrderItem.Quantity * OrderItem.Price) / (100 + OrderItem.TaxPercent) * OrderItem.TaxPercent, 2)) AS NetTaxValue, SUM(ROUND(ROUND(OrderItem.Quantity * OrderItem.Price, 2) 
-                         - ROUND((OrderItem.Quantity * OrderItem.Price) / (100 + OrderItem.TaxPercent) * OrderItem.TaxPercent, 2), 2)) AS TotalNoTax, Orders.Payment
-                    FROM OrderItem INNER JOIN
-                         Orders ON OrderItem.ParentOrderIID = Orders.IID INNER JOIN
-                         Sessions ON Orders.SessionIID = Sessions.IID
-                    WHERE (Orders.Status = 3) OR (Orders.Status = 4)
-                    GROUP BY OrderItem.TaxPercent, Orders.SessionIID, Sessions.StartDate, Sessions.EndDate, Orders.Payment";
-        return await GetDBContext().Set<TaxSummary>().FromSqlRaw(sql).ToListAsync();
-    }
+    //public async Task<List<TaxSummary>> GetTaxSummaryView()
+    //{
+    //    var sql = @"SELECT Orders.SessionIID, Sessions.StartDate, Sessions.EndDate, OrderItem.TaxPercent, SUM(ROUND(OrderItem.Quantity * OrderItem.Price, 2)) AS GrossTotal, 
+    //                     SUM(ROUND((OrderItem.Quantity * OrderItem.Price) / (100 + OrderItem.TaxPercent) * OrderItem.TaxPercent, 2)) AS NetTaxValue, SUM(ROUND(ROUND(OrderItem.Quantity * OrderItem.Price, 2) 
+    //                     - ROUND((OrderItem.Quantity * OrderItem.Price) / (100 + OrderItem.TaxPercent) * OrderItem.TaxPercent, 2), 2)) AS TotalNoTax, Orders.Payment
+    //                FROM OrderItem INNER JOIN
+    //                     Orders ON OrderItem.ParentOrderIID = Orders.IID INNER JOIN
+    //                     Sessions ON Orders.SessionIID = Sessions.IID
+    //                WHERE (Orders.Status = 3) OR (Orders.Status = 4)
+    //                GROUP BY OrderItem.TaxPercent, Orders.SessionIID, Sessions.StartDate, Sessions.EndDate, Orders.Payment";
+    //    return await GetDBContext().Set<TaxSummary>().FromSqlRaw(sql).ToListAsync();
+    //}
 
     //    public async Task<List<SessionView>> GetSessionView()
     //    {
@@ -914,6 +916,110 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         } catch (Exception ex)
         {
             return null;
+        }
+    }
+
+
+
+    public async Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return _db.Orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.Total);
+        } catch (Exception ex)
+        {
+            return -1;
+        }
+    }
+
+    public async Task<List<Order>> GetPendingOrdersForSession(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return await _db.Orders.Where(x => x.Payment == PaymentMethods.NotPaid && x.Status == StatusFlags.PENDING && x.SessionIID == sessionIID).Include("Items").ToListAsync();
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<Category>> GetCategoryTotalsForSession(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var rawData = await _db.OrderItems
+            .Where(oi => oi.Order.SessionIID == sessionIID) 
+            .GroupBy(oi => oi.CategoryItem.CategoryIID)               
+            .Select(g => new
+            {
+                Category = g.FirstOrDefault().CategoryItem.Category, 
+                CategoryIID = g.Key,
+                TotalSum = g.Sum(oi => oi.Total)         
+            })
+            .ToListAsync();
+
+            // 2. Map the calculated sum back to the Category property in memory
+            foreach (var item in rawData)
+            {
+                if (item.Category != null)
+                {
+                    // Assuming your Category class has a 'TotalSum' property
+                    item.Category.CategoryTotal = item.TotalSum;
+                }
+            }
+            // 3. Get the list of updated categories
+            return rawData.Select(x => x.Category).ToList();
+
+
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public async Task MoveXOrdersToOrdersAsync(int sessionIID)
+    {
+        // Access the underlying DbContext from your repository
+        using var _db = GetDBContext();
+
+        using var transaction = await _db.Database.BeginTransactionAsync();
+
+        try
+        {
+            // 1. Define the SQL (using parameters to prevent SQL Injection)
+            var sql = @"
+            -- Move Items first (due to Foreign Key constraints)
+            INSERT INTO OrderItem (ParentOrderIID, ProductID, Quantity, Price) -- List specific columns
+            SELECT ParentOrderIID, ProductID, Quantity, Price 
+            FROM XOrderItem 
+            WHERE ParentOrderIID IN (SELECT IID FROM XOrders WHERE SessionIID = @sessionIID);
+
+            -- Delete moved Items
+            DELETE FROM XOrderItem 
+            WHERE ParentOrderIID IN (SELECT IID FROM XOrders WHERE SessionIID = @sessionIID);
+
+            -- Move Orders
+            INSERT INTO Orders (IID, SessionIID, OrderDate, Total) -- List specific columns
+            SELECT IID, SessionIID, OrderDate, Total 
+            FROM XOrders 
+            WHERE SessionIID = @sessionIID;
+
+            -- Delete moved Orders
+            DELETE FROM XOrders WHERE SessionIID = @sessionIID;";
+
+            // 2. Execute the raw SQL
+            await _db.Database.ExecuteSqlRawAsync(sql, new SqlParameter("@sessionIID", sessionIID));
+
+            // 3. Commit the transaction
+            await transaction.CommitAsync();
+        } catch (Exception)
+        {
+            // If anything fails, rollback changes automatically
+            await transaction.RollbackAsync();
+            throw;
         }
     }
 }

@@ -12,17 +12,15 @@ namespace DTRMNS {
     /// Summary description for UPEntity.
     /// </summary>
     public partial class UPEntity : TableLayoutPanel {
-        readonly IServiceProvider sp;
         private PosConfig config;
         public string IID;
-        public Category entity;
+        public Category category;
         public UPEntityButton SelectedButton;
         public int ButtonHeight;
         public int ButtonWidth;        
         public List<UPEntityButton> UIEButtons;
         public string OrderGroupIID = "";
-        private DTRMSimpleBusiness bslayer;
-        public UPEntityButton SubUIButton;        
+        private DTRMSimpleBusiness bslayer;     
         public FlowLayoutPanel UIEButtonsPanel;
         public GenericFunctionCallReturnBool DoneEventHandler;
 
@@ -31,19 +29,13 @@ namespace DTRMNS {
 
         }
 
-        /// <summary>
-        /// Serialized Constructor
-        /// </summary>
-        /// <param name="bs"></param>
-        /// <param name="entity"></param>
-        /// <param name="OrderToAttach"></param>
-        public UPEntity(IServiceProvider _sp, PosConfig configAsService, DTRMSimpleBusiness bs, Category entity, UPEntityButton SubUIButton) {
+
+       
+        public UPEntity(PosConfig configAsService,  Category category) {
             InitializeComponent();
-            sp= _sp;
             config = configAsService;
-            bslayer = bs;
-            this.entity = entity;
-            IID = entity.IID;
+            this.category = category;
+            IID = category.IID;
             UIEButtonsPanel = new FlowLayoutPanel();
 
             //Add Main Buttons Panel
@@ -52,8 +44,8 @@ namespace DTRMNS {
 
             UIEButtons = new List<UPEntityButton>();
             
-            ButtonHeight = entity.Height;
-            ButtonWidth = entity.Width;
+            ButtonHeight = category.Height;
+            ButtonWidth = category.Width;
             this.BackColor = UF.ThemeBackColour; 
             
             LoadUIA();
@@ -64,13 +56,16 @@ namespace DTRMNS {
             RowStyles[0].Height = 0;
         }
 
-        private void LoadUIA() {            
-            if (entity.Items.Count > 0) {
-                for (int i = 1; i <= entity.Items.Count; i++) {
-                    UPEntityButton eb = ActivatorUtilities.CreateInstance< UPEntityButton>(sp, this, (CategoryItem)entity.Items[i - 1]);
-                    if (eb.entitybutton.Compulsary == 1 || eb.entitybutton.PadFlag == PadFlags.PadOnly)
+        private void LoadUIA() {  
+           
+
+            if (category.Items.Count > 0) {
+                //for (int i = 1; i <= category.Items.Count; i++) {
+                foreach (var item in category.Items) {
+                    UPEntityButton eb = ActivatorUtilities.CreateInstance< UPEntityButton>(ServiceHelper.Services, this, item);
+                    if (eb.categoryItem.Compulsary || eb.categoryItem.PadFlag == PadFlags.PadOnly)
                         eb.Visible = false;
-                    if (PosLibrary.DRNumeric.IsBitSet(eb.entitybutton.AvailableFor, (int)AvailabilityTypes.NoSale))
+                    if (PosLibrary.DRNumeric.IsBitSet(eb.categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale))
                         eb.Visible = false;
                     UIEButtonsPanel.Controls.Add(eb);
                     UIEButtons.Add(eb);

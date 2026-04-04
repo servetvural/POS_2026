@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Context;
 
@@ -11,9 +12,11 @@ using POSLayer.Context;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260404104157_bigchange1")]
+    partial class bigchange1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,8 +228,8 @@ namespace POSLayer.Migrations
                     b.Property<string>("CategoryIID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("Compulsary")
-                        .HasColumnType("bit");
+                    b.Property<int>("Compulsary")
+                        .HasColumnType("int");
 
                     b.Property<int>("DOrder")
                         .HasColumnType("int");
@@ -994,6 +997,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CurrentSessionIID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DOrder")

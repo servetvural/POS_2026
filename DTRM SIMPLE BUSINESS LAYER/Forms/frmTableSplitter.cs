@@ -12,30 +12,22 @@ namespace DTRMNS
 {
     public partial class frmTableSplitter : Form
     {
-        private DTRMSimpleBusiness bslayer;
+        private Masa rootTable;
+        private Masa SourceTable;
+        private Masa TargetTable;
 
-        private Table rootTable;
-        private Table SourceTable;
-        private Table TargetTable;
-
-        public frmTableSplitter(DTRMSimpleBusiness bslayer, Table SourceTable)
+        public frmTableSplitter(Masa SourceTable)
         {
             InitializeComponent();
-            this.bslayer = bslayer;
             odSourceTable.AttachBusinessLayer();
             odTargetTable.AttachBusinessLayer();
             this.SourceTable = SourceTable;
             rootTable = SourceTable;
 
             //If there is no subtable for this sourcetable create the first subtable and load it eventually
-            if (!bslayer.HasSubTables(SourceTable.IID).Result)
+            
                 btnAddTargetTable_Click(null, null);
-            else
-            {
-                //Load first subtable
-                TargetTable = bslayer.GetFirstSubTable(rootTable.IID, true).Result;
-
-            }
+            
         }
 
         private void frmTableSplitter_Load(object sender, EventArgs e)
@@ -52,17 +44,16 @@ namespace DTRMNS
             {
                 if (SourceTable.AttachedOrder != null && SourceTable.AttachedOrder.Status < StatusFlags.DONE)
                     SourceTable.AttachedOrder.Status = StatusFlags.DONE;
-                bslayer.ReturnTable(SourceTable);
+                DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
             }
 
             if (TargetTable != null)
             {
                 if (TargetTable.AttachedOrder != null && TargetTable.AttachedOrder.Status < StatusFlags.DONE)
                     TargetTable.AttachedOrder.Status = StatusFlags.DONE;
-                bslayer.ReturnTable(TargetTable);
+                DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
             }
 
-            bslayer.GetRidOfBlankTemporaryTablesForThisTerminalWithNoOrders();
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -73,11 +64,11 @@ namespace DTRMNS
 
         private async Task LoadSourcePanel()
         {
-            List<Table> tablelist = await bslayer.GetTableAndSubTables(rootTable.IID);
+            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableAndSubTables(rootTable.IID);
 
             pnlSourceTables.Controls.Clear();
 
-            Table table;
+            Masa table;
             string locker = "";
             string sourceTableIID = "";
             if (SourceTable != null)
@@ -102,19 +93,19 @@ namespace DTRMNS
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
-                        btn.BackColor = Color.DarkBlue; //bslayer.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                        btn.ForeColor = Color.White; // bslayer.config.Table_Busy_Text_Color;
+                        btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
                         if (table.HasActiveOrder())
                         {
-                            btn.BackColor = Color.DarkRed; // bslayer.config.Table_Full_Back_Color; //  Color.DarkRed;
-                            btn.ForeColor = Color.White; // bslayer.config.Table_Full_Text_Color;
+                            btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
                         } else
                         {
                             btn.BackColor = Color.DarkGreen;
-                            // bslayer.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                            btn.ForeColor = Color.White; // bslayer.config.Table_Free_Text_Color;
+                            //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
@@ -122,7 +113,6 @@ namespace DTRMNS
                     btn.ForeColor = Color.White;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderSize = 0;
-                    btn.Shape = table.Shape;
                     btn.BackgroundImage = Properties.Resources.shadow;
                     btn.BackgroundImageLayout = ImageLayout.Stretch;
 
@@ -135,10 +125,10 @@ namespace DTRMNS
 
         private async void btnSourceTableButton_Click(object sender, EventArgs e)
         {
-            //SourceTable = bslayer.GetTable(((TableButton)sender).IID);
+            //SourceTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton)sender).IID);
 
 
-            SourceTable = await bslayer.BarrowTable(((TableButton)sender).IID);
+            SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
             if (SourceTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -170,23 +160,23 @@ namespace DTRMNS
             if (odSourceTable.OrderToDisplay != null)
             {
                 odSourceTable.OrderToDisplay.LockedClientIP = "";
-                await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
             }
             odSourceTable.OrderToDisplay = null;
             odSourceTable.Display();
             lblSourceTableName.Text = "";
-            bslayer.ReturnTable(SourceTable);
+            DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
             SourceTable = null;
         }
 
         private async void btnChangeTableSource_Click(object sender, EventArgs e)
         {
-            frmTableSelector frm = new frmTableSelector(bslayer);
+            frmTableSelector frm = new frmTableSelector();
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 if (SourceTable != null)
                     UnloadSourceTable();
-                SourceTable = await bslayer.BarrowTable(frm.SelectedTableButton.IID);
+                SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.IID);
                 if (SourceTable == null)
                 {
                     MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -209,12 +199,12 @@ namespace DTRMNS
 
         private async void btnChangeTableTarget_Click(object sender, EventArgs e)
         {
-            frmTableSelector frm = new frmTableSelector(bslayer);
+            frmTableSelector frm = new frmTableSelector();
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 if (TargetTable != null)
                     UnloadTargetTable();
-                TargetTable = await bslayer.BarrowTable(frm.SelectedTableButton.IID);
+                TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.IID);
 
                 if (TargetTable == null)
                 {
@@ -239,11 +229,11 @@ namespace DTRMNS
 
         private async Task LoadTargetPanel()
         {
-            List<Table> tablelist = await bslayer.GetTableAndSubTables(rootTable.IID);
+            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableAndSubTables(rootTable.IID);
 
             pnlTargetTables.Controls.Clear();
 
-            Table table;
+            Masa table;
             string locker = "";
             string sourceTableIID = "";
             if (SourceTable != null)
@@ -268,19 +258,19 @@ namespace DTRMNS
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
-                        btn.BackColor = Color.DarkBlue; //bslayer.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                        btn.ForeColor = Color.White; // bslayer.config.Table_Busy_Text_Color;
+                        btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
                         if (table.HasActiveOrder())
                         {
-                            btn.BackColor = Color.DarkRed; // bslayer.config.Table_Full_Back_Color; //  Color.DarkRed;
-                            btn.ForeColor = Color.White; // bslayer.config.Table_Full_Text_Color;
+                            btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
                         } else
                         {
                             btn.BackColor = Color.DarkGreen;
-                            // bslayer.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                            btn.ForeColor = Color.White; // bslayer.config.Table_Free_Text_Color;
+                            //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
@@ -288,7 +278,6 @@ namespace DTRMNS
                     btn.ForeColor = Color.White;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderSize = 0;
-                    btn.Shape = table.Shape;
                     btn.BackgroundImage = Properties.Resources.shadow;
                     btn.BackgroundImageLayout = ImageLayout.Stretch;
 
@@ -301,9 +290,9 @@ namespace DTRMNS
 
         private async void btnTargetTableButton_Click(object sender, EventArgs e)
         {
-            //TargetTable = bslayer.GetTable(((TableButton) sender).IID);
+            //TargetTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton) sender).IID);
 
-            TargetTable = await bslayer.BarrowTable(((TableButton)sender).IID);
+            TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
             if (TargetTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -336,30 +325,30 @@ namespace DTRMNS
             if (odTargetTable.OrderToDisplay != null)
             {
                 odTargetTable.OrderToDisplay.LockedClientIP = "";
-                await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
             }
 
             odTargetTable.OrderToDisplay = null;
             odTargetTable.Display();
             lblTargetTableName.Text = "";
-            bslayer.ReturnTable(TargetTable);
+            await DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
             TargetTable = null;
         }
 
         private async void btnAddTargetTable_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null)
-            {
-                Table mainTable = await bslayer.GetParentTable(SourceTable.IID);
-                TargetTable = mainTable.CreateSubTable();
-                TargetTable.TableName = await bslayer.GenerateSubTableName(mainTable);
-                bslayer.SaveTable(TargetTable);
-                //This is required to ensure new order attach to TargetTable
-                TargetTable = await bslayer.BarrowTable(TargetTable.IID);
-                LoadTargetTable();
-                await LoadSourcePanel();
-                await LoadTargetPanel();
-            }
+            //if (SourceTable != null)
+            //{
+            //    Table mainTable = await  DTRMSimpleBusiness.Instance.GetParentTable(SourceTable.IID);
+            //    TargetTable = mainTable.CreateSubTable();
+            //    TargetTable.TableName = await  DTRMSimpleBusiness.Instance.GenerateSubTableName(mainTable);
+            //     DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
+            //    //This is required to ensure new order attach to TargetTable
+            //    TargetTable = await  DTRMSimpleBusiness.Instance.BarrowTable(TargetTable.IID);
+            //    LoadTargetTable();
+            //    await LoadSourcePanel();
+            //    await LoadTargetPanel();
+            //}
         }
 
 
@@ -368,7 +357,7 @@ namespace DTRMNS
 
         private async void btnSourceToTarget_1_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
+            if (SourceTable != null  && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.Items.Count == 1)
                 return;
 
@@ -389,11 +378,11 @@ namespace DTRMNS
                     //Drop 1 from ordertosplit and save
                     if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -403,7 +392,7 @@ namespace DTRMNS
 
         private async void btnSourceToTarget_X_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
+            if (SourceTable != null && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.Items.Count == 1)
                 return;
             if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
@@ -448,11 +437,11 @@ namespace DTRMNS
                         }
                     } catch { }
 
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -462,7 +451,7 @@ namespace DTRMNS
 
         private async void btnSourceToTarget_ALL_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null && SourceTable.isPrimary && SourceTable.AttachedOrder != null &&
+            if (SourceTable != null && SourceTable.AttachedOrder != null &&
                 SourceTable.AttachedOrder.Items.Count == 1)
                 return;
 
@@ -485,11 +474,11 @@ namespace DTRMNS
                     odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
                     //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
                     //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -500,7 +489,7 @@ namespace DTRMNS
 
         private async void btnTargetToSource_1_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
+            if (TargetTable != null && TargetTable.AttachedOrder != null &&
                 TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
@@ -521,11 +510,11 @@ namespace DTRMNS
                     //Drop 1 from ordertosplit and save
                     if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
                         odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -539,7 +528,7 @@ namespace DTRMNS
 
         private async void btnTargetToSource_X_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
+            if (TargetTable != null  && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
@@ -586,11 +575,11 @@ namespace DTRMNS
                     } catch { }
 
 
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -600,7 +589,7 @@ namespace DTRMNS
 
         private async void btnTargetToSource_ALL_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null && TargetTable.isPrimary && TargetTable.AttachedOrder != null &&
+            if (TargetTable != null  && TargetTable.AttachedOrder != null &&
                TargetTable.AttachedOrder.Items.Count == 1)
                 return;
 
@@ -623,11 +612,11 @@ namespace DTRMNS
                     odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
                     //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
                     //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await bslayer.SaveOrder(odTargetTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
                     //Add new item to ordertodisplay and save
                     odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await bslayer.SaveOrder(odSourceTable.OrderToDisplay);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
                     odSourceTable.Display();
                     odTargetTable.Display();
@@ -646,7 +635,7 @@ namespace DTRMNS
                     TargetTable.TableName = frm.input;
                     if (TargetTable.AttachedOrder != null)
                         TargetTable.AttachedOrder.Table?.TableName = TargetTable.TableName;
-                   await bslayer.SaveTable(TargetTable);
+                    await DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
 
                     LoadTargetTable();
                     await LoadTargetPanel();

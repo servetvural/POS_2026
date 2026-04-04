@@ -23,7 +23,7 @@ public enum AvailabilityTypes
     All = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8,
     InternetDelivery = 16, Direct = 32, Sms = 64, NoSale = 256
 }
-public enum TableTypes { Unknown, StaticTable, TemporaryTable, MutantTable }
+
 public enum PrintColors { pcBlack = 0, pcRed = 255 }
 public enum PrintSizes { psTiny, psNormal, psBig }
 public enum PrintAligns { Near, Center, Far };

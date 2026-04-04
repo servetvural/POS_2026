@@ -347,7 +347,7 @@ namespace DTRMSimpleBackOffice {
             toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { btnSample });
             toolStrip1.Location = new System.Drawing.Point(659, 356);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new System.Drawing.Size(103, 56);
+            toolStrip1.Size = new System.Drawing.Size(134, 56);
             toolStrip1.TabIndex = 121;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -357,6 +357,7 @@ namespace DTRMSimpleBackOffice {
             btnSample.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnSample.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnSample.Name = "btnSample";
+            btnSample.Padding = new System.Windows.Forms.Padding(5);
             btnSample.Size = new System.Drawing.Size(100, 53);
             btnSample.Text = "Sample";
             btnSample.Paint += btnSample_Paint;

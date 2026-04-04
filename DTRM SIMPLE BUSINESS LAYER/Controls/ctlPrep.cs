@@ -1,18 +1,17 @@
-﻿using System.Windows.Forms;
+﻿using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class ctlPrep : UserControl {
-        DTRMSimpleBusiness bslayer;
         KitchenOrder korder;
 
         public ctlPrep() {
             InitializeComponent();
         }
-        public void Initilise(DTRMSimpleBusiness bslayer, KitchenOrder korder) {
-            this.bslayer = bslayer;
+        public void Initilise( KitchenOrder korder) {
             this.korder = korder;
             LoadKitchenOrder();
         }
@@ -27,7 +26,7 @@ namespace DTRMNS {
 
            
         }
-        private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
+        private async void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewImageCell cellTick = dgv.Rows[e.RowIndex].Cells[4] as DataGridViewImageCell;
             KitchenOrderItem koi = (KitchenOrderItem)korder.Items[e.RowIndex];
@@ -50,9 +49,9 @@ namespace DTRMNS {
                         //koi.Modified = ModificationFlag.Completed;
                         //koi.ModifiedQuantity = koi.Quantity;
 
-                        oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                        oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                         oi.OrderItemText = koi.ItemText;
-                        bslayer.SaveOrderItem(oi);
+                         DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
                     }
                     break;
                 case 6:
@@ -78,9 +77,9 @@ namespace DTRMNS {
                                 //koi.Modified = ModificationFlag.Completed;
                                 //koi.ModifiedQuantity = koi.Quantity;
 
-                                oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                                oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                                 oi.OrderItemText = koi.ItemText;
-                                bslayer.SaveOrderItem(oi);
+                                 DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
                             }
                         }
                     }
@@ -90,30 +89,30 @@ namespace DTRMNS {
                     if (koi.Modified != ModificationFlag.Completed && koi.Status == KitchenOrderStatusTypes.Waiting && koi.Quantity > 0) { 
                     //if ( koi.Status == KitchenOrderStatusTypes.Waiting && koi.Quantity > 0) {
                         /* Here add custom variable Text*/
-                        frmVariables frm = new frmVariables(bslayer, koi);
+                        frmVariables frm = new frmVariables( koi);
                         
                         if (frm.ShowDialog() == DialogResult.OK)
                         {
                             dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText.Replace("&&","&");
                             dgv.Refresh();
 
-                            //OrderItem oi = bslayer.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                            //OrderItem oi =  DTRMSimpleBusiness.Instance.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                             //oi.OrderItemText = koi.ItemText;
-                            //bslayer.SaveOrderItem(oi);
+                            // DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
                         }
                     }
                     break;
                 case 8:
                     //Cancel
-                    koi.ItemText = bslayer.GetJustEntityButton(koi.EntityButtonIID).Result.ItemName;
+                    koi.ItemText =  DTRMSimpleBusiness.Instance.GetJustEntityButton(koi.CategoryItemIID).Result.ItemName;
                     koi.Modified = ModificationFlag.None;
                     koi.ModifiedQuantity = 0;
                     dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText;
                     dgv.Refresh();
 
-                    oi = bslayer.AttachedOrder.Items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                    oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                     oi.OrderItemText = koi.ItemText;
-                    bslayer.SaveOrderItem(oi);
+                    await  DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
                     break;
                 default:
 

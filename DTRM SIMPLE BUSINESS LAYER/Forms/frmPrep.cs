@@ -14,12 +14,12 @@ namespace DTRMNS {
         public frmPrep() {
             InitializeComponent();
         }
-        public frmPrep(PosConfig configAsService, DTRMSimpleBusiness bslayer, KitchenOrder korder) {
+        public frmPrep(PosConfig configAsService,  KitchenOrder korder) {
             InitializeComponent();
-            config = configAsService;
-            this.bslayer = bslayer;
+            config = configAsService;             
             this.korder = korder;
-           
+
+            bslayer = DTRMSimpleBusiness.Instance;
         }
         private void frmPrep_Load(object sender, EventArgs e) {
             LoadPrep();
@@ -28,21 +28,21 @@ namespace DTRMNS {
             btnCashPrintAndOK.Visible = config.Prep_Can_Hold_Cash_And_Print;
 
             this.Top = 0;
-            this.Height = bslayer.maxHeight;
+            this.Height =  DTRMSimpleBusiness.Instance.maxHeight;
             //this.Refresh();
            // MessageBox.Show("refreshed @ " + DateTime.Now.ToLongTimeString());
 
         }
         private void LoadPrep() {
-            prepDisplay.Initilise(bslayer, korder);
+            prepDisplay.Initilise(korder);
         }
 
         //private void btnPrint_Click(object sender, EventArgs e) {
-        //    bslayer.PrintForKitchenSpecial(korder);
+        //     DTRMSimpleBusiness.Instance.PrintForKitchenSpecial(korder);
         //}
 
         //private void btnPrintAsReceipt_Click(object sender, EventArgs e) {
-        //    bslayer.PrintReceipt(korder.OrderIID, bslayer.GetDefaultReceiptPrinter(), 1);
+        //     DTRMSimpleBusiness.Instance.PrintReceipt(korder.OrderIID,  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
         //}
 
         private void btnCancel_Click(object sender, EventArgs e) {
@@ -56,8 +56,8 @@ namespace DTRMNS {
             CompletePrep(PrepDialogReturnTypes.Cash, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.Cash;
-            //if (bslayer.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
-            //    bslayer.OpenCashDrawer(false);
+            //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
+            //     DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
             //this.Close();
         }
 
@@ -65,8 +65,8 @@ namespace DTRMNS {
             CompletePrep(PrepDialogReturnTypes.CashAndPrint, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.CashAndPrint;
-            //if (bslayer.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
-            //    bslayer.OpenCashDrawer(false);
+            //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
+            //     DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
             //this.Close();
         }
 
@@ -83,11 +83,11 @@ namespace DTRMNS {
             this.prepResult = result;
             foreach (KitchenOrderItem item in korder.Items) {
                 if (item.Status == KitchenOrderStatusTypes.Completed)
-                    bslayer.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
+                     DTRMSimpleBusiness.Instance.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }
 
             if (blnOpenCashDrawer && config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
-                bslayer.OpenCashDrawer(false);
+                 DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
             this.Close();
         }
 

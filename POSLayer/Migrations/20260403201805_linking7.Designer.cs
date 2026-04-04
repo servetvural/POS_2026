@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Context;
 
@@ -11,9 +12,11 @@ using POSLayer.Context;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260403201805_linking7")]
+    partial class linking7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,8 +228,8 @@ namespace POSLayer.Migrations
                     b.Property<string>("CategoryIID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("Compulsary")
-                        .HasColumnType("bit");
+                    b.Property<int>("Compulsary")
+                        .HasColumnType("int");
 
                     b.Property<int>("DOrder")
                         .HasColumnType("int");
@@ -523,14 +526,14 @@ namespace POSLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CategoryItemIID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("DOrder")
                         .HasColumnType("int");
 
                     b.Property<string>("DistributionIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityButtonIID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -667,9 +670,6 @@ namespace POSLayer.Migrations
                     b.Property<double>("MoneyPaid")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("OrderType")
                         .HasColumnType("int");
 
@@ -721,12 +721,6 @@ namespace POSLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryDisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CategoryItemIID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<double>("CompletedQuantity")
                         .HasColumnType("float");
 
@@ -734,7 +728,20 @@ namespace POSLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DistributionIID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityButtonIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntityDisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ItemType")
                         .HasColumnType("int");
@@ -743,6 +750,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderIID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OrderItemText")
@@ -757,13 +765,14 @@ namespace POSLayer.Migrations
                     b.Property<double>("TaxPercent")
                         .HasColumnType("float");
 
+                    b.Property<string>("XOrderIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("IID");
 
-                    b.HasIndex("CategoryItemIID");
-
-                    b.HasIndex("DistributionIID");
-
                     b.HasIndex("OrderIID");
+
+                    b.HasIndex("XOrderIID");
 
                     b.ToTable("OrderItems");
                 });
@@ -967,13 +976,13 @@ namespace POSLayer.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("X1Total")
+                    b.Property<double>("X1total")
                         .HasColumnType("float");
 
-                    b.Property<double>("X2Total")
+                    b.Property<double>("X2total")
                         .HasColumnType("float");
 
-                    b.Property<double>("X3Total")
+                    b.Property<double>("X3total")
                         .HasColumnType("float");
 
                     b.HasKey("IID");
@@ -994,6 +1003,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CurrentSessionIID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DOrder")
@@ -1160,7 +1170,7 @@ namespace POSLayer.Migrations
 
                     b.HasIndex("StockItemIID");
 
-                    b.ToTable("StockItemUsage");
+                    b.ToTable("StockItemUsages");
                 });
 
             modelBuilder.Entity("POSLayer.Models.Supplier", b =>
@@ -1272,9 +1282,6 @@ namespace POSLayer.Migrations
                     b.Property<double>("MoneyPaid")
                         .HasColumnType("float");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("OrderType")
                         .HasColumnType("int");
 
@@ -1324,12 +1331,6 @@ namespace POSLayer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryDisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CategoryItemIID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<double>("CompletedQuantity")
                         .HasColumnType("float");
 
@@ -1337,7 +1338,20 @@ namespace POSLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DistributionIID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityButtonIID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EntityDisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EntityIID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EntityName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ItemType")
                         .HasColumnType("int");
@@ -1346,6 +1360,7 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderIID")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OrderItemText")
@@ -1360,18 +1375,9 @@ namespace POSLayer.Migrations
                     b.Property<double>("TaxPercent")
                         .HasColumnType("float");
 
-                    b.Property<string>("XOrderIID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("IID");
 
-                    b.HasIndex("CategoryItemIID");
-
-                    b.HasIndex("DistributionIID");
-
                     b.HasIndex("OrderIID");
-
-                    b.HasIndex("XOrderIID");
 
                     b.ToTable("XorderItems");
                 });
@@ -1496,21 +1502,15 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.OrderItem", b =>
                 {
-                    b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
-                        .WithMany()
-                        .HasForeignKey("CategoryItemIID");
-
-                    b.HasOne("POSLayer.Models.Distribution", "Distribution")
-                        .WithMany()
-                        .HasForeignKey("DistributionIID");
-
                     b.HasOne("POSLayer.Models.Order", "Order")
                         .WithMany("Items")
-                        .HasForeignKey("OrderIID");
+                        .HasForeignKey("OrderIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("CategoryItem");
-
-                    b.Navigation("Distribution");
+                    b.HasOne("POSLayer.Models.XOrder", null)
+                        .WithMany("Items")
+                        .HasForeignKey("XOrderIID");
 
                     b.Navigation("Order");
                 });
@@ -1620,25 +1620,11 @@ namespace POSLayer.Migrations
 
             modelBuilder.Entity("POSLayer.Models.XOrderItem", b =>
                 {
-                    b.HasOne("POSLayer.Models.CategoryItem", "CategoryItem")
-                        .WithMany()
-                        .HasForeignKey("CategoryItemIID");
-
-                    b.HasOne("POSLayer.Models.Distribution", "Distribution")
-                        .WithMany()
-                        .HasForeignKey("DistributionIID");
-
                     b.HasOne("POSLayer.Models.Order", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderIID");
-
-                    b.HasOne("POSLayer.Models.XOrder", null)
-                        .WithMany("Items")
-                        .HasForeignKey("XOrderIID");
-
-                    b.Navigation("CategoryItem");
-
-                    b.Navigation("Distribution");
+                        .HasForeignKey("OrderIID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
                 });

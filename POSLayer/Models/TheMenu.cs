@@ -18,30 +18,49 @@ public partial class TheMenu  : BaseClass
     {
         return IID + ".xml";
     }
-    public double GetItemPrice(string CategoryIID, string ItemIID, OrderTypes orderType)
+    public double GetItemPrice(string ItemIID, OrderTypes orderType)
     {
-        //try
-        //{
-        //    categories.Where(c => c.IID == CategoryIID).ToList().Where(cb => cb.)
-        //}
-        Category en;
-        for (int i = 0; i < this.categories.Count; i++)
+        CategoryItem item = categories.SelectMany(c => c.Items).FirstOrDefault(item => item.IID == ItemIID);
+        if (item == null)
+            return 0;
+        
+        switch (orderType)
         {
-            en = (Category)categories[i];
-            if (en.IID == CategoryIID)
-                return en.GetItemPrice(ItemIID, orderType);
+            case OrderTypes.DirectSale:
+                return item.SalePrice;
+            case OrderTypes.InHouse:
+                return item.SitinPrice;
+            case OrderTypes.TakeAwayB:
+            case OrderTypes.InternetTakeAway:
+                return item.TaPrice;
+            case OrderTypes.Delivery:
+            case OrderTypes.InternetDelivery:
+                return item.DPrice;
+            default:
+                return item.SalePrice;
         }
-        return 0f;
+
     }
-    public double GetItemTaxRate(string CategoryIID, string ItemIID, OrderTypes orderType)
+    public double GetItemTaxRate(string CategoryItemIID, OrderTypes orderType)
     {
-        Category en;
-        for (int i = 0; i < this.categories.Count; i++)
+        CategoryItem item = categories.SelectMany(c => c.Items).FirstOrDefault(item => item.IID == CategoryItemIID);
+        if (item == null)
+            return 0;
+
+        switch (orderType)
         {
-            en = (Category)categories[i];
-            if (en.IID == CategoryIID)
-                return en.GetItemTaxRate(ItemIID, orderType);
+            case OrderTypes.DirectSale:
+                return item.SaleTax;
+            case OrderTypes.InHouse:
+                return item.SitinTax;
+            case OrderTypes.TakeAwayB:
+            case OrderTypes.InternetTakeAway:
+                return item.TaTax;
+            case OrderTypes.Delivery:
+            case OrderTypes.InternetDelivery:
+                return item.DTax;
+            default:
+                return item.SaleTax;
         }
-        return 0f;
     }
 }

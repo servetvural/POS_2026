@@ -14,21 +14,16 @@ using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmImageEditor : Form {
-        private DTRMSimpleBusiness bslayer;
 
-        public frmImageEditor(DTRMSimpleBusiness bslayer)
+        public frmImageEditor()
         {
             InitializeComponent();
-            this.bslayer = bslayer;
-            lblProcess.Text = "";
-           
-
+            lblProcess.Text = "";    
         }
 
         private void btnLargeIcon_Click(object sender, EventArgs e)
         {
-            lvwImages.View = View.LargeIcon;
-            
+            lvwImages.View = View.LargeIcon;              
         }
 
         private void btnSmallIcon_Click(object sender, EventArgs e)

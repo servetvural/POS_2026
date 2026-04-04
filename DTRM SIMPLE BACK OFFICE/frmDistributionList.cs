@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Newtonsoft.Json;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
 using PosLibrary;
-
 using POSWinFormLayer.Library;
 
 namespace DTRMSimpleBackOffice

@@ -40,9 +40,6 @@ namespace DTRMSimpleBackOffice
         IRepository<RecipeItem> repoRecipe;
         IRepository<GenericImage> repoImage;
 
-        private DTRMSimpleBusiness bslayer;
-
-
         Category category;
         private BindingSource _categoryItemSource = new BindingSource();
         private BindingSource _recipeSource = new BindingSource();
@@ -55,12 +52,10 @@ namespace DTRMSimpleBackOffice
             IRepository<Printer> _repoPrinter,
                    IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
                    IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<RecipeItem> _repoRecipe,
-                   IRepository<GenericImage> _repoImage,
-            DTRMSimpleBusiness bslayer, Category _category)
+                   IRepository<GenericImage> _repoImage, Category _category)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
             repoMenu = _repoMenu;
             repoCategory = _repoCategory;
             repoCategoryItem = _repoCategoryItem;
@@ -74,7 +69,7 @@ namespace DTRMSimpleBackOffice
 
             category = _category;
 
-            Thread.CurrentThread.CurrentUICulture = bslayer.GetUICulture();
+            Thread.CurrentThread.CurrentUICulture = DTRMSimpleBusiness.Instance.GetUICulture();
         }
         private async void FrmMenuEditor_Load(object sender, EventArgs e)
         {
@@ -445,7 +440,7 @@ namespace DTRMSimpleBackOffice
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
-                    if (await bslayer.ExportDatabaseImagesIntoFolder(dinfo.FullName))
+                    if (await DTRMSimpleBusiness.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
                         MessageBox.Show("Completed");
                     else
                         MessageBox.Show("Completed with Errors");

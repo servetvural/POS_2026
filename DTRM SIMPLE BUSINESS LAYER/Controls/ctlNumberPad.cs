@@ -846,10 +846,10 @@ namespace DTRMNS {
         private async Task LoadEntities() {
             pnlDistributions.Controls.Clear();
 
-            //DataTable dt = bslayer.GetDataTable("SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN " +
-            //          " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '" + bslayer.config.ActiveMenuIID + "' Order by Entitybutton.EntityButtonName");
+            //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN " +
+            //          " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '" +  DTRMSimpleBusiness.Instance.config.ActiveMenuIID + "' Order by Entitybutton.EntityButtonName");
 
-            List<CategoryItem> entityButtons = await bslayer.GetEntityButtonsForNumberPad();
+            List<CategoryItem> entityButtons = await  DTRMSimpleBusiness.Instance.GetEntityButtonsForNumberPad();
 
             List<Category> entities =await repoCategory.GetListByField("MenuIID",config.ActiveMenuIID);
            
@@ -898,10 +898,10 @@ namespace DTRMNS {
                 if (Reg2 == 0)
                     return;
 
-                bslayer.AttachedOrder.AddOrderItem(entitybutton.CategoryIID, "", 1, 
+                 DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem( "", 1, 
                    Reg2, "", entitybutton.ItemName,  btn.PrintableTypeIID /*DistributionIID*/, 
-                   OrderItemTypes.NormalOrderItem, 0, btn.EntityName, 0, bslayer.GetEBTaxPercent(entitybutton));
-                bslayer.OnDisplayOrder();
+                   OrderItemTypes.NormalOrderItem, 0,  0,  DTRMSimpleBusiness.Instance.GetEBTaxPercent(entitybutton));
+                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
 
                 btnC_Click(null, null);
 

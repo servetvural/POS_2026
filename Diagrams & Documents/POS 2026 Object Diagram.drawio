@@ -76,7 +76,7 @@
         <mxCell id="E8eeorDKIiJ1tWL0qrhj-59" edge="1" parent="1" source="E8eeorDKIiJ1tWL0qrhj-21" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;startArrow=ERzeroToOne;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="E8eeorDKIiJ1tWL0qrhj-40">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="E8eeorDKIiJ1tWL0qrhj-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Customer" vertex="1">
+        <mxCell id="E8eeorDKIiJ1tWL0qrhj-21" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Customer" vertex="1">
           <mxGeometry height="40" width="120" x="1040" y="200" as="geometry" />
         </mxCell>
         <mxCell id="E8eeorDKIiJ1tWL0qrhj-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="GenericImage" vertex="1">
@@ -130,10 +130,10 @@
         <mxCell id="E8eeorDKIiJ1tWL0qrhj-57" edge="1" parent="1" source="E8eeorDKIiJ1tWL0qrhj-40" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="E8eeorDKIiJ1tWL0qrhj-41">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="E8eeorDKIiJ1tWL0qrhj-40" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="XOrder" vertex="1">
+        <mxCell id="E8eeorDKIiJ1tWL0qrhj-40" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="XOrder" vertex="1">
           <mxGeometry height="40" width="120" x="640" y="360" as="geometry" />
         </mxCell>
-        <mxCell id="E8eeorDKIiJ1tWL0qrhj-41" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="XOrderItem" vertex="1">
+        <mxCell id="E8eeorDKIiJ1tWL0qrhj-41" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="XOrderItem" vertex="1">
           <mxGeometry height="40" width="120" x="640" y="440" as="geometry" />
         </mxCell>
         <mxCell id="E8eeorDKIiJ1tWL0qrhj-52" edge="1" parent="1" source="E8eeorDKIiJ1tWL0qrhj-42" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=default;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;startArrow=ERone;startFill=0;endArrow=ERzeroToMany;endFill=0;" target="E8eeorDKIiJ1tWL0qrhj-39">

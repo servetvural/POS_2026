@@ -116,5 +116,19 @@ public class DbInitializer
 
 
         }
+        Shop shop =await repoShop.GetFirst();
+        if (shop != null)
+        {
+            TheMenu menu = await repoMenu.GetByField("IsActive", true);
+            if (menu == null)
+            {
+                menu = await repoMenu.GetFirst();                 
+            }
+            if (menu != null)
+            {
+                menu.IsActive = true;
+                await repoMenu.Save(menu);
+            }
+        }
     }
 }

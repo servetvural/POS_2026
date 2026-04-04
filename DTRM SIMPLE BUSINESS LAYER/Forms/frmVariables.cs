@@ -9,7 +9,6 @@ using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmVariables : Form {
-        private DTRMSimpleBusiness bslayer;
         private KitchenOrderItem koi;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -21,9 +20,8 @@ namespace DTRMNS {
         public frmVariables() {
             InitializeComponent();
         }
-        public frmVariables(DTRMSimpleBusiness bslayer, KitchenOrderItem koi) {
+        public frmVariables( KitchenOrderItem koi) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.koi = koi;
         }
         private void frmVariables_Load(object sender, EventArgs e) {

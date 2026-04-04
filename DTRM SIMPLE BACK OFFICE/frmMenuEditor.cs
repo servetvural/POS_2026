@@ -34,11 +34,9 @@ namespace DTRMSimpleBackOffice
         IRepository<Employee> repoEmployee;
         IRepository<Supplier> repoSupplier;
         IRepository<StockItem> repoStockItem;
-        IRepository<RecipeItem> repoRecipe; 
+        IRepository<RecipeItem> repoRecipe;
         IRepository<Bonus> repoBonus;
         IRepository<GenericImage> repoImage;
-
-        private DTRMSimpleBusiness bslayer;
 
         private BindingSource _menuSource = new BindingSource();
         private BindingSource _categorySource = new BindingSource();
@@ -47,14 +45,12 @@ namespace DTRMSimpleBackOffice
 
         public FrmMenuEditor(PosConfig configAsService, IRepository<TheMenu> _repoMenu,
             IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem,
-            IRepository<Printer> _repoPrinter,
-                   IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
-                   IRepository<StockItem> _repoStockItem,  IRepository<Bonus> _repoBonus, IRepository<GenericImage> _repoImage,
-            DTRMSimpleBusiness _bslayer, IRepository<RecipeItem> _repoRecipe)
+            IRepository<Printer> _repoPrinter,IRepository<Employee> _repoEmployee, IRepository<Supplier> _repoSupplier,
+            IRepository<StockItem> _repoStockItem, IRepository<Bonus> _repoBonus, IRepository<GenericImage> _repoImage,
+            IRepository<RecipeItem> _repoRecipe)
         {
             InitializeComponent();
             config = configAsService;
-            bslayer = _bslayer;
             repoMenu = _repoMenu;
             repoCategory = _repoCategory;
             repoCategoryItem = _repoCategoryItem;
@@ -175,8 +171,8 @@ namespace DTRMSimpleBackOffice
                 suppliers = await repoSupplier.GetAllAsync(),
                 stockItems = await repoStockItem.GetAllAsync(),
                 recipes = await repoRecipe.GetAllAsync(),
-                bonuslist = await repoBonus.GetAllAsync()     
-                
+                bonuslist = await repoBonus.GetAllAsync()
+
                 //Get Generic Images 
                 // backup.genericImages = bslayer.GetImageLibraryList();
             };
@@ -241,7 +237,6 @@ namespace DTRMSimpleBackOffice
                                 statusMessage += "Employees Saved " + Environment.NewLine;
                             }
 
-
                             //Save suppliers
                             foreach (Supplier item in backup.suppliers)
                             {
@@ -264,7 +259,7 @@ namespace DTRMSimpleBackOffice
                             }
 
                             //Save stock item lookups
-                            if (await bslayer.SaveAllStockItemLookups(backup.stockItemLookups))
+                            if (await DTRMSimpleBusiness.Instance.SaveAllRecipes(backup.recipes))
                             {
                                 statusMessage += "Stock Item Lookups Saved " + Environment.NewLine;
                             }
@@ -303,7 +298,7 @@ namespace DTRMSimpleBackOffice
                 {
                     if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        bslayer.PrintPriceList(((TheMenu)dgvMenu.SelectedRows[0].DataBoundItem).IID, frm.SelectedPrinterIID);
+                        DTRMSimpleBusiness.Instance.PrintPriceList(((TheMenu)dgvMenu.SelectedRows[0].DataBoundItem).IID, frm.SelectedPrinterIID);
                     }
                 }
             }
@@ -415,7 +410,7 @@ namespace DTRMSimpleBackOffice
         {
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                StockManager sm = await bslayer.GetStockManager();
+                StockManager sm = await DTRMSimpleBusiness.Instance.GetStockManager();
                 sm.Reference = "Stock Manager for " + " Bunu duzeltmek lazim " + DateTime.Now.ToString("dd MM yyyy");
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
@@ -450,7 +445,7 @@ namespace DTRMSimpleBackOffice
                         return;
                     }
 
-                    if (await bslayer.SaveStockManager(sm))
+                    if (await DTRMSimpleBusiness.Instance.SaveStockManager(sm))
                         await LoadMenuList();
                 }
             }
@@ -464,7 +459,7 @@ namespace DTRMSimpleBackOffice
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
-                    if (await bslayer.ExportDatabaseImagesIntoFolder(dinfo.FullName))
+                    if (await DTRMSimpleBusiness.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
                         MessageBox.Show("Completed");
                     else
                         MessageBox.Show("Completed with Errors");
@@ -489,7 +484,7 @@ namespace DTRMSimpleBackOffice
 
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                TheMenu menu = await repoMenu.Get(selectedMenu.IID); 
+                TheMenu menu = await repoMenu.Get(selectedMenu.IID);
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
                     sfd.Filter = "JSON Files (*.json)|";
@@ -521,7 +516,7 @@ namespace DTRMSimpleBackOffice
                         if (!string.IsNullOrEmpty(content))
                         {
                             TheMenu fm = JsonConvert.DeserializeObject<TheMenu>(content);
-                            await repoMenu.SaveTree(fm); 
+                            await repoMenu.SaveTree(fm);
 
                             MessageBox.Show("Saved Printer List");
                         } else

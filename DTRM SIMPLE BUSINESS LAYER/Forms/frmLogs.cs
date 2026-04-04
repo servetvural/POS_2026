@@ -17,10 +17,10 @@ namespace DTRMNS.Forms
         private DTRMSimpleBusiness bslayer;
 
         private DataTable dt;
-        public frmLog(DTRMSimpleBusiness bslayer)
+        public frmLog()
         {
             InitializeComponent();
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         private void frmLog_Load(object sender, EventArgs e)
@@ -31,7 +31,7 @@ namespace DTRMNS.Forms
         private void LoadLogs()
         {
             dgvLog.DataSource = null;
-            dt = bslayer.GetAllLogItems();  
+            dt =  DTRMSimpleBusiness.Instance.GetAllLogItems();  
             ProcessData();
             dgvLog.DataSource = dt;
            
@@ -60,7 +60,7 @@ namespace DTRMNS.Forms
             {
                 if (MessageBox.Show("Delete ALL Log Entries ??") == DialogResult.OK)
                 {
-                    bslayer.DeleteAllLogItems();
+                     DTRMSimpleBusiness.Instance.DeleteAllLogItems();
                     LoadLogs();
                 }
             }               
@@ -98,7 +98,7 @@ namespace DTRMNS.Forms
                     {
                         IIDList.Add(dgvLog.SelectedRows[i].Cells["IID"].Value.ToString());
                     }
-                    bslayer.DeleteLogItems(IIDList);
+                     DTRMSimpleBusiness.Instance.DeleteLogItems(IIDList);
                     LoadLogs();
                 }
             }

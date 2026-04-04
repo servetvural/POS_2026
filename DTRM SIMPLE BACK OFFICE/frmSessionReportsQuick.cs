@@ -6,23 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
-
 using PosLibrary;
 using PosLibrary.Forms;
-
 
 namespace DTRMSimpleBackOffice
 {
     public partial class frmSessionReportsQuick : Form
     {
-        private DTRMSimpleBusiness bslayer;
-
         private bool blnBackUpCompleted;
 
         bool IsBackupValid
@@ -33,25 +26,17 @@ namespace DTRMSimpleBackOffice
                     return false;
                 return blnBackUpCompleted;
             }
-
         }
 
         public frmSessionReportsQuick()
         {
             InitializeComponent();
         }
-        public frmSessionReportsQuick(DTRMSimpleBusiness bslayer)
-        {
-            InitializeComponent();
-            this.bslayer = bslayer;
-        }
         private void frmSessionReportsQuick_Load(object sender, EventArgs e)
         {
             ShowHideButtons(false);
-
             LoadDBSessions();
             LoadArchivedSessionsLocal();
-
         }
 
 
@@ -69,10 +54,10 @@ namespace DTRMSimpleBackOffice
                 lblInfo.Text = "";
                 btnAllSessionTotal.Text = "";
 
-                string sessionIID = bslayer.shop.CurrentSessionIID;
+                string sessionIID = DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
                 try
                 {
-                    DataTable dt = bslayer.GetDataTable("Select * from SessionSum where IID <> '" + sessionIID + "' order by StartDate desc");
+                    DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from SessionSum where IID <> '" + sessionIID + "' order by StartDate desc");
 
                     if (dt == null)
                     {
@@ -107,7 +92,7 @@ namespace DTRMSimpleBackOffice
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else
             {
-                dgvArchive.DataSource = bslayer.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
+                dgvArchive.DataSource = DTRMSimpleBusiness.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
             }
         }
 
@@ -126,7 +111,7 @@ namespace DTRMSimpleBackOffice
             {
                 string SessionIID = dgvDatabase.SelectedRows[0].Cells["dbIID"].Value.ToString();
                 //IID, OrderDate, CalculatedValue
-                dgvOrders.DataSource = bslayer.GetDataTable("Select IID, OrderDate, Payment, CalculatedValue from OrdersView where SessionIID = '" + SessionIID + "' Order by OrderDate asc");
+                dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, Payment, CalculatedValue from OrdersView where SessionIID = '" + SessionIID + "' Order by OrderDate asc");
                 dgvOrders_SelectionChanged(null, null);
 
                 // LoadSRangeList();
@@ -235,7 +220,6 @@ namespace DTRMSimpleBackOffice
                     total += float.Parse(dgvDatabase.SelectedRows[i].Cells["cellDatabaseGrossTotal"].Value.ToString());
                 } catch
                 {
-
                 }
             }
             lblDatabaseSelectedTotal.Text = total.ToString("N2");
@@ -283,7 +267,7 @@ namespace DTRMSimpleBackOffice
             SessionDataShort[] sessionList = (SessionDataShort[])args;
             for (int i = 0; i < sessionList.Length; i++)
             {
-                bslayer.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+                DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
                 //bslayer.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / sessionList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
@@ -327,7 +311,7 @@ namespace DTRMSimpleBackOffice
             string[] fileList = (string[])args;
             for (int i = 0; i < fileList.Length; i++)
             {
-                bslayer.ReloadSessionFromFile(fileList[i]);
+                DTRMSimpleBusiness.Instance.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / fileList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + fileList[i]);
             }
@@ -345,7 +329,7 @@ namespace DTRMSimpleBackOffice
 
             for (int i = 0; i < SessionIIDList.Length; i++)
             {
-                bslayer.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
+                DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
                 int percent = (100 / SessionIIDList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Archiving " + SessionIIDList[i]);
             }
@@ -369,7 +353,7 @@ namespace DTRMSimpleBackOffice
                 }
                 for (int i = 0; i < SessionIIDList.Length; i++)
                 {
-                    await Task.Run(() => bslayer.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], blnRemoveFromDatabase));
+                    await Task.Run(() => DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], blnRemoveFromDatabase));
                     //await Task.Run(() => bslayer.ArchiveSessionToDirectoryAsJson(directoryPath, SessionIIDList[i], blnRemoveFromDatabase));
 
                 }
@@ -427,7 +411,7 @@ namespace DTRMSimpleBackOffice
         {
             if (dgvDatabase.SelectedRows.Count > 0)
             {
-                Report report = bslayer.GetReport(ReportFormatTypes.ZReport);
+                Report report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
 
 
                 if (report.ReportType == ReportFormatTypes.ZReport)
@@ -480,7 +464,7 @@ namespace DTRMSimpleBackOffice
             for (int i = 0; i < jobList.Count; i++)
             {
                 CustomReportPrintJob job = jobList[i];
-                bslayer.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
+                DTRMSimpleBusiness.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
                 int percent = (100 / jobList.Count) * (i + 1);
                 bgWorker.ReportProgress(percent, "Printing Session : " + job.SessionStartDate.ToString());
             }
@@ -525,11 +509,11 @@ namespace DTRMSimpleBackOffice
 
         private void btnDelZeros_Click(object sender, EventArgs e)
         {
-            DataTable dt = bslayer.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
+            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 string IID = dt.Rows[i]["IID"].ToString();
-                bslayer.DeleteOrder(IID);
+                DTRMSimpleBusiness.Instance.DeleteOrder(IID);
             }
         }
 
@@ -551,7 +535,7 @@ namespace DTRMSimpleBackOffice
                 for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
                 {
                     string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-                    bslayer.DeleteOrder(orderIID);
+                    DTRMSimpleBusiness.Instance.DeleteOrder(orderIID);
                 }
                 LoadOrders();
             }
@@ -702,7 +686,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnRefreshDatabase_Click(object sender, EventArgs e)
         {
-            bslayer.RefreshDatabase();
+            DTRMSimpleBusiness.Instance.RefreshDatabase();
         }
 
         private async void btnBackup_Click(object sender, EventArgs e)

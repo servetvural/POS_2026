@@ -227,7 +227,7 @@
             btnDisplay.Image = Properties.Resources.eye32;
             btnDisplay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnDisplay.Name = "btnDisplay";
-            btnDisplay.Size = new System.Drawing.Size(176, 38);
+            btnDisplay.Size = new System.Drawing.Size(196, 38);
             btnDisplay.Text = "Display";
             btnDisplay.Click += btnDisplay_Click;
             // 
@@ -237,7 +237,7 @@
             btnStockUsage.Image = Properties.Resources.Present32;
             btnStockUsage.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnStockUsage.Name = "btnStockUsage";
-            btnStockUsage.Size = new System.Drawing.Size(176, 38);
+            btnStockUsage.Size = new System.Drawing.Size(196, 38);
             btnStockUsage.Text = "Shopping List";
             btnStockUsage.Click += btnStockUsage_Click;
             // 
@@ -247,7 +247,7 @@
             btnKassaCalculator.Image = Properties.Resources.CalculatorNice32;
             btnKassaCalculator.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnKassaCalculator.Name = "btnKassaCalculator";
-            btnKassaCalculator.Size = new System.Drawing.Size(176, 38);
+            btnKassaCalculator.Size = new System.Drawing.Size(196, 38);
             btnKassaCalculator.Text = "Kassa Calculator";
             btnKassaCalculator.Click += btnKassaCalculator_Click;
             // 
@@ -275,7 +275,6 @@
             btnQuickReports.Size = new System.Drawing.Size(80, 51);
             btnQuickReports.Text = "Reports";
             btnQuickReports.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnQuickReports.Visible = false;
             btnQuickReports.Click += btnQuickReports_Click;
             // 
             // btnOrderPad
@@ -289,7 +288,6 @@
             btnOrderPad.Size = new System.Drawing.Size(80, 51);
             btnOrderPad.Text = "OrderPad";
             btnOrderPad.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnOrderPad.Visible = false;
             btnOrderPad.Click += btnOrderPad_Click;
             // 
             // btnViewDump
@@ -303,7 +301,6 @@
             btnViewDump.Size = new System.Drawing.Size(80, 51);
             btnViewDump.Text = "View Dump";
             btnViewDump.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnViewDump.Visible = false;
             btnViewDump.Click += mnuViewDumpTool_Click;
             // 
             // btnReports
@@ -319,7 +316,6 @@
             btnReports.Text = "A Reports";
             btnReports.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             btnReports.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnReports.Visible = false;
             btnReports.Click += btnSessionReports_Click;
             // 
             // btnSessionAnalysis
@@ -333,7 +329,6 @@
             btnSessionAnalysis.Size = new System.Drawing.Size(80, 51);
             btnSessionAnalysis.Text = "Analysis";
             btnSessionAnalysis.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            btnSessionAnalysis.Visible = false;
             btnSessionAnalysis.Click += btnSessionAnalysis_Click;
             // 
             // btnCloseAllWindows

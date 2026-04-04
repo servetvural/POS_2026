@@ -1237,7 +1237,7 @@ namespace DTRMSimpleBackOffice
                     chkAvailableNone.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale);
                 }
 
-                chkCompulsary.Checked = (categoryItem.Compulsary == 1);
+                chkCompulsary.Checked = categoryItem.Compulsary;
 
                 incWidth.Value = categoryItem.Width;
                 incHeight.Value = categoryItem.Height;
@@ -1340,12 +1340,7 @@ namespace DTRMSimpleBackOffice
                     categoryItem.AvailableFor = (chkAvailableNone.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale) : categoryItem.AvailableFor);
 
                 }
-                if (chkCompulsary.Checked)
-                    categoryItem.Compulsary = 1;
-                else
-                    categoryItem.Compulsary = 0;
-
-
+                chkCompulsary.Checked = categoryItem.Compulsary;
 
                 categoryItem.SaleTax = (double)txtDirectSaleTaxRate.Value; // double.Parse(txtDirectSaleTaxRate.Text.Trim(), CultureInfo.CurrentUICulture); //, System.Globalization.NumberStyles.Any, ci);
                 categoryItem.SitinTax = (double)txtInHouseTaxRate.Value; // double.Parse(txtInHouseTaxRate.Text.Trim(), CultureInfo.CurrentUICulture);// , System.Globalization.NumberStyles.Any, ci);

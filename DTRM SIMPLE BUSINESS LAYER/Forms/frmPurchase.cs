@@ -16,17 +16,18 @@ namespace DTRMNS {
         public frmPurchase() {
             InitializeComponent();
         }
-        public frmPurchase(DTRMSimpleBusiness bslayer, StockItemUsage stockItemUsage) {
+        public frmPurchase(StockItemUsage stockItemUsage) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.stockItemUsage = stockItemUsage;
+
+            bslayer = DTRMSimpleBusiness.Instance;
         }
         private void frmPurchase_Load(object sender, EventArgs e) {
             LoadStockItemUsage();
         }
 
         private async Task LoadStockItemUsage() {
-            stockItem =await bslayer.GetStockItem(stockItemUsage.StockItemIID);
+            stockItem =await  DTRMSimpleBusiness.Instance.GetStockItem(stockItemUsage.StockItemIID);
             txtStockItemName.Text = stockItemUsage.StockItem.StockName;
             txtQuantity.Value = (int)stockItemUsage.OrderableQuantity;
             txtConversion.Text = stockItem.Conversion.ToString();
@@ -54,7 +55,7 @@ namespace DTRMNS {
         private async void AddToStockItem(int quantity, int conversion) {
             //stockItem.UsedQuantity -= (quantity * conversion);
             sentQuantity = (quantity * conversion * -1);
-            if (await bslayer.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
+            if (await  DTRMSimpleBusiness.Instance.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }

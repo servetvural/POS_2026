@@ -116,7 +116,7 @@ namespace DTRMSimpleBackOffice
                       // 3. Register Forms (Forms must be in DI to receive injections)
                       services.AddTransient<frmConfig>();
                       services.AddTransient<frmOffice>();
-                      services.AddSingleton<DTRMSimpleBusiness>();
+                     // services.AddSingleton<DTRMSimpleBusiness>();
                       services.AddTransient<frmKassaCalculator>();
 
                       // 2. Build the provider

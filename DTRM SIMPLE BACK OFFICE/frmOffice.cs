@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 using POSLayer.Library;
 using POSLayer.Models;
-
 using PosLibrary;
-using PosLibrary.DBSpace;
-
 using POSWinFormLayer;
 using POSLayer.Repository.IRepository;
 
@@ -29,20 +20,18 @@ namespace DTRMSimpleBackOffice
         IRepository<TheMenu> repoMenu;
 
         private ConnectionStatus conStatus;
-        private DTRMSimpleBusiness bslayer;
         private ViewModes viewMode = ViewModes.User;
 
         readonly  IRepository<User> repoUser;
 
-        public frmOffice(IServiceProvider _sp, PosConfig configAsService, IRepository<TheMenu> _repoMenu, DTRMSimpleBusiness _bslayer, IRepository<User> _repoUser,  IFormFactory formFactory)
+        public frmOffice(IServiceProvider _sp, PosConfig configAsService, IRepository<TheMenu> _repoMenu, 
+            IRepository<User> _repoUser,  IFormFactory formFactory)
         {
             InitializeComponent();
             config = configAsService;
             repoMenu = _repoMenu;
             repoUser = _repoUser;
 
-            bslayer = _bslayer;
-           
             if (!string.IsNullOrEmpty(Program.UserType))
             {
                 if (!Enum.TryParse<ViewModes>(Program.UserType, true, out viewMode))
@@ -67,25 +56,23 @@ namespace DTRMSimpleBackOffice
                     frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                     if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
-                        User user = await repoUser.GetByField("UserPassword", frmpswd.Password);
-                        if (user == null) { return; }
+                        DTRMSimpleBusiness.Instance.LoggedUser = await repoUser.GetByField("UserPassword", frmpswd.Password);
+                        if (DTRMSimpleBusiness.Instance.LoggedUser == null) { return; }
 
-                        //bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
-                        if (user.IsManagerOrMore())
+                        if (DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore())
                         {
-
                             ConnectActions(true);
 
                             //Identify connection type
                             if (blnLocalDatabase)
                             {
-                                conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
+                                conStatus = DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
                                 btnPrinters.Enabled = true;
                                 btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
                             } else
                             {
                                 //remote connection
-                                conStatus = bslayer.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
+                                conStatus = DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
                                 //btnPrinters.Enabled = false;
                                 btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
                             }
@@ -99,7 +86,6 @@ namespace DTRMSimpleBackOffice
                                              "User : " + config.Database_User_Name;
 
                             this.Refresh();
-
                         }
                     } else
                     {
@@ -107,9 +93,7 @@ namespace DTRMSimpleBackOffice
                     }
                 }                
             }
-        }            
-
-
+        }        
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
@@ -121,7 +105,7 @@ namespace DTRMSimpleBackOffice
                     conStatus = ConnectionStatus.Disconnected;
                     try
                     {
-                        bslayer.OfficeConnectionStatus = ConnectionStatus.Disconnected;
+                        DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.Disconnected;
                     } catch { }
                     ConnectActions(false);
 
@@ -370,7 +354,7 @@ namespace DTRMSimpleBackOffice
             backupOptions.includeCustomers = backupOptions.includeImages = backupOptions.includePrinters = backupOptions.includeStock =
                 backupOptions.includeTables = backupOptions.includeUsers = true;
 
-            DatabaseBackup backup = await bslayer.GetDatabaseBackup(backupOptions);
+            DatabaseBackup backup = await DTRMSimpleBusiness.Instance.GetDatabaseBackup(backupOptions);
             if (backup != null)
             {
                 DRFile.XmlSerialize(Path.Combine("DatabaseBackup\\", "Database Backup on " +
@@ -508,7 +492,7 @@ namespace DTRMSimpleBackOffice
 
         private void mnuViewDumpTool_Click(object sender, EventArgs e)
         {
-            frmDump frm = new frmDump(bslayer);
+            frmDump frm = new frmDump();
             frm.MdiParent = this;
             frm.Show();
         }
@@ -536,7 +520,7 @@ namespace DTRMSimpleBackOffice
                 return;
             }
 
-            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(ServiceHelper.Services, null, true);
+            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(ServiceHelper.Services,new Form(),false);
             frm.Text = "Order Pad";
             frm.ControlBox = true;
             frm.MinimizeBox = true;

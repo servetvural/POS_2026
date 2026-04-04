@@ -11,19 +11,14 @@ namespace DTRMNS {
     public partial class trmSupervisorLogin : Form {
         PosConfig config;
         IRepository<User> repoUser;
-
-
-        private DTRMSimpleBusiness bslayer;
         private string UserPassword;
         public trmSupervisorLogin() {
             InitializeComponent();
         }
-        public trmSupervisorLogin(PosConfig configAsService, IRepository<User> _repoUser, DTRMSimpleBusiness bslayer) {
+        public trmSupervisorLogin(PosConfig configAsService, IRepository<User> _repoUser) {
             InitializeComponent();
             config = configAsService;
             repoUser = _repoUser;
-
-            this.bslayer = bslayer;
         }
 
         private void frmSupervisorLogin_Load(object sender, EventArgs e) {
@@ -40,9 +35,9 @@ namespace DTRMNS {
         private async void btnLogon_Click(object sender, System.EventArgs e) {
 
             try {
-                if (bslayer == null || config == null ) {
+                if (DTRMSimpleBusiness.Instance == null || config == null ) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
-                    if (!bslayer.DoStartThings().Result) {
+                    if (!DTRMSimpleBusiness.Instance.DoStartThings().Result) {
                         return;
                     }
                 }

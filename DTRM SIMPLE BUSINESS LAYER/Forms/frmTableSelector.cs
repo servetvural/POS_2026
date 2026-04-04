@@ -9,13 +9,11 @@ using POSLayer.Models;
 
 namespace DTRMNS{
     public partial class frmTableSelector : Form{
-        private DTRMSimpleBusiness bslayer;
         public TableButton SelectedTableButton;
         private string SelectedGroup;
 
-        public frmTableSelector(DTRMSimpleBusiness bslayer) {
+        public frmTableSelector() {
             InitializeComponent();
-            this.bslayer = bslayer;
         }
 
 
@@ -34,7 +32,7 @@ namespace DTRMNS{
         private void LoadGroups() {
             pnlGroups.Controls.Clear();
 
-            DataTable dt = bslayer.GetAllTableGroups();
+            DataTable dt = DTRMSimpleBusiness.Instance.GetAllTableGroups();
             for (int i = 0; i < dt.Rows.Count; i++) {
                 RadioButton btn = new RadioButton();
                 btn.Appearance = Appearance.Button;
@@ -79,11 +77,11 @@ namespace DTRMNS{
         }
 
         private async void LoadTables() {
-            List<Table> tablelist =await bslayer.GetTableList(SelectedGroup);
+            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableList(SelectedGroup);
 
             pnlTables.Controls.Clear();
 
-            Table table;
+            Masa table;
             string locker = "";
             for (int i = 0; i < tablelist.Count; i++) {
                 table = tablelist[i];
@@ -96,18 +94,18 @@ namespace DTRMNS{
                 btn.IID = table.IID;
                 btn.Font = new Font("Arial", 12, FontStyle.Bold);
                 if (locker.Length > 0) {
-                    btn.BackColor = Color.DarkBlue; //bslayer.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                    btn.ForeColor = Color.White; // bslayer.config.Table_Busy_Text_Color;
+                    btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                    btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                 }
                 else {
                     if (table.HasActiveOrder()) {
-                        btn.BackColor = Color.DarkRed; // bslayer.config.Table_Full_Back_Color; //  Color.DarkRed;
-                        btn.ForeColor = Color.White; // bslayer.config.Table_Full_Text_Color;
+                        btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
                     }
                     else {
                         btn.BackColor = Color.DarkGreen;
-                        // bslayer.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                        btn.ForeColor = Color.White; // bslayer.config.Table_Free_Text_Color;
+                        //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
                     }
                 }
                 btn.Location = new Point(table.XLocation, table.YLocation);
@@ -115,7 +113,6 @@ namespace DTRMNS{
                 btn.ForeColor = Color.White;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
-                btn.Shape = table.Shape;
                 btn.Click += new System.EventHandler(this.btnSelectTableButton_Click);
                 pnlTables.Controls.Add(btn);
                 locker = "";

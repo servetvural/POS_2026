@@ -457,6 +457,7 @@ namespace DTRMSimpleBackOffice {
             btnCategorySample.Image = (System.Drawing.Image)resources.GetObject("btnCategorySample.Image");
             btnCategorySample.ImageTransparentColor = System.Drawing.Color.Magenta;
             btnCategorySample.Name = "btnCategorySample";
+            btnCategorySample.Padding = new System.Windows.Forms.Padding(5);
             btnCategorySample.Size = new System.Drawing.Size(100, 51);
             btnCategorySample.Text = "Sample";
             btnCategorySample.Paint += btnCategorySample_Paint;

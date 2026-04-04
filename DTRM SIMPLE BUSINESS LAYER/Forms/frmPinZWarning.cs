@@ -13,10 +13,10 @@ namespace DTRMNS {
         bool blnCompare;
         double CardTotal;
         private DTRMSimpleBusiness bslayer;
-        public frmPinZWarning(DTRMSimpleBusiness bslayer) {
+        public frmPinZWarning() {
             InitializeComponent();
             blnCompare = false;
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         public frmPinZWarning(DTRMSimpleBusiness bslayer, double CardTotal) {

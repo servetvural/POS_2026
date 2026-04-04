@@ -5,9 +5,9 @@ namespace DTRMNS {
     public partial class frmDump : Form {
         private DTRMSimpleBusiness bslayer;
 
-        public frmDump(DTRMSimpleBusiness bslayer) {
+        public frmDump() {
             InitializeComponent();
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         private void frmDump_Load(object sender, EventArgs e) {
@@ -18,16 +18,16 @@ namespace DTRMNS {
             dgvIrrelevantOrders.DataSource = null;
             dgvErrorOrders.DataSource = null;
 
-            dgvIrrelevantOrders.DataSource = bslayer.GetIrrelevantUnpaidOrdersDB();
+            dgvIrrelevantOrders.DataSource =  DTRMSimpleBusiness.Instance.GetIrrelevantUnpaidOrdersDB();
             btnDeleteOrders.Visible = dgvIrrelevantOrders.Rows.Count > 0;
 
-            dgvErrorOrders.DataSource = bslayer.GetRelevantUnpaidCreatedOrNewOrdersDB();
+            dgvErrorOrders.DataSource =  DTRMSimpleBusiness.Instance.GetRelevantUnpaidCreatedOrNewOrdersDB();
             btnDeleteErrorOrders.Visible = dgvErrorOrders.Rows.Count > 0;
         }
 
         private void btnDeleteOrders_Click(object sender, EventArgs e) {
             for (int i=0; i < dgvIrrelevantOrders.SelectedRows.Count; i++) {
-                bslayer.DeleteOrder(dgvIrrelevantOrders.SelectedRows[i].Cells["colIID"].Value.ToString());
+                 DTRMSimpleBusiness.Instance.DeleteOrder(dgvIrrelevantOrders.SelectedRows[i].Cells["colIID"].Value.ToString());
 
             }
             LoadOrders();
@@ -41,7 +41,7 @@ namespace DTRMNS {
 
         private void btnDeleteErrorOrders_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvErrorOrders.SelectedRows.Count; i++) {
-                bslayer.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
+                 DTRMSimpleBusiness.Instance.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
 
             }
             LoadOrders();

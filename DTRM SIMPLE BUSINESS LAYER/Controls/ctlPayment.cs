@@ -20,8 +20,6 @@ namespace DTRMNS
         private GenericFunctionCall CloseFunction;
         private RemoteCompleteAttachedOrder CompleteAttachedOrder;
 
-        private DTRMSimpleBusiness bslayer;
-
         private int NumberOfCopy;
         private bool blnArchive;
         private bool blnPrintLocal;
@@ -31,11 +29,10 @@ namespace DTRMNS
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        public ctlPayment(PosConfig configAsService, DTRMSimpleBusiness bslayer)
+        public ctlPayment(PosConfig configAsService)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
         }
         public ctlPayment(GenericFunctionCall CloseFunction, RemoteCompleteAttachedOrder CompleteAttachedOrder,
            int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive)
@@ -184,7 +181,7 @@ namespace DTRMNS
 
         private void btnOnline_Click(object sender, System.EventArgs e)
         {
-            bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
+             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
             CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
             CloseFunction();
         }
@@ -195,7 +192,7 @@ namespace DTRMNS
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 //PrintFinalPayment(PaymentMethods.Card, true);
-                bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
+                 DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
                 CompleteAttachedOrder(1, true, true, true);
                 CloseFunction();
             }
@@ -206,7 +203,7 @@ namespace DTRMNS
 
         private void btnCash_Click(object sender, System.EventArgs e)
         {
-            bslayer.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
+             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
             CompleteAttachedOrder(1, blnArchive, true, blnEnforceDeliveryArchive);
             CloseFunction();
         }

@@ -23,13 +23,13 @@ namespace DTRMNS {
         {
             InitializeComponent();
         }
-        public frmKitchenSingleDisplay(PosConfig configAsService,IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer)
+        public frmKitchenSingleDisplay(PosConfig configAsService,IRepository<Distribution> _repoDistribution)
         {
             InitializeComponent();
             config = configAsService;
             repoDistribution = _repoDistribution;
 
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
        
         public  frmKitchenSingleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer, Distribution _distribution, bool CloseVisible, bool FullScreen)
@@ -63,7 +63,7 @@ namespace DTRMNS {
 
         private async void CtlKitchen_DisplayTypeWillBeChange()
         {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(bslayer.sp, true, await repoDistribution.Get(config.Default_Distribution_IID));
+            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(ServiceHelper.Services, true, await repoDistribution.Get(config.Default_Distribution_IID));
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 config.Default_Distribution_IID  = frm.distribution.IID;

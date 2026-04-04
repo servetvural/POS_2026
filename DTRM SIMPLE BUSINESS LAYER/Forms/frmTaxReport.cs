@@ -10,16 +10,13 @@ using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class frmTaxReport : Form {
-        private DTRMSimpleBusiness bslayer;
-
         private DataSet  dsReport;
 
         DateTime FirstStartDate;
         DateTime LastEndDate;
 
-        public frmTaxReport(DTRMSimpleBusiness bslayer, DateTime FirstStartDate, DateTime LastEndDate) { // DataSet dsReport) {
+        public frmTaxReport(DateTime FirstStartDate, DateTime LastEndDate) { // DataSet dsReport) {
             InitializeComponent();
-            this.bslayer = bslayer;
             this.FirstStartDate = FirstStartDate;
             this.LastEndDate = LastEndDate;
             
@@ -31,7 +28,7 @@ namespace DTRMNS {
 
         public void Reload()
         {
-            this.dsReport = bslayer.GetTaxSummaryReport(FirstStartDate, LastEndDate);
+            this.dsReport = DTRMSimpleBusiness.Instance.GetTaxSummaryReport(FirstStartDate, LastEndDate);
             dgvDaily.DataSource = dsReport.Tables["Daily"];
             dgvPercent.DataSource = dsReport.Tables["Percent"];
             for (int i = 0; i < dgvPercent.Rows.Count; i++)
@@ -78,7 +75,7 @@ namespace DTRMNS {
         }
 
         private async  void btnArcEmailAsCsv_Click(object sender, EventArgs e) {
-            if (bslayer.shop.NotificationEmail == "") {
+            if (DTRMSimpleBusiness.Instance.shop.NotificationEmail == "") {
                 MessageBox.Show("There is no valid email address to send");
                 return;
             }
@@ -101,7 +98,7 @@ namespace DTRMNS {
             writer.Write(exporter.csvText);
             writer.Flush();
             stream.Position = 0;
-            if (bslayer.SendEmailToCustomRecepient(bslayer.shop.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
+            if (DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(DTRMSimpleBusiness.Instance.shop.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
                 MessageBox.Show("Email Sent");
 
             //}            

@@ -17,10 +17,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmCurrentSessionDisplay : Form {
-        private DTRMSimpleBusiness bslayer;
+        IRepository<Session> repoSession;    
 
         private bool blnLoading;
-        private SessionData CurrentSessionData;
+        private Session CurrentSessionData;
         private double oldGrossSessionTotal;
         private double oldGrossSessionTotalUncompleted;
 
@@ -29,9 +29,9 @@ namespace DTRMSimpleBackOffice {
         public frmCurrentSessionDisplay() {
             InitializeComponent();
         }
-        public frmCurrentSessionDisplay(DTRMSimpleBusiness bslayer) {
+        public frmCurrentSessionDisplay(IRepository<Session> _repoSession) {
             InitializeComponent();
-            this.bslayer = bslayer;
+            repoSession = _repoSession;
         }
         private void frmCurrentSessionDisplay_Load(object sender, EventArgs e) {
             
@@ -60,8 +60,8 @@ namespace DTRMSimpleBackOffice {
         private void LoadOrders() {
             //IID, OrderDate, CalculatedValue
             dgvOrderItems.DataSource = null;
-            dgvOrders.DataSource = bslayer.GetDataTable("Select IID, OrderDate, CalculatedValue from OrdersView where SessionIID = '" + 
-                CurrentSessionData.SessionIID + "' order by OrderDate desc");
+            dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, CalculatedValue from OrdersView where SessionIID = '" + 
+                CurrentSessionData.IID + "' order by OrderDate desc");
             //dgvOrders_SelectionChanged(null, null);
         }
 
@@ -77,20 +77,20 @@ namespace DTRMSimpleBackOffice {
         }
 
         private DataTable GetOrderItemsForOrderCustom(string OrderIID) {
-            return  bslayer.GetDataTable("Select IID,Quantity, OrderItemText,Price, Total from OrderItemView where ParentOrderIID = '" + OrderIID + "' order by DisplayOrder, OrderGroupIID");
+            return DTRMSimpleBusiness.Instance.GetDataTable("Select IID,Quantity, OrderItemText,Price, Total from OrderItemView where ParentOrderIID = '" + OrderIID + "' order by DisplayOrder, OrderGroupIID");
         }
 
 
         private async void UpdateSessionLabels() {
             //Update session values dynamically
-            CurrentSessionData = await bslayer.GetSessionDataDynamic(bslayer.shop.CurrentSessionIID);
+            CurrentSessionData = await repoSession.Get(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
             int changeCount = 0;
             
             if (CurrentSessionData != null) {
                 if (CurrentSessionData.GrossSessionTotal != oldGrossSessionTotal ||
                     CurrentSessionData.GrossSessionTotalUncompleted != oldGrossSessionTotalUncompleted )
                 {
-                    lblSessionStartDateTime.Text = CurrentSessionData.SessionStartDateTime.ToString("dd/MMM/yy ddd HH:mm");
+                    lblSessionStartDateTime.Text = CurrentSessionData.StartDate.ToString("dd/MMM/yy ddd HH:mm");
                     double grossSessionTotal = CurrentSessionData.GrossSessionTotal;
                     if (grossSessionTotal != oldGrossSessionTotal)
                     {
@@ -120,17 +120,17 @@ namespace DTRMSimpleBackOffice {
         private void btnPrintReport_Click(object sender, EventArgs e) {
              frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
              if (fsp.ShowDialog() == DialogResult.OK) {
-                 bslayer.PrintReport(ReportFormatTypes.YReport, bslayer.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
+                DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.YReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
              }
         }
 
         private async void btnPrintReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order =await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
                 frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
-                    bslayer.PrintReceipt(OrderIID, frm.SelectedPrinter, 1);
+                    DTRMSimpleBusiness.Instance.PrintReceipt(OrderIID, frm.SelectedPrinter, 1);
                 }
             }
         }
@@ -138,8 +138,8 @@ namespace DTRMSimpleBackOffice {
         private async void btnViewReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = await bslayer.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
-                Printer printer =await bslayer.GetDefaultReceiptPrinter();
+                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Printer printer = await DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();
                 if (printer == null) {
                     MessageBox.Show("No printer attached!!");
                     return;
@@ -149,7 +149,7 @@ namespace DTRMSimpleBackOffice {
                 Graphics g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                int imgHeight = bslayer.ViewReceipt(g, OrderIID, printer, 1);
+                int imgHeight = DTRMSimpleBusiness.Instance.ViewReceipt(g, OrderIID, printer, 1);
                 Image imgFinal = DRUF.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
 
                 frmViewImage frm = new frmViewImage(imgFinal);

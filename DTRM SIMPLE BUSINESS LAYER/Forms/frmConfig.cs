@@ -76,14 +76,14 @@ namespace DTRMNS
 
 
         public frmConfig(PosConfig configAsService, IRepository<Shop> _repoShop, IRepository<TheMenu> _repoMenu,
-            IRepository<GenericImage> _repoImage, DTRMSimpleBusiness bslayer)
+            IRepository<GenericImage> _repoImage )
         {
             config = configAsService;
             repoShop = _repoShop;
             repoMenu = _repoMenu;
             repoImage = _repoImage;
 
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
             InitializeComponent();
         }
 
@@ -608,7 +608,7 @@ namespace DTRMNS
 
         private void frmConfig_Load(object sender, System.EventArgs e)
         {
-            if (bslayer == null || bslayer.OfficeConnectionStatus == ConnectionStatus.Disconnected)
+            if (bslayer == null ||  DTRMSimpleBusiness.Instance.OfficeConnectionStatus == ConnectionStatus.Disconnected)
             {
                 tabMain.TabPages.Remove(tabMain.TabPages["tpShop"]);
                 tabMain.TabPages.Remove(tabMain.TabPages["tpOthers"]);
@@ -619,11 +619,11 @@ namespace DTRMNS
             if (bslayer == null)
             {
                 //bslayer = new DTRMSimpleBusiness();
-                lblVersion.Text = "Version : " + bslayer.ApplicationVersion;
+                lblVersion.Text = "Version : " +  DTRMSimpleBusiness.Instance.ApplicationVersion;
                 bslayer = null;
             }
             if (bslayer != null)
-                lblVersion.Text = "Version : " + bslayer.ApplicationVersion;
+                lblVersion.Text = "Version : " +  DTRMSimpleBusiness.Instance.ApplicationVersion;
             #endregion
 
             LoadConfig();
@@ -699,7 +699,7 @@ namespace DTRMNS
                 config.ActiveMenuIID = cmbMenu.SelectedValue.ToString();
                 UF.SaveConfig(config);
                 LoadMenuList();
-                bslayer.GetActiveMenu(true, true);
+                 DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
             }
         }
 
@@ -711,7 +711,7 @@ namespace DTRMNS
             {
                 try
                 {
-                    cmbMenuTaxRates.DataSource = await bslayer.GetAllTaxRates();
+                    cmbMenuTaxRates.DataSource = await  DTRMSimpleBusiness.Instance.GetAllTaxRates();
                     //cmbMenuTaxRates.DisplayMember = "TaxPercent";
                     //cmbMenuTaxRates.ValueMember = "TaxPercent";
                 } catch
@@ -751,7 +751,7 @@ namespace DTRMNS
                 Shop shop = (Shop)pGridLuv.SelectedObject;
                 shop.VoidText = (shop.VoidText.Length > 5 ? shop.VoidText.Substring(0, 5) : shop.VoidText);
                 repoShop.Save(shop);
-                bslayer.shop = shop;
+                 DTRMSimpleBusiness.Instance.shop = shop;
             }
         }
 
@@ -789,7 +789,7 @@ namespace DTRMNS
                     MessageBox.Show("Configuration file saved");
                     if (!blnEmpty)
                     {
-                        // bslayer.config = config;
+                        //  DTRMSimpleBusiness.Instance.config = config;
                         SaveShop();
                     }
                     this.DialogResult = DialogResult.OK;
@@ -813,7 +813,7 @@ namespace DTRMNS
                     TrmGetValue frm = new TrmGetValue(NumberModes.FloatMode);
                     if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        bslayer.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
+                         DTRMSimpleBusiness.Instance.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
                         LoadTaxRates();
                     }
                 }
@@ -882,22 +882,22 @@ namespace DTRMNS
 
         private void btnSendTestEmailToPurchase_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.shop.PurchaseEmail, "Test email from DTRMSimple to Purchase", "test", null);
+             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.PurchaseEmail, "Test email from DTRMSimple to Purchase", "test", null);
         }
 
         private void btnSendTestEmailToOrders_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.shop.OrdersEmail, "Test email from DTRMSimple to Orders", "test", null);
+             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.OrdersEmail, "Test email from DTRMSimple to Orders", "test", null);
         }
 
         private void btnSendTestEmailToReport_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.shop.ReportEmail, "Test email from DTRMSimple to Report", "test", null);
+             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.ReportEmail, "Test email from DTRMSimple to Report", "test", null);
         }
 
         private void btnSendTestEmailToNotification_Click(object sender, EventArgs e)
         {
-            bslayer.SendEmailToCustomRecepient(bslayer.shop.NotificationEmail, "Test email from DTRMSimple to Notification", "test", null);
+             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.NotificationEmail, "Test email from DTRMSimple to Notification", "test", null);
         }
     }
 }

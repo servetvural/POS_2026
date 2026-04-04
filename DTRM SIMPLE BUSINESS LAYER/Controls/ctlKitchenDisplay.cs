@@ -64,16 +64,16 @@ namespace DTRMNS {
 
         }
         public async void Initiate( Distribution _distribution, bool CloseVisible) {
-            KitchenModified = bslayer.GetKitchenModified();
+            KitchenModified =  DTRMSimpleBusiness.Instance.GetKitchenModified();
 
             distribution = _distribution; // AddRange(globalTypeIIDList.Split(new char[',']));
-            bslayer.KitchenRequestOccured += Bslayer_KitchenRequestOccured;
+             DTRMSimpleBusiness.Instance.KitchenRequestOccured += Bslayer_KitchenRequestOccured;
             
             DistributionChanged(distribution);
             btnClose.Visible = CloseVisible;
             tmrMain.Enabled = true;
             lblClock.Text = DateTime.Now.ToLongTimeString();
-            await bslayer.CleanKitchenOrdersHasNoParentOrder();
+            await  DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
         }
 
         private void Bslayer_KitchenRequestOccured(KitchenOrder order) {
@@ -107,7 +107,7 @@ namespace DTRMNS {
 
         private async void Ctl_OrderDeleteRequested(string IID){
             try {
-                if (await bslayer.DeleteKitchenOrder(IID, false)) {
+                if (await  DTRMSimpleBusiness.Instance.DeleteKitchenOrder(IID, false)) {
                     pnlCompletedOrders.Controls.RemoveByKey(IID);
                     OrderDeleted(IID);
 
@@ -139,7 +139,7 @@ namespace DTRMNS {
                     lblResponse.Text = DRUF.secondsToMinutes(Math.Floor(totalResponseTime / pnlCompletedOrders.Controls.Count));
                 }
             } catch (Exception ex) {
-                bslayer.SaveDebug("ctlKitchenDisplay UpdateResponseTime " + ex.Message);
+                 DTRMSimpleBusiness.Instance.SaveDebug("ctlKitchenDisplay UpdateResponseTime " + ex.Message);
             }
         }
 
@@ -155,7 +155,7 @@ namespace DTRMNS {
             this.DoubleBuffered = true;
 
             try {
-                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, distribution);
+                List<KitchenOrder> orderList =await  DTRMSimpleBusiness.Instance.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, distribution);
                 for (int i = 0; i < orderList.Count; i++) {
                     if (orderList[i].OrderType == OrderTypes.DirectSale && !config.Hold_Order_Display_in_Kitchen)
                         continue;
@@ -179,7 +179,7 @@ namespace DTRMNS {
                         if (orderList.Find(x => x.IID == ctl.korder.IID) == null)
                             pnlKitchenOrders.Controls.Remove(ctl);
                     } catch (Exception exremove) {
-                        bslayer.SaveDebug("ctlKitchenDisplay LoadWaitingKitchenOrders remove loop " + exremove.Message);
+                         DTRMSimpleBusiness.Instance.SaveDebug("ctlKitchenDisplay LoadWaitingKitchenOrders remove loop " + exremove.Message);
                     }
                 }
                 //foreach (Control item in pnlKitchenOrders.Controls) {
@@ -187,7 +187,7 @@ namespace DTRMNS {
                 //    ((ctlKitchenOrder)item).pnlMainSetAutoSize(true);
                 //}
             } catch (Exception ex) {
-                bslayer.SaveDebug("ctlKitchenDisplay LoadWaitingKitchenOrders " + ex.Message);
+                 DTRMSimpleBusiness.Instance.SaveDebug("ctlKitchenDisplay LoadWaitingKitchenOrders " + ex.Message);
             }
 
             blnLoadingKitchenOrders = false;
@@ -210,7 +210,7 @@ namespace DTRMNS {
             //pnlCompletedOrders.Controls.Clear();
 
             try {
-                List<KitchenOrder> orderList =await bslayer.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, distribution);
+                List<KitchenOrder> orderList =await  DTRMSimpleBusiness.Instance.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Completed, true, distribution);
                 double totalResponseTime = 0;
 
                 for (int i = 0; i < orderList.Count; i++) {
@@ -258,7 +258,7 @@ namespace DTRMNS {
 
             blnNeedToShrink = orderList.Count > config.Kitchen_Max_Completed_Order_Count;
             } catch (Exception ex) {
-                bslayer.SaveDebug("ctlKitchenDisplay LoadCompletedOrders " + ex.Message);
+                 DTRMSimpleBusiness.Instance.SaveDebug("ctlKitchenDisplay LoadCompletedOrders " + ex.Message);
             }
 
             blnLoadingCompletedOrders = false;
@@ -269,7 +269,7 @@ namespace DTRMNS {
             if (blnLoadingCompletedOrders || blnLoadingKitchenOrders)
                 return;
             else {
-                DateTime theNewKitchenModified = bslayer.GetKitchenModified();
+                DateTime theNewKitchenModified =  DTRMSimpleBusiness.Instance.GetKitchenModified();
 
                 if (theNewKitchenModified > KitchenModified) {
                     KitchenModified = theNewKitchenModified;
@@ -301,7 +301,7 @@ namespace DTRMNS {
         }
 
         private void btnShrink_Click(object sender, EventArgs e) {
-            bslayer.ShrinkKitchenOrderList();
+             DTRMSimpleBusiness.Instance.ShrinkKitchenOrderList();
             LoadCompletedOrders();
         }
         private void btnClose_Click(object sender, EventArgs e) {

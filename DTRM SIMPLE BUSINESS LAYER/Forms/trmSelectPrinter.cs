@@ -14,22 +14,16 @@ namespace DTRMNS {
 		private Button btnClose;
 
       public string ReturnValue;
-      private DTRMSimpleBusiness bslayer;
       private Panel panel1;
 
      // public string SelectedPrinterIID;
 
       private System.ComponentModel.IContainer components;
 
-		public trmSelectPrinter()
-		{
-			InitializeComponent();
-		}
 
-		public trmSelectPrinter(DTRMSimpleBusiness bs) {			
+		public trmSelectPrinter() {			
 			InitializeComponent();
-			bslayer = bs;
-		}
+        }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -135,7 +129,7 @@ namespace DTRMNS {
 		#endregion
 
         private async void LoadPrinters() {
-            List<Printer> PrinterList = await bslayer.GetReceiptPrinterList();
+            List<Printer> PrinterList = await DTRMSimpleBusiness.Instance.GetReceiptPrinterList();
 
             ListViewItem lvi;
             Printer printer;

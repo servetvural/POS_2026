@@ -38,7 +38,7 @@ namespace DTRMNS {
 
         bool blnTerminate = false;
         public frmKassaCalculator( PosConfig configAsService, IRepository<User> _repoUser, IRepository<Employee> _repoEmployee,
-            IRepository<Bonus> _repoBonus, DTRMSimpleBusiness bslayer) {
+            IRepository<Bonus> _repoBonus ) {
             InitializeComponent();
 
             config = configAsService;
@@ -57,7 +57,7 @@ namespace DTRMNS {
                 }
             }
 
-            this.bslayer = bslayer;
+            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         async Task<bool> LoginUser()
@@ -284,7 +284,7 @@ namespace DTRMNS {
                     report.Add("drawline");
                 }
 
-                bslayer.PrintKassaReport(report, fsp.SelectedPrinter, 1);
+                 DTRMSimpleBusiness.Instance.PrintKassaReport(report, fsp.SelectedPrinter, 1);
             }
         }
         private void cmdClose_Click(object sender, EventArgs e) {
