@@ -29,9 +29,9 @@ namespace DTRMNS {
         /// <param name="Parent"></param>
         /// <param name="entitybutton"></param>
         /// <param name="EditorButton"></param>
-        public UPEntityButton(PosConfig configAsService,  UPEntity ParentUPEntity, CategoryItem categoryItem) {
+        public UPEntityButton(UPEntity ParentUPEntity, CategoryItem categoryItem) {
 
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
             //new button type construction
 
             if (categoryItem.ButtonType == CategoryItemTypes.SpaceButton) {

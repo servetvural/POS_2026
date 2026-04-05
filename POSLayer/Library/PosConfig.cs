@@ -280,8 +280,8 @@ public class PosConfig
     public OrderTypes Order_Pad_Default_Order_Type { get; set; } = OrderTypes.DirectSale;
 
 
-    [CategoryAttribute("16.Other Order Settings"), DisplayName("OrderPad Orientation"), DescriptionAttribute("OrderPad Orientation Landscape or Portrait")]
-    public OrientationTypes OrderPad_Orientation { get; set; } = OrientationTypes.Landscape;
+    //[CategoryAttribute("16.Other Order Settings"), DisplayName("OrderPad Orientation"), DescriptionAttribute("OrderPad Orientation Landscape or Portrait")]
+    //public OrientationTypes OrderPad_Orientation { get; set; } = OrientationTypes.Landscape;
 
 
 

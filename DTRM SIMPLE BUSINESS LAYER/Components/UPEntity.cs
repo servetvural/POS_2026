@@ -28,12 +28,10 @@ namespace DTRMNS {
         public UPEntity() {
 
         }
-
-
        
-        public UPEntity(PosConfig configAsService,  Category category) {
+        public UPEntity(Category category) {
             InitializeComponent();
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
             this.category = category;
             IID = category.IID;
             UIEButtonsPanel = new FlowLayoutPanel();

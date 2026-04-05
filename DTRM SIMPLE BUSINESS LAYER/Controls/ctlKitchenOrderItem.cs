@@ -9,7 +9,6 @@ using POSLayer.Models;
 
 namespace DTRMNS {
     public partial class ctlKitchenOrderItem : UserControl {
-        public DTRMSimpleBusiness bslayer;
         public KitchenOrderItem korderitem;
         public Label ActiveLabel {  get { return lblActive; }  }
         public PictureBox PBox {  get { return pBox; } }
@@ -21,10 +20,8 @@ namespace DTRMNS {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ShowExpander { get { return expMain.Visible; } set { expMain.Visible = value; } }
         public ctlKitchenOrderItem() {
-            InitializeComponent();
-            
+            InitializeComponent();              
         }
-
         private void ctlKitchenOrderItem_Load(object sender, EventArgs e) {
 
         }
@@ -42,7 +39,7 @@ namespace DTRMNS {
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e) {
-            if (bslayer != null && korderitem != null) {
+            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null && korderitem != null) {
                 frmKitchenOrderFullScreen frm = ActivatorUtilities.CreateInstance < frmKitchenOrderFullScreen>(ServiceHelper.Services, korderitem);
                 frm.Show();
             }

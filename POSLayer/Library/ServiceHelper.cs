@@ -16,7 +16,13 @@ public static class ServiceHelper
     public static void Initialize(IServiceProvider serviceProvider) =>
         Services = serviceProvider;
 
-    public static T GetService<T>() => Services.GetService<T>();
+    public static T GetService<T>()
+    {
+        if (Services == null)
+            return default;
+        else     
+            return Services.GetService<T>();
+    }
 
 
     /// <summary>

@@ -37,7 +37,6 @@ namespace DTRMNS
         public TheMenu ActiveMenu { get; set; }
         public string ReportLockClientIP { get; set; }
         public ConnectionStatus OfficeConnectionStatus { get; set; } = ConnectionStatus.Disconnected;
-        public string SelectedOrderItemIID { get; set; }
         public Bitmap imgReportSnapShot { get; set; }
         public string ApplicationVersion { get; set; } = "10.0.0.0";
         public string StepableOrderItemGroupIID { get; set; } = "";
@@ -77,8 +76,21 @@ namespace DTRMNS
         }
 
         // 1. Private static field to hold the single instance
+        //private static readonly Lazy<DTRMSimpleBusiness> _instance =
+        //    new Lazy<DTRMSimpleBusiness>(() => new DTRMSimpleBusiness());
+
         private static readonly Lazy<DTRMSimpleBusiness> _instance =
-            new Lazy<DTRMSimpleBusiness>(() => new DTRMSimpleBusiness());
+        new Lazy<DTRMSimpleBusiness>(() => {
+            // 1. Check if the ServiceHelper is actually ready
+            if (ServiceHelper.Services == null)
+            {
+                // Return null or throw a custom error that won't crash the UI
+                return null;
+            }
+
+            return new DTRMSimpleBusiness();
+        });
+
 
         // 2. Public static property to access the instance
         public static DTRMSimpleBusiness Instance => _instance.Value;
@@ -118,7 +130,14 @@ namespace DTRMNS
 
         private async Task InitializeAsync()
         {
-            shop = await repoShop.GetFirst();
+            try
+            {
+                shop = await repoShop.GetFirst();
+            }catch
+            {
+                    //Handle the case where shop is not found, maybe log an error or set a default value
+                    shop = null; // or new Shop() with default values
+            }
         }
 
         IRepository<Shop> repoShop;

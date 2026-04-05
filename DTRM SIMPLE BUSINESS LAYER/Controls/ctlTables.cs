@@ -26,12 +26,11 @@ namespace DTRMNS
 
         private GenericFunctionCall CloseOrderItemEntityInteractionEvent;
 
-
-        public ctlTables(PosConfig configAsService, IRepository<Masa> _repoTable)
+        public ctlTables()
         {
             InitializeComponent();
-            config = configAsService;
-            repoTable = _repoTable;
+            config = ServiceHelper.GetService<PosConfig>();             
+            repoTable =ServiceHelper.GetService<IRepository<Masa>>();
         }
 
         public ctlTables(GenericFunctionCall CloseFunction,

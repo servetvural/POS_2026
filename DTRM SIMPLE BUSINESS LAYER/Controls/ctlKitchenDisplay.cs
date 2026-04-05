@@ -53,10 +53,9 @@ namespace DTRMNS {
                 OrderCompleted(korderIID);
         }
 
-        public ctlKitchenDisplay(PosConfig configAsService, DTRMSimpleBusiness bslayer) {
+        public ctlKitchenDisplay() {
             InitializeComponent();
-            config = configAsService;
-            this.bslayer = bslayer;
+            config = ServiceHelper.GetService<PosConfig>();
             //terminalDistributionList = new List<Distribution>();
         }
 

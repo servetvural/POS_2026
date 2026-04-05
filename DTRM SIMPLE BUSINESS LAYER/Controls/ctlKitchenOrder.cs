@@ -19,7 +19,6 @@ namespace DTRMNS {
         IRepository<Order> repoOrder;
         IRepository<GenericImage> repoImage;
 
-        public DTRMSimpleBusiness bslayer;
         public KitchenOrder korder;
         public bool blnWaiting;
         public double singleResponseTime = 0;
@@ -45,17 +44,16 @@ namespace DTRMNS {
 
 
         public ctlKitchenOrder(PosConfig configAsService,IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug,
-            IRepository<GenericImage> _repoImage, DTRMSimpleBusiness bslayer) {
+            IRepository<GenericImage> _repoImage) {
             InitializeComponent();
             config = configAsService;
             repoDebug = _repoDebug;
             repoOrder = _repoOrder;
             repoImage = _repoImage;
-
-            this.bslayer = bslayer;
-
         }
-        public ctlKitchenOrder(PosConfig configAsService, IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug, KitchenOrder korder, Distribution _distribution, bool blnWaiting,bool blnDisplayDetails) {
+        public ctlKitchenOrder(PosConfig configAsService, IRepository<Order> _repoOrder, 
+            IRepository<Debug> _repoDebug, KitchenOrder korder, 
+            Distribution _distribution, bool blnWaiting,bool blnDisplayDetails) {
             InitializeComponent();
             config = configAsService;
             repoDebug = _repoDebug;
@@ -74,13 +72,11 @@ namespace DTRMNS {
             subFont = new Font("Arial", (float)config.Kitchen_Small_Font_Size, FontStyle.Regular);
             detailFont = new Font("Arial", (float)config.Kitchen_Detail_Font_Size, FontStyle.Regular);
 
-            
-           
         }
         
 
         private async void CtlKitchenOrder_Load(object sender, EventArgs e) {
-            if (bslayer != null && korder != null)
+            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null && korder != null)
                 await LoadKitchenOrder();
         }
 
@@ -197,8 +193,7 @@ namespace DTRMNS {
                                     ctlkoi.DetailLabel.Visible = true;
                                     ctlkoi.PBox.BackgroundImage = prepImage.DisplayImage.ToImage();
                                     ctlkoi.DetailLabel.Text = prepImage.ExtraText;
-                                    ctlkoi.DetailLabel.Font = detailFont;
-                                    ctlkoi.bslayer = bslayer;
+                                    ctlkoi.DetailLabel.Font = detailFont;                                     
                                     ctlkoi.korderitem = koi;
                                     ctlkoi.ShowFullScreen = config.Display_Kitchen_FullScreen_on_Display;
                                     blnExpand = true;

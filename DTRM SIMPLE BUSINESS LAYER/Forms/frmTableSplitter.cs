@@ -150,23 +150,23 @@ namespace DTRMNS
 
         private void LoadSourceTable()
         {
-            odSourceTable.OrderToDisplay = SourceTable.AttachedOrder;
-            odSourceTable.Display();
-            lblSourceTableName.Text = SourceTable.TableName;
+            //odSourceTable.OrderToDisplay = SourceTable.AttachedOrder;
+            //odSourceTable.Display();
+            //lblSourceTableName.Text = SourceTable.TableName;
         }
 
         private async void UnloadSourceTable()
         {
-            if (odSourceTable.OrderToDisplay != null)
-            {
-                odSourceTable.OrderToDisplay.LockedClientIP = "";
-                await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
-            }
-            odSourceTable.OrderToDisplay = null;
-            odSourceTable.Display();
-            lblSourceTableName.Text = "";
-            DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
-            SourceTable = null;
+            //if (odSourceTable.OrderToDisplay != null)
+            //{
+            //    odSourceTable.OrderToDisplay.LockedClientIP = "";
+            //    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //}
+            //odSourceTable.OrderToDisplay = null;
+            //odSourceTable.Display();
+            //lblSourceTableName.Text = "";
+            //DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
+            //SourceTable = null;
         }
 
         private async void btnChangeTableSource_Click(object sender, EventArgs e)
@@ -315,24 +315,24 @@ namespace DTRMNS
 
         private void LoadTargetTable()
         {
-            odTargetTable.OrderToDisplay = TargetTable.AttachedOrder;
-            odTargetTable.Display();
-            lblTargetTableName.Text = TargetTable.TableName;
+            //odTargetTable.OrderToDisplay = TargetTable.AttachedOrder;
+            //odTargetTable.Display();
+            //lblTargetTableName.Text = TargetTable.TableName;
         }
 
         private async Task UnloadTargetTable()
         {
-            if (odTargetTable.OrderToDisplay != null)
-            {
-                odTargetTable.OrderToDisplay.LockedClientIP = "";
-                await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
-            }
+            //if (odTargetTable.OrderToDisplay != null)
+            //{
+            //    odTargetTable.OrderToDisplay.LockedClientIP = "";
+            //    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //}
 
-            odTargetTable.OrderToDisplay = null;
-            odTargetTable.Display();
-            lblTargetTableName.Text = "";
-            await DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
-            TargetTable = null;
+            //odTargetTable.OrderToDisplay = null;
+            //odTargetTable.Display();
+            //lblTargetTableName.Text = "";
+            //await DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
+            //TargetTable = null;
         }
 
         private async void btnAddTargetTable_Click(object sender, EventArgs e)
@@ -357,169 +357,169 @@ namespace DTRMNS
 
         private async void btnSourceToTarget_1_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null  && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.Items.Count == 1)
-                return;
+            //if (SourceTable != null  && SourceTable.AttachedOrder != null &&
+            //    SourceTable.AttachedOrder.Items.Count == 1)
+            //    return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odSourceTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odSourceTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    oiNew.Quantity = 1;
-                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        oiNew.Quantity = 1;
+            //        oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
-                        odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        //Drop 1 from ordertosplit and save
+            //        if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+            //            odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
         }
 
         private async void btnSourceToTarget_X_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.Items.Count == 1)
-                return;
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && SourceTable.AttachedOrder != null &&
+            //    SourceTable.AttachedOrder.Items.Count == 1)
+            //    return;
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odSourceTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odSourceTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    if (oiNew.Quantity > 1)
-                    {
-                        frmNumericInput frm = new frmNumericInput();
-                        if (frm.ShowDialog() == DialogResult.OK)
-                        {
-                            if (frm.SelectedValue > oiNew.Quantity)
-                                return;
-                            else
-                                oiNew.Quantity = frm.SelectedValue;
-                        } else
-                            return;
-                    } else
-                        oiNew.Quantity = 1;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        if (oiNew.Quantity > 1)
+            //        {
+            //            frmNumericInput frm = new frmNumericInput();
+            //            if (frm.ShowDialog() == DialogResult.OK)
+            //            {
+            //                if (frm.SelectedValue > oiNew.Quantity)
+            //                    return;
+            //                else
+            //                    oiNew.Quantity = frm.SelectedValue;
+            //            } else
+            //                return;
+            //        } else
+            //            oiNew.Quantity = 1;
 
-                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
+            //        oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
-                        odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        //Drop 1 from ordertosplit and save
+            //        if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
+            //            odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
 
-                    //Ensure no zero quantity item left
-                    try
-                    {
-                        OrderItem testItem = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
-                        if (testItem != null)
-                        {
-                            if (testItem.Quantity == 0)
-                                odSourceTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
-                        }
-                    } catch { }
+            //        //Ensure no zero quantity item left
+            //        try
+            //        {
+            //            OrderItem testItem = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
+            //            if (testItem != null)
+            //            {
+            //                if (testItem.Quantity == 0)
+            //                    odSourceTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
+            //            }
+            //        } catch { }
 
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
         }
 
         private async void btnSourceToTarget_ALL_Click(object sender, EventArgs e)
         {
-            if (SourceTable != null && SourceTable.AttachedOrder != null &&
-                SourceTable.AttachedOrder.Items.Count == 1)
-                return;
+            //if (SourceTable != null && SourceTable.AttachedOrder != null &&
+            //    SourceTable.AttachedOrder.Items.Count == 1)
+            //    return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odSourceTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odSourceTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odSourceTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    //Because it is all
-                    //oiNew.Quantity = 1;
-                    oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        //Because it is all
+            //        //oiNew.Quantity = 1;
+            //        oiNew.OrderIID = odTargetTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
-                    //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        //Drop 1 from ordertosplit and save
+            //        odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
+            //        //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
         }
 
 
         private async void btnTargetToSource_1_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null && TargetTable.AttachedOrder != null &&
-                TargetTable.AttachedOrder.Items.Count == 1)
-                return;
+            //if (TargetTable != null && TargetTable.AttachedOrder != null &&
+            //    TargetTable.AttachedOrder.Items.Count == 1)
+            //    return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odTargetTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odTargetTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    oiNew.Quantity = 1;
-                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        oiNew.Quantity = 1;
+            //        oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
-                        odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        //Drop 1 from ordertosplit and save
+            //        if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
+            //            odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
 
 
 
@@ -528,121 +528,121 @@ namespace DTRMNS
 
         private async void btnTargetToSource_X_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null  && TargetTable.AttachedOrder != null &&
-               TargetTable.AttachedOrder.Items.Count == 1)
-                return;
+            //if (TargetTable != null  && TargetTable.AttachedOrder != null &&
+            //   TargetTable.AttachedOrder.Items.Count == 1)
+            //    return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odTargetTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odTargetTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    if (oiNew.Quantity > 1)
-                    {
-                        frmNumericInput frm = new frmNumericInput();
-                        if (frm.ShowDialog() == DialogResult.OK)
-                        {
-                            if (frm.SelectedValue > oiNew.Quantity)
-                                return;
-                            else
-                                oiNew.Quantity = frm.SelectedValue;
-                        } else
-                            return;
-                    } else
-                        oiNew.Quantity = 1;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        if (oiNew.Quantity > 1)
+            //        {
+            //            frmNumericInput frm = new frmNumericInput();
+            //            if (frm.ShowDialog() == DialogResult.OK)
+            //            {
+            //                if (frm.SelectedValue > oiNew.Quantity)
+            //                    return;
+            //                else
+            //                    oiNew.Quantity = frm.SelectedValue;
+            //            } else
+            //                return;
+            //        } else
+            //            oiNew.Quantity = 1;
 
-                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
+            //        oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
-                        odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        //Drop 1 from ordertosplit and save
+            //        if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement((int)oiNew.Quantity))
+            //            odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
 
-                    //Ensure no zero quantity item left
-                    try
-                    {
-                        POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
-                        if (testItem != null)
-                        {
-                            if (testItem.Quantity == 0)
-                                odTargetTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
-                        }
-                    } catch { }
+            //        //Ensure no zero quantity item left
+            //        try
+            //        {
+            //            POSLayer.Models.OrderItem testItem = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault();
+            //            if (testItem != null)
+            //            {
+            //                if (testItem.Quantity == 0)
+            //                    odTargetTable.OrderToDisplay.DeleteOrderItem(testItem.IID);
+            //            }
+            //        } catch { }
 
 
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
         }
 
         private async void btnTargetToSource_ALL_Click(object sender, EventArgs e)
         {
-            if (TargetTable != null  && TargetTable.AttachedOrder != null &&
-               TargetTable.AttachedOrder.Items.Count == 1)
-                return;
+            //if (TargetTable != null  && TargetTable.AttachedOrder != null &&
+            //   TargetTable.AttachedOrder.Items.Count == 1)
+            //    return;
 
-            if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
-            {
-                if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
-                {
-                    //SplitOrder  to  DisplayOrder
+            //if (SourceTable != null && TargetTable != null && odSourceTable.OrderToDisplay != null && odTargetTable.OrderToDisplay != null)
+            //{
+            //    if (!string.IsNullOrEmpty(odTargetTable.SelectedItemIID))
+            //    {
+            //        //SplitOrder  to  DisplayOrder
 
-                    //Get Select listview item
-                    string IID = odTargetTable.SelectedItemIID;
+            //        //Get Select listview item
+            //        string IID = odTargetTable.SelectedItemIID;
 
-                    //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
-                    POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
-                    //Because it is all
-                    //oiNew.Quantity = 1;
-                    oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
+            //        //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
+            //        POSLayer.Models.OrderItem oiNew = odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Clone(false);
+            //        //Because it is all
+            //        //oiNew.Quantity = 1;
+            //        oiNew.OrderIID = odSourceTable.OrderToDisplay.IID;
 
-                    //Drop 1 from ordertosplit and save
-                    odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
-                    //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
-                    //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        //Drop 1 from ordertosplit and save
+            //        odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
+            //        //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
-                    //Add new item to ordertodisplay and save
-                    odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-                    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        //Add new item to ordertodisplay and save
+            //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
+            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
-                    odSourceTable.Display();
-                    odTargetTable.Display();
-                }
-            }
+            //        odSourceTable.Display();
+            //        odTargetTable.Display();
+            //    }
+            //}
         }
 
         private async void btnChangeTargetTableName_Click(object sender, EventArgs e)
         {
-            if (odTargetTable.OrderToDisplay != null)
-            {
+            //if (odTargetTable.OrderToDisplay != null)
+            //{
 
-                trmInput frm = new trmInput(TargetTable.TableName);
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    TargetTable.TableName = frm.input;
-                    if (TargetTable.AttachedOrder != null)
-                        TargetTable.AttachedOrder.Table?.TableName = TargetTable.TableName;
-                    await DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
+            //    trmInput frm = new trmInput(TargetTable.TableName);
+            //    if (frm.ShowDialog() == DialogResult.OK)
+            //    {
+            //        TargetTable.TableName = frm.input;
+            //        if (TargetTable.AttachedOrder != null)
+            //            TargetTable.AttachedOrder.Table?.TableName = TargetTable.TableName;
+            //        await DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
 
-                    LoadTargetTable();
-                    await LoadTargetPanel();
-                    await LoadSourcePanel();
-                }
+            //        LoadTargetTable();
+            //        await LoadTargetPanel();
+            //        await LoadSourcePanel();
+            //    }
 
-            }
+            //}
         }
     }
 }

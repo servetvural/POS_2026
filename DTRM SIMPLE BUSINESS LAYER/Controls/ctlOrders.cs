@@ -26,8 +26,6 @@ namespace DTRMNS
         private System.Windows.Forms.Panel panel1;
         private Button btnLoadOrder;
         private Button btnDeleteOrder;
-
-        private DTRMNS.DTRMSimpleBusiness bslayer;
         private Button btnUnsetPaymentMethod;
         private DataGridView dgv;
         private BindingSource ordersViewDataConnector;
@@ -58,15 +56,14 @@ namespace DTRMNS
 
         //private UtilityLibrary UF;
         private List<int> rowheights;
-        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, DTRMSimpleBusiness bslayer)
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder)
         {
             InitializeComponent();
             config = configAsService;
             repoOrder = _repoOrder;
-            this.bslayer = bslayer;
         }
 
-        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, DTRMSimpleBusiness bslayer, GenericFunctionCall UnloadOrder,
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, GenericFunctionCall UnloadOrder,
             GenericFunctionCall LoadAttachedOrder,
             GenericFunctionCall DetachPanel,
             PassControl AttachPanel,
@@ -77,8 +74,6 @@ namespace DTRMNS
             config = configAsService;
             repoOrder = _repoOrder;
 
-
-            this.bslayer = bslayer;
             UnloadOrderEvent = UnloadOrder;
             LoadAttachedOrderEvent = LoadAttachedOrder;
             DetachPanelEvent = DetachPanel;

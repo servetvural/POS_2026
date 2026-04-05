@@ -20,16 +20,12 @@ namespace DTRMClientNS
     {
         PosConfig config;
         IRepository<User> repoUser;
-
-        private DTRMSimpleBusiness bslayer;
-
         private trmOrderPadMain OrderPad;
 
-        public FrmLock(PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<User> _repoUser)
+        public FrmLock(PosConfig configAsService,  IRepository<User> _repoUser)
         {
             InitializeComponent();
             config = configAsService;
-            this.bslayer = bslayer;
             repoUser = _repoUser;
 
             txtUserPassword.Text = "";
@@ -48,12 +44,10 @@ namespace DTRMClientNS
 
             if (config.IsValid())
             {
-               // LoginUser();
-
 
                 try
                 {
-                    if (bslayer != null)
+                    if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null)
                         if (config != null)
                             this.WindowState = FormWindowState.Normal; 
                         else
@@ -145,7 +139,7 @@ namespace DTRMClientNS
                 return; 
             } else
             {
-                bslayer.LoggedUser = user;
+                DTRMSimpleBusiness.Instance.LoggedUser = user;
                 this.Hide();
 
                 txtUserPassword.Clear();

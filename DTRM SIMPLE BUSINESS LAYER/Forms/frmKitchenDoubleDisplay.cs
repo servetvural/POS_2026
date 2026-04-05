@@ -44,10 +44,6 @@ namespace DTRMNS {
             }
             ctlKitchenSecond.LoadAll();
 
-
-            if (config.OrderPad_Orientation == POSLayer.Library.OrientationTypes.Portrait) {
-                splitMain.Orientation = Orientation.Horizontal;
-            }
         }
 
         private void CtlKitchenSecond_OrderDeleted(string korderIID) {

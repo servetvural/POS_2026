@@ -57,7 +57,6 @@
             // 
             // tmrMain
             // 
-            tmrMain.Enabled = true;
             tmrMain.Interval = 10000;
             tmrMain.Tick += tmrMain_Tick;
             // 
@@ -105,7 +104,6 @@
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             BackColor = System.Drawing.SystemColors.Control;
             Controls.Add(pBar);
             Controls.Add(lblNext);

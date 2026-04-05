@@ -358,19 +358,13 @@ public partial class Order : BaseOrder
         return oi.OrderGroupIID;
     }
 
-    public void DeleteOrderItem(string OrderItemIID)
+    public void DeleteOrderItem(OrderItem item)
     {
-        if (OrderItemIID != null && OrderItemIID != "")
+        if (item != null)
         {
-            foreach (OrderItem item in Items)
-            {
-                if (item.IID == OrderItemIID)
-                {
-                    Items.Remove(item);
-                    blnItemsChanged = true;
-                    return;
-                }
-            }
+            Items.Remove(item);
+            blnItemsChanged = true;
+            return;
         }
     }
 
@@ -387,26 +381,25 @@ public partial class Order : BaseOrder
     {
         return Items.Where(x => x.CategoryItemIID == CategoryItemIID && x.DistributionIID == DistributionIID && x.OrderGroupIID == OrderGroupIID).FirstOrDefault();
     }
-    public void IncrementOrderItem(string OrderItemIID)
+    public void IncrementOrderItem(OrderItem oi)
     {
         try
         {
-            Items.Where(x => x.IID == OrderItemIID).FirstOrDefault().Quantity++;
-            blnItemsChanged = true;
+            if (oi != null)
+            {
+                oi.Quantity++;
+                blnItemsChanged = true;
+            }                                                                                
         } catch { }
     }
 
-    public void DecrementOrderItem(string OrderItemIID)
+    public void DecrementOrderItem(OrderItem item)
     {
-        if (string.IsNullOrEmpty(OrderItemIID))
+        if (item == null)
             return;
 
-        OrderItem oi = Items.Where(x => x.IID == OrderItemIID).FirstOrDefault();
-        if (oi == null)
-            return;
-
-        if (!oi.Decrement())
-            this.DeleteOrderItem(oi.IID);
+        if (!item.Decrement())
+            this.DeleteOrderItem(item);
         blnItemsChanged = true;
     }
 

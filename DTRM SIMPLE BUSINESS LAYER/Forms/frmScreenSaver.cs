@@ -162,7 +162,7 @@ namespace DTRMNS {
                 pBox.Refresh();
 
             fillthelist:
-                if (config.Screen_Saver_Type == POSLayer.Library.ScreenSaverTypes.Flow) {
+                if (config.Screen_Saver_Type == ScreenSaverTypes.Flow) {
                     if (drawingList.Count < config.Screen_Saver_Maximum_Drawable_Image_Count) {
                         if (nonDrawableList.Count > 0) {
                             drawingList.Add(nonDrawableList[0]);

@@ -31,9 +31,6 @@ namespace DTRMNS {
         private Button button58;
         private Button button61;
 
-
-        //private bool blnShiftOn;
-        //private bool blnCapsOn;
         private Button button1;
         private Button button3;
         private Button button4;
@@ -71,12 +68,10 @@ namespace DTRMNS {
         private System.ComponentModel.Container components = null;
 
 
-        public ctlNumberPad(PosConfig configAsService,IRepository<Category> _repoCategory, DTRMSimpleBusiness bslayer) {
+        public ctlNumberPad(PosConfig configAsService,IRepository<Category> _repoCategory) {
             InitializeComponent();
             config = configAsService;
             repoCategory = _repoCategory;
-
-            this.bslayer = bslayer;
         }
 
         public ctlNumberPad( GenericFunctionCall CloseFunction) {
@@ -816,16 +811,8 @@ namespace DTRMNS {
 
         private void ctlNumberPad_Load(object sender, EventArgs e) {
             LoadEntities();
-            switch (config.OrderPad_Orientation) {
-                case POSLayer.Library.OrientationTypes.Landscape:
                     pnlCalculator.Dock = DockStyle.Left;
-                    pnlCalculator.Width = 416;
-                    break;
-                case POSLayer.Library.OrientationTypes.Portrait:
-                    pnlCalculator.Dock = DockStyle.Top;
-                    pnlCalculator.Height = 593;
-                    break;
-            }
+                    pnlCalculator.Width = 416;                    
             pnlDistributions.BringToFront();
         }
         private void btnC_Click(object sender, EventArgs e) {

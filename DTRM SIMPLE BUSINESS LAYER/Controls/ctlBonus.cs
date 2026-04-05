@@ -31,9 +31,9 @@ namespace DTRMNS.Controls {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int ProgressBarWidth {  get { return pBar.Width; }  set { pBar.Width = value; } }
 
-        public ctlBonus(PosConfig configAsService) {
+        public ctlBonus( ) {
             InitializeComponent();
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
         }
 
         public void Activate() {           
@@ -43,7 +43,7 @@ namespace DTRMNS.Controls {
 
         public void UpdateBonusDisplay() {
             blnUpdating = true;
-            if (DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.currentBonusScheme != null) {
+            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.currentBonusScheme != null) {
                 double ciro =  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum();
 
                 BonusStatus status =  DTRMSimpleBusiness.Instance.currentBonusScheme.GetBonusStatus(ciro);
@@ -71,8 +71,18 @@ namespace DTRMNS.Controls {
         }
 
         private void tmrMain_Tick(object sender, EventArgs e) {
-            if (!blnUpdating)
+
+            // Try to get the instance safely
+            var business = DTRMSimpleBusiness.Instance;
+
+            if (business != null && !blnUpdating)
+            {
                 UpdateBonusDisplay();
+            }
+
+
+            //if (!blnUpdating)
+            //    UpdateBonusDisplay();
         }
 
         private void ctlBonus_Click(object sender, EventArgs e) {

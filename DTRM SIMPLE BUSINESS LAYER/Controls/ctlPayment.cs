@@ -29,10 +29,10 @@ namespace DTRMNS
         /// </summary>
         private System.ComponentModel.Container components = null;
 
-        public ctlPayment(PosConfig configAsService)
+        public ctlPayment( )
         {
             InitializeComponent();
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
         }
         public ctlPayment(GenericFunctionCall CloseFunction, RemoteCompleteAttachedOrder CompleteAttachedOrder,
            int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive)

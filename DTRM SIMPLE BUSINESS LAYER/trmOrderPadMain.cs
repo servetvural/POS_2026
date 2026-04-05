@@ -13,12 +13,7 @@ using POSWinFormLayer;
 using Microsoft.Extensions.DependencyInjection;
 using DTRMNS.Controls;
 using POSLayer.Repository.IRepository;
-using POSLayer.Views;
 using System.Linq;
-
-
-//using System.ServiceModel;
-//using System.ServiceModel.Description;
 
 namespace DTRMNS
 {
@@ -29,15 +24,17 @@ namespace DTRMNS
     {
         private System.ComponentModel.IContainer components;
 
-       // readonly IServiceProvider sp;
         PosConfig config;
 
         IRepository<TheMenu> repoMenu;
         IRepository<Order> repoOrder;
+
         IRepository<Bonus> repoBonus;
         IRepository<Distribution> repoDistribution;
         IRepository<Debug> repoDebug;
         IRepository<Session> repoSession;
+        IRepository<Category> repoCategory;
+        IRepository<CategoryItem> repoCategoryItem;
 
 
         private Button btnDone;
@@ -98,15 +95,9 @@ namespace DTRMNS
         private bool blnPadOpenning;
         private FlowLayoutPanel pnlPendingOrders;
         private Timer tmrHoldingOrders;
-
         private InterfaceHolder OUI;
-
         private bool blnLoadingHoldingOrders;
-
         private bool blnLockable;
-
-
-        //public ServiceHost httpServiceHost;
         private Panel pnlHolder;
         public bool blnHttpServiceRunning;
         private Button btnPrint;
@@ -135,7 +126,6 @@ namespace DTRMNS
         private ToolStripMenuItem mnuDrawerCalculator;
         private ToolStripMenuItem mnuReloadMenu;
         private ToolStripMenuItem mnuOptions;
-        private ToolStripMenuItem mnuOrientation;
         private Button btnHoldOrder;
         private Button btnHoldAndReceipt;
         private ContextMenuStrip popHold;
@@ -190,9 +180,10 @@ namespace DTRMNS
         //    this.Show();
 
         //}
-        public trmOrderPadMain( PosConfig configAsService, IRepository<TheMenu> _repoMenu,
-            IRepository<Order> _repoOrder, IRepository<Bonus> _repoBonus, IRepository<Distribution> _repoDistribution, 
-            IRepository<Debug> _repoDebug, IRepository<Session> _repoSession,
+        public trmOrderPadMain(PosConfig configAsService, IRepository<TheMenu> _repoMenu,
+            IRepository<Order> _repoOrder, IRepository<Bonus> _repoBonus, IRepository<Distribution> _repoDistribution,
+            IRepository<Debug> _repoDebug, IRepository<Session> _repoSession, IRepository<Category> _repoCategory,
+            IRepository<CategoryItem> _repoCategoryItem,
         Form Locker, bool blnLockable)
         {
             config = configAsService;
@@ -202,16 +193,17 @@ namespace DTRMNS
             repoDistribution = _repoDistribution;
             repoDebug = _repoDebug;
             repoSession = _repoSession;
+            repoCategory = _repoCategory;
+            repoCategoryItem = _repoCategoryItem;
 
             InitializeComponent();
 
             this.blnLockable = blnLockable;
             if (blnLockable)
                 this.Locker = Locker;
-           
 
             mnuLock.Enabled = blnLockable;
-            this.Show(); 
+            this.Show();
         }
         private void frmMain_Load(object sender, System.EventArgs e)
         {
@@ -270,15 +262,13 @@ namespace DTRMNS
 
             pnlDisplay.Width = config.DisplayWidth;
             OrderScreen.SplitDisplayHeight = config.SplitDisplayHeight;
-
-
-
-
         }
         public async void RefreshUserInterface()
         {
             try
             {
+
+                OrderScreen.AttachBusinessLayer();
                 await LoadUserInterface();
                 await LoadViewBars();
                 await LoadSupplierList();
@@ -523,7 +513,7 @@ namespace DTRMNS
             btnHoldAndReceiptGreen = new ToolStripMenuItem();
             btnHoldAndReceiptOrange = new ToolStripMenuItem();
             pnlStandardDisplay = new Panel();
-            OrderScreen = ActivatorUtilities.CreateInstance<OrderDisplay>(ServiceHelper.Services);
+            OrderScreen = new OrderDisplay();
             pnlMoneyActions = new TableLayoutPanel();
             btnPrintOnlineFinalPaymentWithReceipt = new Button();
             btnPrintOnlineFinalPayment = new Button();
@@ -536,7 +526,7 @@ namespace DTRMNS
             btnPrintCashFinalPayment = new Button();
             btnHoldAndReceipt = new Button();
             btnHoldOrder = new Button();
-            pnlBonus = ActivatorUtilities.CreateInstance<ctlBonus>(ServiceHelper.Services);
+            pnlBonus = new ctlBonus();
             pnlSubTotal = new Panel();
             pnlSubMoneyActions = new TableLayoutPanel();
             button1 = new Button();
@@ -595,7 +585,6 @@ namespace DTRMNS
             mnuReloadMenu = new ToolStripMenuItem();
             mnuOptions = new ToolStripMenuItem();
             mnuPrintAsInvoice = new ToolStripMenuItem();
-            mnuOrientation = new ToolStripMenuItem();
             mnuPad = new ToolStripMenuItem();
             mnuDrawerCalculator = new ToolStripMenuItem();
             mnuStock = new ToolStripMenuItem();
@@ -771,7 +760,7 @@ namespace DTRMNS
             pnlStandardDisplay.Location = new Point(0, 0);
             pnlStandardDisplay.Margin = new Padding(4, 3, 4, 3);
             pnlStandardDisplay.Name = "pnlStandardDisplay";
-            pnlStandardDisplay.Size = new Size(366, 898);
+            pnlStandardDisplay.Size = new Size(315, 898);
             pnlStandardDisplay.TabIndex = 22;
             // 
             // OrderScreen
@@ -783,9 +772,8 @@ namespace DTRMNS
             OrderScreen.Location = new Point(0, 25);
             OrderScreen.Margin = new Padding(4, 3, 4, 3);
             OrderScreen.Name = "OrderScreen";
-            OrderScreen.OrderToDisplay = null;
             OrderScreen.OrderToSplit = null;
-            OrderScreen.Size = new Size(366, 613);
+            OrderScreen.Size = new Size(315, 613);
             OrderScreen.SplitDisplayHeight = 315;
             OrderScreen.TabIndex = 20;
             OrderScreen.DisplayOccured += OrderScreen_DisplayOccured;
@@ -835,7 +823,7 @@ namespace DTRMNS
             pnlMoneyActions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.333332F));
             pnlMoneyActions.RowStyles.Add(new RowStyle(SizeType.Percent, 8.333332F));
             pnlMoneyActions.RowStyles.Add(new RowStyle(SizeType.Absolute, 23F));
-            pnlMoneyActions.Size = new Size(366, 260);
+            pnlMoneyActions.Size = new Size(330, 260);
             pnlMoneyActions.TabIndex = 22;
             // 
             // btnPrintOnlineFinalPaymentWithReceipt
@@ -852,11 +840,11 @@ namespace DTRMNS
             btnPrintOnlineFinalPaymentWithReceipt.Image = Properties.Resources.Print32;
             btnPrintOnlineFinalPaymentWithReceipt.ImageAlign = ContentAlignment.TopRight;
             btnPrintOnlineFinalPaymentWithReceipt.ImeMode = ImeMode.NoControl;
-            btnPrintOnlineFinalPaymentWithReceipt.Location = new Point(244, 213);
+            btnPrintOnlineFinalPaymentWithReceipt.Location = new Point(220, 213);
             btnPrintOnlineFinalPaymentWithReceipt.Margin = new Padding(4, 3, 4, 3);
             btnPrintOnlineFinalPaymentWithReceipt.Name = "btnPrintOnlineFinalPaymentWithReceipt";
             pnlMoneyActions.SetRowSpan(btnPrintOnlineFinalPaymentWithReceipt, 2);
-            btnPrintOnlineFinalPaymentWithReceipt.Size = new Size(113, 44);
+            btnPrintOnlineFinalPaymentWithReceipt.Size = new Size(101, 44);
             btnPrintOnlineFinalPaymentWithReceipt.TabIndex = 54;
             btnPrintOnlineFinalPaymentWithReceipt.TabStop = false;
             btnPrintOnlineFinalPaymentWithReceipt.UseVisualStyleBackColor = false;
@@ -874,11 +862,11 @@ namespace DTRMNS
             btnPrintOnlineFinalPayment.Font = new Font("Arial", 9F, FontStyle.Bold);
             btnPrintOnlineFinalPayment.ForeColor = Color.FromArgb(0, 0, 0);
             btnPrintOnlineFinalPayment.ImeMode = ImeMode.NoControl;
-            btnPrintOnlineFinalPayment.Location = new Point(124, 213);
+            btnPrintOnlineFinalPayment.Location = new Point(112, 213);
             btnPrintOnlineFinalPayment.Margin = new Padding(4, 3, 4, 3);
             btnPrintOnlineFinalPayment.Name = "btnPrintOnlineFinalPayment";
             pnlMoneyActions.SetRowSpan(btnPrintOnlineFinalPayment, 2);
-            btnPrintOnlineFinalPayment.Size = new Size(112, 44);
+            btnPrintOnlineFinalPayment.Size = new Size(100, 44);
             btnPrintOnlineFinalPayment.TabIndex = 53;
             btnPrintOnlineFinalPayment.TabStop = false;
             btnPrintOnlineFinalPayment.UseVisualStyleBackColor = false;
@@ -901,7 +889,7 @@ namespace DTRMNS
             btnPrint.Name = "btnPrint";
             btnPrint.RightToLeft = RightToLeft.Yes;
             pnlMoneyActions.SetRowSpan(btnPrint, 4);
-            btnPrint.Size = new Size(112, 86);
+            btnPrint.Size = new Size(100, 86);
             btnPrint.TabIndex = 34;
             btnPrint.TabStop = false;
             btnPrint.Text = "\r\nPRINT";
@@ -925,7 +913,7 @@ namespace DTRMNS
             btnDone.Margin = new Padding(4, 3, 4, 3);
             btnDone.Name = "btnDone";
             pnlMoneyActions.SetRowSpan(btnDone, 4);
-            btnDone.Size = new Size(112, 77);
+            btnDone.Size = new Size(100, 77);
             btnDone.TabIndex = 23;
             btnDone.UseVisualStyleBackColor = false;
             btnDone.Visible = false;
@@ -947,7 +935,7 @@ namespace DTRMNS
             btnCashDrawer.Margin = new Padding(4, 3, 4, 3);
             btnCashDrawer.Name = "btnCashDrawer";
             pnlMoneyActions.SetRowSpan(btnCashDrawer, 4);
-            btnCashDrawer.Size = new Size(112, 79);
+            btnCashDrawer.Size = new Size(100, 79);
             btnCashDrawer.TabIndex = 36;
             btnCashDrawer.Text = "CASH DRAWER";
             btnCashDrawer.TextAlign = ContentAlignment.BottomCenter;
@@ -968,11 +956,11 @@ namespace DTRMNS
             btnPrintCardFinalPaymentWithReceipt.Image = Properties.Resources.Print32;
             btnPrintCardFinalPaymentWithReceipt.ImageAlign = ContentAlignment.TopRight;
             btnPrintCardFinalPaymentWithReceipt.ImeMode = ImeMode.NoControl;
-            btnPrintCardFinalPaymentWithReceipt.Location = new Point(244, 171);
+            btnPrintCardFinalPaymentWithReceipt.Location = new Point(220, 171);
             btnPrintCardFinalPaymentWithReceipt.Margin = new Padding(4, 3, 4, 3);
             btnPrintCardFinalPaymentWithReceipt.Name = "btnPrintCardFinalPaymentWithReceipt";
             pnlMoneyActions.SetRowSpan(btnPrintCardFinalPaymentWithReceipt, 2);
-            btnPrintCardFinalPaymentWithReceipt.Size = new Size(113, 36);
+            btnPrintCardFinalPaymentWithReceipt.Size = new Size(101, 36);
             btnPrintCardFinalPaymentWithReceipt.TabIndex = 40;
             btnPrintCardFinalPaymentWithReceipt.TabStop = false;
             btnPrintCardFinalPaymentWithReceipt.UseVisualStyleBackColor = false;
@@ -993,11 +981,11 @@ namespace DTRMNS
             btnPrintCashFinalPaymentWithReceipt.Image = Properties.Resources.Print32;
             btnPrintCashFinalPaymentWithReceipt.ImageAlign = ContentAlignment.TopRight;
             btnPrintCashFinalPaymentWithReceipt.ImeMode = ImeMode.NoControl;
-            btnPrintCashFinalPaymentWithReceipt.Location = new Point(244, 86);
+            btnPrintCashFinalPaymentWithReceipt.Location = new Point(220, 86);
             btnPrintCashFinalPaymentWithReceipt.Margin = new Padding(4, 3, 4, 3);
             btnPrintCashFinalPaymentWithReceipt.Name = "btnPrintCashFinalPaymentWithReceipt";
             pnlMoneyActions.SetRowSpan(btnPrintCashFinalPaymentWithReceipt, 4);
-            btnPrintCashFinalPaymentWithReceipt.Size = new Size(113, 79);
+            btnPrintCashFinalPaymentWithReceipt.Size = new Size(101, 79);
             btnPrintCashFinalPaymentWithReceipt.TabIndex = 34;
             btnPrintCashFinalPaymentWithReceipt.TabStop = false;
             btnPrintCashFinalPaymentWithReceipt.UseVisualStyleBackColor = false;
@@ -1015,11 +1003,11 @@ namespace DTRMNS
             btnPrintCardFinalPayment.Font = new Font("Arial", 9F, FontStyle.Bold);
             btnPrintCardFinalPayment.ForeColor = Color.FromArgb(0, 0, 0);
             btnPrintCardFinalPayment.ImeMode = ImeMode.NoControl;
-            btnPrintCardFinalPayment.Location = new Point(124, 171);
+            btnPrintCardFinalPayment.Location = new Point(112, 171);
             btnPrintCardFinalPayment.Margin = new Padding(4, 3, 4, 3);
             btnPrintCardFinalPayment.Name = "btnPrintCardFinalPayment";
             pnlMoneyActions.SetRowSpan(btnPrintCardFinalPayment, 2);
-            btnPrintCardFinalPayment.Size = new Size(112, 36);
+            btnPrintCardFinalPayment.Size = new Size(100, 36);
             btnPrintCardFinalPayment.TabIndex = 38;
             btnPrintCardFinalPayment.TabStop = false;
             btnPrintCardFinalPayment.UseVisualStyleBackColor = false;
@@ -1038,11 +1026,11 @@ namespace DTRMNS
             btnPrintCashFinalPayment.Font = new Font("Arial", 9F, FontStyle.Bold);
             btnPrintCashFinalPayment.ForeColor = Color.FromArgb(0, 0, 0);
             btnPrintCashFinalPayment.ImeMode = ImeMode.NoControl;
-            btnPrintCashFinalPayment.Location = new Point(124, 86);
+            btnPrintCashFinalPayment.Location = new Point(112, 86);
             btnPrintCashFinalPayment.Margin = new Padding(4, 3, 4, 3);
             btnPrintCashFinalPayment.Name = "btnPrintCashFinalPayment";
             pnlMoneyActions.SetRowSpan(btnPrintCashFinalPayment, 4);
-            btnPrintCashFinalPayment.Size = new Size(112, 79);
+            btnPrintCashFinalPayment.Size = new Size(100, 79);
             btnPrintCashFinalPayment.TabIndex = 31;
             btnPrintCashFinalPayment.TabStop = false;
             btnPrintCashFinalPayment.UseVisualStyleBackColor = false;
@@ -1059,11 +1047,11 @@ namespace DTRMNS
             btnHoldAndReceipt.ForeColor = Color.White;
             btnHoldAndReceipt.ImageAlign = ContentAlignment.BottomLeft;
             btnHoldAndReceipt.ImeMode = ImeMode.NoControl;
-            btnHoldAndReceipt.Location = new Point(244, 3);
+            btnHoldAndReceipt.Location = new Point(220, 3);
             btnHoldAndReceipt.Margin = new Padding(4, 3, 4, 3);
             btnHoldAndReceipt.Name = "btnHoldAndReceipt";
             pnlMoneyActions.SetRowSpan(btnHoldAndReceipt, 4);
-            btnHoldAndReceipt.Size = new Size(113, 77);
+            btnHoldAndReceipt.Size = new Size(101, 77);
             btnHoldAndReceipt.TabIndex = 52;
             btnHoldAndReceipt.Text = "HOLD PRINT";
             btnHoldAndReceipt.UseVisualStyleBackColor = true;
@@ -1079,11 +1067,11 @@ namespace DTRMNS
             btnHoldOrder.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             btnHoldOrder.ForeColor = Color.White;
             btnHoldOrder.ImeMode = ImeMode.NoControl;
-            btnHoldOrder.Location = new Point(124, 3);
+            btnHoldOrder.Location = new Point(112, 3);
             btnHoldOrder.Margin = new Padding(4, 3, 4, 3);
             btnHoldOrder.Name = "btnHoldOrder";
             pnlMoneyActions.SetRowSpan(btnHoldOrder, 4);
-            btnHoldOrder.Size = new Size(112, 77);
+            btnHoldOrder.Size = new Size(100, 77);
             btnHoldOrder.TabIndex = 0;
             btnHoldOrder.Text = "HOLD";
             btnHoldOrder.UseVisualStyleBackColor = true;
@@ -1106,8 +1094,8 @@ namespace DTRMNS
             pnlBonus.MinimumSize = new Size(259, 25);
             pnlBonus.Name = "pnlBonus";
             pnlBonus.Padding = new Padding(4, 0, 4, 0);
-            pnlBonus.ProgressBarWidth = 267;
-            pnlBonus.Size = new Size(366, 25);
+            pnlBonus.ProgressBarWidth = 216;
+            pnlBonus.Size = new Size(315, 25);
             pnlBonus.TabIndex = 21;
             pnlBonus.Visible = false;
             pnlBonus.Click += pnlBonus_Click;
@@ -1122,7 +1110,7 @@ namespace DTRMNS
             pnlSubTotal.Location = new Point(0, 0);
             pnlSubTotal.Margin = new Padding(4, 3, 4, 3);
             pnlSubTotal.Name = "pnlSubTotal";
-            pnlSubTotal.Size = new Size(366, 898);
+            pnlSubTotal.Size = new Size(315, 898);
             pnlSubTotal.TabIndex = 21;
             // 
             // pnlSubMoneyActions
@@ -1164,7 +1152,7 @@ namespace DTRMNS
             pnlSubMoneyActions.RowStyles.Add(new RowStyle(SizeType.Percent, 12.82051F));
             pnlSubMoneyActions.RowStyles.Add(new RowStyle(SizeType.Percent, 12.82051F));
             pnlSubMoneyActions.RowStyles.Add(new RowStyle(SizeType.Percent, 23.07693F));
-            pnlSubMoneyActions.Size = new Size(366, 713);
+            pnlSubMoneyActions.Size = new Size(315, 713);
             pnlSubMoneyActions.TabIndex = 167;
             // 
             // button1
@@ -1179,10 +1167,10 @@ namespace DTRMNS
             button1.Font = new Font("Arial", 21.75F, FontStyle.Bold);
             button1.ForeColor = Color.FromArgb(0, 0, 0);
             button1.ImeMode = ImeMode.NoControl;
-            button1.Location = new Point(256, 461);
+            button1.Location = new Point(222, 461);
             button1.Margin = new Padding(12, 6, 12, 6);
             button1.Name = "button1";
-            button1.Size = new Size(98, 79);
+            button1.Size = new Size(81, 79);
             button1.TabIndex = 168;
             button1.Text = "100";
             button1.UseVisualStyleBackColor = false;
@@ -1200,10 +1188,10 @@ namespace DTRMNS
             btnSubTotalCash.Font = new Font("Arial", 10F, FontStyle.Bold);
             btnSubTotalCash.ForeColor = Color.FromArgb(0, 0, 0);
             btnSubTotalCash.ImeMode = ImeMode.NoControl;
-            btnSubTotalCash.Location = new Point(128, 552);
+            btnSubTotalCash.Location = new Point(111, 552);
             btnSubTotalCash.Margin = new Padding(6);
             btnSubTotalCash.Name = "btnSubTotalCash";
-            btnSubTotalCash.Size = new Size(110, 155);
+            btnSubTotalCash.Size = new Size(93, 155);
             btnSubTotalCash.TabIndex = 159;
             btnSubTotalCash.TabStop = false;
             btnSubTotalCash.UseVisualStyleBackColor = false;
@@ -1221,10 +1209,10 @@ namespace DTRMNS
             btnSubTotalFullAmount.Font = new Font("Arial", 12F, FontStyle.Bold);
             btnSubTotalFullAmount.ForeColor = Color.FromArgb(0, 0, 0);
             btnSubTotalFullAmount.ImeMode = ImeMode.NoControl;
-            btnSubTotalFullAmount.Location = new Point(256, 279);
+            btnSubTotalFullAmount.Location = new Point(222, 279);
             btnSubTotalFullAmount.Margin = new Padding(12, 6, 12, 6);
             btnSubTotalFullAmount.Name = "btnSubTotalFullAmount";
-            btnSubTotalFullAmount.Size = new Size(98, 79);
+            btnSubTotalFullAmount.Size = new Size(81, 79);
             btnSubTotalFullAmount.TabIndex = 164;
             btnSubTotalFullAmount.Text = "Full Amount";
             btnSubTotalFullAmount.UseVisualStyleBackColor = false;
@@ -1244,10 +1232,10 @@ namespace DTRMNS
             btnSubTotalCashWR.Image = Properties.Resources.Print32;
             btnSubTotalCashWR.ImageAlign = ContentAlignment.MiddleRight;
             btnSubTotalCashWR.ImeMode = ImeMode.NoControl;
-            btnSubTotalCashWR.Location = new Point(250, 552);
+            btnSubTotalCashWR.Location = new Point(216, 552);
             btnSubTotalCashWR.Margin = new Padding(6);
             btnSubTotalCashWR.Name = "btnSubTotalCashWR";
-            btnSubTotalCashWR.Size = new Size(110, 155);
+            btnSubTotalCashWR.Size = new Size(93, 155);
             btnSubTotalCashWR.TabIndex = 160;
             btnSubTotalCashWR.TabStop = false;
             btnSubTotalCashWR.UseVisualStyleBackColor = false;
@@ -1268,7 +1256,7 @@ namespace DTRMNS
             btnHideSubTotal.Location = new Point(6, 552);
             btnHideSubTotal.Margin = new Padding(6);
             btnHideSubTotal.Name = "btnHideSubTotal";
-            btnHideSubTotal.Size = new Size(110, 155);
+            btnHideSubTotal.Size = new Size(93, 155);
             btnHideSubTotal.TabIndex = 157;
             btnHideSubTotal.TextAlign = ContentAlignment.BottomCenter;
             btnHideSubTotal.UseVisualStyleBackColor = false;
@@ -1289,7 +1277,7 @@ namespace DTRMNS
             button61.Location = new Point(12, 6);
             button61.Margin = new Padding(12, 6, 12, 6);
             button61.Name = "button61";
-            button61.Size = new Size(98, 79);
+            button61.Size = new Size(81, 79);
             button61.TabIndex = 117;
             button61.Text = "7";
             button61.UseVisualStyleBackColor = false;
@@ -1310,7 +1298,7 @@ namespace DTRMNS
             button89.Location = new Point(12, 97);
             button89.Margin = new Padding(12, 6, 12, 6);
             button89.Name = "button89";
-            button89.Size = new Size(98, 79);
+            button89.Size = new Size(81, 79);
             button89.TabIndex = 120;
             button89.Text = "4";
             button89.UseVisualStyleBackColor = false;
@@ -1328,10 +1316,10 @@ namespace DTRMNS
             button58.Font = new Font("Arial", 26F, FontStyle.Bold);
             button58.ForeColor = Color.FromArgb(0, 0, 0);
             button58.ImeMode = ImeMode.NoControl;
-            button58.Location = new Point(134, 6);
+            button58.Location = new Point(117, 6);
             button58.Margin = new Padding(12, 6, 12, 6);
             button58.Name = "button58";
-            button58.Size = new Size(98, 79);
+            button58.Size = new Size(81, 79);
             button58.TabIndex = 118;
             button58.Text = "8";
             button58.UseVisualStyleBackColor = false;
@@ -1349,10 +1337,10 @@ namespace DTRMNS
             button12.Font = new Font("Arial", 21.75F, FontStyle.Bold);
             button12.ForeColor = Color.FromArgb(0, 0, 0);
             button12.ImeMode = ImeMode.NoControl;
-            button12.Location = new Point(256, 370);
+            button12.Location = new Point(222, 370);
             button12.Margin = new Padding(12, 6, 12, 6);
             button12.Name = "button12";
-            button12.Size = new Size(98, 79);
+            button12.Size = new Size(81, 79);
             button12.TabIndex = 144;
             button12.Text = "20";
             button12.UseVisualStyleBackColor = false;
@@ -1370,10 +1358,10 @@ namespace DTRMNS
             button6.Font = new Font("Arial", 21.75F, FontStyle.Bold);
             button6.ForeColor = Color.FromArgb(0, 0, 0);
             button6.ImeMode = ImeMode.NoControl;
-            button6.Location = new Point(134, 461);
+            button6.Location = new Point(117, 461);
             button6.Margin = new Padding(12, 6, 12, 6);
             button6.Name = "button6";
-            button6.Size = new Size(98, 79);
+            button6.Size = new Size(81, 79);
             button6.TabIndex = 148;
             button6.Text = "50";
             button6.UseVisualStyleBackColor = false;
@@ -1394,7 +1382,7 @@ namespace DTRMNS
             button3.Location = new Point(12, 461);
             button3.Margin = new Padding(12, 6, 12, 6);
             button3.Name = "button3";
-            button3.Size = new Size(98, 79);
+            button3.Size = new Size(81, 79);
             button3.TabIndex = 147;
             button3.Text = "40";
             button3.UseVisualStyleBackColor = false;
@@ -1412,10 +1400,10 @@ namespace DTRMNS
             button5.Font = new Font("Arial", 21.75F, FontStyle.Bold);
             button5.ForeColor = Color.FromArgb(0, 0, 0);
             button5.ImeMode = ImeMode.NoControl;
-            button5.Location = new Point(134, 370);
+            button5.Location = new Point(117, 370);
             button5.Margin = new Padding(12, 6, 12, 6);
             button5.Name = "button5";
-            button5.Size = new Size(98, 79);
+            button5.Size = new Size(81, 79);
             button5.TabIndex = 141;
             button5.Text = "10";
             button5.UseVisualStyleBackColor = false;
@@ -1433,10 +1421,10 @@ namespace DTRMNS
             button57.Font = new Font("Arial", 26F, FontStyle.Bold);
             button57.ForeColor = Color.FromArgb(0, 0, 0);
             button57.ImeMode = ImeMode.NoControl;
-            button57.Location = new Point(256, 6);
+            button57.Location = new Point(222, 6);
             button57.Margin = new Padding(12, 6, 12, 6);
             button57.Name = "button57";
-            button57.Size = new Size(98, 79);
+            button57.Size = new Size(81, 79);
             button57.TabIndex = 119;
             button57.Text = "9";
             button57.UseVisualStyleBackColor = false;
@@ -1454,10 +1442,10 @@ namespace DTRMNS
             button86.Font = new Font("Arial", 26F, FontStyle.Bold);
             button86.ForeColor = Color.FromArgb(0, 0, 0);
             button86.ImeMode = ImeMode.NoControl;
-            button86.Location = new Point(134, 97);
+            button86.Location = new Point(117, 97);
             button86.Margin = new Padding(12, 6, 12, 6);
             button86.Name = "button86";
-            button86.Size = new Size(98, 79);
+            button86.Size = new Size(81, 79);
             button86.TabIndex = 121;
             button86.Text = "5";
             button86.UseVisualStyleBackColor = false;
@@ -1475,10 +1463,10 @@ namespace DTRMNS
             button75.Font = new Font("Arial", 26F, FontStyle.Bold);
             button75.ForeColor = Color.FromArgb(0, 0, 0);
             button75.ImeMode = ImeMode.NoControl;
-            button75.Location = new Point(256, 97);
+            button75.Location = new Point(222, 97);
             button75.Margin = new Padding(12, 6, 12, 6);
             button75.Name = "button75";
-            button75.Size = new Size(98, 79);
+            button75.Size = new Size(81, 79);
             button75.TabIndex = 122;
             button75.Text = "6";
             button75.UseVisualStyleBackColor = false;
@@ -1499,7 +1487,7 @@ namespace DTRMNS
             button4.Location = new Point(12, 370);
             button4.Margin = new Padding(12, 6, 12, 6);
             button4.Name = "button4";
-            button4.Size = new Size(98, 79);
+            button4.Size = new Size(81, 79);
             button4.TabIndex = 142;
             button4.Text = "5";
             button4.UseVisualStyleBackColor = false;
@@ -1520,7 +1508,7 @@ namespace DTRMNS
             button95.Location = new Point(12, 188);
             button95.Margin = new Padding(12, 6, 12, 6);
             button95.Name = "button95";
-            button95.Size = new Size(98, 79);
+            button95.Size = new Size(81, 79);
             button95.TabIndex = 123;
             button95.Text = "1";
             button95.UseVisualStyleBackColor = false;
@@ -1538,10 +1526,10 @@ namespace DTRMNS
             button94.Font = new Font("Arial", 26F, FontStyle.Bold);
             button94.ForeColor = Color.FromArgb(0, 0, 0);
             button94.ImeMode = ImeMode.NoControl;
-            button94.Location = new Point(134, 188);
+            button94.Location = new Point(117, 188);
             button94.Margin = new Padding(12, 6, 12, 6);
             button94.Name = "button94";
-            button94.Size = new Size(98, 79);
+            button94.Size = new Size(81, 79);
             button94.TabIndex = 124;
             button94.Text = "2";
             button94.UseVisualStyleBackColor = false;
@@ -1559,10 +1547,10 @@ namespace DTRMNS
             button93.Font = new Font("Arial", 26F, FontStyle.Bold);
             button93.ForeColor = Color.FromArgb(0, 0, 0);
             button93.ImeMode = ImeMode.NoControl;
-            button93.Location = new Point(256, 188);
+            button93.Location = new Point(222, 188);
             button93.Margin = new Padding(12, 6, 12, 6);
             button93.Name = "button93";
-            button93.Size = new Size(98, 79);
+            button93.Size = new Size(81, 79);
             button93.TabIndex = 125;
             button93.Text = "3";
             button93.UseVisualStyleBackColor = false;
@@ -1583,7 +1571,7 @@ namespace DTRMNS
             button107.Location = new Point(12, 279);
             button107.Margin = new Padding(12, 6, 12, 6);
             button107.Name = "button107";
-            button107.Size = new Size(98, 79);
+            button107.Size = new Size(81, 79);
             button107.TabIndex = 126;
             button107.Text = "0";
             button107.UseVisualStyleBackColor = false;
@@ -1601,10 +1589,10 @@ namespace DTRMNS
             btnC.Font = new Font("Arial", 12F, FontStyle.Bold);
             btnC.ForeColor = Color.FromArgb(0, 0, 0);
             btnC.ImeMode = ImeMode.NoControl;
-            btnC.Location = new Point(134, 279);
+            btnC.Location = new Point(117, 279);
             btnC.Margin = new Padding(12, 6, 12, 6);
             btnC.Name = "btnC";
-            btnC.Size = new Size(98, 79);
+            btnC.Size = new Size(81, 79);
             btnC.TabIndex = 127;
             btnC.Text = "CLEAR";
             btnC.UseVisualStyleBackColor = false;
@@ -1623,7 +1611,7 @@ namespace DTRMNS
             panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
-            panel1.Size = new Size(366, 185);
+            panel1.Size = new Size(315, 185);
             panel1.TabIndex = 168;
             // 
             // label1
@@ -1719,14 +1707,15 @@ namespace DTRMNS
             // 
             // pnlDisplay
             // 
-            pnlDisplay.BackColor = Color.Black;
+            pnlDisplay.BackColor = Color.Fuchsia;
             pnlDisplay.Controls.Add(pnlStandardDisplay);
             pnlDisplay.Controls.Add(pnlSubTotal);
             pnlDisplay.Dock = DockStyle.Right;
-            pnlDisplay.Location = new Point(648, 0);
+            pnlDisplay.Location = new Point(699, 0);
             pnlDisplay.Margin = new Padding(0);
+            pnlDisplay.MinimumSize = new Size(315, 0);
             pnlDisplay.Name = "pnlDisplay";
-            pnlDisplay.Size = new Size(366, 898);
+            pnlDisplay.Size = new Size(315, 898);
             pnlDisplay.TabIndex = 28;
             // 
             // pnlTop
@@ -1747,7 +1736,7 @@ namespace DTRMNS
             pnlTop.Margin = new Padding(0);
             pnlTop.MinimumSize = new Size(0, 83);
             pnlTop.Name = "pnlTop";
-            pnlTop.Size = new Size(648, 157);
+            pnlTop.Size = new Size(699, 157);
             pnlTop.TabIndex = 44;
             // 
             // cmdDirectSale
@@ -1834,7 +1823,7 @@ namespace DTRMNS
             mnuFunctions.Location = new Point(435, 0);
             mnuFunctions.Name = "mnuFunctions";
             mnuFunctions.Padding = new Padding(7, 2, 0, 2);
-            mnuFunctions.Size = new Size(211, 68);
+            mnuFunctions.Size = new Size(91, 68);
             mnuFunctions.TabIndex = 31;
             mnuFunctions.Text = "menuStrip1";
             // 
@@ -1848,7 +1837,6 @@ namespace DTRMNS
             mnuTools.ImageScaling = ToolStripItemImageScaling.None;
             mnuTools.Name = "mnuTools";
             mnuTools.Size = new Size(82, 64);
-            mnuTools.Click += btnTools_Click;
             // 
             // mnuOrders
             // 
@@ -1948,7 +1936,7 @@ namespace DTRMNS
             // 
             // mnuAdmin
             // 
-            mnuAdmin.DropDownItems.AddRange(new ToolStripItem[] { mnuDebug, mnuReprintReport, mnuSupervisorReport, mnuChangeMenu, mnuReloadMenu, mnuOptions, mnuPrintAsInvoice, mnuOrientation, mnuPad, mnuDrawerCalculator });
+            mnuAdmin.DropDownItems.AddRange(new ToolStripItem[] { mnuDebug, mnuReprintReport, mnuSupervisorReport, mnuChangeMenu, mnuReloadMenu, mnuOptions, mnuPrintAsInvoice, mnuPad, mnuDrawerCalculator });
             mnuAdmin.Image = Properties.Resources.Tools32;
             mnuAdmin.ImageScaling = ToolStripItemImageScaling.None;
             mnuAdmin.Name = "mnuAdmin";
@@ -2019,15 +2007,6 @@ namespace DTRMNS
             mnuPrintAsInvoice.Text = "PRINT AS INVOICE";
             mnuPrintAsInvoice.Click += btnPrintAsInvoice_Click;
             // 
-            // mnuOrientation
-            // 
-            mnuOrientation.Image = Properties.Resources.ExpandHeight48;
-            mnuOrientation.ImageScaling = ToolStripItemImageScaling.None;
-            mnuOrientation.Name = "mnuOrientation";
-            mnuOrientation.Size = new Size(401, 54);
-            mnuOrientation.Text = "CHANGE ORIENTATION";
-            mnuOrientation.Click += btnOrientation_Click;
-            // 
             // mnuPad
             // 
             mnuPad.Image = Properties.Resources.pad32;
@@ -2093,7 +2072,7 @@ namespace DTRMNS
             cmdCancel.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             cmdCancel.ForeColor = Color.White;
             cmdCancel.ImeMode = ImeMode.NoControl;
-            cmdCancel.Location = new Point(1, 82);
+            cmdCancel.Location = new Point(527, 3);
             cmdCancel.Margin = new Padding(1, 3, 1, 1);
             cmdCancel.Name = "cmdCancel";
             cmdCancel.Size = new Size(111, 74);
@@ -2113,7 +2092,7 @@ namespace DTRMNS
             btnExpandShrinkHoldButtonDetails.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             btnExpandShrinkHoldButtonDetails.ForeColor = Color.White;
             btnExpandShrinkHoldButtonDetails.ImeMode = ImeMode.NoControl;
-            btnExpandShrinkHoldButtonDetails.Location = new Point(114, 82);
+            btnExpandShrinkHoldButtonDetails.Location = new Point(1, 82);
             btnExpandShrinkHoldButtonDetails.Margin = new Padding(1, 3, 1, 1);
             btnExpandShrinkHoldButtonDetails.Name = "btnExpandShrinkHoldButtonDetails";
             btnExpandShrinkHoldButtonDetails.Size = new Size(89, 74);
@@ -2131,7 +2110,7 @@ namespace DTRMNS
             pnlOrderPad.Margin = new Padding(4, 3, 4, 3);
             pnlOrderPad.Name = "pnlOrderPad";
             pnlOrderPad.Padding = new Padding(9, 0, 0, 0);
-            pnlOrderPad.Size = new Size(648, 0);
+            pnlOrderPad.Size = new Size(699, 0);
             pnlOrderPad.TabIndex = 45;
             pnlOrderPad.Visible = false;
             // 
@@ -2145,7 +2124,7 @@ namespace DTRMNS
             pnlPendingOrders.Margin = new Padding(4, 3, 4, 3);
             pnlPendingOrders.MinimumSize = new Size(0, 69);
             pnlPendingOrders.Name = "pnlPendingOrders";
-            pnlPendingOrders.Size = new Size(648, 69);
+            pnlPendingOrders.Size = new Size(699, 69);
             pnlPendingOrders.TabIndex = 47;
             // 
             // tmrHoldingOrders
@@ -2161,7 +2140,7 @@ namespace DTRMNS
             pnlHolder.Location = new Point(0, 226);
             pnlHolder.Margin = new Padding(4, 3, 4, 3);
             pnlHolder.Name = "pnlHolder";
-            pnlHolder.Size = new Size(648, 672);
+            pnlHolder.Size = new Size(699, 672);
             pnlHolder.TabIndex = 48;
             // 
             // tmrScreenSaverTrigger
@@ -2266,10 +2245,8 @@ namespace DTRMNS
             Name = "trmOrderPadMain";
             Padding = new Padding(0, 0, 10, 0);
             StartPosition = FormStartPosition.CenterScreen;
-            WindowState = FormWindowState.Normal;
             FormClosing += trmOrderPadMain_FormClosing;
             Load += frmMain_Load;
-            Shown += trmOrderPadMain_Shown;
             KeyPress += trmOrderPadMain_KeyPress;
             MouseDown += trmOrderPadMain_MouseDown;
             MouseMove += trmOrderPadMain_MouseMove;
@@ -2350,7 +2327,8 @@ namespace DTRMNS
                 //    this.Close();
                 //}
 
-                if (!DTRMSimpleBusiness.Instance.ActiveMenu.categories.IsNullOrEmpty()) {
+                if (!DTRMSimpleBusiness.Instance.ActiveMenu.categories.IsNullOrEmpty())
+                {
 
                     // for (int i = 0; i <  DTRMSimpleBusiness.Instance.ActiveMenu.categories.Count; i++)
                     int i = 0;
@@ -2370,7 +2348,7 @@ namespace DTRMNS
                         btn.BackColor = Color.FromArgb(upe.category.BgColour);
                         btn.ForeColor = Color.FromArgb(upe.category.FgColour);
 
-                        btn.TextAlign =(ContentAlignment)upe.category.TextAlign;
+                        btn.TextAlign = (ContentAlignment)upe.category.TextAlign;
                         btn.ImageAlign = (ContentAlignment)upe.category.ImageAlign;
                         btn.TextImageRelation = (TextImageRelation)upe.category.TextImageRelation;
 
@@ -2378,14 +2356,14 @@ namespace DTRMNS
                         {
                             case ButtonDisplayStyles.Text:
                                 btn.Image = null;
-                                btn.Text = upe.category.CategoryName;                                 
+                                btn.Text = upe.category.CategoryName;
                                 break;
                             case ButtonDisplayStyles.Image:
-                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage),upe.category.Height, upe.category.Height-10,true);
+                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 10, true);
                                 btn.Text = "";
                                 break;
                             case ButtonDisplayStyles.ImageAndText:
-                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height-20, true);
+                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 20, true);
                                 btn.Text = upe.category.CategoryName;
                                 break;
                         }
@@ -2400,7 +2378,7 @@ namespace DTRMNS
                         btn.FlatStyle = FlatStyle.Flat;
                         btn.FlatAppearance.BorderSize = 0;
                         btn.Tag = i++;  //associated index 
-                        btn.Padding = new Padding(0,0,0,10);
+                        btn.Padding = new Padding(0, 0, 0, 10);
                         btn.Size = new Size(upe.category.Width, upe.category.Height);
 
 
@@ -2498,7 +2476,7 @@ namespace DTRMNS
 
 
             //attach order to the screen and display the order
-            OrderScreen.OrderToDisplay = DTRMSimpleBusiness.Instance.AttachedOrder;
+            //OrderScreen.OrderToDisplay = DTRMSimpleBusiness.Instance.AttachedOrder;
             // OrderScreen.bslayer = bslayer;
             OrderScreen.Display();
 
@@ -2571,7 +2549,7 @@ namespace DTRMNS
             //End of ShowAutoOrderType
 
 
-            OrderScreen.OrderToDisplay = null;
+            //OrderScreen.OrderToDisplay = null;
             OrderScreen.Display();
 
             LoadPendingOrders();
@@ -2673,15 +2651,15 @@ namespace DTRMNS
                             return false;
                     }
 
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && config.Table_Orders_Always_Shrinked)
-                         DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse && config.Table_Orders_Always_Shrinked)
+                        DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
 
                 }
 
                 if (blnHaveItemsToPrint)
                 {
 
-                     DTRMSimpleBusiness.Instance.AttachedOrder.Status = NewOrderStatus;
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status = NewOrderStatus;
                     if (blnPrintableOtherOrderType)
                     {
                         return this.CompleteAttachedOrder(2, true, false, false);
@@ -2692,18 +2670,18 @@ namespace DTRMNS
 
                 } else
                 {
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
                     {
-                         DTRMSimpleBusiness.Instance.AttachedOrder.Status = UF.UpdateStatus( DTRMSimpleBusiness.Instance.AttachedOrder.Status, NewOrderStatus, true);
-                        if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == POSLayer.Library.StatusFlags.UNKNOWN ||
+                        DTRMSimpleBusiness.Instance.AttachedOrder.Status = UF.UpdateStatus(DTRMSimpleBusiness.Instance.AttachedOrder.Status, NewOrderStatus, true);
+                        if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == POSLayer.Library.StatusFlags.UNKNOWN ||
                              DTRMSimpleBusiness.Instance.AttachedOrder.Status == POSLayer.Library.StatusFlags.NEW)
                         {
-                             DTRMSimpleBusiness.Instance.DeleteOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                             DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                            DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                            DTRMSimpleBusiness.Instance.AttachedOrder = null;
                         } else
-                             DTRMSimpleBusiness.Instance.SaveOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+                            DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
                         UnloadOrder();
-                    } else if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse)
+                    } else if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.InHouse)
                     {
                         UnloadOrder();
                     } else
@@ -2730,42 +2708,42 @@ namespace DTRMNS
         }
         public bool EnsureCustomer(bool blnShowMessage)
         {
-            if (! DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired)
+            if (!DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired)
                 return true;
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery ||
-                 DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery ||
+                 DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
             {
 
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
                 {
-                    if (( DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName.Trim()) == "")
+                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName.Trim()) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer name is missing !");
                         return false;
                     }
-                    if (( DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel +  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email) == "")
+                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel + DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have at least one phone number or an email address");
                         return false;
                     }
-                } else if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery)
+                } else if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery)
                 {
-                    if (( DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName) == "")
+                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Name missing ");
                         return false;
                     }
-                    if (( DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel.Trim() +  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email.Trim()) == "")
+                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel.Trim() + DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email.Trim()) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have at least one phone number or an email address");
                         return false;
                     }
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address.Trim() == "")
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address.Trim() == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have an address");
@@ -2786,9 +2764,9 @@ namespace DTRMNS
             string OrderIID = "";
             string SelectedPrinterIID = "";
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                OrderIID =  DTRMSimpleBusiness.Instance.AttachedOrder.IID; //Get a copy of the order IID
+                OrderIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID; //Get a copy of the order IID
 
                 if (!EnsureCustomer(false))
                 {
@@ -2805,9 +2783,9 @@ namespace DTRMNS
 
                 if (blnArchive)
                 {
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                     {
-                        switch ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
+                        switch (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
                         {
                             case OrderTypes.DirectSale:
                                 if (config.Direct_Sale_Auto_Payment_Mehtod == AutoPaymentMethods.Selective)
@@ -2817,7 +2795,7 @@ namespace DTRMNS
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                     DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                             case OrderTypes.InHouse:
                                 if (config.Table_Orders_Auto_Payment_Method == AutoPaymentMethods.Selective)
@@ -2827,7 +2805,7 @@ namespace DTRMNS
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                     DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
 
 
                                 break;
@@ -2839,7 +2817,7 @@ namespace DTRMNS
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                     DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                             case OrderTypes.Delivery:
                                 if (config.Delivery_Orders_Auto_Payment_Method == AutoPaymentMethods.Selective)
@@ -2849,7 +2827,7 @@ namespace DTRMNS
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                     DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                         }
                     }
@@ -2859,23 +2837,23 @@ namespace DTRMNS
                 if (blnPrintLocal)
                 {
                     //Select Receipt Printer	Delivery Or TakeAwayB printer
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||
                          DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
                     {
                         try
                         {
-                            SelectedPrinterIID =  DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.TakeAwayB).Result.IID;
+                            SelectedPrinterIID = DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.TakeAwayB).Result.IID;
                         } catch
                         {
                         }
                     }
 
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||
                          DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery)
                     {
                         try
                         {
-                            SelectedPrinterIID =  DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.Delivery).Result.IID;
+                            SelectedPrinterIID = DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.Delivery).Result.IID;
                         } catch
                         {
                         }
@@ -2883,7 +2861,7 @@ namespace DTRMNS
 
                     if (SelectedPrinterIID == null || SelectedPrinterIID == "")
                     {
-                        List<Printer> PrinterList =  DTRMSimpleBusiness.Instance.GetReceiptPrinterList().Result;
+                        List<Printer> PrinterList = DTRMSimpleBusiness.Instance.GetReceiptPrinterList().Result;
                         if (PrinterList.Count == 0)
                         {
                             MessageBox.Show("There is no receipt printer in the system, please assign a receipt printer");
@@ -2913,24 +2891,24 @@ namespace DTRMNS
 
                 if (NumberOfCopy > 0)
                 {
-                     DTRMSimpleBusiness.Instance.AttachedOrder.blnPrinted =  DTRMSimpleBusiness.Instance.PrintEntireOrder( DTRMSimpleBusiness.Instance.AttachedOrder, true, true,
-                        NumberOfCopy, SelectedPrinterIID).Result;
+                    DTRMSimpleBusiness.Instance.AttachedOrder.blnPrinted = DTRMSimpleBusiness.Instance.PrintEntireOrder(DTRMSimpleBusiness.Instance.AttachedOrder, true, true,
+                       NumberOfCopy, SelectedPrinterIID).Result;
                     if (config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter( DTRMSimpleBusiness.Instance.GetPrinterForClient(SelectedPrinterIID).Result.NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(SelectedPrinterIID).Result.NetworkName);
 
                 }
 
                 if (blnArchive)
                 {
                     if (!config.Table_Orders_Always_Shrinked)
-                         DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                        DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
 
-                     DTRMSimpleBusiness.Instance.AttachedOrder.LastModified = DateTime.Now;
-                     DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
+                    DTRMSimpleBusiness.Instance.AttachedOrder.LastModified = DateTime.Now;
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
                 }
                 if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                 {
-                     DTRMSimpleBusiness.Instance.SaveOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+                    DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
                     OrderScreen.FinaliseSplit();
                 }
 
@@ -2941,11 +2919,11 @@ namespace DTRMNS
                 string targetTableIID = "";
 
 
-                if (config.TakeAway_Orders_Display_Kitchen_Orders &&  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.TakeAwayB)
-                     DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+                if (config.TakeAway_Orders_Display_Kitchen_Orders && DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.TakeAwayB)
+                    DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
 
-                if (config.Delivery_Orders_Display_Kitchen_Orders &&  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
-                     DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+                if (config.Delivery_Orders_Display_Kitchen_Orders && DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
+                    DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
 
 
                 //This is the final place for inhouse order to remove from the system
@@ -2957,7 +2935,7 @@ namespace DTRMNS
 
 
                 if (blnTableTransferRequired)
-                     DTRMSimpleBusiness.Instance.MoveTable(sourceTableIID, targetTableIID);
+                    DTRMSimpleBusiness.Instance.MoveTable(sourceTableIID, targetTableIID);
                 //now you can transfer first subtable order to primary table
 
                 ResetScreenLock();
@@ -2972,10 +2950,10 @@ namespace DTRMNS
         //THIS IS DONE BUTTON function it is called by a  delegate function
         public bool DoneEventHandlerFunction()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||
-                     DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||
+                     DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
                     return false;
                 if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, false))
                 {
@@ -2989,17 +2967,17 @@ namespace DTRMNS
         private async Task PrintFinalPayment(PaymentMethods paymentMethod, bool withReceipt)
         {
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                double total =  DTRMSimpleBusiness.Instance.AttachedOrder.Total;
+                double total = DTRMSimpleBusiness.Instance.AttachedOrder.Total;
                 if (total == 0)
                     return;
-                if (total > 0 && ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery))
-                    await  DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+                if (total > 0 && (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery))
+                    await DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
 
-                 DTRMSimpleBusiness.Instance.AttachedOrder.Payment = paymentMethod;
+                DTRMSimpleBusiness.Instance.AttachedOrder.Payment = paymentMethod;
 
-                switch ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
+                switch (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
                 {
                     case OrderTypes.DirectSale:
                         if (withReceipt)
@@ -3033,7 +3011,7 @@ namespace DTRMNS
                         CompleteAttachedOrder(2, true, true, false);
                         break;
                 }
-                await  DTRMSimpleBusiness.Instance.SetKitchenModified();
+                await DTRMSimpleBusiness.Instance.SetKitchenModified();
                 tmrHoldingOrders_Tick(null, null);
             }
         }
@@ -3051,14 +3029,14 @@ namespace DTRMNS
         private async void btnActualTableButton_Click(object sender, EventArgs e)
         {
 
-            Masa table = await  DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
+            Masa table = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
             } else
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
                 LoadAttachedOrder();
             }
         }
@@ -3066,23 +3044,23 @@ namespace DTRMNS
         private async void btnDirectTable_Click(object tableIID, EventArgs e)
         {
 
-            Masa table = await  DTRMSimpleBusiness.Instance.BarrowTable(tableIID.ToString());
+            Masa table = await DTRMSimpleBusiness.Instance.BarrowTable(tableIID.ToString());
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
             } else
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
                 LoadAttachedOrder();
             }
         }
 
         public bool EnsureTable()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == null ||  DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == "")
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == null || DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == "")
                     return false;
             }
             return true;
@@ -3116,7 +3094,7 @@ namespace DTRMNS
                 pnlHolder.Controls.Clear();
             } catch { }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 AttachPanel(OUI.SelectedPanel);
         }
         #endregion
@@ -3146,7 +3124,7 @@ namespace DTRMNS
 
         private void HandleActionPanelView(ViewTypes view)
         {
-            bool blnHasOrder = ( DTRMSimpleBusiness.Instance.AttachedOrder != null);
+            bool blnHasOrder = (DTRMSimpleBusiness.Instance.AttachedOrder != null);
 
             int OrderTypeCount = 0;
 
@@ -3167,7 +3145,7 @@ namespace DTRMNS
             //DisplayTopBar
             try
             {
-                mnuCustomer.Visible = blnHasOrder &&  DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired;
+                mnuCustomer.Visible = blnHasOrder && DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired;
             } catch { }
 
             mnuPad.Enabled = config.Pad_Allowed;
@@ -3175,16 +3153,16 @@ namespace DTRMNS
             mnuOrders.Visible = false;
             mnuReports.Visible = false;
 
-            mnuPrintForKitchen.Visible = blnHasOrder && ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.DirectSale);
+            mnuPrintForKitchen.Visible = blnHasOrder && (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.DirectSale);
             btnPrint.Visible = blnHasOrder && !string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID);
 
-            mnuReloadMenu.Visible = !blnHasOrder &&  DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
+            mnuReloadMenu.Visible = !blnHasOrder && DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
 
-            mnuPad.Enabled =  DTRMSimpleBusiness.Instance.HasPadItems() && config.Pad_Allowed;
+            mnuPad.Enabled = DTRMSimpleBusiness.Instance.HasPadItems() && config.Pad_Allowed;
 
             bool blnOrderHasItems = false;
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
-                blnOrderHasItems =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0;
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                blnOrderHasItems = DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0;
             switch (view)
             {
                 case ViewTypes.UnloadedOrderView:
@@ -3211,8 +3189,8 @@ namespace DTRMNS
                     btnPrintCardFinalPayment.Visible = false;
                     btnPrintOnlineFinalPayment.Visible = false;
 
-                    mnuOrders.Visible = config.Order_Reloads_Allowed || (((int) DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
-                    mnuReports.Visible = config.Standard_Users_Can_Produce_Reports || (((int) DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
+                    mnuOrders.Visible = config.Order_Reloads_Allowed || (((int)DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
+                    mnuReports.Visible = config.Standard_Users_Can_Produce_Reports || (((int)DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
                     //cmdLastOrder.Visible = config.Last_Order_Reload_Allowed || (((int) DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
 
                     ArrangeSubTotalPanel(false);
@@ -3224,8 +3202,8 @@ namespace DTRMNS
                     btnDone.Visible = false;
                     mnuPrintAsInvoice.Visible = false;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = (config.Hold_Order_Available &&
-                        ( DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
-                        ( DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0));
+                        (DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
+                        (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0));
 
                     //Second Row
                     mnuDrawerCalculator.Visible = config.Drawer_Calculator_Visible;
@@ -3251,7 +3229,7 @@ namespace DTRMNS
                     if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                         btnDone.Visible = false;
 
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Print_Invoice_Button_Visible;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Print_Invoice_Button_Visible;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3262,20 +3240,20 @@ namespace DTRMNS
 
                     //Third Row
                     // btnSubTotal.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Sub_Total_Panel_Visible;
-                    btnPrintCashFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintCardFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintOnlineFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCashFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCardFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintOnlineFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
                     //Forth Row
-                    btnPrintCashFinalPayment.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintCardFinalPayment.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintOnlineFinalPayment.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCashFinalPayment.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCardFinalPayment.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintOnlineFinalPayment.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
                     break;
                 #endregion
                 case ViewTypes.TakeAwayOrderView:
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3299,7 +3277,7 @@ namespace DTRMNS
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3325,8 +3303,8 @@ namespace DTRMNS
                     //First Row
                     btnDone.Visible = false;
                     mnuPrintAsInvoice.Visible = false;
-                    btnHoldOrder.Visible = btnHoldAndReceipt.Visible = (( DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
-                       ( DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0) && config.Hold_Order_Available);
+                    btnHoldOrder.Visible = btnHoldAndReceipt.Visible = ((DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
+                       (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0) && config.Hold_Order_Available);
 
                     //Second Row
                     mnuDrawerCalculator.Visible = false;
@@ -3374,7 +3352,7 @@ namespace DTRMNS
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3399,7 +3377,7 @@ namespace DTRMNS
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3448,7 +3426,7 @@ namespace DTRMNS
             }
 
             //Can not change the order
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
             {
                 btnDone.Visible = btnHoldOrder.Visible = btnHoldAndReceipt.Visible =
                    btnPrintCashFinalPayment.Visible = btnPrintCashFinalPaymentWithReceipt.Visible =
@@ -3472,26 +3450,26 @@ namespace DTRMNS
 
         private void cmdDirectSale_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder = new Order(POSLayer.Library.OrderTypes.DirectSale);
-                 DTRMSimpleBusiness.Instance.AttachedOrder.ServiceChargeRate =  DTRMSimpleBusiness.Instance.shop.ServiceChargeRate;
-                 DTRMSimpleBusiness.Instance.AttachedOrder.ServiceChargeTaxRate =  DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate;
+                DTRMSimpleBusiness.Instance.AttachedOrder = new Order(POSLayer.Library.OrderTypes.DirectSale);
+                DTRMSimpleBusiness.Instance.AttachedOrder.ServiceChargeRate = DTRMSimpleBusiness.Instance.shop.ServiceChargeRate;
+                DTRMSimpleBusiness.Instance.AttachedOrder.ServiceChargeTaxRate = DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate;
 
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
             } else
             {
                 if (config.DebugMode)
-                     DTRMSimpleBusiness.Instance.SaveDebug("safely pack order on direct sale click failed");
+                    DTRMSimpleBusiness.Instance.SaveDebug("safely pack order on direct sale click failed");
             }
         }
 
         private void cmdTables_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
@@ -3503,22 +3481,22 @@ namespace DTRMNS
 
         private void CreateAndLoadInHouseOrder()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.InHouse,  DTRMSimpleBusiness.Instance.shop.ServiceChargeRate,  DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(POSLayer.Library.OrderTypes.InHouse, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
                 LoadAttachedOrder();
             }
         }
 
         private async void cmdTakeAway_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder = new Order(OrderTypes.TakeAwayB,  DTRMSimpleBusiness.Instance.shop.ServiceChargeRate,  DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                DTRMSimpleBusiness.Instance.AttachedOrder = new Order(OrderTypes.TakeAwayB, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
             }
@@ -3526,12 +3504,12 @@ namespace DTRMNS
 
         private async void cmdDelivery_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             if (SafelyPackTheOrder(StatusFlags.DONE, true))
             {
 
-                 DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Delivery,  DTRMSimpleBusiness.Instance.shop.ServiceChargeRate,  DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Delivery, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 LoadAttachedOrder();
             }
@@ -3542,38 +3520,38 @@ namespace DTRMNS
             if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                 OrderScreen.AbortSplit();
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
                 DetachPanel();
             else
             {
-                 DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
+                DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
 
 
                 //MessageBox.Show( DTRMSimpleBusiness.Instance.AttachedOrder.Status.ToString());
-                switch ( DTRMSimpleBusiness.Instance.AttachedOrder.Status)
+                switch (DTRMSimpleBusiness.Instance.AttachedOrder.Status)
                 {
                     case POSLayer.Library.StatusFlags.NEW:
                     case POSLayer.Library.StatusFlags.UNKNOWN:
                     case POSLayer.Library.StatusFlags.VOID:
-                         DTRMSimpleBusiness.Instance.DeleteOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                         DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
                         UnloadOrder();
                         return;
                     case POSLayer.Library.StatusFlags.DONE:
-                        string tableIID =  DTRMSimpleBusiness.Instance.AttachedOrder.TableIID;
-                         DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        string tableIID = DTRMSimpleBusiness.Instance.AttachedOrder.TableIID;
+                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
                         UnloadOrder();
-                        Masa table = await  DTRMSimpleBusiness.Instance.GetTable(tableIID);
+                        Masa table = await DTRMSimpleBusiness.Instance.GetTable(tableIID);
                         if (table != null)
                         {
                             table.LockedClientIP = "";
-                             DTRMSimpleBusiness.Instance.SaveTable(table);
+                            DTRMSimpleBusiness.Instance.SaveTable(table);
                         }
                         return;
                     case POSLayer.Library.StatusFlags.PENDING:
                     case POSLayer.Library.StatusFlags.COMPLETED:
                     case POSLayer.Library.StatusFlags.ARCHIVED:
-                         DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
                         UnloadOrder();
                         return;
 
@@ -3589,13 +3567,13 @@ namespace DTRMNS
         {
             try
             {
-                mnuSum.Visible = config.Display_Session_Total_On_Menu ||  DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
-                mnuSelectBonusPlan.Visible = config.Display_Session_Bonus ||  DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
-                mnuReprintReport.Visible = (config.Preserve_Previous_Report &&  DTRMSimpleBusiness.Instance.imgReportSnapShot != null &&  DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore());
+                mnuSum.Visible = config.Display_Session_Total_On_Menu || DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
+                mnuSelectBonusPlan.Visible = config.Display_Session_Bonus || DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
+                mnuReprintReport.Visible = (config.Preserve_Previous_Report && DTRMSimpleBusiness.Instance.imgReportSnapShot != null && DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore());
 
-                mnuSum.Text =  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum().ToString("c2");
+                mnuSum.Text = DTRMSimpleBusiness.Instance.GetCurrentSessionXSum().ToString("c2");
 
-                mnuLock.Enabled = ( DTRMSimpleBusiness.Instance.AttachedOrder == null);
+                mnuLock.Enabled = (DTRMSimpleBusiness.Instance.AttachedOrder == null);
             } catch
             {
                 float blank = 0;
@@ -3605,9 +3583,9 @@ namespace DTRMNS
 
         private void cmdOrders_Click(object sender, EventArgs e)
         {
-            if (config.Order_Reloads_Allowed || ( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User))
+            if (config.Order_Reloads_Allowed || (DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User))
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 {
                     if (!this.SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true))
                         return;
@@ -3625,7 +3603,7 @@ namespace DTRMNS
         private async void cmdReports_Click(object sender, EventArgs e)
         {
 
-            if (! DTRMSimpleBusiness.Instance.HasCurrentSessionCompletedOrders())
+            if (!DTRMSimpleBusiness.Instance.HasCurrentSessionCompletedOrders())
             {
                 MessageBox.Show("There is no completed orders for this session!!");
                 return;
@@ -3638,13 +3616,13 @@ namespace DTRMNS
                 return;
             }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
                 MessageBox.Show("System has active order, Please complete the order before report procedure!!");
                 return;
             }
 
-            bool blnHasActiveHoldOrders =  DTRMSimpleBusiness.Instance.HasActiveHoldOrders();
+            bool blnHasActiveHoldOrders = DTRMSimpleBusiness.Instance.HasActiveHoldOrders();
 
             if (config.No_Hold_Orders_Allowed_During_Report && blnHasActiveHoldOrders)
             {
@@ -3652,7 +3630,7 @@ namespace DTRMNS
                 return;
             }
 
-            bool blnHasActiveTableOrders =  DTRMSimpleBusiness.Instance.HasActiveTableOrders();
+            bool blnHasActiveTableOrders = DTRMSimpleBusiness.Instance.HasActiveTableOrders();
 
             if (config.No_Table_Orders_Allowed_During_Report && blnHasActiveTableOrders)
             {
@@ -3660,7 +3638,7 @@ namespace DTRMNS
                 return;
             }
 
-            bool blnZReport =  DTRMSimpleBusiness.Instance.WillReportEndUpAs_Z_Report(await  DTRMSimpleBusiness.Instance.GetCurrentSession());
+            bool blnZReport = DTRMSimpleBusiness.Instance.WillReportEndUpAs_Z_Report(await DTRMSimpleBusiness.Instance.GetCurrentSession());
             if (blnZReport && (blnHasActiveHoldOrders || blnHasActiveTableOrders))
             {
                 MessageBox.Show("Printing report will auto produce Z report, YOU MUST CASHOUT ALL ORDERS before proceed!!!!");
@@ -3686,7 +3664,7 @@ namespace DTRMNS
                 }
                 if (blnPrint)
                 {
-                    frmPinZWarning frm = new frmPinZWarning(DTRMSimpleBusiness.Instance, await repoOrder.GetOrdersTotalForPaymentMethod( DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
+                    frmPinZWarning frm = new frmPinZWarning(DTRMSimpleBusiness.Instance, await repoOrder.GetOrdersTotalForPaymentMethod(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
                     if (frm.ShowDialog() == DialogResult.Cancel)
                     {
                         return;
@@ -3695,19 +3673,19 @@ namespace DTRMNS
             }
 
 
-             DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
+            DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
 
 
             //There should be no panel visible specifically OrderList panel
             DetachPanel();
 
-            Report report =  DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.XReport);
+            Report report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.XReport);
 
             trmSelectPrinter fsp = new trmSelectPrinter();
             if (fsp.ShowDialog() == DialogResult.OK)
             {
 
-                 DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+                DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
 
                 if (report.RequireCashDrawTotal)
                 {
@@ -3720,12 +3698,12 @@ namespace DTRMNS
                 }
 
                 //"Courier New"
-                await  DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.XReport,  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.ReturnValue, false);
+                await DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.XReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.ReturnValue, false);
 
-                await  DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+                await DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
             bypass:
                 if (config.Force_Receipt_Printer_To_Cut)
-                    DRShell.SendCutCommandToUSBPrinter( DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
+                    DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
 
             } else
                 return;
@@ -3734,19 +3712,19 @@ namespace DTRMNS
         }
         private void cmdLock_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             Lock();
         }
 
         private void btnReprintReport_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.imgReportSnapShot != null)
+            if (DTRMSimpleBusiness.Instance.imgReportSnapShot != null)
             {
                 trmSelectPrinter fsp = new trmSelectPrinter();
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                     DTRMSimpleBusiness.Instance.PrintImage( DTRMSimpleBusiness.Instance.imgReportSnapShot,  DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
+                    DTRMSimpleBusiness.Instance.PrintImage(DTRMSimpleBusiness.Instance.imgReportSnapShot, DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
                 }
             }
         }
@@ -3761,16 +3739,16 @@ namespace DTRMNS
         #region SMILEY MENU
         private async void tsPrintForKitchen_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                await  DTRMSimpleBusiness.Instance.PrintForKitchen( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                await DTRMSimpleBusiness.Instance.PrintForKitchen(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
             }
         }
         private void btnPrintAsInvoice_Click(object sender, System.EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse &&  DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse && DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW)
                     this.CompleteAttachedOrder(1, false, true, false);
                 else
                     return;
@@ -3783,7 +3761,7 @@ namespace DTRMNS
 
         private void cmdPad_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
             {
                 if (config.Order_Pad_Default_Order_Type == POSLayer.Library.OrderTypes.InHouse)
                 {
@@ -3792,7 +3770,7 @@ namespace DTRMNS
                     return;
                 } else
                 {
-                     DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(config.Order_Pad_Default_Order_Type);
+                    DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(config.Order_Pad_Default_Order_Type);
                     EnsureCompulsoryExtras();
                     blnPadOpenning = true;
                     LoadAttachedOrder();
@@ -3816,7 +3794,7 @@ namespace DTRMNS
         {
             //ensure order closed  if any open already
             SafelyPackTheOrder(POSLayer.Library.StatusFlags.DONE, true);
-             DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+            DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
             RefreshUserInterface();
         }
         #region SERVICE HANDLERS
@@ -3918,10 +3896,10 @@ namespace DTRMNS
         #region ACTION PANEL BUTTON HANDLERS
         private void btnDone_Click(object sender, System.EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery ||
-                     DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB ||  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery ||
+                     DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAwayB || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetTakeAway)
                     return;
                 else
                 {
@@ -3935,16 +3913,16 @@ namespace DTRMNS
         private void btnFault_Click(object sender, EventArgs e)
         {
             if (config.Cash_Drawer_Void_Open_Allowed)
-                 DTRMSimpleBusiness.Instance.OpenCashDrawer(true);
+                DTRMSimpleBusiness.Instance.OpenCashDrawer(true);
         }
 
         private async void btnPrint_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null && !string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID))
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && !string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID))
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 {
-                    await  DTRMSimpleBusiness.Instance.PrintEntireOrder( DTRMSimpleBusiness.Instance.AttachedOrder, true, false, 1,
+                    await DTRMSimpleBusiness.Instance.PrintEntireOrder(DTRMSimpleBusiness.Instance.AttachedOrder, true, false, 1,
                         config.DTClientLocalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
@@ -3955,7 +3933,7 @@ namespace DTRMNS
 
         private void btnHoldOrder_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null &&  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -3968,7 +3946,7 @@ namespace DTRMNS
                         //NEW        => Pending , Save , Unload
                         //COMPLETED  => prevent adding items, Dont Respond to hold
                         //PENDING    => Pending, Save, Unload
-                        if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale && ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.NEW ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.PENDING))
+                        if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.NEW || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.PENDING))
                         {
                             blnAlreadyHolding = (OrderScreen.SplitStatus == SplittingStatus.Splitting);
                             DoHolding(btn.Tag.ToString(), false);
@@ -3982,7 +3960,7 @@ namespace DTRMNS
         }
         private void btnHoldAndReceipt_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null &&  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -4001,10 +3979,10 @@ namespace DTRMNS
         {
             // if ( DTRMSimpleBusiness.Instance.AttachedOrder != null) {
 
-            lblOrderTotal.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblOrderTotal.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
             {
                 return;
             }
@@ -4012,10 +3990,10 @@ namespace DTRMNS
         }
         private void btnPrintCashFinalPaymentWithReceipt_Click(object sender, System.EventArgs e)
         {
-            lblOrderTotal.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblOrderTotal.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
             {
                 return;
             }
@@ -4069,7 +4047,7 @@ namespace DTRMNS
         private void btnSubTotalFullAmount_Click(object sender, EventArgs e)
         {
             float m = 0f;
-            lblPayedIn.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblPayedIn.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
             lblMoneyBack.Text = m.ToString();
         }
 
@@ -4090,8 +4068,8 @@ namespace DTRMNS
         }
         private void btnHideSubTotal_Click(object sender, System.EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
-                 DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = 0f;
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = 0f;
 
             ArrangeSubTotalPanel(false);
         }
@@ -4166,7 +4144,7 @@ namespace DTRMNS
             if (float.Parse(this.lblMoneyBack.Text, System.Globalization.NumberStyles.Any) < 0)
                 return false;
 
-             DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = float.Parse(this.lblPayedIn.Text, System.Globalization.NumberStyles.Any);
+            DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = float.Parse(this.lblPayedIn.Text, System.Globalization.NumberStyles.Any);
             return true;
         }
         private void ArrangeSubTotalPanel(bool blnShow)
@@ -4200,49 +4178,49 @@ namespace DTRMNS
         #endregion
 
         #region ORDER SCREEN HANDLERS
-        private void OrderScreen_Click(object sender, System.EventArgs e)
+        private async void OrderScreen_Click(object sender, System.EventArgs e)
         {
-            if (OrderScreen.HasSelection())
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
             {
-                OrderItem oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Where(x => x.IID == OrderScreen.SelectedItemIID).FirstOrDefault();
+                OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
                 if (oi == null)
                     return;
 
-                string CategoryIID = oi.CategoryItem.Category.IID;
+                // Use LINQ to find the Category that contains the specific CategoryItem
+                var category = DTRMSimpleBusiness.Instance.ActiveMenu.categories
+                    .FirstOrDefault(c => c.Items.Any(ci => ci.IID == oi.CategoryItemIID));
+
                 for (int i = 0; i < OUI.Panels.Count; i++)
                 {
                     UPEntity ui = OUI.Panels[i];
-                    if (ui.IID == CategoryIID)
+                    if (ui.IID == category.IID)
                     {
-
                         OUI.SelectedIndex = i;
                         AttachPanel(OUI.SelectedPanel);
-
                         ui.OrderGroupIID = oi.OrderGroupIID;
-
                     }
                 }
             }
         }
         private void OrderScreen_DisplayOccured()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
                 HandleActionPanelView(ViewTypes.UnloadedOrderView);
             else
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.PENDING && config.Hold_Order_Auto_Close)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.PENDING && config.Hold_Order_Auto_Close)
                 {
                     TickCounterForHoldOrderToClose = 0;
                 }
-                HandleActionPanelView(OrderTypeToViewType( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType));
+                HandleActionPanelView(OrderTypeToViewType(DTRMSimpleBusiness.Instance.AttachedOrder.OrderType));
 
             }
         }
         #region SPLIT HANDLERS
         private void OrderScreen_SplitStarting()
         {
-            OrderTypes currentlySplittingOrderType =  DTRMSimpleBusiness.Instance.AttachedOrder.OrderType;
-            DoHolding( DTRMSimpleBusiness.Instance.AttachedOrder.Reference, false);
+            OrderTypes currentlySplittingOrderType = DTRMSimpleBusiness.Instance.AttachedOrder.OrderType;
+            DoHolding(DTRMSimpleBusiness.Instance.AttachedOrder.Reference, false);
 
             switch (currentlySplittingOrderType)
             {
@@ -4264,7 +4242,7 @@ namespace DTRMNS
 
         private void OrderScreen_SplitContinuing()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
                 cmdDirectSale_Click(null, null);
 
             tmrHoldingOrders_Tick(null, null);
@@ -4273,17 +4251,17 @@ namespace DTRMNS
 
         private void OrderScreen_TopItemDeleted()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 EnsureCompulsoryExtras();
         }
         private void OrderScreen_ZeroItemsLeft()
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
                 foreach (UPEntity upe in OUI.Panels)
                     upe.Reset();
-                 DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                 DTRMSimpleBusiness.Instance.SetKitchenModified();
+                DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                DTRMSimpleBusiness.Instance.SetKitchenModified();
                 UnloadOrder();
             }
         }
@@ -4292,18 +4270,18 @@ namespace DTRMNS
         #region PENDING PANEL HANDLERS
         private async void LoadPendingOrders()
         {
-            if (blnLoadingHoldingOrders ||  DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (blnLoadingHoldingOrders || DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 return;
             blnLoadingHoldingOrders = true;
             pnlPendingOrders.Controls.Clear();
 
             Font btnPriceFont = new Font("Arial", config.Hold_Button_Price_Font_Size, FontStyle.Bold);
 
-            List<Order> pendingOrders = await repoOrder.GetPendingOrdersForSession( DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
-          
+            List<Order> pendingOrders = await repoOrder.GetPendingOrdersForSession(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
+
             foreach (var porder in pendingOrders)
             {
-                Order order = await repoOrder.Get(porder.IID); 
+                Order order = await repoOrder.Get(porder.IID);
                 ctlHoldButtonExtendable btn;
                 if (Hold_Order_Display_Summary)
                 {
@@ -4352,7 +4330,7 @@ namespace DTRMNS
                 } catch (Exception ex)
                 {
                     btn.ControlBackColor = btn.BackColor = Color.Gray;
-                    await  repoDebug.Save(new Debug() { Data = "LoadingPendingOrders " + ex.Message });
+                    await repoDebug.Save(new Debug() { Data = "LoadingPendingOrders " + ex.Message });
                 }
 
                 btn.PriceTextFont = btnPriceFont;
@@ -4371,22 +4349,22 @@ namespace DTRMNS
 
         private async void pendingOrder_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null &&  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
                 return;
             btnHoldOrder_Click(null, null);
 
             Order order;
             ctlHoldButtonExtendable btn = (sender as ctlHoldButtonExtendable);
-            order = await  DTRMSimpleBusiness.Instance.GetOrder((btn.Tag as Order).IID);
+            order = await DTRMSimpleBusiness.Instance.GetOrder((btn.Tag as Order).IID);
             btn.Tag = order;
 
 
-             DTRMSimpleBusiness.Instance.AttachedOrder = order;
+            DTRMSimpleBusiness.Instance.AttachedOrder = order;
 
             //12345
             if (config.Hold_Order_Print_in_Kitchen || config.Hold_Order_Display_in_Kitchen)
             {
-                 DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
+                DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
             }
 
             LoadAttachedOrder();
@@ -4404,7 +4382,7 @@ namespace DTRMNS
         {
             if (TickCounterForHoldOrderToClose > config.Hold_Order_Auto_Close_Seconds)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder?.Status == StatusFlags.PENDING)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder?.Status == StatusFlags.PENDING)
                 {
                     UnloadOrder();
                     TickCounterForHoldOrderToClose = 0;
@@ -4424,7 +4402,7 @@ namespace DTRMNS
             {
                 try
                 {
-                    DateTime theNewKitchenModified =  DTRMSimpleBusiness.Instance.GetKitchenModified();
+                    DateTime theNewKitchenModified = DTRMSimpleBusiness.Instance.GetKitchenModified();
 
                     if (theNewKitchenModified > KitchenModified)
                     {
@@ -4439,25 +4417,25 @@ namespace DTRMNS
 
         private async void DoHolding(string ColorName, bool blnPrint)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null &&  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||
                      DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED)
                 {
                     if (blnPrint)
-                         DTRMSimpleBusiness.Instance.PrintReceipt( DTRMSimpleBusiness.Instance.AttachedOrder.IID, await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
+                        DTRMSimpleBusiness.Instance.PrintReceipt(DTRMSimpleBusiness.Instance.AttachedOrder.IID, await DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
                     UnloadOrder();
                     return;
                 }
 
 
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale)
                 {
                     PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Hold;
                     try
                     {
 
-                         DTRMSimpleBusiness.Instance.AttachedOrder.Reference = ColorName;
+                        DTRMSimpleBusiness.Instance.AttachedOrder.Reference = ColorName;
 
                         //This is where we create kitchen order
                         if ((config.Hold_Order_Display_in_Kitchen || config.Hold_Order_Print_in_Kitchen) && (OrderScreen.SplitStatus != SplittingStatus.Splitting))
@@ -4482,27 +4460,27 @@ namespace DTRMNS
                     {
                         case PrepDialogReturnTypes.Hold:
                             //case PrepDialogReturnTypes.HoldNotPaid:
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.PENDING;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.PENDING;
                             break;
                         case PrepDialogReturnTypes.HoldAndPrint:
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.PENDING;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.PENDING;
                             blnPrint = true;
                             break;
                         case PrepDialogReturnTypes.Cash:
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                             break;
                         case PrepDialogReturnTypes.CashAndPrint:
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
-                             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.COMPLETED;
+                            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                             blnPrint = true;
                             break;
                     }
 
                 }
 
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder.HasMultipleOrderGroupIID())
-                     DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                if (DTRMSimpleBusiness.Instance.AttachedOrder.HasMultipleOrderGroupIID())
+                    DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
 
                 if (blnPrint)
                 {
@@ -4527,19 +4505,19 @@ namespace DTRMNS
         {
             PrepDialogReturnTypes prepResult = PrepDialogReturnTypes.Hold;
 
-            Order order =  DTRMSimpleBusiness.Instance.AttachedOrder.GetOrderWithKitchenableItems();
+            Order order = DTRMSimpleBusiness.Instance.AttachedOrder.GetOrderWithKitchenableItems();
             if (order.Items.Count == 0)
-                 DTRMSimpleBusiness.Instance.DeleteKitchenOrdersForOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                DTRMSimpleBusiness.Instance.DeleteKitchenOrdersForOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
             else
             {
                 KitchenOrder korder = null;
-                prepResult = await  DTRMSimpleBusiness.Instance.CreateKitchenOrderForOrder(order, korder);
+                prepResult = await DTRMSimpleBusiness.Instance.CreateKitchenOrderForOrder(order, korder);
                 if (prepResult == PrepDialogReturnTypes.Cancel)
                     return PrepDialogReturnTypes.Cancel;
             }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale)
-                 DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale)
+                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
 
             return prepResult;
         }
@@ -4585,7 +4563,7 @@ namespace DTRMNS
             }
             if (config.Screen_Lock_Method != ScreenLockTypes.None)
             {
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
                     screenLockCounter++;
                 else
                     screenLockCounter = 0;
@@ -4654,10 +4632,10 @@ namespace DTRMNS
 
         private void btnResetKitchenOrders_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                 DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                 DTRMSimpleBusiness.Instance.SetKitchenModified();
+                DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                DTRMSimpleBusiness.Instance.SetKitchenModified();
             }
         }
 
@@ -4688,7 +4666,7 @@ namespace DTRMNS
         private async Task LoadSupplierList()
         {
             mnuSupplierPurchaseList.DropDownItems.Clear();
-            List<Supplier> suppliers = await  DTRMSimpleBusiness.Instance.GetAllSuppliersAsList();
+            List<Supplier> suppliers = await DTRMSimpleBusiness.Instance.GetAllSuppliersAsList();
             foreach (var supp in suppliers)
             {
                 ToolStripMenuItem btn = new ToolStripMenuItem();
@@ -4714,65 +4692,6 @@ namespace DTRMNS
         }
 
 
-        private void trmOrderPadMain_Shown(object sender, EventArgs e)
-        {
-            AdjustOrientation();
-        }
-        private void AdjustOrientation()
-        {
-            switch (config.OrderPad_Orientation)
-            {
-                case OrientationTypes.Portrait:
-                    pnlDisplay.BringToFront();
-                    pnlHolder.BringToFront();
-                    break;
-                case OrientationTypes.Landscape:
-                    pnlDisplay.SendToBack();
-                    break;
-                default:
-                    pnlDisplay.SendToBack();
-                    break;
-            }
-
-        }
-
-        private void btnPortraitMode_Click(object sender, EventArgs e)
-        {
-            pnlDisplay.BringToFront();
-            pnlHolder.BringToFront();
-        }
-
-        private void btnOrientation_Click(object sender, EventArgs e)
-        {
-            if (config.OrderPad_Orientation == OrientationTypes.Landscape)
-            {
-                config.OrderPad_Orientation = OrientationTypes.Portrait;
-            } else
-            {
-                config.OrderPad_Orientation = OrientationTypes.Landscape;
-            }
-            AdjustOrientation();
-            UF.SaveConfig(config);
-        }
-
-        private void btnTools_Click(object sender, EventArgs e)
-        {
-            switch (config.OrderPad_Orientation)
-            {
-                case OrientationTypes.Portrait:
-                    this.mnuOrientation.Image = global::DTRMNS.Properties.Resources.ExpandWidth48;
-                    break;
-                case OrientationTypes.Landscape:
-                    this.mnuOrientation.Image = global::DTRMNS.Properties.Resources.ExpandHeight48;
-
-                    break;
-                default:
-                    this.mnuOrientation.Image = global::DTRMNS.Properties.Resources.ExpandHeight48;
-                    break;
-            }
-
-
-        }
 
         private void btnShoppingList_Click(object sender, EventArgs e)
         {
@@ -4870,9 +4789,9 @@ namespace DTRMNS
 
         private void mnuShrinkOrderDisplay_Click(object sender, EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
-                 DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
                 OrderScreen.Display();
             }
             //config.Table_Orders_Always_Shrinked = !config.Table_Orders_Always_Shrinked;

@@ -309,7 +309,6 @@ namespace DTRMNS {
             this.odTargetTable.Cursor = System.Windows.Forms.Cursors.Hand;
             this.odTargetTable.Location = new System.Drawing.Point(574, 76);
             this.odTargetTable.Name = "odTargetTable";
-            this.odTargetTable.OrderToDisplay = null;
             this.odTargetTable.OrderToSplit = null;
             this.odTargetTable.Size = new System.Drawing.Size(320, 600);
             this.odTargetTable.SplitDisplayHeight = 315;
@@ -322,7 +321,6 @@ namespace DTRMNS {
             this.odSourceTable.Cursor = System.Windows.Forms.Cursors.Hand;
             this.odSourceTable.Location = new System.Drawing.Point(133, 76);
             this.odSourceTable.Name = "odSourceTable";
-            this.odSourceTable.OrderToDisplay = null;
             this.odSourceTable.OrderToSplit = null;
             this.odSourceTable.Size = new System.Drawing.Size(320, 600);
             this.odSourceTable.SplitDisplayHeight = 315;

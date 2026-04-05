@@ -17,9 +17,6 @@ namespace DTRMNS {
         private Button btnClose;
 
         private GenericFunctionCall CloseFunction;
-        private DTRMSimpleBusiness bslayer;
-
-        //private frmMain MainForm;
         private OrderTypes RequestedType;
         private Button btnDirectSale;
 
@@ -38,11 +35,10 @@ namespace DTRMNS {
         public frmOrderTypes() {
             InitializeComponent();
         }
-        public frmOrderTypes(DTRMSimpleBusiness bslayer, GenericFunctionCall CloseOrderItemEntityInteraction,
+        public frmOrderTypes(GenericFunctionCall CloseOrderItemEntityInteraction,
             GenericFunctionCall DetachPanel, PassControl AttachPanel,
             GenericFunctionCall EnsureCompulsoryExtras, GenericFunctionCall CloseFunction) {
             InitializeComponent();
-            this.bslayer = bslayer;
             CloseOrderItemEntityInteractionEvent = CloseOrderItemEntityInteraction;
             DetachPanelEvent = DetachPanel;
             AttachPanelEvent = AttachPanel;
