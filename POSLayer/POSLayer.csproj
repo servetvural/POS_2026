@@ -12,8 +12,9 @@
     <Compile Remove="Library\SessionData.cs" />
     <Compile Remove="Library\SessionFamily.cs" />
     <Compile Remove="Library\TableGroup.cs" />
+    <Compile Remove="Models\BaseOrder.cs" />
+    <Compile Remove="Models\BaseOrderItem.cs" />
     <Compile Remove="Models\PrinterLookup.cs" />
-    <Compile Remove="Models\TableGroup.cs" />
     <Compile Remove="Views\OrderItemView.cs" />
   </ItemGroup>
 

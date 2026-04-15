@@ -158,13 +158,13 @@ namespace DTRMNS {
 		#endregion
 
 		private void btnInHouse_Click(object sender, System.EventArgs e) {
-         ReturnValue = OrderTypes.InHouse;
+         ReturnValue = OrderTypes.Sitin;
          this.DialogResult = DialogResult.OK;
          Close();
 		}
 
 		private void btnTakeAway_Click(object sender, System.EventArgs e) {
-         ReturnValue = OrderTypes.TakeAwayB;
+         ReturnValue = OrderTypes.TakeAway;
          this.DialogResult = DialogResult.OK;
          Close();
 		}

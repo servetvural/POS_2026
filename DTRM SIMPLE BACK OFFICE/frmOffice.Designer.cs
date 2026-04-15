@@ -55,6 +55,7 @@
             btnCloseApplication = new System.Windows.Forms.ToolStripButton();
             tabForms = new System.Windows.Forms.TabControl();
             imgTabPageList = new System.Windows.Forms.ImageList(components);
+            btnTables = new System.Windows.Forms.ToolStripMenuItem();
             statusStrip1.SuspendLayout();
             barMain.SuspendLayout();
             SuspendLayout();
@@ -111,7 +112,7 @@
             // mnuObjects
             // 
             mnuObjects.AutoSize = false;
-            mnuObjects.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { btnMenu, btnDistributions, btnUserEditor, btnPrinters, btnSuppliers, btnStockItemList, btnImageList, btnBonusList, btnEmployees });
+            mnuObjects.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { btnMenu, btnDistributions, btnUserEditor, btnPrinters, btnSuppliers, btnStockItemList, btnImageList, btnBonusList, btnEmployees, btnTables });
             mnuObjects.Image = Properties.Resources.multidisli32;
             mnuObjects.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             mnuObjects.Name = "mnuObjects";
@@ -125,7 +126,7 @@
             btnMenu.Image = Properties.Resources.OpenTreeView;
             btnMenu.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnMenu.Name = "btnMenu";
-            btnMenu.Size = new System.Drawing.Size(157, 38);
+            btnMenu.Size = new System.Drawing.Size(196, 38);
             btnMenu.Text = "Menus";
             btnMenu.Click += btnMenu_Click;
             // 
@@ -135,7 +136,7 @@
             btnDistributions.Image = Properties.Resources.Split32Right;
             btnDistributions.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnDistributions.Name = "btnDistributions";
-            btnDistributions.Size = new System.Drawing.Size(157, 38);
+            btnDistributions.Size = new System.Drawing.Size(196, 38);
             btnDistributions.Text = "Distributions";
             btnDistributions.Click += btnDistributions_Click;
             // 
@@ -145,7 +146,7 @@
             btnUserEditor.Image = Properties.Resources.Customers32;
             btnUserEditor.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnUserEditor.Name = "btnUserEditor";
-            btnUserEditor.Size = new System.Drawing.Size(157, 38);
+            btnUserEditor.Size = new System.Drawing.Size(196, 38);
             btnUserEditor.Text = "Users";
             btnUserEditor.Click += btnUserEditor_Click;
             // 
@@ -155,7 +156,7 @@
             btnPrinters.Image = Properties.Resources.Printer32;
             btnPrinters.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnPrinters.Name = "btnPrinters";
-            btnPrinters.Size = new System.Drawing.Size(157, 38);
+            btnPrinters.Size = new System.Drawing.Size(196, 38);
             btnPrinters.Text = "Printers";
             btnPrinters.Click += btnPrinters_Click;
             // 
@@ -165,7 +166,7 @@
             btnSuppliers.Image = Properties.Resources.MultiPeople2;
             btnSuppliers.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnSuppliers.Name = "btnSuppliers";
-            btnSuppliers.Size = new System.Drawing.Size(157, 38);
+            btnSuppliers.Size = new System.Drawing.Size(196, 38);
             btnSuppliers.Text = "Suppliers";
             btnSuppliers.Click += btnSuppliers_Click;
             // 
@@ -175,7 +176,7 @@
             btnStockItemList.Image = Properties.Resources.DataSync32;
             btnStockItemList.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnStockItemList.Name = "btnStockItemList";
-            btnStockItemList.Size = new System.Drawing.Size(157, 38);
+            btnStockItemList.Size = new System.Drawing.Size(196, 38);
             btnStockItemList.Text = "Stock";
             btnStockItemList.Click += btnStockItemList_Click;
             // 
@@ -185,7 +186,7 @@
             btnImageList.Image = Properties.Resources.Brush;
             btnImageList.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnImageList.Name = "btnImageList";
-            btnImageList.Size = new System.Drawing.Size(157, 38);
+            btnImageList.Size = new System.Drawing.Size(196, 38);
             btnImageList.Text = "Images";
             btnImageList.Click += btnImageList_Click;
             // 
@@ -195,7 +196,7 @@
             btnBonusList.Image = Properties.Resources.Bonus32;
             btnBonusList.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnBonusList.Name = "btnBonusList";
-            btnBonusList.Size = new System.Drawing.Size(157, 38);
+            btnBonusList.Size = new System.Drawing.Size(196, 38);
             btnBonusList.Text = "Bonus Plans";
             btnBonusList.Click += btnBonusList_Click;
             // 
@@ -205,7 +206,7 @@
             btnEmployees.Image = Properties.Resources.BlueMan32;
             btnEmployees.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnEmployees.Name = "btnEmployees";
-            btnEmployees.Size = new System.Drawing.Size(157, 38);
+            btnEmployees.Size = new System.Drawing.Size(196, 38);
             btnEmployees.Text = "Employees";
             btnEmployees.Click += btnEmployees_Click;
             // 
@@ -227,7 +228,7 @@
             btnDisplay.Image = Properties.Resources.eye32;
             btnDisplay.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnDisplay.Name = "btnDisplay";
-            btnDisplay.Size = new System.Drawing.Size(196, 38);
+            btnDisplay.Size = new System.Drawing.Size(176, 38);
             btnDisplay.Text = "Display";
             btnDisplay.Click += btnDisplay_Click;
             // 
@@ -237,7 +238,7 @@
             btnStockUsage.Image = Properties.Resources.Present32;
             btnStockUsage.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnStockUsage.Name = "btnStockUsage";
-            btnStockUsage.Size = new System.Drawing.Size(196, 38);
+            btnStockUsage.Size = new System.Drawing.Size(176, 38);
             btnStockUsage.Text = "Shopping List";
             btnStockUsage.Click += btnStockUsage_Click;
             // 
@@ -247,7 +248,7 @@
             btnKassaCalculator.Image = Properties.Resources.CalculatorNice32;
             btnKassaCalculator.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             btnKassaCalculator.Name = "btnKassaCalculator";
-            btnKassaCalculator.Size = new System.Drawing.Size(196, 38);
+            btnKassaCalculator.Size = new System.Drawing.Size(176, 38);
             btnKassaCalculator.Text = "Kassa Calculator";
             btnKassaCalculator.Click += btnKassaCalculator_Click;
             // 
@@ -380,6 +381,13 @@
             imgTabPageList.TransparentColor = System.Drawing.Color.Transparent;
             imgTabPageList.Images.SetKeyName(0, "Cancel.png");
             // 
+            // btnTables
+            // 
+            btnTables.Name = "btnTables";
+            btnTables.Size = new System.Drawing.Size(196, 38);
+            btnTables.Text = "Tables";
+            btnTables.Click += btnTables_Click;
+            // 
             // frmOffice
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -440,5 +448,6 @@
         private System.Windows.Forms.ToolStripButton btnSessionAnalysis;
         private System.Windows.Forms.ToolStripButton btnCloseAllWindows;
         private System.Windows.Forms.ToolStripButton btnCloseApplication;
+        private System.Windows.Forms.ToolStripMenuItem btnTables;
     }
 }

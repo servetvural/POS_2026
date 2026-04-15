@@ -51,6 +51,9 @@ namespace DTRMSimpleBackOffice {
         private void btnSetThis_Click(object sender, EventArgs e)
         {
             printer.LocalTerminal = txtLocalTerminal.Text = config.Terminal_Name;
+            config.TerminalReceiptPrinterIID = printer.IID;
+
+            UF.SaveConfig(config);
         }
 
         private void btnClose_Click(object sender, EventArgs e)

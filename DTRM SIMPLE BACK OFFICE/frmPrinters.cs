@@ -66,7 +66,7 @@ namespace DTRMSimpleBackOffice
             //try
             //{
             //    cmbTakeAwayPrinter.DataSource = await bslayer.GetAllPrinters();
-            //    ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.TakeAwayB);
+            //    ApplicationPrinter ap = await bslayer.GetPrinterForOrderType(OrderTypes.TakeAway);
             //    if (ap != null)
             //        cmbTakeAwayPrinter.SelectedValue = ap.IID;
             //} catch { }

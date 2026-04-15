@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 using POSLayer.Library;
 using POSLayer.Models;
@@ -16,15 +17,14 @@ using POSLayer.Views;
 
 using POSWinFormLayer;
 
-namespace DTRMNS {
-    public class ReportGenerator {
+namespace DTRMNS
+{
+    public class ReportGenerator
+    {
         private PosConfig config;
         IRepository<Session> repoSession;
         IRepository<Order> repoOrder;
 
-
-
-        private DTRMSimpleBusiness bslayer;
         private PrinterSettings pSettings;
         private PrintDocument pDocument;
 
@@ -59,35 +59,46 @@ namespace DTRMNS {
         public Image Logo1;
 
         private IEnumerable<StockItemUsage> stockUsages;
-       // private DataTable dtStockUsage;
         private string StockSupplierName;
 
         private Printer aPrinter;
 
-        //private string printerNetworkName;
+        public ReportGenerator(Graphics g, Printer printer, int linespace)
+        {
+            this.g = g;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoSession = ServiceHelper.GetService<IRepository<Session>>();
+            repoOrder = ServiceHelper.GetService<IRepository<Order>>();
+            blnCustomGraphic = true;
 
-        public ReportGenerator(Graphics g, PosConfig configAsService, IRepository<Session> _repoSession,
-        IRepository<Order> _repoOrder,DTRMSimpleBusiness bslayer, Printer printer, int linespace) {
-                this.g = g;
-            config = configAsService;
-                blnCustomGraphic = true;
-
-                CreateGenerator(bslayer, printer,  linespace);
+            CreateGenerator(printer, linespace);
         }
-        public ReportGenerator(DTRMSimpleBusiness bslayer, Printer printer, int linespace) {
-               CreateGenerator(bslayer, printer, linespace);
+        public ReportGenerator( Printer printer, int linespace)
+        {
+            if (printer == null)
+                return;
+            CreateGenerator(printer, linespace);
         }
         //public ReportGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
         //    CreateGenerator(bslayer, printerNetworkName, linespace);
         //}
-        public ReportGenerator(DTRMSimpleBusiness bslayer, Printer printer) {
-            CreateGenerator(bslayer, printer, 2);
+        public ReportGenerator (Printer printer)
+        {
+            if (printer == null)
+                return;
+            CreateGenerator(printer, 2);
         }
-        public void CreateGenerator(DTRMSimpleBusiness bslayer, Printer printer,  int linespace) {
+        public void CreateGenerator( Printer printer, int linespace)
+        {
+            if (printer == null)
+                return;
 
-            this.bslayer = bslayer;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoSession = ServiceHelper.GetService<IRepository<Session>>();
+            repoOrder = ServiceHelper.GetService<IRepository<Order>>();
+
             float fontSize = config.ReportFontSize;
-            string fontName =  config.ReportFontName;
+            string fontName = config.ReportFontName;
             aPrinter = printer;
 
             this.font = new Font(fontName, fontSize, FontStyle.Bold);
@@ -101,22 +112,24 @@ namespace DTRMNS {
             this.linespace = linespace;
             startX = 10;
             startY = 0;
-            
+
             pSettings = new PrinterSettings();
             pDocument = new PrintDocument();
             pDocument.QueryPageSettings += pDocument_QueryPageSettings;
             pDocument.PrinterSettings = pSettings;
-            pSettings.PrinterName = printer.NetworkName; 
+            pSettings.PrinterName = printer.NetworkName;
 
-            reportwidthcm = 270;          
+            reportwidthcm = 270;
 
         }
-       
-        void pDocument_QueryPageSettings(object sender, QueryPageSettingsEventArgs e) {
+
+        void pDocument_QueryPageSettings(object sender, QueryPageSettingsEventArgs e)
+        {
             //throw new NotImplementedException();
         }
 
-        public void Reset() {
+        public void Reset()
+        {
             FinalLength = startY + 10;
             startY = 10;
             report = null;
@@ -124,16 +137,19 @@ namespace DTRMNS {
             orderIID = "";
             catalogIID = "";
 
-            try {
+            try
+            {
                 if (config.Feed_Space_Cut)
                     PosLibrary.DRShell.SendCutCommandToUSBPrinter(pSettings.PrinterName);
             } catch { }
         }
 
-        
-        private async Task<bool> SetXReportValueToSession() {
 
-            switch ( DTRMSimpleBusiness.Instance.GetAvailableXReportSlot(session)) {
+        private async Task<bool> SetXReportValueToSession()
+        {
+
+            switch (DTRMSimpleBusiness.Instance.GetAvailableXReportSlot(session))
+            {
                 case 1:
                     session.X1Total = session.Total;
                     return await repoSession.Save(session) != null;
@@ -156,19 +172,23 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public async Task<bool> PrintLateSessionReport( string SessionIID, ReportFormatTypes reportFormat) {
-            session =await repoSession.Get(SessionIID);
-            report =  DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+        public async Task<bool> PrintLateSessionReport(string SessionIID, ReportFormatTypes reportFormat)
+        {
+            session = await repoSession.Get(SessionIID);
+            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
             blnLateReport = true;
-           
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null) {
+
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null)
+                {
                     pDocument.PrintPage += pDocument_PrintSessionReport;
                     pDocument.Print();
                     Reset();
                 }
                 return true;
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 string str = ex.Message;
                 return false;
             }
@@ -180,27 +200,32 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public async Task<bool> PrintLateSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
-            session =await repoSession.Get(SessionIID);
-            report =  DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+        public async Task<bool> PrintLateSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat)
+        {
+            session = await repoSession.Get(SessionIID);
+            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
             blnSpecialSessionDirectory = true;
             this.SessionDirectory = SessionDirectory;
             blnLateReport = true;
 
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null)
+                {
                     pDocument.PrintPage += pDocument_PrintSessionReport;
                     pDocument.Print();
                     Reset();
                 }
                 return true;
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 string str = ex.Message;
                 return false;
             }
         }
 
-        public async Task<bool> PrintSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat) {
+        public async Task<bool> PrintSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat)
+        {
             blnSpecialSessionDirectory = true;
             this.SessionDirectory = SessionDirectory;
             return await PrintSessionReport(SessionIID, reportFormat);
@@ -213,31 +238,35 @@ namespace DTRMNS {
         /// <param name="SessionIID"></param>
         /// <param name="reportFormat"></param>
         /// <returns></returns>
-        public async Task<bool> PrintSessionReport(string SessionIID, ReportFormatTypes reportFormat) {
+        public async Task<bool> PrintSessionReport(string SessionIID, ReportFormatTypes reportFormat)
+        {
 
             session = await repoSession.Get(SessionIID);
-            bool blnCurrentSession = session.IID ==  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
-            report =  DTRMSimpleBusiness.Instance.GetReport(reportFormat);
-            ZForcedLabel:
+            bool blnCurrentSession = session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
+            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+        ZForcedLabel:
 
             if (report == null)
                 return false;
 
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null && session != null)
+                {
                     pDocument.PrintPage += pDocument_PrintSessionReport;
-                    
+
                     if (blnCurrentSession)
                         await SetXReportValueToSession();
 
-                    if (report.ReportType == ReportFormatTypes.ZReport && blnCurrentSession) {
-                        await  DTRMSimpleBusiness.Instance.GetXOrdersBackForSession(session.IID);
+                    if (report.ReportType == ReportFormatTypes.ZReport && blnCurrentSession)
+                    {
+                        await DTRMSimpleBusiness.Instance.GetXOrdersBackForSession(session.IID);
 
                         session.X1Total = 0;
                         session.X2Total = 0;
-                        session.X3Total = 0;  
+                        session.X3Total = 0;
                         await repoSession.Save(session);
-                        
+
 
                         //This is exactly the point where the current active real session to be archived for the first time
                         //if (config.Record_Stock_Usage) {
@@ -247,11 +276,11 @@ namespace DTRMNS {
                         //    //Print the updated stockusage report up to end of tonight
                         //    //if (config.Print_Stock_Usage_Report)
                         //    //     DTRMSimpleBusiness.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
-                                
-                            
+
+
                         //    //Email the updated stockusage to required people (same as print)
                         //    //if (config.Email_Stock_Usage_Report) {
-                                
+
                         //    //    if ( DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress != null &&  DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress.Length > 0 &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail != null &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail.Length > 0)
                         //    //         DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.PurchaseEmail,  DTRMSimpleBusiness.Instance.shop.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" +  DTRMSimpleBusiness.Instance.GetOrderableStockItemUsageAsCsvText(), null);
                         //    //}
@@ -264,22 +293,26 @@ namespace DTRMNS {
 
 
                         //Now prepare current session to be archive
-                        if (session.IID ==  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID) {
-                            await  DTRMSimpleBusiness.Instance.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
+                        if (session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID)
+                        {
+                            await DTRMSimpleBusiness.Instance.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
                         }
                     }
 
-                    if (blnCurrentSession && (report.ReportType == ReportFormatTypes.ZReport)) {
-                        session =await repoSession.Get(session.IID);
+                    if (blnCurrentSession && (report.ReportType == ReportFormatTypes.ZReport))
+                    {
+                        session = await repoSession.Get(session.IID);
                         await repoSession.Save(session);
                     }
 
                     pDocument.Print();
 
-                    if (blnCurrentSession) {
-                        switch (report.ReportType) {
+                    if (blnCurrentSession)
+                    {
+                        switch (report.ReportType)
+                        {
                             case ReportFormatTypes.XReport:
-                                await  DTRMSimpleBusiness.Instance.PreserveSessionOrdesToX(session.IID);
+                                await DTRMSimpleBusiness.Instance.PreserveSessionOrdesToX(session.IID);
                                 break;
                             case ReportFormatTypes.ZReport:
                                 break;
@@ -287,13 +320,16 @@ namespace DTRMNS {
                                 break;
                         }
                         //if z report is forced check here
-                        if (report.ReportType == ReportFormatTypes.XReport ) {
-                            session =await repoSession.Get(session.IID);
+                        if (report.ReportType == ReportFormatTypes.XReport)
+                        {
+                            session = await repoSession.Get(session.IID);
 
-                            if ( DTRMSimpleBusiness.Instance.Is_Z_ReportTimeNow(session)) {
+                            if (DTRMSimpleBusiness.Instance.Is_Z_ReportTimeNow(session))
+                            {
                                 //now prepare for forced Z report
-                                report =  DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
-                                if (report != null) {
+                                report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
+                                if (report != null)
+                                {
                                     startY = 10;
                                     pDocument.PrintPage -= pDocument_PrintSessionReport;
                                     reportFormat = ReportFormatTypes.ZReport;
@@ -306,15 +342,17 @@ namespace DTRMNS {
                     Reset();
                 }
                 return true;
-            } catch (Exception ex) {
+            } catch (Exception ex)
+            {
                 string str = ex.Message;
                 return false;
             }
         }
-        async void pDocument_PrintSessionReport(object sender, PrintPageEventArgs e) {
+        async void pDocument_PrintSessionReport(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
-            
+
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
@@ -323,7 +361,7 @@ namespace DTRMNS {
                 return;
 
             //Draw in to printer
-            DrawCompanyHeader( DTRMSimpleBusiness.Instance.shop.ReportHeader);
+            DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReportHeader);
 
             DrawSessionHeader();
 
@@ -340,21 +378,22 @@ namespace DTRMNS {
             if (report.PrintOnlineOrderList)
                 DrawReportOrders(PaymentMethods.Online);
 
-           
+
 
             DrawTaxReport();
             DrawPaymentSummary();
             DrawReportSummary();
 
             //take a snapshot of report 
-            if (config.Preserve_Previous_Report && !blnLateReport) {               
-                imgSnapShot = new Bitmap(300, startY+10, g);
+            if (config.Preserve_Previous_Report && !blnLateReport)
+            {
+                imgSnapShot = new Bitmap(300, startY + 10, g);
                 startY = 0;
                 Image img = Image.FromHbitmap(imgSnapShot.GetHbitmap());
                 g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                DrawCompanyHeader( DTRMSimpleBusiness.Instance.shop.ReportHeader);
+                DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReportHeader);
 
                 DrawSessionHeader();
 
@@ -381,42 +420,49 @@ namespace DTRMNS {
 
 
             //Now Archive Session if required
-            if (session != null && report.ReportType == ReportFormatTypes.ZReport && config.Z_Archive_Always) {   
-                if (session.IID !=  DTRMSimpleBusiness.Instance.GetLatestSession().Result.IID) {
+            if (session != null && report.ReportType == ReportFormatTypes.ZReport && config.Z_Archive_Always)
+            {
+                if (session.IID != DTRMSimpleBusiness.Instance.GetLatestSession().Result.IID)
+                {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
-                       await  DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(SessionDirectory, session.IID, true);
+                        await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(SessionDirectory, session.IID, true);
                     else
-                       await  DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(session.IID);
+                        await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(session.IID);
                 }
 
-                 DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
+                DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
             }
 
-           
-            
+
+
         }
         #endregion
-            
 
-        
+
+
 
         #region RECEIPT
-        public bool PrintReceipt(string orderIID) {
+        public bool PrintReceipt(string orderIID)
+        {
             this.orderIID = orderIID;
             if (orderIID == null || orderIID == "")
                 return false;
 
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintReceipt;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintReceipt(object sender, PrintPageEventArgs e) {
+        async void pDocument_PrintReceipt(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -424,18 +470,19 @@ namespace DTRMNS {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            DrawCompanyHeader( DTRMSimpleBusiness.Instance.shop.ReceiptHeader);
+            await DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReceiptHeader);
 
-            DrawReceipt();
+            await DrawReceipt();
             Reset();
         }
-        private async void DrawReceipt() {
-            Order order = await repoOrder.Get(orderIID,"Items");
+        private async Task DrawReceipt()
+        {
+            Order order = await repoOrder.Get(orderIID, "Items");
 
             DrawDoubleLine();
-            DrawText(centeredString("RECEIPT" + 
-                (order.OrderType == OrderTypes.InHouse && order.Table !=null && order.Table?.TableName != ""?" - " + order.Table?.TableName:"") +
-                (order.OrderType == OrderTypes.DirectSale && order.Reference != null && order.Reference != "" ? " - " + order.Reference : "")
+            DrawText(centeredString("RECEIPT" +
+                (order.OrderType == OrderTypes.Sitin && order.Table != null && order.Table?.TableName != "" ? " - " + order.Table?.TableName : "") +
+                (order.OrderType == OrderTypes.Sale && order.Reference != null && order.Reference != "" ? " - " + order.Reference : "")
                 ));
             DrawDoubleLine();
 
@@ -444,8 +491,9 @@ namespace DTRMNS {
 
             DrawText(centeredString(order.LastModified.ToString("dd/MMM/yyyy HH:mm:ss")));
             DrawText(centeredString(order.OrderType.ToString()));
-            switch (order.OrderType) {
-                case OrderTypes.TakeAwayB:
+            switch (order.OrderType)
+            {
+                case OrderTypes.TakeAway:
                     DrawText("Cust.Name :" + order.Customer.CName);
                     DrawText("Tel : " + order.Customer.Tel);
                     break;
@@ -455,26 +503,27 @@ namespace DTRMNS {
                     DrawText("Address : " + order.Customer.Address);
                     DrawText("Postcode : " + order.Customer.Postcode);
                     break;
-                case OrderTypes.InHouse:
-                    DrawText("Waiter: " +  DTRMSimpleBusiness.Instance.LoggedUser.UserName);
+                case OrderTypes.Sitin:
+                    DrawText("Waiter: " + DTRMSimpleBusiness.Instance.LoggedUser.UserName);
                     break;
-                case OrderTypes.DirectSale:
+                case OrderTypes.Sale:
 
                     break;
-            }           
-           
+            }
+
             DrawLine();
 
             SortedDictionary<double, double> taxlist = new SortedDictionary<double, double>();
             //float ServiceChargeTaxTotal = 0;
 
-            foreach (OrderItem item in order.Items) {
+            foreach (OrderItem item in order.Items)
+            {
                 string ItemText = item.OrderItemText.Length > 26 ? item.OrderItemText.Substring(0, 25) : item.OrderItemText;
-                DrawText(string.Format("{0,2:n0}", item.Quantity).PadRight(3) + 
-                            ItemText.PadRight(26) + 
-                            (config.Show_Tax_Percent_in_everyline?String.Format("{0,5:N2}%", item.TaxPercent): "".PadRight(6)) + 
+                DrawText(string.Format("{0,2:n0}", item.Quantity).PadRight(3) +
+                            ItemText.PadRight(26) +
+                            (config.Show_Tax_Percent_in_everyline ? String.Format("{0,5:N2}%", item.TaxPercent) : "".PadRight(6)) +
                           String.Format("{0,8:C}", item.Total));
-                
+
                 //collect tax percent data
                 if (taxlist.ContainsKey(item.TaxPercent))
                     taxlist[item.TaxPercent] += item.TotalVat;
@@ -483,11 +532,11 @@ namespace DTRMNS {
 
 
             }
-           
+
             DrawLine();
 
 
-           // Order order =await repoOrder.Get(order.IID);
+            // Order order =await repoOrder.Get(order.IID);
             //OrdersView ordView = new OrdersView( DTRMSimpleBusiness.Instance.GetDataTable("Select * from OrdersView where IID = '" + order.IID + "'"));
 
 
@@ -504,31 +553,35 @@ namespace DTRMNS {
             //if ( DTRMSimpleBusiness.Instance.luv.ServiceChargeTaxRate != 0 && ServiceCharge != 0) 
             //    ServiceChargeTax = ServiceCharge *  DTRMSimpleBusiness.Instance.luv.ServiceChargeTaxRate / 100;
 
-            if ( DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0) {
+            if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
+            {
                 DrawText("Total : ".PadRight(20) + String.Format("{0,8:C}", order.Total - order.ServiceCharge));
                 DrawText("Service Inc.Tax : ".PadRight(20) + String.Format("{0,8:C}", order.ServiceCharge));
-                
+
 
                 //ServiceChargeTaxTotal += ordView.ServiceChargeTax;                
             }
             DrawBiggerText("Total : ".PadRight(17) + String.Format("{0,8:C}", order.Total));
-            if (order.MoneyPaid > 0) {
+            if (order.MoneyPaid > 0)
+            {
                 DrawText("Paid : ".PadRight(20) + String.Format("{0,8:C}", order.MoneyPaid));
                 DrawText("Change : ".PadRight(20) + String.Format("{0,8:C}", order.MoneyPaid - order.Total));
             }
-           
+
 
 
             VerticalSpace(1);
 
-            if (config.ShowTaxOnReceipts) {
-                foreach(KeyValuePair<double,double> kvp in taxlist) {
-                    DrawText(("Tax " + String.Format("{0,2:N0} %",kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
+            if (config.ShowTaxOnReceipts)
+            {
+                foreach (KeyValuePair<double, double> kvp in taxlist)
+                {
+                    DrawText(("Tax " + String.Format("{0,2:N0} %", kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
                 //Show Service Charge Tax Total
-                if ( DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
-                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %",  DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
+                if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
+                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
 
 
                 if (config.Receipts_Print_Tax_Total)
@@ -545,8 +598,9 @@ namespace DTRMNS {
             //Luv luv =  DTRMSimpleBusiness.Instance.GetLuv();
             //DrawText(centeredString(luv.ReceiptFooter));
 
-            string[] footer =  DTRMSimpleBusiness.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < footer.Length; i++) {
+            string[] footer = DTRMSimpleBusiness.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < footer.Length; i++)
+            {
                 DrawText(centeredString(footer[i]));
             }
 
@@ -559,19 +613,24 @@ namespace DTRMNS {
         private string testline;
         private string formattestline;
         //"{0,3}"
-        public bool PrintTest(string line) {
+        public bool PrintTest(string line)
+        {
             testline = line;
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintTest;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintTest(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintTest(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -584,20 +643,25 @@ namespace DTRMNS {
             Reset();
         }
 
-        public bool PrintFormatTest(string format, string line) {
+        public bool PrintFormatTest(string format, string line)
+        {
             formattestline = format;
             testline = line;
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintFormatTest;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintFormatTest(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintFormatTest(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -616,23 +680,28 @@ namespace DTRMNS {
         public DataTable dtCustom;
         public List<int> columnSize;
         public bool blnIncludeHeaders;
-        public bool PrintDataTable(DataTable dt,  string CustomReportName, List<int> columnSize, bool blnIncludeHeaders) {
-            try {
+        public bool PrintDataTable(DataTable dt, string CustomReportName, List<int> columnSize, bool blnIncludeHeaders)
+        {
+            try
+            {
                 dtCustom = dt;
                 this.CustomReportName = CustomReportName;
                 this.columnSize = columnSize;
                 this.blnIncludeHeaders = blnIncludeHeaders;
 
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintDataTable;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintDataTable(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintDataTable(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -641,32 +710,36 @@ namespace DTRMNS {
             g.SmoothingMode = SmoothingMode.AntiAlias;
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            
+
             DrawTable();
             Reset();
         }
-        public void DrawTable() {
+        public void DrawTable()
+        {
 
-            DrawText(centeredStringCustom(CustomReportName,max_numberOfCharacters));
+            DrawText(centeredStringCustom(CustomReportName, max_numberOfCharacters));
             DrawLine();
 
             DrawDoubleLine();
             string str = "";
-            if (blnIncludeHeaders) {
-                for (int i = 0; i < dtCustom.Columns.Count; i++) {
+            if (blnIncludeHeaders)
+            {
+                for (int i = 0; i < dtCustom.Columns.Count; i++)
+                {
                     str += ExactStr(dtCustom.Columns[i].Caption, Math.Abs(columnSize[i])) + " ";
                 }
                 DrawText(str);
                 DrawLine();
                 str = "";
             }
- 
-            for (int i = 0; i < dtCustom.Rows.Count; i++) {
+
+            for (int i = 0; i < dtCustom.Rows.Count; i++)
+            {
                 DataRow dr = dtCustom.Rows[i];
 
-                for (int r = 0; r < dr.ItemArray.Length; r++) 
+                for (int r = 0; r < dr.ItemArray.Length; r++)
                     str += ExactStr(dr.ItemArray[r].ToString(), columnSize[r]) + " ";
-                
+
                 DrawText(str);
                 str = "";
 
@@ -681,21 +754,26 @@ namespace DTRMNS {
         #endregion
 
         #region STOCK uSAGE
-        public bool PrintStockUsage(IEnumerable<StockItemUsage> usages, string StockSupplierName) {
-            try {
+        public bool PrintStockUsage(IEnumerable<StockItemUsage> usages, string StockSupplierName)
+        {
+            try
+            {
                 stockUsages = usages;
                 this.StockSupplierName = StockSupplierName;
-                
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintStockUsage;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintStockUsage(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintStockUsage(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -708,7 +786,8 @@ namespace DTRMNS {
             DrawStockUsage();
             Reset();
         }
-        public void DrawStockUsage() {
+        public void DrawStockUsage()
+        {
             bool blnSupplier = !string.IsNullOrEmpty(StockSupplierName);
 
             DrawText(centeredString("STOCK USAGE REPORT"));
@@ -742,7 +821,7 @@ namespace DTRMNS {
             //                            item.OrderableQuantity,
             //                            SubStr(item.OrderableType.ToString(), 5),
             //                            SubStr(item.StockName, 27)));
-                
+
             //    else
             //        DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
             //               item.OrderableQuantity,
@@ -751,8 +830,8 @@ namespace DTRMNS {
             //               SubStr(item.SupplierName, 6)));
 
             //}
-           //if (dtStockUsage == null || dtStockUsage.Rows.Count == 0)
-           if (stockUsages.IsNullOrEmpty())
+            //if (dtStockUsage == null || dtStockUsage.Rows.Count == 0)
+            if (stockUsages.IsNullOrEmpty())
                 DrawText("No Stock Usage");
             NewLine();
             DrawDoubleLine();
@@ -764,7 +843,8 @@ namespace DTRMNS {
         private Font detailFont;
         private int detailFontHeight;
         #region KITCHEN
-        public bool PrintKitchen(POSLayer.Models.KitchenOrder korderlocal, bool blnWithDetail = false) {
+        public bool PrintKitchen(POSLayer.Models.KitchenOrder korderlocal, bool blnWithDetail = false)
+        {
             if (korderlocal == null)
                 return false;
 
@@ -773,7 +853,8 @@ namespace DTRMNS {
             //font size = 10  so max = 30
             //font size = 11  so max = 25
             this.font = new Font(config.ReportFontName, config.KitchenPrintFontSize, FontStyle.Bold);
-            if (blnWithDetail) {
+            if (blnWithDetail)
+            {
                 this.detailFont = new Font(config.ReportFontName, config.KitchenPrintDetailFontSize, FontStyle.Bold);
                 detailFontHeight = (int)detailFont.GetHeight();
             }
@@ -783,17 +864,21 @@ namespace DTRMNS {
 
             korder = korderlocal;
 
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintKitchen;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        public async void DrawKitchen() {
+        public async void DrawKitchen()
+        {
             if (korder == null)
                 return;
 
@@ -803,11 +888,12 @@ namespace DTRMNS {
             DrawDoubleLine();
 
 
-            switch (korder.OrderType) {
-                case OrderTypes.DirectSale:
-                    DrawText(centeredString(korder.Reference)); 
+            switch (korder.OrderType)
+            {
+                case OrderTypes.Sale:
+                    DrawText(centeredString(korder.Reference));
                     break;
-                case OrderTypes.InHouse:
+                case OrderTypes.Sitin:
                     DrawText(centeredString("TABLE: " + korder.Reference));
                     break;
                 default:
@@ -815,24 +901,28 @@ namespace DTRMNS {
             }
             DrawLine();
 
-            
 
 
-            List<Distribution> theList =await  DTRMSimpleBusiness.Instance.GetDistributionListForPrinter(aPrinter.IID);
 
-            foreach (KitchenOrderItem item in korder.Items) {
-                if (item.Status != KitchenOrderStatusTypes.Completed) {
-                    if (theList.Find(x => x.IID == item.DistributionIID) != null) {
+            List<Distribution> theList = await DTRMSimpleBusiness.Instance.GetDistributionListForPrinter(aPrinter.IID);
+
+            foreach (KitchenOrderItem item in korder.Items)
+            {
+                if (item.Status != KitchenOrderStatusTypes.Completed)
+                {
+                    if (theList.Find(x => x.IID == item.DistributionIID) != null)
+                    {
                         DrawText(string.Format("{0,-3:N0}".PadRight(4) + "{1,-32}", item.Quantity, item.ItemText));
                         if (blnKitchenOrderWithDetail)
-                            DrawDetailText(await  DTRMSimpleBusiness.Instance.GetCategoryItemStockItemText(item.CategoryItemIID));
+                            DrawDetailText(await DTRMSimpleBusiness.Instance.GetCategoryItemStockItemText(item.CategoryItemIID));
                     }
                 }
             }
             NewLine();
             DrawDoubleLine();
         }
-        void pDocument_PrintKitchen(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintKitchen(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -851,19 +941,24 @@ namespace DTRMNS {
         #region KASSA REPORT
 
         private List<string> KassaReport;
-        public bool PrintKassaReport(List<string> kassaReport) {
+        public bool PrintKassaReport(List<string> kassaReport)
+        {
             this.KassaReport = kassaReport;
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintKassaReport;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintKassaReport(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintKassaReport(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -872,16 +967,20 @@ namespace DTRMNS {
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            foreach (string item in KassaReport) {
-                if (item == "newline") {
+            foreach (string item in KassaReport)
+            {
+                if (item == "newline")
+                {
                     NewLine();
-                } else if (item == "drawline") {
+                } else if (item == "drawline")
+                {
                     DrawLine();
-                } else {
+                } else
+                {
                     DrawText(item);
                 }
             }
-            
+
             Reset();
         }
 
@@ -889,19 +988,24 @@ namespace DTRMNS {
 
 
         #region PRICELIST
-        public bool PrintPriceList(string catalogIID) {
+        public bool PrintPriceList(string catalogIID)
+        {
             this.catalogIID = catalogIID;
-            try {
-                if (pSettings != null && pSettings.PrinterName != null && pDocument != null) {
+            try
+            {
+                if (pSettings != null && pSettings.PrinterName != null && pDocument != null)
+                {
                     pDocument.PrintPage += pDocument_PrintPriceList;
                     pDocument.Print();
                 }
                 return true;
-            } catch {
+            } catch
+            {
                 return false;
             }
         }
-        void pDocument_PrintPriceList(object sender, PrintPageEventArgs e) {
+        void pDocument_PrintPriceList(object sender, PrintPageEventArgs e)
+        {
             if (!blnCustomGraphic)
                 g = e.Graphics;
 
@@ -914,33 +1018,36 @@ namespace DTRMNS {
             DrawPriceList();
             Reset();
         }
-        private void DrawPriceList() {
+        private void DrawPriceList()
+        {
             DrawDoubleLine();
             DrawText(centeredString("PRICE LIST"));
             DrawText(centeredString(DateTime.Now.ToString("dd/MMM/yyyy HH:mm")));
             DrawDoubleLine();
 
-            DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select IID, EntityName from Entity where ParentMenuIID = '" + catalogIID + "'  order by DisplayOrder");
-            for (int i = 0; i < dt.Rows.Count; i++) {
+            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, EntityName from Entity where ParentMenuIID = '" + catalogIID + "'  order by DisplayOrder");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
                 //Write Entity Header
                 string EntityIID = dt.Rows[i]["IID"].ToString();
                 string EntityName = dt.Rows[i]["EntityName"].ToString().TrimStart();
-                EntityName = EntityName.Length > max_numberOfCharacters-17 ? EntityName.Substring(0, max_numberOfCharacters-17) : EntityName;
-                
+                EntityName = EntityName.Length > max_numberOfCharacters - 17 ? EntityName.Substring(0, max_numberOfCharacters - 17) : EntityName;
 
-                DrawText(EntityName.PadRight(max_numberOfCharacters-17) + "  Direct" + "  InHouse");
+
+                DrawText(EntityName.PadRight(max_numberOfCharacters - 17) + "  Direct" + "  InHouse");
                 DrawLine();
 
                 //Write Entity Button Distributions
-                DataTable dteb =  DTRMSimpleBusiness.Instance.GetDataTable("Select EntityButtonName,DirectSalePrice,InHousePrice, TakeAwayPrice, DeliveryPrice from EntityButton where ParentEntityIID = '" + EntityIID + "'  order by DisplayOrder asc");
-                for (int x = 0; x < dteb.Rows.Count; x++) {
+                DataTable dteb = DTRMSimpleBusiness.Instance.GetDataTable("Select EntityButtonName,DirectSalePrice,InHousePrice, TakeAwayPrice, DeliveryPrice from EntityButton where ParentEntityIID = '" + EntityIID + "'  order by DisplayOrder asc");
+                for (int x = 0; x < dteb.Rows.Count; x++)
+                {
                     string EntityButtonName = dteb.Rows[x]["EntityButtonName"].ToString().Trim();
-                    EntityButtonName = EntityButtonName.Length > max_numberOfCharacters -17 ? EntityButtonName.Substring(0, max_numberOfCharacters -17) : EntityButtonName;
+                    EntityButtonName = EntityButtonName.Length > max_numberOfCharacters - 17 ? EntityButtonName.Substring(0, max_numberOfCharacters - 17) : EntityButtonName;
                     float DirectSalePrice = float.Parse(dteb.Rows[x]["DirectSalePrice"].ToString());
                     float InHousePrice = float.Parse(dteb.Rows[x]["InHousePrice"].ToString());
-                    
 
-                    DrawText(EntityButtonName.PadRight(max_numberOfCharacters - 17) + String.Format("{0,8:N2} {1,8:N2}" , DirectSalePrice,InHousePrice));
+
+                    DrawText(EntityButtonName.PadRight(max_numberOfCharacters - 17) + String.Format("{0,8:N2} {1,8:N2}", DirectSalePrice, InHousePrice));
                 }
                 NewLine();
             }
@@ -948,24 +1055,26 @@ namespace DTRMNS {
             DrawText(centeredString("End Of Price List"));
 
 
-            
+
         }
         #endregion
 
-        private void DrawTaxReport() {
+        private void DrawTaxReport()
+        {
             DrawDoubleLine();
             DrawText(centeredString("TAX SUMMARY"));
             DrawDoubleLine();
 
-            DrawText("Tax%    "  + "   Sum_NoTax" +   "     Net_Tax" +  "   Sum_Total");
+            DrawText("Tax%    " + "   Sum_NoTax" + "     Net_Tax" + "   Sum_Total");
             DrawLine();
 
             float mainGrossTotal = 0;
             float mainNetTaxValue = 0;
             float mainTotalNoTax = 0;
 
-            DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from TaxSummary where SessionIID = '" + session.IID + "' Order by TaxPercent, Payment asc");
-            for (int i = 0; i < dt.Rows.Count; i++) {
+            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from TaxSummary where SessionIID = '" + session.IID + "' Order by TaxPercent, Payment asc");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
                 float TaxPercent = float.Parse(dt.Rows[i]["TaxPercent"].ToString());
                 float GrossTotal = float.Parse(dt.Rows[i]["GrossTotal"].ToString());
                 float NetTaxValue = float.Parse(dt.Rows[i]["NetTaxValue"].ToString());
@@ -981,11 +1090,13 @@ namespace DTRMNS {
                     TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
             }
 
-            if ( DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0) {
-                dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ServiceChargeSummary where SessionIID ='" + session.IID + "' order by Payment asc");
+            if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
+            {
+                dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from ServiceChargeSummary where SessionIID ='" + session.IID + "' order by Payment asc");
                 float ServiceChargeTotal = 0;
                 float ServiceChargeTaxTotal = 0;
-                for (int i = 0; i < dt.Rows.Count; i++) {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
                     PaymentMethods pmethod = (PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString());
                     ServiceChargeTotal = float.Parse(dt.Rows[i]["ServiceChargeTotal"].ToString());
                     ServiceChargeTaxTotal = float.Parse(dt.Rows[i]["ServiceChargeTaxTotal"].ToString());
@@ -996,23 +1107,25 @@ namespace DTRMNS {
                     mainNetTaxValue += ServiceChargeTaxTotal;
                     mainTotalNoTax += ServiceChargeTotal - ServiceChargeTaxTotal;
                 }
-                
+
             }
 
             DrawLine();
             //DrawText(String.Format("".PadRight(4+quarterspace) + "{0,8:N2}" + "".PadRight(2+quarterspace) + "{1,8:N2}" + "".PadRight(2+quarterspace*2) + "{2,8:N2}", mainGrossTotal, mainNetTaxValue, mainTotalNoTax));
-            DrawText(String.Format( "{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax , mainNetTaxValue, mainGrossTotal));
+            DrawText(String.Format("{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax, mainNetTaxValue, mainGrossTotal));
             NewLine();
-            
+
         }
 
-        public string SubStr(string str, int length) {
+        public string SubStr(string str, int length)
+        {
             if (str.Length <= length)
                 return str;
 
             return str.Substring(0, length);
         }
-        public string ExactStr(string str, int length) {
+        public string ExactStr(string str, int length)
+        {
             int directionalLength = length;
             length = Math.Abs(length);
             if (str.Length > length)
@@ -1020,7 +1133,8 @@ namespace DTRMNS {
             if (str.Length == length)
                 return str;
 
-            if (str.Length < length) {
+            if (str.Length < length)
+            {
                 //Need to align now 
                 string frm = "{0," + directionalLength * -1 + "}";
                 return string.Format(frm, str);
@@ -1029,19 +1143,22 @@ namespace DTRMNS {
 
             return str;
         }
-        public void VerticalSpace(int howmany) {
+        public void VerticalSpace(int howmany)
+        {
             startY += (fontHeight * howmany);
         }
-        public void DrawText(string line) {
+        public void DrawText(string line)
+        {
             g.DrawString(line, font, brush, startX, startY);
             //int a = 0;
             //if (startX < 5)
             //    a = 1;
-            startY += fontHeight;            
+            startY += fontHeight;
         }
 
-        public void DrawBiggerText(string line) {
-            
+        public void DrawBiggerText(string line)
+        {
+
             g.DrawString(line, fontLarge, brush, startX, startY);
             //int a;
             //if (startX < 5)
@@ -1049,13 +1166,15 @@ namespace DTRMNS {
             startY += fontHeight + 8;
         }
 
-        public void DrawDetailText(string line) {
+        public void DrawDetailText(string line)
+        {
             g.DrawString(line, detailFont, brush, startX, startY);
 
             startY += (detailFontHeight * line.Split('\n').Length);// + detailFontHeight;
         }
 
-        public void DrawLine() {
+        public void DrawLine()
+        {
             //DrawText(new string('-',numberOfCharacters));
             //DrawText(new string('-',  DTRMSimpleBusiness.Instance.config.Custom_Report_Width));
             startY += 5;
@@ -1063,7 +1182,8 @@ namespace DTRMNS {
             startY += 5;
         }
 
-        public void DrawDoubleLine() {
+        public void DrawDoubleLine()
+        {
             // DrawText(new string('=', numberOfCharacters));
             // DrawText(new string('=',  DTRMSimpleBusiness.Instance.config.Custom_Report_Width));
             startY += 5;
@@ -1075,34 +1195,40 @@ namespace DTRMNS {
 
         }
 
-        public void NewLine() {
+        public void NewLine()
+        {
             startY += linespace + fontHeight;
         }
 
-        private async Task<bool> EnsureLogo1() {
+        private async Task<bool> EnsureLogo1()
+        {
             if (Logo1 != null)
                 return true;
 
-            GenericImage gim =await  DTRMSimpleBusiness.Instance.GetGenericImage("Logo1");
+            GenericImage gim = await DTRMSimpleBusiness.Instance.GetGenericImage("Logo1");
             if (gim == null)
                 return false;
 
             Logo1 = gim.DisplayImage.ToImage();
             if (Logo1 == null)
                 return false;
-            else {
+            else
+            {
                 return true;
             }
         }
 
-        private async void DrawCompanyHeader(string CustomHeader) {
+        private async Task DrawCompanyHeader(string CustomHeader)
+        {
             //DTRMLicence licence =  DTRMSimpleBusiness.Instance.GetLicence();
 
 
-            try {
+            try
+            {
                 //Image image = Image.FromFile( DTRMSimpleBusiness.Instance.config.ReportLogo);
 
-                if (await EnsureLogo1()) {
+                if (await EnsureLogo1())
+                {
 
                     float receiptWidth = GetReceiptWidth();
                     float scaleratio = 1;
@@ -1116,7 +1242,7 @@ namespace DTRMNS {
 
                     if (scaleratio == 1)
                         newimage = Logo1;
-                    else 
+                    else
                         newimage = (Image)(new Bitmap(Logo1, size));
 
                     int oldstartx = startX;
@@ -1126,32 +1252,37 @@ namespace DTRMNS {
                     startX = oldstartx;
                     startY += iheight;
                 }
-            } catch {
+            } catch
+            {
 
             }
 
-            
+
 
             string[] header = CustomHeader.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < header.Length; i++) {
+            for (int i = 0; i < header.Length; i++)
+            {
                 DrawText(centeredString(header[i]));
             }
 
-            string[] address =  DTRMSimpleBusiness.Instance.shop.Address.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < address.Length; i++) {
+            string[] address = DTRMSimpleBusiness.Instance.shop.Address.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < address.Length; i++)
+            {
                 DrawText(centeredString(address[i]));
             }
 
             //DrawText(centeredString( DTRMSimpleBusiness.Instance.luv.ShopAddress));
 
 
-            DrawText(centeredString( DTRMSimpleBusiness.Instance.shop.Tel));
-            DrawText(centeredString( DTRMSimpleBusiness.Instance.shop.Vat));
+            DrawText(centeredString(DTRMSimpleBusiness.Instance.shop.Tel));
+            DrawText(centeredString(DTRMSimpleBusiness.Instance.shop.TaxNumber));
 
         }
 
-        public string centeredString(string s) {
-            if (s.Length >= max_numberOfCharacters) {
+        public string centeredString(string s)
+        {
+            if (s.Length >= max_numberOfCharacters)
+            {
                 return s.Substring(0, max_numberOfCharacters - 1);
             }
 
@@ -1160,8 +1291,10 @@ namespace DTRMNS {
 
             return new string(' ', leftPadding) + s + new string(' ', rightPadding);
         }
-        public string rightAlignedString(string s) {
-            if (s.Length >= max_numberOfCharacters) {
+        public string rightAlignedString(string s)
+        {
+            if (s.Length >= max_numberOfCharacters)
+            {
                 return s.Substring(0, max_numberOfCharacters - 1);
             }
 
@@ -1171,8 +1304,10 @@ namespace DTRMNS {
             return new string(' ', leftPadding) + s; // + new string(' ', rightPadding);
         }
 
-        public string centeredStringCustom(string s,int ncharacters) {
-            if (s.Length >= ncharacters) {
+        public string centeredStringCustom(string s, int ncharacters)
+        {
+            if (s.Length >= ncharacters)
+            {
                 return s.Substring(0, ncharacters - 1);
             }
 
@@ -1181,8 +1316,10 @@ namespace DTRMNS {
 
             return new string(' ', leftPadding) + s + new string(' ', rightPadding);
         }
-        public string rightAlignedStringCustom(string s,int ncharacters) {
-            if (s.Length >= ncharacters) {
+        public string rightAlignedStringCustom(string s, int ncharacters)
+        {
+            if (s.Length >= ncharacters)
+            {
                 return s.Substring(0, ncharacters - 1);
             }
 
@@ -1191,27 +1328,33 @@ namespace DTRMNS {
             return new string(' ', leftPadding) + s; // + new string(' ', rightPadding);
         }
 
-        private float MeasureStringMin(string str) {
+        private float MeasureStringMin(string str)
+        {
             return g.MeasureString(str, font).Width;
         }
-        private float GetReceiptWidth() {
-            return g.MeasureString(new string('a', max_numberOfCharacters), font).Width;          
+        private float GetReceiptWidth()
+        {
+            return g.MeasureString(new string('a', max_numberOfCharacters), font).Width;
         }
 
-        
 
-        
-        private void DrawSessionHeader() {
+
+
+        private void DrawSessionHeader()
+        {
             DrawDoubleLine();
             DrawText(centeredString(report.ReportName));
             DrawLine();
 
             DrawText("Session Start: " + session.StartDate.ToString("dd/MMM/yy HH:mm"));
-            if (report != null && report.ReportType == ReportFormatTypes.ZReport) {
-                if (session.IID ==  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID) {
+            if (report != null && report.ReportType == ReportFormatTypes.ZReport)
+            {
+                if (session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID)
+                {
                     //Current Session
                     DrawText("Session End  : " + DateTime.Now.ToString("dd/MMM/yy HH:mm"));
-                } else {
+                } else
+                {
                     //Old Session
                     DrawText("Session End  : " + session.EndDate.Value.ToString("dd/MMM/yy HH:mm"));
                 }
@@ -1219,23 +1362,26 @@ namespace DTRMNS {
             DrawDoubleLine();
         }
 
-        private void DrawPaymentSummary() {
+        private void DrawPaymentSummary()
+        {
             DrawText(centeredString("PAYMENT SUMMARY"));
             DrawDoubleLine();
 
 
             string spacer = "";
 
-           
 
-            DataTable dt =  DTRMSimpleBusiness.Instance.GetReportPaymentTypeTotals(session.IID);
 
-            for (int i = 0; i < dt.Rows.Count; i++) {
+            DataTable dt = DTRMSimpleBusiness.Instance.GetReportPaymentTypeTotals(session.IID);
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
 
                 PaymentMethods paymentType = (PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString());
                 float paymentTotal = float.Parse(dt.Rows[i]["Total"].ToString());
 
-                switch (paymentType) {
+                switch (paymentType)
+                {
                     case PaymentMethods.Cash:
                         DrawText("Cash Total : " + spacer.PadRight(max_numberOfCharacters - 22) + String.Format("{0,8:N2}", paymentTotal));
                         break;
@@ -1248,25 +1394,26 @@ namespace DTRMNS {
 
                 }
 
-                
+
             }
             //if (report.ReportType == ReportFormatTypes.ZReport) {
-                DrawLine();
-                DrawText("Payment  Total : ".PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", session.GrossSessionTotal));
+            DrawLine();
+            DrawText("Payment  Total : ".PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", session.GrossSessionTotal));
             //}
             DrawDoubleLine();
             NewLine();
 
         }
 
-        private void DrawReportSummary() {
+        private void DrawReportSummary()
+        {
             DrawText(centeredString("REPORT SUMMARY"));
             DrawDoubleLine();
             string x1date = "";
             string x2date = "";
-            string x3date = "";           
-           
-            if  (session.X3Total > 0) 
+            string x3date = "";
+
+            if (session.X3Total > 0)
                 x3date = DateTime.Now.ToString("HH:mm");
             else if (session.X2Total > 0)
                 x2date = DateTime.Now.ToString("HH:mm");
@@ -1274,15 +1421,15 @@ namespace DTRMNS {
                 x1date = DateTime.Now.ToString("HH:mm");
 
 
-            if (session.X1Total > 0) 
+            if (session.X1Total > 0)
                 DrawText("X1 Total : " + x1date.PadRight(max_numberOfCharacters - 20) + String.Format("{0,8:N2}", session.X1Total));
-            
-            if (session.X2Total > 0) 
+
+            if (session.X2Total > 0)
                 DrawText("X2 Total : " + x2date.PadRight(max_numberOfCharacters - 20) + String.Format("{0,8:N2}", session.X2Total));
-            
-            if (session.X3Total > 0) 
+
+            if (session.X3Total > 0)
                 DrawText("X3 Total : " + x3date.PadRight(max_numberOfCharacters - 20) + String.Format("{0,8:N2}", session.X3Total));
-                                    
+
 
             if (report.ReportType == ReportFormatTypes.ZReport)
                 DrawText("Z  Total : ".PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", session.GrossSessionTotal));
@@ -1292,16 +1439,17 @@ namespace DTRMNS {
 
         }
 
-        private async Task DrawReportOrders(PaymentMethods payment) {
+        private async Task DrawReportOrders(PaymentMethods payment)
+        {
             DrawText(centeredString(payment.ToString().ToUpper() + " ORDER LIST"));
             DrawDoubleLine();
             //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select OrderDate, CalculatedValue from OrdersView where SessionIID = '" + session.IID + 
             //    "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment + " order by OrderDate");
 
             List<Order> orderList = await repoOrder.GetListByField("SessionIID", session.IID, "Items", "OrderDate");
-            orderList =  orderList.Where(x => x.Payment == payment && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED)).OrderBy(x => x.OrderDate).ToList();
+            orderList = orderList.Where(x => x.Payment == payment && (x.Status == StatusFlags.Completed || x.Status == StatusFlags.Archived)).OrderBy(x => x.OrderDate).ToList();
 
-           // float OrderListTotal = 0;
+            // float OrderListTotal = 0;
 
             //for (int i = 0; i < dt.Rows.Count; i++) {
             //    DateTime orderDate = DateTime.Parse(dt.Rows[i]["OrderDate"].ToString());
@@ -1318,7 +1466,7 @@ namespace DTRMNS {
             }
 
             DrawLine();
-            DrawText(( "                 " + orderList.Count.ToString() + " Order(s) ").PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", orderList.Sum(x => x.Total)));
+            DrawText(("                 " + orderList.Count.ToString() + " Order(s) ").PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", orderList.Sum(x => x.Total)));
             NewLine();
         }
 
@@ -1335,13 +1483,14 @@ namespace DTRMNS {
         //    NewLine();
         //}
 
-        private async Task DrawReportCategoryTotals() {
+        private async Task DrawReportCategoryTotals()
+        {
 
             DrawText(centeredString("CATEGORY TOTALS"));
             DrawDoubleLine();
 
             //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-          //  DataTable dt =  DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
+            //  DataTable dt =  DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
 
             List<Category> categories = await repoOrder.GetCategoryTotalsForSession(session.IID);
 
@@ -1354,25 +1503,27 @@ namespace DTRMNS {
             //}
             foreach (var category in categories)
             {
-                string CategoryName =   category.CategoryName.Length > max_numberOfCharacters - 9 ? category.CategoryName.Substring(0, max_numberOfCharacters - 9) : category.CategoryName;
+                string CategoryName = category.CategoryName.Length > max_numberOfCharacters - 9 ? category.CategoryName.Substring(0, max_numberOfCharacters - 9) : category.CategoryName;
                 //float entityTotal = float.Parse(dt.Rows[i]["EntityTotal"].ToString());
 
                 DrawText(CategoryName.PadRight(max_numberOfCharacters - 9) + string.Format("{0,8:N2}", category.CategoryTotal));
             }
             NewLine();
         }
-        
-        private void DrawReportCategoricEntityButtonTotals() {
+
+        private void DrawReportCategoricEntityButtonTotals()
+        {
             DrawText(centeredString("DETAILED CATEGORY TOTALS"));
             DrawDoubleLine();
 
             //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-            DataTable dt =  DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
-            for (int i = 0; i < dt.Rows.Count; i++) {
+            DataTable dt = DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
                 //Write Entity Header
                 string EntityIID = dt.Rows[i]["EntityIID"].ToString();
                 string EntityName = dt.Rows[i]["EntityName"].ToString().TrimStart();
-                EntityName = EntityName.Length > max_numberOfCharacters-9 ? EntityName.Substring(0, max_numberOfCharacters - 9) : EntityName;
+                EntityName = EntityName.Length > max_numberOfCharacters - 9 ? EntityName.Substring(0, max_numberOfCharacters - 9) : EntityName;
                 float entityTotal = float.Parse(dt.Rows[i]["EntityTotal"].ToString());
 
                 DrawText(EntityName.PadRight(max_numberOfCharacters - 9) + string.Format("{0,8:N2}", entityTotal));
@@ -1381,8 +1532,9 @@ namespace DTRMNS {
                 //Write Entity Button Distributions
                 //DataTable dteb =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityEBTotals where EntityIID = '" + EntityIID + "' and SessionIID = '" + session.SessionIID + "' order by ItemText asc");
 
-                DataTable dteb =  DTRMSimpleBusiness.Instance.GetReportEntityEBTotals(session.IID,EntityIID);
-                for (int x = 0; x < dteb.Rows.Count; x++) {
+                DataTable dteb = DTRMSimpleBusiness.Instance.GetReportEntityEBTotals(session.IID, EntityIID);
+                for (int x = 0; x < dteb.Rows.Count; x++)
+                {
                     string ItemText = dteb.Rows[x]["ItemText"].ToString().Trim();
                     ItemText = ItemText.Length > max_numberOfCharacters - 13 ? ItemText.Substring(0, max_numberOfCharacters - 13) : ItemText;
                     float ebTotal = float.Parse(dteb.Rows[x]["total"].ToString());
@@ -1397,7 +1549,7 @@ namespace DTRMNS {
         }
 
 
-        
+
     }
 
 

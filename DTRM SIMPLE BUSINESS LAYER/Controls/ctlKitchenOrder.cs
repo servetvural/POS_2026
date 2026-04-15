@@ -124,15 +124,15 @@ namespace DTRMNS {
                 btnDone.Text = korder.OrderNo.ToString();
 
                 switch (korder.OrderType) {
-                    case OrderTypes.DirectSale:
+                    case OrderTypes.Sale:
                         pnlColor.BackColor = Color.FromName(korder.Reference);
                         break;
-                    case OrderTypes.InHouse:
+                    case OrderTypes.Sitin:
                         pnlColor.BackColor = Color.White;
                         lblReference.Text = korder.Reference;
                         lblReference.BackColor = Color.Yellow;
                         break;
-                    case OrderTypes.TakeAwayB:
+                    case OrderTypes.TakeAway:
                         pnlColor.BackColor = Color.White;
                         lblReference.Text = korder.Reference;
                         lblReference.BackColor = Color.Yellow;

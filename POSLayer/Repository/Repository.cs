@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
 using POSLayer.Context;
@@ -313,8 +314,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
             if (obj == null)
                 return null;
-            else 
-                return await Get(obj.IID, includeItemsOnReturn);           
+            else
+                return await Get(obj.IID, includeItemsOnReturn);
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -340,7 +341,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 var entry = _db.Entry(existing);
                 // This copies all scalar values from 'obj' to 'existing'
                 entry.CurrentValues.SetValues(obj);
-                
+
                 // FORCE EF to recognize changes if SetValues is being "lazy"
                 entry.State = EntityState.Modified;
             }
@@ -587,13 +588,13 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
         }
     }
-    public async  Task MoveUp(T item)
+    public async Task MoveUp(T item)
     {
         using var _db = GetDBContext();
         try
         {
             List<T> theList = await GetAllAsync();
-             theList.MoveUp(item);             
+            theList.MoveUp(item);
 
             foreach (var li in theList)
             {
@@ -606,7 +607,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
         }
     }
-    public async Task MoveUpByField(T item,string fieldName, object value)
+    public async Task MoveUpByField(T item, string fieldName, object value)
     {
         using var _db = GetDBContext();
         try
@@ -906,12 +907,291 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
+
+    //public async Task<Order> BarrowOrder(string OrderIID, string ClientIP)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        Order order = await _db.Orders.FirstOrDefaultAsync(x => x.IID == OrderIID);
+    //        if (order == null )
+    //            return null;
+    //        if (order.LockedClientIP == null)
+    //        {
+    //            order.LockedClientIP = ClientIP;
+    //            _db.Orders.Update(order);
+    //            await _db.SaveChangesAsync();
+    //            return order;
+    //        } else
+    //        { 
+    //            if (order.LockedClientIP == ClientIP)
+    //            {
+    //                return order;
+    //            } else
+    //            {
+    //                return null;
+    //            }
+    //        }
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }        
+    //}
+
+    //public async Task ReturnOrder(Order order)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }
+
+
+    //    if (order.OrderType == OrderTypes.Sitin)
+    //        this.ReturnTable(order);
+    //    else
+    //    {
+    //        if (order.Items.Count > 0)
+    //        {
+    //            order.LockedClientIP = "";
+    //            order.TableIID = "";
+    //            await SaveOrder(order);
+    //        } else
+    //            await DeleteOrder(order.IID);
+    //    }
+    //}
+
+
+    //public async Task<Masa> GetTableToEditAsync(string tableIID, string terminalName)
+    //{
+    //    using var _db = GetDBContext();
+    //    try
+    //    {
+    //        // 1.Fetch the current state
+    //        var table = await _db.Tables.FindAsync(tableIID);
+
+    //        if (table == null)
+    //            return null;
+
+    //        // 2. Check if it's already locked by someone else and NOT expired
+    //        bool isLockedByOthers = table.LockedClientIP != null
+    //                                && table.LockedClientIP != terminalName
+    //                                && table.LockedUntil > DateTime.UtcNow;
+    //        if (isLockedByOthers)
+    //        {
+    //            return null;
+    //        }
+    //        // 3. Apply your lock
+    //        table.LockedClientIP = terminalName;
+    //        table.LockedUntil = DateTime.UtcNow.AddMinutes(5);
+
+    //        // 4. Save Changes
+    //        // EF Core will compare the RowVersion. If another terminal saved 
+    //        // a lock 0.001s before you, this will throw an exception.
+    //        await _db.SaveChangesAsync();
+
+    //        Order order = await _db.Orders.Where(x => x.TableIID == tableIID && x.OrderType == OrderTypes.Sitin && 
+    //        (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done)
+    //        ).FirstOrDefaultAsync();
+
+    //        //if (order == )
+
+
+
+    //        table = await _db.Tables.Where(x => x.IID == tableIID)
+    //            .Include(x => x.orders.Where(o => o.Status == StatusFlags.New || o.Status == StatusFlags.Done)).FirstOrDefaultAsync();
+    //        return table;
+
+    //    } catch (Exception ex)
+    //    {
+    //        return null;
+    //    }
+    //}
+
+
+    /// <summary>
+    /// Gets the first table that has one or more active sit-in orders with a status of Unknown, New, or Done.
+    /// </summary>
+    /// <remarks>Active orders are considered those with an order type of sit-in and a status of Unknown, New,
+    /// or Done. Only the first matching table is returned. The result includes the related orders that meet these
+    /// criteria.</remarks>
+    /// <returns>A <see cref="Masa"/> object representing the first table with active sit-in orders, or <see langword="null"/> if
+    /// no such table exists.</returns>
+    public async Task<List<Masa>> GetAllTablesWithActiveOrders()
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return await _db.Tables.Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
+            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ToListAsync();
+
+        } catch (Exception ex)
+        {
+            return new List<Masa>();
+        }
+    }
+
+
+    public async Task<List<Masa>> GetAllTablesWithActiveOrders(string salonIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return await _db.Tables.Where(x => x.SalonIID == salonIID).Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
+            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ThenInclude(o => o.Items).ToListAsync();
+
+        } catch (Exception ex)
+        {
+            return new List<Masa>();
+        }
+
+    }
+
+
+    /// <summary>
+    /// Retrieves a table by its identifier, including only active sit-in orders associated with the table.
+    /// </summary>
+    /// <remarks>Active orders are those with a status of Unknown, New, or Done and an order type of Sitin.
+    /// Only these orders are included in the returned table's order collection.</remarks>
+    /// <param name="tableIID">The unique identifier of the table to retrieve. Cannot be null.</param>
+    /// <returns>A <see cref="Masa"/> object representing the table and its active sit-in orders, or <see langword="null"/> if
+    /// the table is not found.</returns>
+    public async Task<Masa> GetTableWithActiveOrders(string tableIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return  await _db.Tables.Where(x => x.IID == tableIID).Include(x => x.orders.Where(x => x.TableIID == tableIID && x.OrderType == OrderTypes.Sitin &&
+            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).FirstOrDefaultAsync();             
+
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Retrieves an order for editing and applies a temporary lock to prevent concurrent modifications from other
+    /// terminals.
+    /// </summary>
+    /// <remarks>If the order is already locked by another terminal and the lock has not expired, the method
+    /// returns null. The lock is set for five minutes from the time of the request. If the order is of type 'Sitin' and
+    /// associated with a table, the table is also locked for the same duration. If a concurrency conflict occurs while
+    /// saving the lock, the method returns null.</remarks>
+    /// <param name="orderIID">The unique identifier of the order to retrieve and lock for editing.</param>
+    /// <param name="terminalName">The name of the terminal requesting to edit the order. Used to identify the lock owner.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the order if it is available for
+    /// editing and successfully locked; otherwise, null.</returns>
+    public async Task<Order> GetOrderToEditAsync(string orderIID, string terminalName)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            // 1.Fetch the current state
+            var order = await _db.Orders.Where(x => x.IID == orderIID).Include("Table").Include("Items").FirstOrDefaultAsync();
+
+            if (order == null)
+                return null;
+
+            // 2. Check if it's already locked by someone else and NOT expired
+            bool isLockedByOthers = order.LockedClientIP != null
+                                    && order.LockedClientIP != terminalName
+                                    && order.LockedUntil > DateTime.UtcNow;
+            if (isLockedByOthers)
+            {
+                return null;
+            }
+            // 3. Apply your lock
+            order.LockedClientIP = terminalName;
+            order.LockedUntil = DateTime.UtcNow.AddMinutes(5);
+
+            if (order.OrderType == OrderTypes.Sitin && order.Table != null)
+            {
+                order.Table.LockedClientIP = terminalName;
+                order.Table.LockedUntil = order.LockedUntil;
+            }
+
+
+            // 4. Save Changes
+            // EF Core will compare the RowVersion. If another terminal saved 
+            // a lock 0.001s before you, this will throw an exception.
+            await _db.SaveChangesAsync();
+
+            return order;
+
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public async Task<Order> GetTableWithOrderToEditAsync(string tableIID, string terminalName)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            
+
+            var order = await _db.Orders.Where(x => x.TableIID == tableIID).Include("Table").Include("Items").FirstOrDefaultAsync();
+
+            if (order == null)
+            {
+                order = new Order()
+                {
+                    OrderType = OrderTypes.Sitin,
+                    TableIID = tableIID,
+                };
+            } else
+            {
+
+                // 2. Check if it's already locked by someone else and NOT expired
+                bool isLockedByOthers = order.LockedClientIP != null
+                                        && order.LockedClientIP != terminalName
+                                        && order.LockedUntil > DateTime.UtcNow;
+                if (isLockedByOthers)
+                {
+                    return null;
+                }
+            }
+            // 3. Apply your lock
+            order.LockedClientIP = terminalName;
+            order.LockedUntil = DateTime.UtcNow.AddMinutes(5);
+
+            if (order.OrderType == OrderTypes.Sitin && order.Table != null)
+            {
+                order.Table.LockedClientIP = terminalName;
+                order.Table.LockedUntil = order.LockedUntil;
+            }
+
+            if (order.IID == null)
+            {
+                _db.Orders.Add(order);
+            }
+
+            // 4. Save Changes
+            // EF Core will compare the RowVersion. If another terminal saved 
+            // a lock 0.001s before you, this will throw an exception.
+            await _db.SaveChangesAsync();
+
+
+            return await GetOrderToEditAsync(order.IID, terminalName);// order;
+
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
     public async Task<GenericImage> GetImageAsync(string EntityIID)
     {
         using var _db = GetDBContext();
         try
         {
-            GenericImage gim =await _db.Images.Where(img => img.ReferenceIID == EntityIID).FirstOrDefaultAsync();
+            GenericImage gim = await _db.Images.Where(img => img.ReferenceIID == EntityIID).FirstOrDefaultAsync();
             return gim;
         } catch (Exception ex)
         {
@@ -926,7 +1206,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            return _db.Orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.COMPLETED || x.Status == StatusFlags.ARCHIVED) && x.Payment == payment).Sum(x => x.Total);
+            return _db.Orders.Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.Completed || x.Status == StatusFlags.Archived) && x.Payment == payment).Sum(x => x.Total);
         } catch (Exception ex)
         {
             return -1;
@@ -938,7 +1218,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            return await _db.Orders.Where(x => x.Payment == PaymentMethods.NotPaid && x.Status == StatusFlags.PENDING && x.SessionIID == sessionIID).Include("Items").ToListAsync();
+            return await _db.Orders.Where(x => x.Payment == PaymentMethods.NotPaid && x.Status == StatusFlags.Holding && x.SessionIID == sessionIID).Include("Items").ToListAsync();
         } catch (Exception ex)
         {
             return null;
@@ -951,13 +1231,13 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             var rawData = await _db.OrderItems
-            .Where(oi => oi.Order.SessionIID == sessionIID) 
-            .GroupBy(oi => oi.CategoryItem.CategoryIID)               
+            .Where(oi => oi.Order.SessionIID == sessionIID)
+            .GroupBy(oi => oi.CategoryItem.CategoryIID)
             .Select(g => new
             {
-                Category = g.FirstOrDefault().CategoryItem.Category, 
+                Category = g.FirstOrDefault().CategoryItem.Category,
                 CategoryIID = g.Key,
-                TotalSum = g.Sum(oi => oi.Total)         
+                TotalSum = g.Sum(oi => oi.Total)
             })
             .ToListAsync();
 

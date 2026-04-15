@@ -119,7 +119,7 @@ namespace DTRMNS {
                 return;
             }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED)
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived)
             {
                 if (config.DebugMode)
                    await  DTRMSimpleBusiness.Instance.SaveDebug("EB Handle order status completed or archived");
@@ -158,9 +158,9 @@ namespace DTRMNS {
             oiNew.OrderIID =  DTRMSimpleBusiness.Instance.AttachedOrder.IID;
 
             //This is true if OrderItemStepable conditions are meet.
-            bool blnDisplaySeperately = ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse &&
-                                          DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.DONE ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.NEW) ||
-                                        ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale);// &&
+            bool blnDisplaySeperately = ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin &&
+                                          DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New) ||
+                                        ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale);// &&
                                                                                                    // DTRMSimpleBusiness.Instance.config.Hold_Orders_New_Items_Add_Seperately); // &&  DTRMSimpleBusiness.Instance.config.Table_Order_Items_Stepable;
             if (blnDisplaySeperately)
                 oiNew.OrderGroupIID =  DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID;
@@ -252,11 +252,11 @@ namespace DTRMNS {
             {
                 switch ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
                 {
-                    case OrderTypes.DirectSale:
+                    case OrderTypes.Sale:
                         if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Direct))
                             return false;
                         break;
-                    case OrderTypes.InHouse:
+                    case OrderTypes.Sitin:
                         if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse))
                             return false;
                         break;
@@ -264,8 +264,8 @@ namespace DTRMNS {
                         if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery))
                             return false;
                         break;
-                    case OrderTypes.TakeAwayB:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAwayB))
+                    case OrderTypes.TakeAway:
+                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway))
                             return false;
                         break;
                     case OrderTypes.InternetTakeAway:

@@ -54,8 +54,11 @@ public static class UF
     {
         try
         {
-            PosConfig config = (PosConfig)XmlDeSerialize(DBConfigFileName, typeof(PosConfig), true);
-            return config;
+            PosConfig config = (PosConfig)XmlDeSerialize(Path.Combine(AppContext.BaseDirectory, DBConfigFileName), typeof(PosConfig), true);
+            if (config == null)
+                return new PosConfig();
+            else 
+                return config;
         } catch (Exception ex)
         {
             string str = ex.Message;
@@ -166,26 +169,26 @@ public static class UF
         }
     }
 
-    public static string GetOrderTypeAsText(OrderTypes OrderType)
-    {
-        switch (OrderType)
-        {
-            case OrderTypes.DirectSale:
-                return "Direct Sale";
-            case OrderTypes.InHouse:
-                return "in-House";
-            case OrderTypes.TakeAwayB:
-                return "Take Away";
-            case OrderTypes.InternetTakeAway:
-                return "Internet TakeAway";
-            case OrderTypes.Delivery:
-                return "Delivery";
-            case OrderTypes.InternetDelivery:
-                return "Internet Delivery";
-            default:
-                return "Unknown";
-        }
-    }
+    //public static string GetOrderTypeAsText(OrderTypes OrderType)
+    //{
+    //    switch (OrderType)
+    //    {
+    //        case OrderTypes.Sale:
+    //            return "Direct Sale";
+    //        case OrderTypes.Sitin:
+    //            return "in-House";
+    //        case OrderTypes.TakeAway:
+    //            return "Take Away";
+    //        case OrderTypes.InternetTakeAway:
+    //            return "Internet TakeAway";
+    //        case OrderTypes.Delivery:
+    //            return "Delivery";
+    //        case OrderTypes.InternetDelivery:
+    //            return "Internet Delivery";
+    //        default:
+    //            return "Unknown";
+    //    }
+    //}
 
     public static OrderItemTypes EBTypeToOrderItemType(CategoryItemTypes ebtype)
     {

@@ -115,37 +115,37 @@ public partial class CategoryItem : BaseClass
 
 
 
-    public double GetPrice(POSLayer.Library.OrderTypes orderType)
+    public double GetPrice(OrderTypes orderType)
     {
         switch (orderType)
         {
-            case POSLayer.Library.OrderTypes.DirectSale:
+            case OrderTypes.Sale:
                 return SalePrice;
-            case POSLayer.Library.OrderTypes.InHouse:
+            case OrderTypes.Sitin:
                 return SitinPrice;
-            case POSLayer.Library.OrderTypes.TakeAwayB:
-            case POSLayer.Library.OrderTypes.InternetTakeAway:
+            case OrderTypes.TakeAway:
+            case OrderTypes.InternetTakeAway:
                 return TaPrice;
-            case POSLayer.Library.OrderTypes.Delivery:
-            case POSLayer.Library.OrderTypes.InternetDelivery:
+            case OrderTypes.Delivery:
+            case OrderTypes.InternetDelivery:
                 return DPrice;
             default:
                 return 0f;
         }
     }
-    public double GetTaxRate(POSLayer.Library.OrderTypes orderType)
+    public double GetTaxRate(OrderTypes orderType)
     {
         switch (orderType)
         {
-            case POSLayer.Library.OrderTypes.DirectSale:
+            case OrderTypes.Sale:
                 return SaleTax;
-            case POSLayer.Library.OrderTypes.InHouse:
+            case OrderTypes.Sitin:
                 return SitinTax;
-            case POSLayer.Library.OrderTypes.TakeAwayB:
-            case POSLayer.Library.OrderTypes.InternetTakeAway:
+            case OrderTypes.TakeAway:
+            case OrderTypes.InternetTakeAway:
                 return TaTax;
-            case POSLayer.Library.OrderTypes.Delivery:
-            case POSLayer.Library.OrderTypes.InternetDelivery:
+            case OrderTypes.Delivery:
+            case OrderTypes.InternetDelivery:
                 return DTax;
             default:
                 return 0f;

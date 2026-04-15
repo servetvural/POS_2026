@@ -179,49 +179,49 @@ namespace DTRMNS {
         #endregion
 
         private void btnInHouse_Click(object sender, System.EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.InHouse) {
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sitin) {
                 ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(ServiceHelper.Services, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
                 AttachPanelEvent(ct);
             } else
                 CloseFunction();
         }
         private void btnDirectSale_Click(object sender, EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.DirectSale) {
-                RequestedType = OrderTypes.DirectSale;
-                try {
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
-                } catch { }
-                HandlePriceChange();
-                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
-            } else
-                CloseFunction();
+            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sale) {
+            //    RequestedType = OrderTypes.Sale;
+            //    try {
+            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //    } catch { }
+            //    HandlePriceChange();
+            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //} else
+            //    CloseFunction();
         }
         private void btnTakeAway_Click(object sender, System.EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.TakeAwayB) {
-                RequestedType = OrderTypes.TakeAwayB;
-                try {
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
-                } catch { }
-                HandlePriceChange();
-                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
-            } else
-                CloseFunction();
+            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.TakeAway) {
+            //    RequestedType = OrderTypes.TakeAway;
+            //    try {
+            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //    } catch { }
+            //    HandlePriceChange();
+            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //} else
+            //    CloseFunction();
         }
 
         private void btnDelivery_Click(object sender, System.EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery) {
-                RequestedType = OrderTypes.Delivery;
-                try {
-                    if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-                         DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
-                } catch { }
-                HandlePriceChange();
-                EnsureCompulsoryExtrasEvent();
-                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
-            } else
-                CloseFunction();
+            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery) {
+            //    RequestedType = OrderTypes.Delivery;
+            //    try {
+            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
+            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //    } catch { }
+            //    HandlePriceChange();
+            //    EnsureCompulsoryExtrasEvent();
+            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //} else
+            //    CloseFunction();
         }
 
         private void btnClose_Click(object sender, System.EventArgs e) {

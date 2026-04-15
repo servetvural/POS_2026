@@ -27,6 +27,7 @@ public class PosConfig
         return true;
     }
 
+    [BrowsableAttribute(false)]
     public string ConnectionString { 
         get
         {
@@ -35,7 +36,7 @@ public class PosConfig
                 ";User Id=" + Database_User_Name +
                 ";Password=" + Database_Password +
                 ";TrustServerCertificate=" + TrustServerCertificate +
-                ";Encrypt=" + Encrypt + ";";
+                ";Encrypt=" + Encrypt + ";Connect Timeout=2;";
         }
     }
 
@@ -50,7 +51,7 @@ public class PosConfig
 
 
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute(@". or .\SQLEXPRESS or 192.168.1.20\SQLEXPRESS"), DisplayName("Database Server IP and/or instance name")]
-    public string Database_Instance { get; set; } = ".";
+    public string Database_Instance { get; set; } = "SERVET2022\\SQLEXPRESS";
 
 
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Database Name  exp:DTRMSimple , must be a valid name."), DisplayName("Name of Database")]
@@ -62,7 +63,7 @@ public class PosConfig
 
 
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("It must be the given password during installation"), PasswordPropertyText(true), DisplayName("Database Password")]
-    public string Database_Password { get; set; } = string.Empty;
+    public string Database_Password { get; set; } = "servetvural";
 
     [CategoryAttribute("10.Connection Settings"), DescriptionAttribute("Set this to true"), DisplayName("Trust Server Certificate")]
     public bool TrustServerCertificate { get; set; } = true;
@@ -101,7 +102,7 @@ public class PosConfig
 
 
     [CategoryAttribute("11.Direct Sale Order Settings"), DisplayName("Width of direct sale button"), DescriptionAttribute("Direct Sale Button Width")]
-    public int Direct_Sale_Button_Width { get; set; } = 100;
+    public int Direct_Sale_Button_Width { get; set; } = 250;
 
     #endregion
 
@@ -140,7 +141,7 @@ public class PosConfig
 
 
     [CategoryAttribute("12.Hold Order Settings"), DisplayName("Display held orders in kitchen screen"), DescriptionAttribute("Will display Hold Orders in Kitchen/Bar")]
-    public bool Hold_Order_Display_in_Kitchen { get; set; }
+    public bool Hold_Order_Display_in_Kitchen { get; set; } = true;
 
 
     [CategoryAttribute("12.Hold Order Settings"), DisplayName("Allow kitchen to delete completed orders from screen"), DescriptionAttribute("True: Prevents prepared items to be deleted from order")]
@@ -148,15 +149,15 @@ public class PosConfig
 
 
     [CategoryAttribute("12.Hold Order Settings"), DisplayName("Font size of held order buttons"), DescriptionAttribute("Hold button price font size")]
-    public float Hold_Button_Price_Font_Size { get; set; } = 22;
+    public float Hold_Button_Price_Font_Size { get; set; } = 14;
 
 
     [CategoryAttribute("12.Hold Order Settings"), DisplayName("Hold Order Auto Close Enabled"), DescriptionAttribute("False: Closes the Hold Order automatically after certain period of time if no change is made")]
-    public bool Hold_Order_Auto_Close { get; set; }
+    public bool Hold_Order_Auto_Close { get; set; } = true;
 
 
     [CategoryAttribute("12.Hold Order Settings"), DisplayName("Hold Order Auto Close Seconds"), DescriptionAttribute("How many seconds to wait to close the Hold Order automatically"), Range(5, 30)]
-    public int Hold_Order_Auto_Close_Seconds { get; set; } = 10;
+    public int Hold_Order_Auto_Close_Seconds { get; set; } = 15;
 
 
     #endregion
@@ -256,7 +257,7 @@ public class PosConfig
     #region 16.Other Order Settings
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Width of Cancel/Close Order Button"), DescriptionAttribute("Cancel/Close Order Button Width")]
-    public int Cancel_Button_Width { get; set; } = 100;
+    public int Cancel_Button_Width { get; set; } = 1250;
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Full file name of Cancel Button Image"), DescriptionAttribute("Full name of Cancel Button Image with extension"), DefaultValueAttribute("")]
@@ -273,11 +274,11 @@ public class PosConfig
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Allow use of PAD"), DescriptionAttribute("Pad can be used to take orders")]
-    public bool Pad_Allowed { get; set; }
+    public bool Pad_Allowed { get; set; } = true;
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Default order type for OrderPad"), DescriptionAttribute("Pad Default Order Type. Identifies which order type should be instantiated when Pad Button Clicked")]
-    public OrderTypes Order_Pad_Default_Order_Type { get; set; } = OrderTypes.DirectSale;
+    public OrderTypes Order_Pad_Default_Order_Type { get; set; } = OrderTypes.Sale;
 
 
     //[CategoryAttribute("16.Other Order Settings"), DisplayName("OrderPad Orientation"), DescriptionAttribute("OrderPad Orientation Landscape or Portrait")]
@@ -290,7 +291,7 @@ public class PosConfig
 
     //NOT NECESSARY
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Default order type for default order creation"), DescriptionAttribute("Default Order Type. Identifies which order type should be instantiated when a Order Created")]
-    public OrderTypes Auto_Order_Type { get; set; } = OrderTypes.Unknown;
+    public OrderTypes Auto_Order_Type { get; set; } = OrderTypes.Sale;
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Allow standard users to see session total"), DescriptionAttribute("Can Basic Users See Session Totals from this Terminal")]
@@ -301,7 +302,7 @@ public class PosConfig
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Number of detailed orders displayed on order list"), DescriptionAttribute("Maximum number of orders will be displayed in detail in order list")]
-    public int Order_List_Detailed_Orders_Max_Counter { get; set; } = 5;
+    public int Order_List_Detailed_Orders_Max_Counter { get; set; } = 25;
 
 
     [CategoryAttribute("16.Other Order Settings"), DisplayName("Force order deletion for supervisor user"), DescriptionAttribute("Delete Order Item Requires Supervisor Authorisation")]
@@ -318,7 +319,7 @@ public class PosConfig
 
     #region 18.Cash Drawer Settings
     [CategoryAttribute("18.Cash Drawer Settings"), DisplayName("Allow cash drawer to be openned with VOID button"), DescriptionAttribute("Cash Drawer can be openned directly")]
-    public bool Cash_Drawer_Void_Open_Allowed { get; set; }
+    public bool Cash_Drawer_Void_Open_Allowed { get; set; } = true;
 
 
     [CategoryAttribute("18.Cash Drawer Settings"), DisplayName("Which type of cash drawer used"), DescriptionAttribute("Attached Cash Drawer Type")]
@@ -564,11 +565,11 @@ public class PosConfig
     public bool Prep_Can_Hold { get; set; } = true;
 
     [CategoryAttribute("21.Prep Window Settings"), DisplayName("Allow Prep window to hold and cash orders"), DescriptionAttribute("Prep Window Can Hold and Cashout")]
-    public bool Prep_Can_Hold_And_Cash { get; set; }
+    public bool Prep_Can_Hold_And_Cash { get; set; } = true;
 
 
     [CategoryAttribute("21.Prep Window Settings"), DisplayName("Allow Prep window to hold, cash and print orders"), DescriptionAttribute("Prep Window Can Hold, Cashout and Print Receipt")]
-    public bool Prep_Can_Hold_Cash_And_Print { get; set; }
+    public bool Prep_Can_Hold_Cash_And_Print { get; set; } = true;
     #endregion
 
     #region 23.Report Settings
@@ -782,11 +783,11 @@ public class PosConfig
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Allow card payment"), DescriptionAttribute("Is Card Payment Button Visible")]
-    public bool Payments_Can_Be_Made_By_Card { get; set; }
+    public bool Payments_Can_Be_Made_By_Card { get; set; } = true;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Allow card and print payment"), DescriptionAttribute("Is Card and Print Payment Button Visible")]
-    public bool Payments_Can_Be_Made_By_Card_And_Print { get; set; }
+    public bool Payments_Can_Be_Made_By_Card_And_Print { get; set; } = true;
 
 
 
@@ -799,15 +800,15 @@ public class PosConfig
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("What is order display screen width"), DescriptionAttribute("Order Display Screen Width, Default: 314"), Range(314, 450)]
-    public int DisplayWidth { get; set; } = 315;
+    public int DisplayWidth { get; set; } = 400;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Order item display height"), DescriptionAttribute("Order Item Display Height on Order Screen")]
-    public OrderDisplayHeightTypes Order_Item_Display_Height { get; set; } = OrderDisplayHeightTypes.Narrow;
+    public OrderDisplayHeightTypes Order_Item_Display_Height { get; set; } = OrderDisplayHeightTypes.Middle;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("What is order split display height"), DescriptionAttribute("Split Display Screen Height, Default:200"), Range(200, 250)]
-    public int SplitDisplayHeight { get; set; } = 240;
+    public int SplitDisplayHeight { get; set; } = 200;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Allow SubTotal panel to be used"), DescriptionAttribute("Is Sub Total Payment Button Visible")]
@@ -815,11 +816,11 @@ public class PosConfig
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Allow additional receipt print before cashout"), DescriptionAttribute("Is Print Invoice Button Visible")]
-    public bool Print_Invoice_Button_Visible { get; set; }
+    public bool Print_Invoice_Button_Visible { get; set; } = true;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Allow small change calculator screen"), DescriptionAttribute("Is Cash Drawer Money Calculator Button Visible")]
-    public bool Drawer_Calculator_Visible { get; set; }
+    public bool Drawer_Calculator_Visible { get; set; } = true;
 
 
     [CategoryAttribute("29.User Interface Settings"), DisplayName("Display Session Total On Menu"), DescriptionAttribute("Displays Session Total On Menu")]
@@ -834,161 +835,161 @@ public class PosConfig
     #region 30.User Interface Money Panel Settings
 
     [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Money Action Panel Height"), DescriptionAttribute("Change the Hold Button Height, Default:98"), Range(100, 500)]
-    public int MoneyActionPanelHeight { get; set; } = 325;
+    public int MoneyActionPanelHeight { get; set; } = 250;
 
 
 
     [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Individual Hold Button Height"), DescriptionAttribute("Change the Hold Button Height, Default:98"), Range(50, 100)]
-    public int HoldButtonItemsHeight { get; set; } = 98;
+    public int HoldButtonItemsHeight { get; set; } = 90;
 
 
     //FIRST COLUMN
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Done Button Row Number"), DescriptionAttribute("Done Button Horizontal Row, Default:0, Max:7") , Range(0,11)]
-    public int DoneButtonRow { get; set; }
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Done Button Row Number"), DescriptionAttribute("Done Button Horizontal Row, Default:0, Max:7") , Range(0,11)]
+    //public int DoneButtonRow { get; set; }
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Done Button Vertical RowSpan"), DescriptionAttribute("Done Button Vertical Row Span, Default:2, Max:7"), Range(2, 7)]
-    public int DoneButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Done Button Vertical RowSpan"), DescriptionAttribute("Done Button Vertical Row Span, Default:2, Max:7"), Range(2, 7)]
+    //public int DoneButtonRowSpan { get; set; } = 2;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Drawer Button Row Number"), DescriptionAttribute("Cash Drawer Button Horizontal Row, Default:2, Max:7"), Range(2, 11)]
-    public int CashDrawerButtonRow { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Drawer Button Row Number"), DescriptionAttribute("Cash Drawer Button Horizontal Row, Default:2, Max:7"), Range(2, 11)]
+    //public int CashDrawerButtonRow { get; set; } = 0;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Drawer Button Vertical RowSpan"), DescriptionAttribute("Cash Drawer Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
-    public int CashDrawerButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Drawer Button Vertical RowSpan"), DescriptionAttribute("Cash Drawer Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
+    //public int CashDrawerButtonRowSpan { get; set; } = 4;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Print Button Row Number"), DescriptionAttribute("Print Button Horizontal Row, Default:6, Max:7"), Range(0, 11)]
-    public int PrintButtonRow { get; set; } = 6;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Print Button Row Number"), DescriptionAttribute("Print Button Horizontal Row, Default:6, Max:7"), Range(0, 11)]
+    //public int PrintButtonRow { get; set; } = 8;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Print Button Vertical RowSpan"), DescriptionAttribute("Print Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
-    public int PrintButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Print Button Vertical RowSpan"), DescriptionAttribute("Print Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
+    //public int PrintButtonRowSpan { get; set; } = 4;
 
-    //SECOND COLUMN
+    ////SECOND COLUMN
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold Order Button Row Number"), DescriptionAttribute("Hold Order Button Horizontal Row, Default:0, Max:7"), Range(0, 11)]
-    public int HoldOrderButtonRow { get; set; }
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold Order Button Row Number"), DescriptionAttribute("Hold Order Button Horizontal Row, Default:0, Max:7"), Range(0, 11)]
+    //public int HoldOrderButtonRow { get; set; }
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold Order Button Vertical RowSpan"), DescriptionAttribute("Hold Order Button Vertical Row Span, Default:4, Max:7"), Range(0, 11)]
-    public int HoldOrderButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold Order Button Vertical RowSpan"), DescriptionAttribute("Hold Order Button Vertical Row Span, Default:4, Max:7"), Range(0, 11)]
+    //public int HoldOrderButtonRowSpan { get; set; } = 5;
 
 
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Column Number"), DescriptionAttribute("Cash Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
-    public int CashButtonColumn { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Column Number"), DescriptionAttribute("Cash Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
+    //public int CashButtonColumn { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Horizontal Column Span"), DescriptionAttribute("Cash Button Horizontal ColumnSpan, Default:1, Max:2"), Range(1, 2)]
-    public int CashButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Horizontal Column Span"), DescriptionAttribute("Cash Button Horizontal ColumnSpan, Default:1, Max:2"), Range(1, 2)]
+    //public int CashButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Row Number"), DescriptionAttribute("Cash Button Horizontal Row, Default:4, Max:7"), Range(0, 7)]
-    public int CashButtonRow { get; set; } = 4;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Row Number"), DescriptionAttribute("Cash Button Horizontal Row, Default:4, Max:7"), Range(0, 7)]
+    //public int CashButtonRow { get; set; } = 5;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Vertical RowSpan"), DescriptionAttribute("Cash Button Vertical Row Span, Default:2, Max:7"), Range(2, 7)]
-    public int CashButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash Button Vertical RowSpan"), DescriptionAttribute("Cash Button Vertical Row Span, Default:2, Max:7"), Range(2, 7)]
+    //public int CashButtonRowSpan { get; set; } = 5;
 
 
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Column Number"), DescriptionAttribute("Card Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
-    public int CardButtonColumn { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Column Number"), DescriptionAttribute("Card Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
+    //public int CardButtonColumn { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Horizontal Column Span"), DescriptionAttribute("Card Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
-    public int CardButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Horizontal Column Span"), DescriptionAttribute("Card Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
+    //public int CardButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Row Number"), DescriptionAttribute("Card Button Horizontal Row, Default:6, Max:7"), Range(6, 11)]
-    public int CardButtonRow { get; set; } = 6;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Row Number"), DescriptionAttribute("Card Button Horizontal Row, Default:6, Max:7"), Range(6, 11)]
+    //public int CardButtonRow { get; set; } = 10;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Vertical RowSpan"), DescriptionAttribute("Card Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
-    public int CardButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card Button Vertical RowSpan"), DescriptionAttribute("Card Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
+    //public int CardButtonRowSpan { get; set; } = 2;
 
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Column Number"), DescriptionAttribute("Online Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
-    public int OnlineButtonColumn { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Column Number"), DescriptionAttribute("Online Button Vertical Column, Default:1, Max:2"), Range(1, 2)]
+    //public int OnlineButtonColumn { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Horizontal Column Span"), DescriptionAttribute("Online Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
-    public int OnlineButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Horizontal Column Span"), DescriptionAttribute("Online Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
+    //public int OnlineButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Row Number"), DescriptionAttribute("Online Button Horizontal Row, Default:10, Max:7"), Range(0, 11)]
-    public int OnlineButtonRow { get; set; } = 10;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Row Number"), DescriptionAttribute("Online Button Horizontal Row, Default:10, Max:7"), Range(0, 11)]
+    //public int OnlineButtonRow { get; set; } = 10;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Vertical RowSpan"), DescriptionAttribute("Online Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
-    public int OnlineButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online Button Vertical RowSpan"), DescriptionAttribute("Online Button Vertical Row Span, Default:2, Max:7"), Range(2, 11)]
+    //public int OnlineButtonRowSpan { get; set; } = 2;
 
 
-    //THIRD COLUMN
+    ////THIRD COLUMN
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold And Print Order Button Row Number"), DescriptionAttribute("Hold  And Print Order Button Horizontal Row, Default:0, Max:7"), Range(0, 11)]
-    public int HoldAndPrintOrderButtonRow { get; set; }
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold And Print Order Button Row Number"), DescriptionAttribute("Hold  And Print Order Button Horizontal Row, Default:0, Max:7"), Range(0, 11)]
+    //public int HoldAndPrintOrderButtonRow { get; set; }
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold And Print Order Button Vertical RowSpan"), DescriptionAttribute("Hold  And Print Order Button Vertical Row Span, Default:4, Max:7"), Range(0, 11)]
-    public int HoldAndPrintOrderButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Hold And Print Order Button Vertical RowSpan"), DescriptionAttribute("Hold  And Print Order Button Vertical Row Span, Default:4, Max:7"), Range(0, 11)]
+    //public int HoldAndPrintOrderButtonRowSpan { get; set; } = 5;
 
 
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print Button Column Number"), DescriptionAttribute("Cash  And Print Button Vertifal Column, Default:2, Max:2"),Range(1,2)]
-    public int CashAndPrintButtonColumn { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print Button Column Number"), DescriptionAttribute("Cash  And Print Button Vertifal Column, Default:2, Max:2"),Range(1,2)]
+    //public int CashAndPrintButtonColumn { get; set; } = 2;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print  Button Horizontal Column Span"), DescriptionAttribute("Cash And Print  Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
-    public int CashAndPrintButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print  Button Horizontal Column Span"), DescriptionAttribute("Cash And Print  Button Horizontal Column Span, Default:1, Max:2"), Range(1, 2)]
+    //public int CashAndPrintButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print Button Row Number"), DescriptionAttribute("Cash  And Print Button Horizontal Row, Default:4, Max:7"), Range(0, 11)]
-    public int CashAndPrintButtonRow { get; set; } = 4;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print Button Row Number"), DescriptionAttribute("Cash  And Print Button Horizontal Row, Default:4, Max:7"), Range(0, 11)]
+    //public int CashAndPrintButtonRow { get; set; } = 5;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print  Button Vertical RowSpan"), DescriptionAttribute("Cash And Print  Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
-    public int CashAndPrintButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Cash And Print  Button Vertical RowSpan"), DescriptionAttribute("Cash And Print  Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
+    //public int CashAndPrintButtonRowSpan { get; set; } = 5;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Column Number"), DescriptionAttribute("Card And Print Button Vertical Column, Default:2, Max:2"), Range(0, 2)]
-    public int CardAndPrintButtonColumn { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Column Number"), DescriptionAttribute("Card And Print Button Vertical Column, Default:2, Max:2"), Range(0, 2)]
+    //public int CardAndPrintButtonColumn { get; set; } = 2;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Horizontal Column Span"), DescriptionAttribute("Card And Print Button Horizontal Column Span, Default:1, Max:2"), Range(0, 2)]
-    public int CardAndPrintButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Horizontal Column Span"), DescriptionAttribute("Card And Print Button Horizontal Column Span, Default:1, Max:2"), Range(0, 2)]
+    //public int CardAndPrintButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Row Number"), DescriptionAttribute("Card And Print Button Horizontal Row, Default:6, Max:7"), Range(0, 11)]
-    public int CardAndPrintButtonRow { get; set; } = 6;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Row Number"), DescriptionAttribute("Card And Print Button Horizontal Row, Default:6, Max:7"), Range(0, 11)]
+    //public int CardAndPrintButtonRow { get; set; } = 10;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Vertical RowSpan"), DescriptionAttribute("Card And Print Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
-    public int CardAndPrintButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Card And Print Button Vertical RowSpan"), DescriptionAttribute("Card And Print Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
+    //public int CardAndPrintButtonRowSpan { get; set; } = 2;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Column Number"), DescriptionAttribute("Online And Print Button Vertical Column, Default:2, Max:2"), Range(0, 2)]
-    public int OnlineAndPrintButtonColumn { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Column Number"), DescriptionAttribute("Online And Print Button Vertical Column, Default:2, Max:2"), Range(0, 2)]
+    //public int OnlineAndPrintButtonColumn { get; set; } = 2;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Horizontal Column Span"), DescriptionAttribute("Online And Print Button Horizontal Column Span, Default:1, Max:2"), Range(0, 2)]
-    public int OnlineAndPrintButtonColumnSpan { get; set; } = 1;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Horizontal Column Span"), DescriptionAttribute("Online And Print Button Horizontal Column Span, Default:1, Max:2"), Range(0, 2)]
+    //public int OnlineAndPrintButtonColumnSpan { get; set; } = 1;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Row Number"), DescriptionAttribute("Online And Print Button Horizontal Row, Default:10, Max:7"), Range(0, 11)]
-    public int OnlineAndPrintButtonRow { get; set; } = 10;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Row Number"), DescriptionAttribute("Online And Print Button Horizontal Row, Default:10, Max:7"), Range(0, 11)]
+    //public int OnlineAndPrintButtonRow { get; set; } = 10;
 
 
-    [CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Vertical RowSpan"), DescriptionAttribute("Online And Print Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
-    public int OnlineAndPrintButtonRowSpan { get; set; } = 2;
+    //[CategoryAttribute("30.User Interface Money Panel Settings"), DisplayName("Online And Print Button Vertical RowSpan"), DescriptionAttribute("Online And Print Button Vertical Row Span, Default:2, Max:7"), Range(0, 11)]
+    //public int OnlineAndPrintButtonRowSpan { get; set; } = 2;
 
 
     #endregion
@@ -1010,7 +1011,11 @@ public class PosConfig
 
 
     [BrowsableAttribute(false)]
-    public string DTClientLocalReceiptPrinterIID { get; set; } = string.Empty;
+    public string TerminalReceiptPrinterIID { get; set; }
+
+    [BrowsableAttribute(false)]
+    public string TerminalCashDrawerPrinterIID { get; set; }
+
 
     #endregion
 

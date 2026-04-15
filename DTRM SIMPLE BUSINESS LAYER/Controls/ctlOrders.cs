@@ -22,6 +22,7 @@ namespace DTRMNS
     {
         PosConfig config;
         IRepository<Order> repoOrder;
+        IRepository<Masa> repoTable;
 
         private System.Windows.Forms.Panel panel1;
         private Button btnLoadOrder;
@@ -43,16 +44,12 @@ namespace DTRMNS
         private VScrollBar vScroll;
         public RemoteCompleteAttachedOrder CompleteAttachedOrderEvent;
         private Button btnChangePaymentMethod;
-        private DataGridViewTextBoxColumn IID;
+        private BindingSource orderBindingSource;
         private DataGridViewTextBoxColumn colOrderDate;
-        private DataGridViewTextBoxColumn CustomerDetails;
         private DataGridViewTextBoxColumn colOrderItemsDetailed;
         private DataGridViewTextBoxColumn StatusName;
         private DataGridViewTextBoxColumn OrderTypeName;
         private DataGridViewTextBoxColumn PaymentMethodName;
-        private DataGridViewTextBoxColumn PaymentFlag;
-        private DataGridViewTextBoxColumn CalculatedValue;
-        private DataGridViewTextBoxColumn KitchenOrderNo;
 
         //private UtilityLibrary UF;
         private List<int> rowheights;
@@ -63,7 +60,7 @@ namespace DTRMNS
             repoOrder = _repoOrder;
         }
 
-        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, GenericFunctionCall UnloadOrder,
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, IRepository<Masa> _repoTable, GenericFunctionCall UnloadOrder,
             GenericFunctionCall LoadAttachedOrder,
             GenericFunctionCall DetachPanel,
             PassControl AttachPanel,
@@ -73,6 +70,7 @@ namespace DTRMNS
             InitializeComponent();
             config = configAsService;
             repoOrder = _repoOrder;
+            repoTable = _repoTable;
 
             UnloadOrderEvent = UnloadOrder;
             LoadAttachedOrderEvent = LoadAttachedOrder;
@@ -103,381 +101,323 @@ namespace DTRMNS
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnChangePaymentMethod = new System.Windows.Forms.Button();
-            this.btnViewCustomerOrTable = new System.Windows.Forms.Button();
-            this.btnLoadOrder = new System.Windows.Forms.Button();
-            this.btnPrintReceipt = new System.Windows.Forms.Button();
-            this.btnUnsetPaymentMethod = new System.Windows.Forms.Button();
-            this.btnDeleteOrder = new System.Windows.Forms.Button();
-            this.dgv = new System.Windows.Forms.DataGridView();
-            this.lblTotal = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.vScroll = new System.Windows.Forms.VScrollBar();
-            this.colOrderItemsDetailed = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.StatusName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.OrderTypeName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PaymentMethodName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PaymentFlag = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.KitchenOrderNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colOrderDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CustomerDetails = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CalculatedValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ordersViewDataConnector = new System.Windows.Forms.BindingSource(this.components);
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ordersViewDataConnector)).BeginInit();
-            this.SuspendLayout();
+            components = new Container();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            panel1 = new Panel();
+            btnChangePaymentMethod = new Button();
+            btnViewCustomerOrTable = new Button();
+            btnLoadOrder = new Button();
+            btnPrintReceipt = new Button();
+            btnUnsetPaymentMethod = new Button();
+            btnDeleteOrder = new Button();
+            dgv = new DataGridView();
+            colOrderDate = new DataGridViewTextBoxColumn();
+            colOrderItemsDetailed = new DataGridViewTextBoxColumn();
+            StatusName = new DataGridViewTextBoxColumn();
+            OrderTypeName = new DataGridViewTextBoxColumn();
+            PaymentMethodName = new DataGridViewTextBoxColumn();
+            orderBindingSource = new BindingSource(components);
+            ordersViewDataConnector = new BindingSource(components);
+            lblTotal = new Label();
+            panel2 = new Panel();
+            vScroll = new VScrollBar();
+            panel1.SuspendLayout();
+            ((ISupportInitialize)dgv).BeginInit();
+            ((ISupportInitialize)orderBindingSource).BeginInit();
+            ((ISupportInitialize)ordersViewDataConnector).BeginInit();
+            SuspendLayout();
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.Black;
-            this.panel1.Controls.Add(this.btnChangePaymentMethod);
-            this.panel1.Controls.Add(this.btnViewCustomerOrTable);
-            this.panel1.Controls.Add(this.btnLoadOrder);
-            this.panel1.Controls.Add(this.btnPrintReceipt);
-            this.panel1.Controls.Add(this.btnUnsetPaymentMethod);
-            this.panel1.Controls.Add(this.btnDeleteOrder);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(5);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.panel1.Size = new System.Drawing.Size(947, 60);
-            this.panel1.TabIndex = 2;
+            panel1.BackColor = System.Drawing.Color.Black;
+            panel1.Controls.Add(btnChangePaymentMethod);
+            panel1.Controls.Add(btnViewCustomerOrTable);
+            panel1.Controls.Add(btnLoadOrder);
+            panel1.Controls.Add(btnPrintReceipt);
+            panel1.Controls.Add(btnUnsetPaymentMethod);
+            panel1.Controls.Add(btnDeleteOrder);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(0, 0);
+            panel1.Margin = new Padding(5);
+            panel1.Name = "panel1";
+            panel1.Padding = new Padding(5);
+            panel1.Size = new System.Drawing.Size(947, 60);
+            panel1.TabIndex = 2;
             // 
             // btnChangePaymentMethod
             // 
-            this.btnChangePaymentMethod.AutoEllipsis = true;
-            this.btnChangePaymentMethod.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnChangePaymentMethod.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnChangePaymentMethod.FlatAppearance.BorderSize = 0;
-            this.btnChangePaymentMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnChangePaymentMethod.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            this.btnChangePaymentMethod.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnChangePaymentMethod.Location = new System.Drawing.Point(324, 4);
-            this.btnChangePaymentMethod.Name = "btnChangePaymentMethod";
-            this.btnChangePaymentMethod.Size = new System.Drawing.Size(100, 50);
-            this.btnChangePaymentMethod.TabIndex = 21;
-            this.btnChangePaymentMethod.Text = "PAY";
-            this.btnChangePaymentMethod.UseVisualStyleBackColor = false;
-            this.btnChangePaymentMethod.Click += new System.EventHandler(this.btnChangePaymentMethod_Click);
+            btnChangePaymentMethod.AutoEllipsis = true;
+            btnChangePaymentMethod.BackColor = System.Drawing.Color.FromArgb(0, 192, 0);
+            btnChangePaymentMethod.BackgroundImageLayout = ImageLayout.Stretch;
+            btnChangePaymentMethod.FlatAppearance.BorderSize = 0;
+            btnChangePaymentMethod.FlatStyle = FlatStyle.Flat;
+            btnChangePaymentMethod.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
+            btnChangePaymentMethod.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            btnChangePaymentMethod.Location = new System.Drawing.Point(324, 4);
+            btnChangePaymentMethod.Name = "btnChangePaymentMethod";
+            btnChangePaymentMethod.Size = new System.Drawing.Size(100, 50);
+            btnChangePaymentMethod.TabIndex = 21;
+            btnChangePaymentMethod.Text = "PAY";
+            btnChangePaymentMethod.UseVisualStyleBackColor = false;
+            btnChangePaymentMethod.Click += btnChangePaymentMethod_Click;
             // 
             // btnViewCustomerOrTable
             // 
-            this.btnViewCustomerOrTable.AutoEllipsis = true;
-            this.btnViewCustomerOrTable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
-            this.btnViewCustomerOrTable.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnViewCustomerOrTable.FlatAppearance.BorderSize = 0;
-            this.btnViewCustomerOrTable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnViewCustomerOrTable.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnViewCustomerOrTable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnViewCustomerOrTable.Location = new System.Drawing.Point(104, 4);
-            this.btnViewCustomerOrTable.Name = "btnViewCustomerOrTable";
-            this.btnViewCustomerOrTable.Size = new System.Drawing.Size(58, 50);
-            this.btnViewCustomerOrTable.TabIndex = 20;
-            this.btnViewCustomerOrTable.Text = "CUST / TABLE";
-            this.btnViewCustomerOrTable.UseVisualStyleBackColor = false;
-            this.btnViewCustomerOrTable.Click += new System.EventHandler(this.btnViewCustomerOrTable_Click);
+            btnViewCustomerOrTable.AutoEllipsis = true;
+            btnViewCustomerOrTable.BackColor = System.Drawing.Color.FromArgb(255, 224, 192);
+            btnViewCustomerOrTable.BackgroundImageLayout = ImageLayout.Stretch;
+            btnViewCustomerOrTable.FlatAppearance.BorderSize = 0;
+            btnViewCustomerOrTable.FlatStyle = FlatStyle.Flat;
+            btnViewCustomerOrTable.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            btnViewCustomerOrTable.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            btnViewCustomerOrTable.Location = new System.Drawing.Point(104, 4);
+            btnViewCustomerOrTable.Name = "btnViewCustomerOrTable";
+            btnViewCustomerOrTable.Size = new System.Drawing.Size(58, 50);
+            btnViewCustomerOrTable.TabIndex = 20;
+            btnViewCustomerOrTable.Text = "CUST / TABLE";
+            btnViewCustomerOrTable.UseVisualStyleBackColor = false;
+            btnViewCustomerOrTable.Click += btnViewCustomerOrTable_Click;
             // 
             // btnLoadOrder
             // 
-            this.btnLoadOrder.AutoEllipsis = true;
-            this.btnLoadOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.btnLoadOrder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnLoadOrder.FlatAppearance.BorderSize = 0;
-            this.btnLoadOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnLoadOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            this.btnLoadOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnLoadOrder.Location = new System.Drawing.Point(574, 4);
-            this.btnLoadOrder.Margin = new System.Windows.Forms.Padding(0);
-            this.btnLoadOrder.Name = "btnLoadOrder";
-            this.btnLoadOrder.Size = new System.Drawing.Size(100, 50);
-            this.btnLoadOrder.TabIndex = 10;
-            this.btnLoadOrder.TabStop = false;
-            this.btnLoadOrder.Text = "LOAD";
-            this.btnLoadOrder.UseVisualStyleBackColor = false;
-            this.btnLoadOrder.Click += new System.EventHandler(this.btnLoadOrder_Click);
+            btnLoadOrder.AutoEllipsis = true;
+            btnLoadOrder.BackColor = System.Drawing.Color.FromArgb(0, 192, 0);
+            btnLoadOrder.BackgroundImageLayout = ImageLayout.Stretch;
+            btnLoadOrder.FlatAppearance.BorderSize = 0;
+            btnLoadOrder.FlatStyle = FlatStyle.Flat;
+            btnLoadOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
+            btnLoadOrder.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            btnLoadOrder.Location = new System.Drawing.Point(574, 4);
+            btnLoadOrder.Margin = new Padding(0);
+            btnLoadOrder.Name = "btnLoadOrder";
+            btnLoadOrder.Size = new System.Drawing.Size(100, 50);
+            btnLoadOrder.TabIndex = 10;
+            btnLoadOrder.TabStop = false;
+            btnLoadOrder.Text = "LOAD";
+            btnLoadOrder.UseVisualStyleBackColor = false;
+            btnLoadOrder.Click += btnLoadOrder_Click;
             // 
             // btnPrintReceipt
             // 
-            this.btnPrintReceipt.AutoEllipsis = true;
-            this.btnPrintReceipt.BackColor = System.Drawing.Color.Fuchsia;
-            this.btnPrintReceipt.BackgroundImage = global::DTRMNS.Properties.Resources.Print32;
-            this.btnPrintReceipt.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.btnPrintReceipt.FlatAppearance.BorderSize = 0;
-            this.btnPrintReceipt.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPrintReceipt.ForeColor = System.Drawing.Color.White;
-            this.btnPrintReceipt.Location = new System.Drawing.Point(447, 4);
-            this.btnPrintReceipt.Name = "btnPrintReceipt";
-            this.btnPrintReceipt.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnPrintReceipt.Size = new System.Drawing.Size(100, 50);
-            this.btnPrintReceipt.TabIndex = 19;
-            this.btnPrintReceipt.Text = " PRINT RECEIPT";
-            this.btnPrintReceipt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnPrintReceipt.UseVisualStyleBackColor = false;
-            this.btnPrintReceipt.Click += new System.EventHandler(this.btnPrintReceipt_Click);
+            btnPrintReceipt.AutoEllipsis = true;
+            btnPrintReceipt.BackColor = System.Drawing.Color.Fuchsia;
+            btnPrintReceipt.BackgroundImage = Properties.Resources.Print32;
+            btnPrintReceipt.BackgroundImageLayout = ImageLayout.None;
+            btnPrintReceipt.FlatAppearance.BorderSize = 0;
+            btnPrintReceipt.FlatStyle = FlatStyle.Flat;
+            btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            btnPrintReceipt.ForeColor = System.Drawing.Color.White;
+            btnPrintReceipt.Location = new System.Drawing.Point(447, 4);
+            btnPrintReceipt.Name = "btnPrintReceipt";
+            btnPrintReceipt.RightToLeft = RightToLeft.Yes;
+            btnPrintReceipt.Size = new System.Drawing.Size(100, 50);
+            btnPrintReceipt.TabIndex = 19;
+            btnPrintReceipt.Text = " PRINT RECEIPT";
+            btnPrintReceipt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnPrintReceipt.UseVisualStyleBackColor = false;
+            btnPrintReceipt.Click += btnPrintReceipt_Click;
             // 
             // btnUnsetPaymentMethod
             // 
-            this.btnUnsetPaymentMethod.AutoEllipsis = true;
-            this.btnUnsetPaymentMethod.BackColor = System.Drawing.Color.Red;
-            this.btnUnsetPaymentMethod.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnUnsetPaymentMethod.FlatAppearance.BorderSize = 0;
-            this.btnUnsetPaymentMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnUnsetPaymentMethod.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold);
-            this.btnUnsetPaymentMethod.ForeColor = System.Drawing.Color.White;
-            this.btnUnsetPaymentMethod.Location = new System.Drawing.Point(186, 4);
-            this.btnUnsetPaymentMethod.Name = "btnUnsetPaymentMethod";
-            this.btnUnsetPaymentMethod.Size = new System.Drawing.Size(113, 50);
-            this.btnUnsetPaymentMethod.TabIndex = 17;
-            this.btnUnsetPaymentMethod.Text = "NOT PAID";
-            this.btnUnsetPaymentMethod.UseVisualStyleBackColor = false;
-            this.btnUnsetPaymentMethod.Click += new System.EventHandler(this.btnUnsetPaymentMethod_Click);
+            btnUnsetPaymentMethod.AutoEllipsis = true;
+            btnUnsetPaymentMethod.BackColor = System.Drawing.Color.Red;
+            btnUnsetPaymentMethod.BackgroundImageLayout = ImageLayout.Stretch;
+            btnUnsetPaymentMethod.FlatAppearance.BorderSize = 0;
+            btnUnsetPaymentMethod.FlatStyle = FlatStyle.Flat;
+            btnUnsetPaymentMethod.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold);
+            btnUnsetPaymentMethod.ForeColor = System.Drawing.Color.White;
+            btnUnsetPaymentMethod.Location = new System.Drawing.Point(186, 4);
+            btnUnsetPaymentMethod.Name = "btnUnsetPaymentMethod";
+            btnUnsetPaymentMethod.Size = new System.Drawing.Size(113, 50);
+            btnUnsetPaymentMethod.TabIndex = 17;
+            btnUnsetPaymentMethod.Text = "NOT PAID";
+            btnUnsetPaymentMethod.UseVisualStyleBackColor = false;
+            btnUnsetPaymentMethod.Click += btnUnsetPaymentMethod_Click;
             // 
             // btnDeleteOrder
             // 
-            this.btnDeleteOrder.AutoEllipsis = true;
-            this.btnDeleteOrder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.btnDeleteOrder.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnDeleteOrder.FlatAppearance.BorderSize = 0;
-            this.btnDeleteOrder.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnDeleteOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            this.btnDeleteOrder.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnDeleteOrder.Location = new System.Drawing.Point(6, 4);
-            this.btnDeleteOrder.Margin = new System.Windows.Forms.Padding(0);
-            this.btnDeleteOrder.Name = "btnDeleteOrder";
-            this.btnDeleteOrder.Size = new System.Drawing.Size(75, 50);
-            this.btnDeleteOrder.TabIndex = 13;
-            this.btnDeleteOrder.TabStop = false;
-            this.btnDeleteOrder.Text = "VOID";
-            this.btnDeleteOrder.UseVisualStyleBackColor = false;
-            this.btnDeleteOrder.Visible = false;
-            this.btnDeleteOrder.Click += new System.EventHandler(this.btnDeleteOrder_Click);
+            btnDeleteOrder.AutoEllipsis = true;
+            btnDeleteOrder.BackColor = System.Drawing.Color.FromArgb(128, 128, 255);
+            btnDeleteOrder.BackgroundImageLayout = ImageLayout.Stretch;
+            btnDeleteOrder.FlatAppearance.BorderSize = 0;
+            btnDeleteOrder.FlatStyle = FlatStyle.Flat;
+            btnDeleteOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
+            btnDeleteOrder.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
+            btnDeleteOrder.Location = new System.Drawing.Point(6, 4);
+            btnDeleteOrder.Margin = new Padding(0);
+            btnDeleteOrder.Name = "btnDeleteOrder";
+            btnDeleteOrder.Size = new System.Drawing.Size(75, 50);
+            btnDeleteOrder.TabIndex = 13;
+            btnDeleteOrder.TabStop = false;
+            btnDeleteOrder.Text = "VOID";
+            btnDeleteOrder.UseVisualStyleBackColor = false;
+            btnDeleteOrder.Visible = false;
+            btnDeleteOrder.Click += btnDeleteOrder_Click;
             // 
             // dgv
             // 
-            this.dgv.AllowUserToAddRows = false;
-            this.dgv.AllowUserToDeleteRows = false;
-            this.dgv.AllowUserToResizeRows = false;
-            this.dgv.AutoGenerateColumns = false;
-            this.dgv.BackgroundColor = System.Drawing.Color.Black;
-            this.dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.IID,
-            this.colOrderDate,
-            this.CustomerDetails,
-            this.colOrderItemsDetailed,
-            this.StatusName,
-            this.OrderTypeName,
-            this.PaymentMethodName,
-            this.PaymentFlag,
-            this.CalculatedValue,
-            this.KitchenOrderNo});
-            this.dgv.DataSource = this.ordersViewDataConnector;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgv.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dgv.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgv.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
-            this.dgv.Location = new System.Drawing.Point(0, 87);
-            this.dgv.Name = "dgv";
-            this.dgv.ReadOnly = true;
-            this.dgv.RowHeadersVisible = false;
-            this.dgv.RowHeadersWidth = 20;
-            this.dgv.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgv.RowTemplate.Height = 20;
-            this.dgv.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.dgv.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgv.Size = new System.Drawing.Size(864, 518);
-            this.dgv.TabIndex = 4;
-            this.dgv.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_CellMouseDoubleClick);
-            this.dgv.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgv_CellPainting);
-            this.dgv.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dgv_Scroll);
-            // 
-            // lblTotal
-            // 
-            this.lblTotal.BackColor = System.Drawing.Color.Black;
-            this.lblTotal.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblTotal.Font = new System.Drawing.Font("Segoe UI", 12F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTotal.ForeColor = System.Drawing.Color.White;
-            this.lblTotal.Location = new System.Drawing.Point(0, 60);
-            this.lblTotal.Name = "lblTotal";
-            this.lblTotal.Size = new System.Drawing.Size(947, 27);
-            this.lblTotal.TabIndex = 9;
-            this.lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 605);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(947, 20);
-            this.panel2.TabIndex = 12;
-            // 
-            // vScroll
-            // 
-            this.vScroll.Dock = System.Windows.Forms.DockStyle.Right;
-            this.vScroll.Location = new System.Drawing.Point(864, 87);
-            this.vScroll.Name = "vScroll";
-            this.vScroll.Size = new System.Drawing.Size(83, 518);
-            this.vScroll.TabIndex = 13;
-            this.vScroll.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScroll_Scroll);
-            // 
-            // colOrderItemsDetailed
-            // 
-            this.colOrderItemsDetailed.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.colOrderItemsDetailed.DataPropertyName = "OrderItemsDetailed";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.colOrderItemsDetailed.DefaultCellStyle = dataGridViewCellStyle2;
-            this.colOrderItemsDetailed.HeaderText = "Order Items";
-            this.colOrderItemsDetailed.Name = "colOrderItemsDetailed";
-            this.colOrderItemsDetailed.ReadOnly = true;
-            this.colOrderItemsDetailed.Width = 170;
-            // 
-            // StatusName
-            // 
-            this.StatusName.DataPropertyName = "StatusName";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StatusName.DefaultCellStyle = dataGridViewCellStyle3;
-            this.StatusName.HeaderText = "Status";
-            this.StatusName.Name = "StatusName";
-            this.StatusName.ReadOnly = true;
-            this.StatusName.Width = 90;
-            // 
-            // OrderTypeName
-            // 
-            this.OrderTypeName.DataPropertyName = "OrderTypeName";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.OrderTypeName.DefaultCellStyle = dataGridViewCellStyle4;
-            this.OrderTypeName.HeaderText = "Order Type";
-            this.OrderTypeName.Name = "OrderTypeName";
-            this.OrderTypeName.ReadOnly = true;
-            this.OrderTypeName.Width = 90;
-            // 
-            // PaymentMethodName
-            // 
-            this.PaymentMethodName.DataPropertyName = "PaymentMethodName";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PaymentMethodName.DefaultCellStyle = dataGridViewCellStyle5;
-            this.PaymentMethodName.HeaderText = "Payment";
-            this.PaymentMethodName.Name = "PaymentMethodName";
-            this.PaymentMethodName.ReadOnly = true;
-            this.PaymentMethodName.Width = 70;
-            // 
-            // PaymentFlag
-            // 
-            this.PaymentFlag.DataPropertyName = "PaymentFlag";
-            this.PaymentFlag.HeaderText = "Payment Flag";
-            this.PaymentFlag.Name = "PaymentFlag";
-            this.PaymentFlag.ReadOnly = true;
-            this.PaymentFlag.Visible = false;
-            // 
-            // KitchenOrderNo
-            // 
-            this.KitchenOrderNo.DataPropertyName = "KitchenOrderNo";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.KitchenOrderNo.DefaultCellStyle = dataGridViewCellStyle7;
-            this.KitchenOrderNo.HeaderText = "KOrd #";
-            this.KitchenOrderNo.Name = "KitchenOrderNo";
-            this.KitchenOrderNo.ReadOnly = true;
-            this.KitchenOrderNo.Width = 60;
-            // 
-            // IID
-            // 
-            this.IID.DataPropertyName = "IID";
-            this.IID.HeaderText = "IID";
-            this.IID.Name = "IID";
-            this.IID.ReadOnly = true;
-            this.IID.Visible = false;
+            dgv.AllowUserToAddRows = false;
+            dgv.AllowUserToDeleteRows = false;
+            dgv.AllowUserToResizeRows = false;
+            dgv.AutoGenerateColumns = false;
+            dgv.BackgroundColor = System.Drawing.Color.Black;
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colOrderDate, colOrderItemsDetailed, StatusName, OrderTypeName, PaymentMethodName });
+            dgv.DataSource = orderBindingSource;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle6;
+            dgv.Dock = DockStyle.Fill;
+            dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgv.Location = new System.Drawing.Point(0, 87);
+            dgv.Name = "dgv";
+            dgv.ReadOnly = true;
+            dgv.RowHeadersVisible = false;
+            dgv.RowHeadersWidth = 20;
+            dgv.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            dgv.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dgv.RowTemplate.Height = 30;
+            dgv.RowTemplate.Resizable = DataGridViewTriState.True;
+            dgv.ScrollBars = ScrollBars.None;
+            dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgv.Size = new System.Drawing.Size(864, 518);
+            dgv.TabIndex = 4;
+            dgv.CellMouseDoubleClick += dgv_CellMouseDoubleClick;
+            dgv.CellPainting += dgv_CellPainting;
+            dgv.RowPrePaint += dgv_RowPrePaint;
+            dgv.Scroll += dgv_Scroll;
             // 
             // colOrderDate
             // 
-            this.colOrderDate.DataPropertyName = "OrderDate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            colOrderDate.DataPropertyName = "OrderDate";
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             dataGridViewCellStyle1.Format = "dd MMM yy HH:mm";
-            this.colOrderDate.DefaultCellStyle = dataGridViewCellStyle1;
-            this.colOrderDate.HeaderText = "Date / Time";
-            this.colOrderDate.Name = "colOrderDate";
-            this.colOrderDate.ReadOnly = true;
-            this.colOrderDate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colOrderDate.Width = 120;
+            colOrderDate.DefaultCellStyle = dataGridViewCellStyle1;
+            colOrderDate.HeaderText = "Date / Time";
+            colOrderDate.Name = "colOrderDate";
+            colOrderDate.ReadOnly = true;
+            colOrderDate.Resizable = DataGridViewTriState.True;
+            colOrderDate.Width = 150;
             // 
-            // CustomerDetails
+            // colOrderItemsDetailed
             // 
-            this.CustomerDetails.DataPropertyName = "CustomerDetails";
-            this.CustomerDetails.HeaderText = "Cust/Table";
-            this.CustomerDetails.Name = "CustomerDetails";
-            this.CustomerDetails.ReadOnly = true;
-            this.CustomerDetails.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CustomerDetails.Visible = false;
-            this.CustomerDetails.Width = 70;
+            colOrderItemsDetailed.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colOrderItemsDetailed.DataPropertyName = "AllOrderItemsTextWithPrice";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            colOrderItemsDetailed.DefaultCellStyle = dataGridViewCellStyle2;
+            colOrderItemsDetailed.HeaderText = "Order Items";
+            colOrderItemsDetailed.Name = "colOrderItemsDetailed";
+            colOrderItemsDetailed.ReadOnly = true;
+            colOrderItemsDetailed.Width = 300;
             // 
-            // CalculatedValue
+            // StatusName
             // 
-            this.CalculatedValue.DataPropertyName = "CalculatedValue";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle6.Format = "C2";
-            dataGridViewCellStyle6.NullValue = null;
-            this.CalculatedValue.DefaultCellStyle = dataGridViewCellStyle6;
-            this.CalculatedValue.HeaderText = "TOTAL";
-            this.CalculatedValue.Name = "CalculatedValue";
-            this.CalculatedValue.ReadOnly = true;
-            this.CalculatedValue.Width = 75;
+            StatusName.DataPropertyName = "Status";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            StatusName.DefaultCellStyle = dataGridViewCellStyle3;
+            StatusName.HeaderText = "Status";
+            StatusName.Name = "StatusName";
+            StatusName.ReadOnly = true;
+            StatusName.Width = 120;
+            // 
+            // OrderTypeName
+            // 
+            OrderTypeName.DataPropertyName = "OrderType";
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            OrderTypeName.DefaultCellStyle = dataGridViewCellStyle4;
+            OrderTypeName.HeaderText = "Order Type";
+            OrderTypeName.Name = "OrderTypeName";
+            OrderTypeName.ReadOnly = true;
+            OrderTypeName.Width = 120;
+            // 
+            // PaymentMethodName
+            // 
+            PaymentMethodName.DataPropertyName = "Payment";
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.TopLeft;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            PaymentMethodName.DefaultCellStyle = dataGridViewCellStyle5;
+            PaymentMethodName.HeaderText = "Payment";
+            PaymentMethodName.Name = "PaymentMethodName";
+            PaymentMethodName.ReadOnly = true;
+            // 
+            // orderBindingSource
+            // 
+            orderBindingSource.DataSource = typeof(Order);
             // 
             // ordersViewDataConnector
             // 
-            this.ordersViewDataConnector.DataSource = typeof(OrdersView);
+            ordersViewDataConnector.DataSource = typeof(OrdersView);
+            // 
+            // lblTotal
+            // 
+            lblTotal.BackColor = System.Drawing.Color.Black;
+            lblTotal.Dock = DockStyle.Top;
+            lblTotal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, 0);
+            lblTotal.ForeColor = System.Drawing.Color.White;
+            lblTotal.Location = new System.Drawing.Point(0, 60);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new System.Drawing.Size(947, 27);
+            lblTotal.TabIndex = 9;
+            lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = System.Drawing.Color.Black;
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new System.Drawing.Point(0, 605);
+            panel2.Name = "panel2";
+            panel2.Size = new System.Drawing.Size(947, 20);
+            panel2.TabIndex = 12;
+            // 
+            // vScroll
+            // 
+            vScroll.Dock = DockStyle.Right;
+            vScroll.Location = new System.Drawing.Point(864, 87);
+            vScroll.Name = "vScroll";
+            vScroll.Size = new System.Drawing.Size(83, 518);
+            vScroll.TabIndex = 13;
+            vScroll.Scroll += vScroll_Scroll;
             // 
             // ctlOrders
             // 
-            this.Controls.Add(this.dgv);
-            this.Controls.Add(this.vScroll);
-            this.Controls.Add(this.lblTotal);
-            this.Controls.Add(this.panel1);
-            this.Controls.Add(this.panel2);
-            this.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Name = "ctlOrders";
-            this.Size = new System.Drawing.Size(947, 625);
-            this.Load += new System.EventHandler(this.frmOrders_Load);
-            this.panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ordersViewDataConnector)).EndInit();
-            this.ResumeLayout(false);
+            Controls.Add(dgv);
+            Controls.Add(vScroll);
+            Controls.Add(lblTotal);
+            Controls.Add(panel1);
+            Controls.Add(panel2);
+            Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            Name = "ctlOrders";
+            Size = new System.Drawing.Size(947, 625);
+            Load += frmOrders_Load;
+            panel1.ResumeLayout(false);
+            ((ISupportInitialize)dgv).EndInit();
+            ((ISupportInitialize)orderBindingSource).EndInit();
+            ((ISupportInitialize)ordersViewDataConnector).EndInit();
+            ResumeLayout(false);
 
         }
         #endregion
 
         private async void frmOrders_Load(object sender, System.EventArgs e)
         {
-            if ( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User &&  DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.Manager)
+            if (DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.Manager)
                 btnDeleteOrder.Visible = true;
-            lblTotal.Visible = !( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
-            btnUnsetPaymentMethod.Visible = !( DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User);
+            lblTotal.Visible = !(DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
+            btnUnsetPaymentMethod.Visible = !(DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User);
             await LoadOrders(true);
         }
 
@@ -485,10 +425,10 @@ namespace DTRMNS
         {
             try
             {
-                List<Order> orders = await repoOrder.GetListByField("SessionIID",  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
+                List<Order> orders = await repoOrder.GetListByField("SessionIID", DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
 
                 //DataTable dt =  DTRMSimpleBusiness.Instance.GetAllOrdersForSessionDateOrderly( DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, OrderByTypes.Descending);
-   
+
 
                 //dt.Columns.Add("OrderItemsDetailed");
                 //dt.Columns.Add("StatusName");
@@ -553,27 +493,27 @@ namespace DTRMNS
             Masa table = null;
             if (dgv.SelectedRows.Count > 0)
             {
-                SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
-                if (order.OrderType == OrderTypes.InHouse)
+               // SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
+                Order order = dgv.SelectedRows[0].DataBoundItem as Order; // await DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
+                if (order.OrderType == OrderTypes.Sitin)
                 {
-                    if (order.Status == StatusFlags.COMPLETED)
+                    if (order.Status == StatusFlags.Completed)
                     {
-                        table = new Masa()
-                        {
-                            TableName = "Temp" + order.IID,
-                            TableCovers = order.Covers
-                        };
-                        order.TableIID = table.IID;
-                        await  DTRMSimpleBusiness.Instance.SaveOrder(order);
-                        table.LockedClientIP = config.Terminal_Name;
-                        table.AttachOrder(order);
+                        //table = new Masa()
+                        //{
+                        //    TableName = "Temp" + order.IID,
+                        //    TableCovers = order.Covers
+                        //};
+                        //order.TableIID = table.IID;
+                        //await repoOrder.Save(order); // DTRMSimpleBusiness.Instance.SaveOrder(order);
+                        //table.LockedClientIP = config.Terminal_Name;
+                        //table.AttachOrder(order);
 
-                        await  DTRMSimpleBusiness.Instance.SaveTable(table);
-                        await  DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
+                        //await repoTable.Save(table); // DTRMSimpleBusiness.Instance.SaveTable(table);
+                        //await DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
                     } else
                     {
-                        table = await  DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
+                        table = await DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
                     }
                     if (table == null)
                     {
@@ -581,14 +521,14 @@ namespace DTRMNS
                         return;
                     } else
                     {
-                         DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                        DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
                         LoadAttachedOrderEvent();
                         DetachPanelEvent();
                     }
                 } else
                 {
-                    order = await  DTRMSimpleBusiness.Instance.BarrowOrder(order.IID, config.Terminal_Name);
-                     DTRMSimpleBusiness.Instance.AttachedOrder = order;
+                    order = await DTRMSimpleBusiness.Instance.BarrowOrder(order.IID, config.Terminal_Name);
+                    DTRMSimpleBusiness.Instance.AttachedOrder = order;
                     LoadAttachedOrderEvent();
                     DetachPanelEvent();
 
@@ -596,13 +536,13 @@ namespace DTRMNS
             }
         }
 
-        private void btnDeleteOrder_Click(object sender, System.EventArgs e)
+        private async void btnDeleteOrder_Click(object sender, System.EventArgs e)
         {
             if (dgv.SelectedRows.Count > 0)
             {
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                     DTRMSimpleBusiness.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
-                LoadOrders(true);
+                    await DTRMSimpleBusiness.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
+                await LoadOrders(true);
             }
         }
 
@@ -621,13 +561,13 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await  DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
+                Order order = await DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
                 if (order != null)
                 {
                     order.Payment = PaymentMethods.NotPaid;
                     order.PaymentFlag = "";
-                    await  DTRMSimpleBusiness.Instance.SaveOrder(order);
+                    await DTRMSimpleBusiness.Instance.SaveOrder(order);
                     await LoadOrders(true);
                 }
             }
@@ -647,15 +587,15 @@ namespace DTRMNS
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
-                Printer printer = await  DTRMSimpleBusiness.Instance.GetPrinterForOrderType(order.OrderType);
+                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                Printer printer = await DTRMSimpleBusiness.Instance.GetPrinterForOrderType(order.OrderType);
                 if (printer != null)
-                     DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, printer, 1);
+                    DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, printer, 1);
                 else
                 {
                     trmPrinterSelector trm = new trmPrinterSelector(PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
-                         DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
+                        DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
 
                 }
 
@@ -666,8 +606,24 @@ namespace DTRMNS
 
         private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < rowheights.Count)
-                dgv.Rows[e.RowIndex].Height = rowheights[e.RowIndex];
+            //if (e.RowIndex < 5 && e.RowIndex >= 0)
+            //{
+            //    Order order = (dgv.Rows[e.RowIndex].DataBoundItem as Order);
+
+            //    dgv.Rows[e.RowIndex].Height = order.Items.Count * 20 + 10;
+            //}
+            
+        }
+
+        private void dgv_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
+        {
+            if (e.RowIndex < 5 && e.RowIndex >= 0)
+            {
+                Order order = (dgv.Rows[e.RowIndex].DataBoundItem as Order);
+
+                dgv.Rows[e.RowIndex].Height = order.Items.Count * 20 + 10;
+            }
+
         }
 
         private void btnViewCustomerOrTable_Click(object sender, EventArgs e)
@@ -692,19 +648,19 @@ namespace DTRMNS
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await  DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
-                if (order.OrderType == OrderTypes.InHouse)
+                Order order = await DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
+                if (order.OrderType == OrderTypes.Sitin)
                 {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
                 }
-                 DTRMSimpleBusiness.Instance.AttachedOrder = await  DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
+                DTRMSimpleBusiness.Instance.AttachedOrder = await DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
-                if ( DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
                 {
-                    if (((int) DTRMSimpleBusiness.Instance.AttachedOrder.Status) < ((int)StatusFlags.ARCHIVED))
+                    if (((int)DTRMSimpleBusiness.Instance.AttachedOrder.Status) < ((int)StatusFlags.Archived))
                     {
-                        if ( DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
+                        if (DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                         {
                             PassControlEvent(new ctlPayment(new GenericFunctionCall(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
@@ -712,8 +668,8 @@ namespace DTRMNS
 
                             return;
                         }
-                         DTRMSimpleBusiness.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.COMPLETED;
-                       await  DTRMSimpleBusiness.Instance.SaveOrder( DTRMSimpleBusiness.Instance.AttachedOrder);
+                        DTRMSimpleBusiness.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.Completed;
+                        await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
                         UnloadOrderEvent();
                         PassControlEvent(this);
                         await LoadOrders(true);
@@ -721,5 +677,7 @@ namespace DTRMNS
                 }
             }
         }
+
+        
     }
 }

@@ -20,7 +20,7 @@ namespace DTRMNS{
 
         private void frmTableSelector_Load(object sender, EventArgs e) {
             //Loads tables as well through autoselectionchange method
-            LoadGroups();
+            LoadSalons();
 
         }
 
@@ -29,14 +29,14 @@ namespace DTRMNS{
             Close();
         }
 
-        private void LoadGroups() {
+        private void LoadSalons() {
             pnlGroups.Controls.Clear();
 
             DataTable dt = DTRMSimpleBusiness.Instance.GetAllTableGroups();
             for (int i = 0; i < dt.Rows.Count; i++) {
                 RadioButton btn = new RadioButton();
                 btn.Appearance = Appearance.Button;
-                btn.CheckedChanged += new EventHandler(GroupButton_CheckedChanged);
+                btn.CheckedChanged += new EventHandler(SalonButton_CheckedChanged);
                 btn.BackColor = Color.Green;
                 btn.BackgroundImage = Properties.Resources.shadow;
                 btn.BackgroundImageLayout = ImageLayout.Stretch;
@@ -65,7 +65,7 @@ namespace DTRMNS{
                 ((RadioButton) pnlGroups.Controls[0]).Checked = true;
         }
 
-        private void GroupButton_CheckedChanged(object sender, EventArgs e) {
+        private void SalonButton_CheckedChanged(object sender, EventArgs e) {
             RadioButton rb = (RadioButton) sender;
             if (rb.Checked) {
                 rb.FlatAppearance.BorderSize = 1;
@@ -91,14 +91,14 @@ namespace DTRMNS{
 
                 TableButton btn = new TableButton();
                 btn.Text = table.TableName;
-                btn.IID = table.IID;
+                btn.Table = table;
                 btn.Font = new Font("Arial", 12, FontStyle.Bold);
                 if (locker.Length > 0) {
                     btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
                     btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                 }
                 else {
-                    if (table.HasActiveOrder()) {
+                    if (table.HasActiveOrder) {
                         btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
                         btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
                     }

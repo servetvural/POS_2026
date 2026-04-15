@@ -11,7 +11,7 @@ public partial class Shop    : BaseClass
     public string ShopName { get; set; } = "New Shop";
     public string Address { get; set; } = string.Empty;
     public string Tel { get; set; } = string.Empty;
-    public string Vat { get; set; } = string.Empty;
+    public string TaxNumber { get; set; } = string.Empty;
     public string PurchaseEmail { get; set; } = string.Empty;
     public string OrdersEmail { get; set; } = string.Empty;
     public string ReportEmail { get; set; } = string.Empty;
@@ -26,7 +26,7 @@ public partial class Shop    : BaseClass
     //public DateTime SessionStartDateTime { get; set; } = DateTime.Now;
 
    //Text of the button which opens the cash drawer if any attached
-    public string VoidText { get; set; } = "VOID";
+    public string CashDrawerText { get; set; } = "OPEN";
 
     //Default tax rate for newly created categories in the menu
     public double DefaultTaxRate { get; set; } = 0.0f;

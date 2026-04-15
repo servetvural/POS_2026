@@ -14,13 +14,15 @@ public partial class Masa : BaseClass
 
     public int TableCovers { get; set; } = 1;
 
-    public string LockedClientIP { get; set; } = string.Empty;
+    public string? LockedClientIP { get; set; } 
+
+    public DateTime? LockedUntil { get; set; }
 
     //public string? OrderIID { get; set; }
-    
-    public virtual Order? Order { get; set; }
 
+    //public virtual Order? Order { get; set; }
 
+    public ButtonShapeTypes Shape { get; set; }
     public int XLocation { get; set; }
 
     public int YLocation { get; set; }
@@ -29,16 +31,17 @@ public partial class Masa : BaseClass
 
     public int Height { get; set; } = 50;
 
-    public string? GroupIID { get; set; }
+    public string? SalonIID { get; set; }
 
     public string? DefaultName { get; set; } = "Table ?";
 
     [NotMapped]
     public string KitchenOrderNumber { get; set; }
 
-    [NotMapped]
-    public Order AttachedOrder { get; set; }
+    //[NotMapped]
+    // public Order AttachedOrder { get; set; }
 
+    public List<Order> orders { get; set; } = new();
 
     public Masa Clone()
     {
@@ -51,7 +54,7 @@ public partial class Masa : BaseClass
            YLocation = YLocation,
             Width = Width,
             Height = Height,
-            GroupIID = GroupIID,
+           SalonIID = SalonIID,
         };
     }
 
@@ -68,17 +71,7 @@ public partial class Masa : BaseClass
         }
     }
 
-    public bool HasActiveOrder()
-    {
-        return Order != null;
-    }
-    public void AttachOrder(Order order)
-    {
-        Order = order;
-    }
-    public void DetachOrder()
-    {
-        Order = null;
-    }
-
+    public bool HasActiveOrder=> orders.Any(x => x.Status == StatusFlags.Done);
+    public Order AttachedOrder=> orders.FirstOrDefault(x => x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done);
+   
 }

@@ -87,7 +87,7 @@ public partial class PosDbContext : DbContext
 
     public virtual DbSet<Masa> Tables { get; set; }
 
-    //public virtual DbSet<TableGroup> TableGroups { get; set; }
+    public virtual DbSet<Salon> Salons { get; set; }
 
     // public virtual DbSet<TaxPercentList> TaxPercentLists { get; set; }
 
@@ -144,83 +144,13 @@ public partial class PosDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        modelBuilder.Entity<Masa>()
-            .HasOne(t => t.Order)      // Table has one Order
-            .WithOne(o => o.Table)           // Order has one Table
-            .HasForeignKey<Order>(o => o.TableIID) // FK is on the Order table
-            .IsRequired(false);              // Explicitly mark as optional
+        //modelBuilder.Entity<Masa>()
+        //    .HasOne(t => t.Order)      // Table has one Order
+        //    .WithOne(o => o.Table)           // Order has one Table
+        //    .HasForeignKey<Order>(o => o.TableIID) // FK is on the Order table
+        //    .IsRequired(false);              // Explicitly mark as optional
 
 
-
-
-        //// Configure One-to-Many: Menu -> Category
-        //modelBuilder.Entity<Category>()
-        //    .HasOne(c => c.Menu)
-        //    .WithMany(m => m.categories)
-        //    .HasForeignKey(c => c.MenuIID)
-        //    .OnDelete(DeleteBehavior.NoAction);
-
-        //// Configure Optional One-to-Many: Distribution -> Category
-        //modelBuilder.Entity<Category>()
-        //    .HasOne(c => c.Distribution)
-        //    .WithMany() // No collection on Distribution for this
-        //    .HasForeignKey(c => c.DistributionIID)
-        //    .OnDelete(DeleteBehavior.SetNull);
-
-        //// Configure Optional One-to-Many: Distribution -> CategoryItem
-        //modelBuilder.Entity<CategoryItem>()
-        //    .HasOne(ci => ci.Distribution)
-        //    .WithMany()
-        //    .HasForeignKey(ci => ci.DistributionIID)
-        //    .OnDelete(DeleteBehavior.SetNull);
-
-
-
-        //modelBuilder.Entity<StockItemUsage>(entity =>
-        //{
-        //    entity.ToTable("StockItemUsages");
-
-        //    entity.HasOne(dp => dp.StockItem)
-        //        .WithMany(d => d.stockUsages)
-        //        .HasForeignKey(dp => dp.StockItemIID)
-        //        .OnDelete(DeleteBehavior.SetNull);
-
-        //    entity.HasOne(dp => dp.CategoryItem)
-        //        .WithMany(p => p.stockUsages)
-        //        .HasForeignKey(dp => dp.CategoryItemIID)
-        //        .OnDelete(DeleteBehavior.SetNull);
-        //});
-
-
-        //modelBuilder.Entity<RecipeItem>(entity =>
-        //{
-        //    entity.ToTable("RecipeItems");
-
-        //    entity.HasOne(dp => dp.StockItem)
-        //        .WithMany(d => d.recipeItems)
-        //        .HasForeignKey(dp => dp.StockItemIID)
-        //        .OnDelete(DeleteBehavior.SetNull);
-
-        //    entity.HasOne(dp => dp.CategoryItem)
-        //        .WithMany(p => p.recipes)
-        //        .HasForeignKey(dp => dp.CategoryItemIID)
-        //        .OnDelete(DeleteBehavior.Cascade);
-        //});
-
-
-
-        //// Relationship: Customer -> Order
-        //modelBuilder.Entity<Order>()
-        //    .HasOne(o => o.Customer)      // Order has one Customer
-        //    .WithMany(c => c.Orders)      // Customer has many Orders
-        //    .HasForeignKey(o => o.CustomerIID)
-        //    .OnDelete(DeleteBehavior.Restrict); // Usually, deleting a customer shouldn't delete all their orders automatically
-
-        //// Your existing Order -> OrderItem relationship
-        //modelBuilder.Entity<Order>()
-        //    .HasMany(o => o.Items)
-        //    .WithOne(oi => oi.Order)
-        //    .HasForeignKey(oi => oi.OrderIID);
 
 
 

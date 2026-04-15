@@ -26,11 +26,11 @@ public partial class TheMenu  : BaseClass
         
         switch (orderType)
         {
-            case OrderTypes.DirectSale:
+            case OrderTypes.Sale:
                 return item.SalePrice;
-            case OrderTypes.InHouse:
+            case OrderTypes.Sitin:
                 return item.SitinPrice;
-            case OrderTypes.TakeAwayB:
+            case OrderTypes.TakeAway:
             case OrderTypes.InternetTakeAway:
                 return item.TaPrice;
             case OrderTypes.Delivery:
@@ -49,11 +49,11 @@ public partial class TheMenu  : BaseClass
 
         switch (orderType)
         {
-            case OrderTypes.DirectSale:
+            case OrderTypes.Sale:
                 return item.SaleTax;
-            case OrderTypes.InHouse:
+            case OrderTypes.Sitin:
                 return item.SitinTax;
-            case OrderTypes.TakeAwayB:
+            case OrderTypes.TakeAway:
             case OrderTypes.InternetTakeAway:
                 return item.TaTax;
             case OrderTypes.Delivery:

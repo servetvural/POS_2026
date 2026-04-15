@@ -1,39 +1,43 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
 
-namespace DTRMNS {
-    public partial class frmPrep : Form {
+namespace DTRMNS
+{
+    public partial class frmPrep : Form
+    {
         PosConfig config;
 
-        private DTRMSimpleBusiness bslayer;
         private KitchenOrder korder;
         public PrepDialogReturnTypes prepResult;
-        public frmPrep() {
+        public frmPrep()
+        {
             InitializeComponent();
         }
-        public frmPrep(PosConfig configAsService,  KitchenOrder korder) {
+        public frmPrep(KitchenOrder korder)
+        {
             InitializeComponent();
-            config = configAsService;             
+            config = ServiceHelper.GetService<PosConfig>();
             this.korder = korder;
-
-            bslayer = DTRMSimpleBusiness.Instance;
         }
-        private void frmPrep_Load(object sender, EventArgs e) {
+        private void frmPrep_Load(object sender, EventArgs e)
+        {
             LoadPrep();
             btnHold.Visible = config.Prep_Can_Hold;
             btnCashAndOK.Visible = config.Prep_Can_Hold_And_Cash;
             btnCashPrintAndOK.Visible = config.Prep_Can_Hold_Cash_And_Print;
 
             this.Top = 0;
-            this.Height =  DTRMSimpleBusiness.Instance.maxHeight;
+            this.Height = DTRMSimpleBusiness.Instance.maxHeight;
             //this.Refresh();
-           // MessageBox.Show("refreshed @ " + DateTime.Now.ToLongTimeString());
+            // MessageBox.Show("refreshed @ " + DateTime.Now.ToLongTimeString());
 
         }
-        private void LoadPrep() {
+        private void LoadPrep()
+        {
             prepDisplay.Initilise(korder);
         }
 
@@ -45,15 +49,17 @@ namespace DTRMNS {
         //     DTRMSimpleBusiness.Instance.PrintReceipt(korder.OrderIID,  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
         //}
 
-        private void btnCancel_Click(object sender, EventArgs e) {
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
             this.DialogResult = DialogResult.Cancel;
             this.prepResult = PrepDialogReturnTypes.Cancel;
             this.Close();
         }
 
 
-        private void btnCash_Click(object sender, EventArgs e) {
-            CompletePrep(PrepDialogReturnTypes.Cash, true);
+        private async void btnCash_Click(object sender, EventArgs e)
+        {
+            await CompletePrep(PrepDialogReturnTypes.Cash, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.Cash;
             //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
@@ -61,8 +67,9 @@ namespace DTRMNS {
             //this.Close();
         }
 
-        private void btnCashAndPrint_Click(object sender, EventArgs e) {
-            CompletePrep(PrepDialogReturnTypes.CashAndPrint, true);
+        private async void btnCashAndPrint_Click(object sender, EventArgs e)
+        {
+            await CompletePrep(PrepDialogReturnTypes.CashAndPrint, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.CashAndPrint;
             //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
@@ -71,31 +78,35 @@ namespace DTRMNS {
         }
 
 
-        private void btnHold_Click(object sender, EventArgs e) {
-            CompletePrep(PrepDialogReturnTypes.Hold, false);
+        private async void btnHold_Click(object sender, EventArgs e)
+        {
+            await CompletePrep(PrepDialogReturnTypes.Hold, false);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.Hold;
             //this.Close();
         }
 
-        private void CompletePrep(PrepDialogReturnTypes result, bool blnOpenCashDrawer) {
+        private async Task CompletePrep(PrepDialogReturnTypes result, bool blnOpenCashDrawer)
+        {
             this.DialogResult = DialogResult.OK;
             this.prepResult = result;
-            foreach (KitchenOrderItem item in korder.Items) {
+            foreach (KitchenOrderItem item in korder.Items)
+            {
                 if (item.Status == KitchenOrderStatusTypes.Completed)
-                     DTRMSimpleBusiness.Instance.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
+                    DTRMSimpleBusiness.Instance.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }
 
             if (blnOpenCashDrawer && config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
-                 DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+                await DTRMSimpleBusiness.Instance.OpenCashDrawer();
             this.Close();
         }
 
 
-        private void btnOKAll_Click(object sender, EventArgs e) {
+        private void btnOKAll_Click(object sender, EventArgs e)
+        {
             prepDisplay.ChangeStatus();
         }
 
-        
+
     }
 }

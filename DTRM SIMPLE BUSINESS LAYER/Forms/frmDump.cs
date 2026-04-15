@@ -3,11 +3,9 @@ using System.Windows.Forms;
 
 namespace DTRMNS {
     public partial class frmDump : Form {
-        private DTRMSimpleBusiness bslayer;
 
         public frmDump() {
             InitializeComponent();
-            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         private void frmDump_Load(object sender, EventArgs e) {
@@ -41,6 +39,7 @@ namespace DTRMNS {
 
         private void btnDeleteErrorOrders_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvErrorOrders.SelectedRows.Count; i++) {
+
                  DTRMSimpleBusiness.Instance.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
 
             }

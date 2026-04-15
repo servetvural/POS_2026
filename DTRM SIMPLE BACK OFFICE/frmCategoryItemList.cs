@@ -533,7 +533,7 @@ namespace DTRMSimpleBackOffice
 
         private async void btnChangeDistribution_Click(object sender, EventArgs e)
         {
-            using (frmDistributionSelector frm = ActivatorUtilities.CreateInstance<frmDistributionSelector>(ServiceHelper.Services, false, new List<Distribution>(), category.MenuIID))
+            using (frmDistributionSelector frm = new frmDistributionSelector(null, category.MenuIID))
             {
                 if (frm.ShowDialog() == DialogResult.OK)
                 {

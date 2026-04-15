@@ -156,11 +156,11 @@ public static class UFWin
     //{
     //    switch (OrderType)
     //    {
-    //        case OrderTypes.DirectSale:
+    //        case OrderTypes.Sale:
     //            return "Direct Sale";
-    //        case OrderTypes.InHouse:
+    //        case OrderTypes.Sitin:
     //            return "in-House";
-    //        case OrderTypes.TakeAwayB:
+    //        case OrderTypes.TakeAway:
     //            return "Take Away";
     //        case OrderTypes.InternetTakeAway:
     //            return "Internet TakeAway";

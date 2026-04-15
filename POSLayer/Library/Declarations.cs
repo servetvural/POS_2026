@@ -9,18 +9,18 @@ public enum ReportFormatTypes { XReport = 0, ZReport = 1, YReport = 2 }
 
 public enum WeekDays { NoDay = 0, Monday = 1, Tuesday = 2, Wednesday = 4, Thursday = 8, Friday = 16, Saturday = 32, Sunday = 64 }
 
-public enum OrderTypes { Unknown = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, DirectSale = 256, Pad = 512 };
+public enum OrderTypes { Unknown = 0, Sitin = 1, TakeAway = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, Sale = 256, Pad = 512 };
 public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
 
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
-public enum StatusFlags { UNKNOWN, NEW, DONE, COMPLETED, ARCHIVED, PENDING, VOID }
+public enum StatusFlags { Unknown, New, Done, Completed, Archived, Holding, Void }
 public enum PaymentMethods { NotPaid, Cash, Card, Online }
 public enum AutoPaymentMethods { Selective, AutoCash }
 public enum PrinterTypes { Unknown, Kitchen, Receipt, Mutant }   
 public enum PrinterVisibilityTypes { Local, Global }
 public enum AvailabilityTypes
 {
-    All = 0, InHouse = 1, TakeAwayB = 2, Delivery = 4, InternetTakeAway = 8,
+    All = 0, InHouse = 1, TakeAway = 2, Delivery = 4, InternetTakeAway = 8,
     InternetDelivery = 16, Direct = 32, Sms = 64, NoSale = 256
 }
 

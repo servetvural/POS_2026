@@ -2,13 +2,19 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
 using DTRMNS;
+
 using Microsoft.Extensions.DependencyInjection;
+
+using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
-using PosLibrary;
-using POSWinFormLayer;
 using POSLayer.Repository.IRepository;
+
+using PosLibrary;
+
+using POSWinFormLayer;
 
 
 namespace DTRMSimpleBackOffice
@@ -18,19 +24,19 @@ namespace DTRMSimpleBackOffice
     {
         PosConfig config;
         IRepository<TheMenu> repoMenu;
+        IRepository<User> repoUser;
+
 
         private ConnectionStatus conStatus;
         private ViewModes viewMode = ViewModes.User;
 
-        readonly  IRepository<User> repoUser;
-
-        public frmOffice(IServiceProvider _sp, PosConfig configAsService, IRepository<TheMenu> _repoMenu, 
-            IRepository<User> _repoUser,  IFormFactory formFactory)
+        //public frmOffice(IServiceProvider _sp, PosConfig configAsService, IRepository<TheMenu> _repoMenu,
+        //    IRepository<User> _repoUser, IFormFactory formFactory)
+        public frmOffice()
         {
             InitializeComponent();
-            config = configAsService;
-            repoMenu = _repoMenu;
-            repoUser = _repoUser;
+
+           
 
             if (!string.IsNullOrEmpty(Program.UserType))
             {
@@ -51,13 +57,25 @@ namespace DTRMSimpleBackOffice
 
             if (conStatus == ConnectionStatus.Disconnected)
             {
-                if (await repoUser.IsDatabaseExist())
+                var context = ServiceHelper.GetService<PosDbContext>();
+
+                if (await context.Database.CanConnectAsync())
                 {
+                    //Initialize Database
+                    var initializer = ServiceHelper.GetService<DbInitializer>();
+                    initializer.InitializeDatabase();
+
+                    config = ServiceHelper.GetService<PosConfig>();
+                    repoMenu = ServiceHelper.GetService<IRepository<TheMenu>>();
+                    repoUser = ServiceHelper.GetService<IRepository<User>>();
+
+
                     frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                     if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
                         DTRMSimpleBusiness.Instance.LoggedUser = await repoUser.GetByField("UserPassword", frmpswd.Password);
-                        if (DTRMSimpleBusiness.Instance.LoggedUser == null) { return; }
+                        if (DTRMSimpleBusiness.Instance.LoggedUser == null)
+                        { return; }
 
                         if (DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore())
                         {
@@ -80,6 +98,9 @@ namespace DTRMSimpleBackOffice
                             btnConnect.Visible = false;
                             btnDisconnect.Visible = true;
 
+                            
+
+
                             lblStatus.Text = conStatus.ToString() + " : " +
                                              "Instanse/IP: " + config.Database_Instance + ", " +
                                              "Database: " + config.Database_Name + ", " +
@@ -91,9 +112,13 @@ namespace DTRMSimpleBackOffice
                     {
                         //MessageBox.Show("Failed to Login");
                     }
-                }                
+                } else
+                {
+                    MessageBox.Show("Failed to Connect Database");
+                    return;
+                }
             }
-        }        
+        }
 
         private void btnDisconnect_Click(object sender, EventArgs e)
         {
@@ -106,6 +131,7 @@ namespace DTRMSimpleBackOffice
                     try
                     {
                         DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.Disconnected;
+                        DTRMSimpleBusiness.Instance.LoggedUser = null;
                     } catch { }
                     ConnectActions(false);
 
@@ -166,7 +192,7 @@ namespace DTRMSimpleBackOffice
                         btnKassaCalculator.Enabled = true;
 
 
-                        btnQuickReports.Enabled = 
+                        btnQuickReports.Enabled =
                         btnOrderPad.Enabled = true;
                         btnViewDump.Enabled = true;
                         // btnReports.Enabled = true;
@@ -228,22 +254,22 @@ namespace DTRMSimpleBackOffice
             } else
             {
 
-                btnMenu.Enabled = 
+                btnMenu.Enabled =
                 btnDistributions.Enabled =
-                btnUserEditor.Enabled = 
+                btnUserEditor.Enabled =
                 btnPrinters.Enabled =
-                btnSuppliers.Enabled = 
-                btnStockItemList.Enabled = 
-                btnImageList.Enabled = 
-                btnBonusList.Enabled = 
-                btnEmployees.Enabled = 
+                btnSuppliers.Enabled =
+                btnStockItemList.Enabled =
+                btnImageList.Enabled =
+                btnBonusList.Enabled =
+                btnEmployees.Enabled =
                 btnDisplay.Enabled =
-                btnStockUsage.Enabled = 
-                btnKassaCalculator.Enabled = 
-                btnQuickReports.Enabled = 
-                btnOrderPad.Enabled = 
-                btnViewDump.Enabled = 
-                btnReports.Enabled = 
+                btnStockUsage.Enabled =
+                btnKassaCalculator.Enabled =
+                btnQuickReports.Enabled =
+                btnOrderPad.Enabled =
+                btnViewDump.Enabled =
+                btnReports.Enabled =
                 btnSessionAnalysis.Enabled = false;
             }
 
@@ -264,7 +290,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnDistributions_Click(object sender, EventArgs e)
         {
-            frmDistributionList frm = ActivatorUtilities.CreateInstance <frmDistributionList>(ServiceHelper.Services);
+            frmDistributionList frm = ActivatorUtilities.CreateInstance<frmDistributionList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -293,7 +319,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionReports_Click(object sender, EventArgs e)
         {
-            frmSessionReports frm = ActivatorUtilities.CreateInstance < frmSessionReports>(ServiceHelper.Services);
+            frmSessionReports frm = ActivatorUtilities.CreateInstance<frmSessionReports>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -301,7 +327,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSuppliers_Click(object sender, EventArgs e)
         {
-            frmSupplierList frm = ActivatorUtilities.CreateInstance < frmSupplierList>(ServiceHelper.Services);
+            frmSupplierList frm = ActivatorUtilities.CreateInstance<frmSupplierList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();
@@ -343,8 +369,8 @@ namespace DTRMSimpleBackOffice
         private void btnSettings_Click(object sender, EventArgs e)
         {
             //frmConfig frm = new frmConfig(bslayer);
-            frmConfig frm = ActivatorUtilities.CreateInstance<frmConfig>(ServiceHelper.Services); 
-            frm.Show();
+            frmConfig frm = new frmConfig();
+            frm.ShowDialog();
         }
 
 
@@ -371,7 +397,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnBonusList_Click(object sender, EventArgs e)
         {
-            frmBonusList frm = ActivatorUtilities.CreateInstance< frmBonusList>(ServiceHelper.Services);
+            frmBonusList frm = ActivatorUtilities.CreateInstance<frmBonusList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -478,7 +504,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnEmployees_Click(object sender, EventArgs e)
         {
-            frmEmployeeList frm = ActivatorUtilities.CreateInstance < frmEmployeeList>(ServiceHelper.Services);
+            frmEmployeeList frm = ActivatorUtilities.CreateInstance<frmEmployeeList>(ServiceHelper.Services);
             frm.MdiParent = this;
             frm.Show();
         }
@@ -520,7 +546,7 @@ namespace DTRMSimpleBackOffice
                 return;
             }
 
-            trmOrderPadMain frm = ActivatorUtilities.CreateInstance< trmOrderPadMain>(ServiceHelper.Services,new Form(),false);
+            trmOrderPadMain frm = ActivatorUtilities.CreateInstance<trmOrderPadMain>(ServiceHelper.Services, new Form(), false);
             frm.Text = "Order Pad";
             frm.ControlBox = true;
             frm.MinimizeBox = true;
@@ -547,6 +573,13 @@ namespace DTRMSimpleBackOffice
             {
                 Application.Exit();
             }
+        }
+
+        private void btnTables_Click(object sender, EventArgs e)
+        {
+            frmTablesEditor frm = new frmTablesEditor();
+            frm.MdiParent = this;
+            frm.Show(); 
         }
     }
 }

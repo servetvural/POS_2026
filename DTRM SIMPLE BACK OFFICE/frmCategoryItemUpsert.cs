@@ -1230,7 +1230,7 @@ namespace DTRMSimpleBackOffice
                 {
                     chkAvailableDirect.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Direct);
                     chkAvailableInHouse.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse);
-                    chkAvailableTakeAway.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAwayB);
+                    chkAvailableTakeAway.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway);
                     chkAvailableDelivery.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery);
                     chkAvailableInternetTakeAway.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetTakeAway);
                     chkAvailableInternetDelivery.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetDelivery);
@@ -1333,7 +1333,7 @@ namespace DTRMSimpleBackOffice
                 {
                     categoryItem.AvailableFor = (chkAvailableDirect.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.Direct) : categoryItem.AvailableFor);
                     categoryItem.AvailableFor = (chkAvailableInHouse.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse) : categoryItem.AvailableFor);
-                    categoryItem.AvailableFor = (chkAvailableTakeAway.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAwayB) : categoryItem.AvailableFor);
+                    categoryItem.AvailableFor = (chkAvailableTakeAway.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway) : categoryItem.AvailableFor);
                     categoryItem.AvailableFor = (chkAvailableDelivery.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery) : categoryItem.AvailableFor);
                     categoryItem.AvailableFor = (chkAvailableInternetTakeAway.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetTakeAway) : categoryItem.AvailableFor);
                     categoryItem.AvailableFor = (chkAvailableInternetDelivery.Checked ? UF.SetBit(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetDelivery) : categoryItem.AvailableFor);

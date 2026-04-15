@@ -4,9 +4,73 @@ using POSLayer.Library;
 
 namespace POSLayer.Models;
 
-public partial class Order : BaseOrder
+public partial class Order : BaseClass
 {
+    public DateTime OrderDate { get; set; } = DateTime.Now;
+    public string? SessionIID { get; set; }
+    public Session? Session { get; set; }
+
+    public string? TableIID { get; set; }
+    public virtual Masa? Table { get; set; }
+
+
+    public string? CustomerIID { get; set; }
+    public Customer? Customer { get; set; } // Navigation property
+    public string? UserIID { get; set; }
+    public User? User { get; set; } // Navigation property
+    public DateTime LastModified { get; set; } = DateTime.Now;
+    public int Covers { get; set; } = 1;
+    public OrderTypes OrderType { get; set; } = OrderTypes.Sitin;
+    public PaymentMethods Payment { get; set; } = PaymentMethods.NotPaid;
+    public StatusFlags Status { get; set; } = StatusFlags.New;
+    public string? LockedClientIP { get; set; }
+    public DateTime? LockedUntil { get; set; }
+
+    public string Instruction { get; set; } = string.Empty;
+
+    public string? PaymentFlag { get; set; } = string.Empty;
+    public string? Reference { get; set; } = string.Empty;
+    public double ServiceChargeRate { get; set; }
+    public double ServiceChargeTaxRate { get; set; }
+
+
+
     public List<OrderItem> Items { get; set; } = new();
+
+    [NotMapped]
+    public string Title { get; set; } = string.Empty;
+
+    [NotMapped]
+    public bool blnPrinted { get; set; }
+    [NotMapped]
+    public int RequestCount { get; set; }
+    [NotMapped]
+    public bool blnItemsChanged { get; set; }
+
+
+
+
+    public double ItemTotal => Items.Sum(x => x.Total);
+    public double ItemTotalVat => Items.Sum(x => x.TotalVat);
+    public double ItemTotalExVat => Items.Sum(x => x.TotalExVat);
+    public double ServiceCharge => ItemTotalExVat * ServiceChargeRate / 100;
+    public double ServiceChargeTax => ServiceCharge * ServiceChargeTaxRate / 100;
+
+    public double Total => ItemTotal + ServiceCharge;
+    public double MoneyPaid { get; set; }
+    public double Balance => Total - MoneyPaid;
+    public bool isPaid => Total > 0 && Balance == 0;
+
+
+    public string ToSimpleString()
+    {
+        string content = "Orginial ORDER @   " + LastModified.ToString() + "   Total= " + Total.ToString("N2").PadLeft(10, ' ') + "   Reference = " + Reference + Environment.NewLine;
+        foreach (var item in Items)
+        {
+            content += "  " + item.ToSimpleString() + Environment.NewLine;
+        }
+        return content;
+    }
     public Order()
     {
 
@@ -163,7 +227,7 @@ public partial class Order : BaseOrder
     }
     public bool HasTableAttached()
     {
-        if (this.OrderType == OrderTypes.InHouse)
+        if (this.OrderType == OrderTypes.Sitin)
             return TableIID.Trim().Length > 0;
         else
             return false;
@@ -416,21 +480,39 @@ public partial class Order : BaseOrder
             return true;
     }
 
-    public string GetAllOrderItemsText(bool AddPrice = true)
-    {
-        string str = "";
-        foreach (OrderItem item in Items)
+    public string AllOrderItemsTextWithPrice
+    {         get
         {
-            string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
-            if (AddPrice)
-                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.Total) + "\r\n";
-            else
-                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10), item.Quantity, itemtext) + "\r\n";
+            string str = "";
+            foreach (OrderItem item in Items)
+            {
+                string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
+                
+                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:C2}", item.Quantity, itemtext, item.Total) + "\r\n";
+                //else
+                //    str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10), item.Quantity, itemtext) + "\r\n";
+            }
+
+            return str;
         }
-
-        return str;
     }
+    public string AllOrderItemsTextNoPrice
+    {
+        get
+        {
+            string str = "";
+            foreach (OrderItem item in Items)
+            {
+                string itemtext = (item.OrderItemText.Length > 13) ? item.OrderItemText.Substring(0, 12) : item.OrderItemText;
 
+                //str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10) + "{2,5:N2}", item.Quantity, itemtext, item.Total) + "\r\n";
+
+                str += String.Format("{0}".PadRight(4) + "{1,-13}".PadRight(10), item.Quantity, itemtext) + "\r\n";
+            }
+
+            return str;
+        }
+    }
     public bool IsCustomerDetailsRequired
     {
         get
@@ -440,12 +522,12 @@ public partial class Order : BaseOrder
                 case OrderTypes.Delivery:
                 case OrderTypes.InternetDelivery:
                 case OrderTypes.InternetTakeAway:
-                case OrderTypes.TakeAwayB:
+                case OrderTypes.TakeAway:
                     return true;
                 case OrderTypes.Unknown:
                 case OrderTypes.Pad:
-                case OrderTypes.InHouse:
-                case OrderTypes.DirectSale:
+                case OrderTypes.Sitin:
+                case OrderTypes.Sale:
                     return false;
                 default:
                     return false;

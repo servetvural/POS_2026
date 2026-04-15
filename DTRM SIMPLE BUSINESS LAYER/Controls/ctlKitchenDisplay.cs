@@ -156,10 +156,10 @@ namespace DTRMNS {
             try {
                 List<KitchenOrder> orderList =await  DTRMSimpleBusiness.Instance.GetKitchenOrdersByStatus(KitchenOrderStatusTypes.Waiting, true, distribution);
                 for (int i = 0; i < orderList.Count; i++) {
-                    if (orderList[i].OrderType == OrderTypes.DirectSale && !config.Hold_Order_Display_in_Kitchen)
+                    if (orderList[i].OrderType == OrderTypes.Sale && !config.Hold_Order_Display_in_Kitchen)
                         continue;
 
-                    if (orderList[i].OrderType == OrderTypes.InHouse && !config.Table_Orders_Display_Kitchen_Orders)
+                    if (orderList[i].OrderType == OrderTypes.Sitin && !config.Table_Orders_Display_Kitchen_Orders)
                         continue;
                     ctlKitchenOrder ctl = (ctlKitchenOrder)pnlKitchenOrders.Controls[orderList[i].IID];
 
@@ -213,10 +213,10 @@ namespace DTRMNS {
                 double totalResponseTime = 0;
 
                 for (int i = 0; i < orderList.Count; i++) {
-                    if (orderList[i].OrderType == OrderTypes.DirectSale && !config.Hold_Order_Display_in_Kitchen)
+                    if (orderList[i].OrderType == OrderTypes.Sale && !config.Hold_Order_Display_in_Kitchen)
                         continue;
 
-                    if (orderList[i].OrderType == OrderTypes.InHouse && !config.Table_Orders_Display_Kitchen_Orders)
+                    if (orderList[i].OrderType == OrderTypes.Sitin && !config.Table_Orders_Display_Kitchen_Orders)
                         continue;
 
 

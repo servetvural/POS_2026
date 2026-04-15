@@ -30,13 +30,14 @@ namespace DTRMNS {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDistributionSelector));
             dgv = new System.Windows.Forms.DataGridView();
-            globalTypeBindingSource = new System.Windows.Forms.BindingSource(components);
             panel1 = new System.Windows.Forms.Panel();
             btnClose = new System.Windows.Forms.Button();
             btnSave = new System.Windows.Forms.Button();
+            distributionBindingSource = new System.Windows.Forms.BindingSource(components);
+            distributionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgv).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)globalTypeBindingSource).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)distributionBindingSource).BeginInit();
             SuspendLayout();
             // 
             // dgv
@@ -46,8 +47,8 @@ namespace DTRMNS {
             dgv.AutoGenerateColumns = false;
             dgv.BackgroundColor = System.Drawing.Color.White;
             dgv.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.ColumnHeadersVisible = false;
-            dgv.DataSource = globalTypeBindingSource;
+            dgv.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { distributionNameDataGridViewTextBoxColumn });
+            dgv.DataSource = distributionBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
@@ -63,7 +64,6 @@ namespace DTRMNS {
             dgv.MultiSelect = false;
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
-            dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 25;
             dgv.RowTemplate.Height = 50;
             dgv.ScrollBars = System.Windows.Forms.ScrollBars.None;
@@ -81,7 +81,7 @@ namespace DTRMNS {
             panel1.Location = new System.Drawing.Point(0, 669);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
-            panel1.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            panel1.Padding = new System.Windows.Forms.Padding(12);
             panel1.Size = new System.Drawing.Size(355, 81);
             panel1.TabIndex = 46;
             // 
@@ -113,6 +113,18 @@ namespace DTRMNS {
             btnSave.UseVisualStyleBackColor = true;
             btnSave.Click += btnSave_Click;
             // 
+            // distributionBindingSource
+            // 
+            distributionBindingSource.DataSource = typeof(Distribution);
+            // 
+            // distributionNameDataGridViewTextBoxColumn
+            // 
+            distributionNameDataGridViewTextBoxColumn.DataPropertyName = "DistributionName";
+            distributionNameDataGridViewTextBoxColumn.HeaderText = "Distribution  Name";
+            distributionNameDataGridViewTextBoxColumn.Name = "distributionNameDataGridViewTextBoxColumn";
+            distributionNameDataGridViewTextBoxColumn.ReadOnly = true;
+            distributionNameDataGridViewTextBoxColumn.Width = 300;
+            // 
             // frmDistributionSelector
             // 
             AcceptButton = btnSave;
@@ -133,8 +145,8 @@ namespace DTRMNS {
             Text = "Distributions";
             Load += frmDistributionSelector_Load;
             ((System.ComponentModel.ISupportInitialize)dgv).EndInit();
-            ((System.ComponentModel.ISupportInitialize)globalTypeBindingSource).EndInit();
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)distributionBindingSource).EndInit();
             ResumeLayout(false);
 
         }
@@ -144,8 +156,7 @@ namespace DTRMNS {
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.BindingSource globalTypeBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDistributionName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn distributionNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource distributionBindingSource;
     }
 }

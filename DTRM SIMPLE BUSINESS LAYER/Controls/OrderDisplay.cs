@@ -18,6 +18,7 @@ namespace DTRMNS
     public class OrderDisplay : System.Windows.Forms.UserControl
     {
         PosConfig config;
+        IRepository<OrderItem> repoOrderItem;
 
         private System.Windows.Forms.ColumnHeader IID;
         private System.Windows.Forms.ColumnHeader cOrderItemText;
@@ -115,6 +116,7 @@ namespace DTRMNS
         {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
+            repoOrderItem = ServiceHelper.GetService<IRepository<OrderItem>>();
         }
 
         public void AttachBusinessLayer()
@@ -232,6 +234,7 @@ namespace DTRMNS
             lvwOrder.TabIndex = 0;
             lvwOrder.UseCompatibleStateImageBehavior = false;
             lvwOrder.View = View.Details;
+            lvwOrder.ItemSelectionChanged += lvwOrder_ItemSelectionChanged;
             lvwOrder.SelectedIndexChanged += lvwOrder_SelectedIndexChanged;
             lvwOrder.Click += lvwOrder_Click;
             lvwOrder.Resize += lvwOrder_Resize;
@@ -571,8 +574,8 @@ namespace DTRMNS
             if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
             {
                 btnViewKitchen.Visible = config.Display_Kitchen_Chef_on_Display &&
-                    ((DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
-                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
+                    ((DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
+                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
 
                 cCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
@@ -609,7 +612,7 @@ namespace DTRMNS
 
             switch (DTRMSimpleBusiness.Instance.AttachedOrder.Status)
             {
-                case StatusFlags.NEW:
+                case StatusFlags.New:
                     switch (SplitStatus)
                     {
                         case SplittingStatus.Normal:
@@ -625,8 +628,8 @@ namespace DTRMNS
                             break;
                     }
                     break;
-                case StatusFlags.PENDING:
-                case StatusFlags.DONE:
+                case StatusFlags.Holding:
+                case StatusFlags.Done:
                     switch (SplitStatus)
                     {
                         case SplittingStatus.Normal:
@@ -661,8 +664,8 @@ namespace DTRMNS
 
 
                 if ((config.Table_Orders_Display_Kitchen_Orders || config.Table_Orders_Kitchen_Receipt_Count > 0 || config.Hold_Order_Display_in_Kitchen || config.Hold_Order_Print_in_Kitchen) &&
-                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.DirectSale || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse) &&
-                    OrderToSplit == null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.NEW || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.DONE || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.PENDING))
+                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin) &&
+                    OrderToSplit == null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Holding))
                 {
                     if (config.Display_Kitchen_Orders_As_Reminders)
                     {
@@ -683,7 +686,7 @@ namespace DTRMNS
 
                 if (OrderToSplit == null)
                 {
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse && !config.Table_Orders_Always_Shrinked)
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && !config.Table_Orders_Always_Shrinked)
                     {
                         if (GroupIID != oi.OrderGroupIID)
                         {
@@ -726,10 +729,10 @@ namespace DTRMNS
             }
 
             OrderTotal = DTRMSimpleBusiness.Instance.AttachedOrder.Total;
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InHouse)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
                 lblScrollUp.Text = DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + DTRMSimpleBusiness.Instance.AttachedOrder.Table?.TableName;
             else
-                lblScrollUp.Text = DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + UF.GetOrderTypeAsText(DTRMSimpleBusiness.Instance.AttachedOrder.OrderType);
+                lblScrollUp.Text = DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + DTRMSimpleBusiness.Instance.AttachedOrder.OrderType;
 
             if (config.Order_Screen_Display_Service_Charge)
                 pnlDown.Height = 52;
@@ -746,7 +749,7 @@ namespace DTRMNS
             } else
                 lblScrollDown.Text = OrderTotal.ToString("c") + " ";
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.COMPLETED || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.ARCHIVED))
+            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived))
             {
                 pnlCommand.Visible = btnSplit.Visible = false;
             }
@@ -826,14 +829,14 @@ namespace DTRMNS
 
         private void lvwOrder_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvwOrder.SelectedItems.Count == 0)
-            {
-                DTRMSimpleBusiness.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
-                return;
-            }
-            ListViewItem lvi = lvwOrder.SelectedItems[0];
+            //if (lvwOrder.SelectedItems.Count == 0)
+            //{
+            //    DTRMSimpleBusiness.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
+            //    return;
+            //}
+            //ListViewItem lvi = lvwOrder.SelectedItems[0];
 
-            DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (lvi.Tag as OrderItem).OrderItemText).Selected = true;
+            //DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (lvi.Tag as OrderItem).OrderItemText).Selected = true;
         }
 
 
@@ -841,12 +844,12 @@ namespace DTRMNS
         private async void btnDeleteItem_Click(object sender, EventArgs e)
         {
             if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.COMPLETED &&
-                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.ARCHIVED &&
+                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
                 !DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
                 return;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW && config.Deleting_OrderItem_Requires_Supervision && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Deleting_OrderItem_Requires_Supervision && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
             {
                 if (!DTRMSimpleBusiness.Instance.ConfirmForSupervision())
                     return;
@@ -869,9 +872,10 @@ namespace DTRMNS
             }
 
             DTRMSimpleBusiness.Instance.AttachedOrder.DeleteOrderItem(oi);
+            await repoOrderItem.Delete(oi);
 
             //XXX logdelete
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
             {
                 try
                 {
@@ -905,8 +909,8 @@ namespace DTRMNS
             try
             {
                 if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.COMPLETED &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.ARCHIVED &&
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
                     !DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
                     return;
 
@@ -928,7 +932,7 @@ namespace DTRMNS
                     }
 
                     //XXX logdelete
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.NEW && config.Log_Deleted_Order_Items)
+                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
                     {
                         try
                         {
@@ -950,7 +954,12 @@ namespace DTRMNS
                         }
                     }
 
-                    DTRMSimpleBusiness.Instance.AttachedOrder.DecrementOrderItem(oi);
+                    if (oi.Quantity == 1)
+                    {
+                        await repoOrderItem.Delete(oi);
+                        DTRMSimpleBusiness.Instance.AttachedOrder.Items.Remove(oi);
+                    } else
+                        DTRMSimpleBusiness.Instance.AttachedOrder.DecrementOrderItem(oi);
                     Display();
                     if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count == 0)
                         OnZeroItemsLeft();
@@ -965,9 +974,9 @@ namespace DTRMNS
             try
             {
                 if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.COMPLETED &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.ARCHIVED &&
-                    !DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
+                    DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
                 {
                     OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
                     DTRMSimpleBusiness.Instance.AttachedOrder.IncrementOrderItem(oi);
@@ -1038,7 +1047,7 @@ namespace DTRMNS
             if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
                 return;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.NEW)
+            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New)
             {
                 if (blnSplitAndHold)
                 {
@@ -1145,7 +1154,7 @@ namespace DTRMNS
             OnSplitContinuing();
             if (lvwSplittingOrder.SelectedItems.Count > 0)
             {
-               // ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
+                // ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
                 OrderItem oi = OrderToSplit.Items.FirstOrDefault(x => x.Selected);
                 oi.OrderIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID;
                 OrderToSplit.DeleteOrderItem(oi);
@@ -1194,6 +1203,15 @@ namespace DTRMNS
         private void lvwSplittingOrder_Resize(object sender, EventArgs e)
         {
             cSplitOrderItemText.Width = lvwSplittingOrder.Width - cSplitQuantity.Width - cSplitTotal.Width - SystemInformation.VerticalScrollBarWidth;
+        }
+
+        private void lvwOrder_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if ( e.Item.Selected)
+            {
+                DTRMSimpleBusiness.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
+                DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (e.Item.Tag as OrderItem).OrderItemText).Selected = true;
+            }
         }
     }
 }

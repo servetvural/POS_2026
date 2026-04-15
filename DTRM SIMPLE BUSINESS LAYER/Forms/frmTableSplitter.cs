@@ -42,15 +42,15 @@ namespace DTRMNS
         {
             if (SourceTable != null)
             {
-                if (SourceTable.AttachedOrder != null && SourceTable.AttachedOrder.Status < StatusFlags.DONE)
-                    SourceTable.AttachedOrder.Status = StatusFlags.DONE;
+                if (SourceTable.AttachedOrder != null && SourceTable.AttachedOrder.Status < StatusFlags.Done)
+                    SourceTable.AttachedOrder.Status = StatusFlags.Done;
                 DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
             }
 
             if (TargetTable != null)
             {
-                if (TargetTable.AttachedOrder != null && TargetTable.AttachedOrder.Status < StatusFlags.DONE)
-                    TargetTable.AttachedOrder.Status = StatusFlags.DONE;
+                if (TargetTable.AttachedOrder != null && TargetTable.AttachedOrder.Status < StatusFlags.Done)
+                    TargetTable.AttachedOrder.Status = StatusFlags.Done;
                 DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
             }
 
@@ -89,7 +89,7 @@ namespace DTRMNS
 
                     TableButton btn = new TableButton();
                     btn.Text = table.TableName;
-                    btn.IID = table.IID;
+                    btn.Table = table;
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
@@ -97,7 +97,7 @@ namespace DTRMNS
                         btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
-                        if (table.HasActiveOrder())
+                        if (table.HasActiveOrder)
                         {
                             btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
                             btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
@@ -128,7 +128,7 @@ namespace DTRMNS
             //SourceTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton)sender).IID);
 
 
-            SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
+            SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).Table.IID);
             if (SourceTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -176,7 +176,7 @@ namespace DTRMNS
             {
                 if (SourceTable != null)
                     UnloadSourceTable();
-                SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.IID);
+                SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
                 if (SourceTable == null)
                 {
                     MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -204,7 +204,7 @@ namespace DTRMNS
             {
                 if (TargetTable != null)
                     UnloadTargetTable();
-                TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.IID);
+                TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
 
                 if (TargetTable == null)
                 {
@@ -254,7 +254,7 @@ namespace DTRMNS
 
                     TableButton btn = new TableButton();
                     btn.Text = table.TableName;
-                    btn.IID = table.IID;
+                    btn.Table = table;
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
@@ -262,7 +262,7 @@ namespace DTRMNS
                         btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
-                        if (table.HasActiveOrder())
+                        if (table.HasActiveOrder)
                         {
                             btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
                             btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
@@ -292,7 +292,7 @@ namespace DTRMNS
         {
             //TargetTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton) sender).IID);
 
-            TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).IID);
+            TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).Table.IID);
             if (TargetTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");

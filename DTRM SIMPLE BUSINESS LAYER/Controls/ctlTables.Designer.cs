@@ -33,7 +33,7 @@ namespace DTRMNS {
             btnClose = new System.Windows.Forms.Button();
             chkUnlockTable = new System.Windows.Forms.CheckBox();
             pnlTables = new System.Windows.Forms.Panel();
-            pnlGroups = new System.Windows.Forms.FlowLayoutPanel();
+            pnlSalons = new System.Windows.Forms.FlowLayoutPanel();
             pnlButtons.SuspendLayout();
             SuspendLayout();
             // 
@@ -162,7 +162,7 @@ namespace DTRMNS {
             // 
             btnClose.AutoEllipsis = true;
             btnClose.BackColor = System.Drawing.Color.Black;
-            btnClose.BackgroundImage = Properties.Resources.CLOSEBig;
+            btnClose.BackgroundImage = Properties.Resources.Cancel;
             btnClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             btnClose.Dock = System.Windows.Forms.DockStyle.Right;
             btnClose.FlatAppearance.BorderSize = 0;
@@ -204,24 +204,25 @@ namespace DTRMNS {
             // 
             pnlTables.BackColor = System.Drawing.Color.Black;
             pnlTables.Dock = System.Windows.Forms.DockStyle.Fill;
-            pnlTables.Location = new System.Drawing.Point(90, 60);
+            pnlTables.Location = new System.Drawing.Point(110, 60);
             pnlTables.Name = "pnlTables";
-            pnlTables.Size = new System.Drawing.Size(627, 476);
+            pnlTables.Size = new System.Drawing.Size(607, 476);
             pnlTables.TabIndex = 1;
             // 
-            // pnlGroups
+            // pnlSalons
             // 
-            pnlGroups.BackColor = System.Drawing.Color.Black;
-            pnlGroups.Dock = System.Windows.Forms.DockStyle.Left;
-            pnlGroups.Location = new System.Drawing.Point(0, 60);
-            pnlGroups.Name = "pnlGroups";
-            pnlGroups.Size = new System.Drawing.Size(90, 476);
-            pnlGroups.TabIndex = 2;
+            pnlSalons.BackColor = System.Drawing.Color.Black;
+            pnlSalons.Dock = System.Windows.Forms.DockStyle.Left;
+            pnlSalons.Location = new System.Drawing.Point(0, 60);
+            pnlSalons.Name = "pnlSalons";
+            pnlSalons.Padding = new System.Windows.Forms.Padding(10);
+            pnlSalons.Size = new System.Drawing.Size(110, 476);
+            pnlSalons.TabIndex = 2;
             // 
             // ctlTables
             // 
             Controls.Add(pnlTables);
-            Controls.Add(pnlGroups);
+            Controls.Add(pnlSalons);
             Controls.Add(pnlButtons);
             Name = "ctlTables";
             Size = new System.Drawing.Size(717, 536);
@@ -238,7 +239,7 @@ namespace DTRMNS {
       private System.Windows.Forms.CheckBox chkUnlockTable;
       private System.Windows.Forms.Panel pnlTables;
       private System.Windows.Forms.CheckBox chkChangeTable;
-       private System.Windows.Forms.FlowLayoutPanel pnlGroups;
+       private System.Windows.Forms.FlowLayoutPanel pnlSalons;
        private System.Windows.Forms.CheckBox chkRenameTable;
         private System.Windows.Forms.CheckBox chkSplitTable;
         private System.Windows.Forms.CheckBox chkAddSubTable;

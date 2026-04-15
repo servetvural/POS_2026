@@ -99,6 +99,11 @@ namespace DTRMSimpleBackOffice
 
                       PosConfig posConfig = UF.GetConfig() ?? new PosConfig();
 
+                      //frmConfig frm = new frmConfig();
+                      //if (frm.ShowDialog() == DialogResult.OK)
+                      //{
+                      //    posConfig = frm.config;
+                      //}
                       services.AddSingleton(posConfig);
 
                       //services.AddDbContextFactory<PosDbContext>(options =>
@@ -111,7 +116,7 @@ namespace DTRMSimpleBackOffice
                       services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
                       services.AddScoped<DbInitializer>();
 
-                      services.AddSingleton<IFormFactory, FormFactory>();
+                   //   services.AddSingleton<IFormFactory, FormFactory>();
 
                       // 3. Register Forms (Forms must be in DI to receive injections)
                       services.AddTransient<frmConfig>();
@@ -128,14 +133,26 @@ namespace DTRMSimpleBackOffice
             using var scope = host.Services.CreateScope();
             var mainForm = scope.ServiceProvider.GetRequiredService<frmOffice>();
 
-            var initilizer = scope.ServiceProvider.GetService<DbInitializer>();
-            initilizer.InitializeDatabase();
+
+            //if (!CanConnectDatabase())
+            //{
+            //    MessageBox.Show("Failed to connect Database, Aborting");
+            //    Environment.Exit(0);
+            //}
+
+            //var initializer = scope.ServiceProvider.GetService<DbInitializer>();
+            //initializer.InitializeDatabase();
 
             Application.Run(mainForm);
 
         }
 
        
+        static bool CanConnectDatabase()
+        {
+            var context = ServiceHelper.GetService<PosDbContext>();
+            return context.Database.CanConnect();
+        }
 
     }
 }

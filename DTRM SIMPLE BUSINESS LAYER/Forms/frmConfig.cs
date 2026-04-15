@@ -7,6 +7,9 @@ using System.Windows.Forms;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using PosLayer.Repository;
+
+using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -23,12 +26,11 @@ namespace DTRMNS
     /// </summary>
     public class frmConfig : Form
     {
-        PosConfig config;
+        public PosConfig config;
         IRepository<Shop> repoShop;
         IRepository<TheMenu> repoMenu;
         IRepository<GenericImage> repoImage;
-
-        private DTRMSimpleBusiness bslayer;
+        IRepository<Printer> repoPrinter;
 
 
         private Panel panel2;
@@ -61,29 +63,34 @@ namespace DTRMNS
         private PictureBox pBoxLogo1;
         private Button btnDeleteLogo2;
         private Button btnDeleteLogo1;
-        private Button btnSendTestEmailToNotification;
-        private Button btnSendTestEmailToReport;
-        private Button btnSendTestEmailToOrders;
-        private Button btnSendTestEmailToPurchase;
-        private Label lblVersion;
-        private Button btnRegisterSoftware;
-        private Button btnCopyLicence;
         private bool blnEmpty;
-        private Label lblLicenceNumber;
-        private DataGridView dgv;
+        private ComboBox cmbCashDrawerPrinter;
+        private Label label3;
         public ToolStripButton RegistrationButton;
+        private Label label4;
+        private ComboBox cmbReceiptPrinter;
+        private Button btnTestCashDrawer;
+        bool blnDatabaseConnected;
 
-
-
-        public frmConfig(PosConfig configAsService, IRepository<Shop> _repoShop, IRepository<TheMenu> _repoMenu,
-            IRepository<GenericImage> _repoImage )
+        public frmConfig()
         {
-            config = configAsService;
-            repoShop = _repoShop;
-            repoMenu = _repoMenu;
-            repoImage = _repoImage;
+            var context = ServiceHelper.GetService<PosDbContext>();
 
-            bslayer = DTRMSimpleBusiness.Instance;
+            blnDatabaseConnected = context.Database.CanConnect();
+
+            config = ServiceHelper.GetService<PosConfig>();
+
+            if (blnDatabaseConnected)
+            {
+                repoShop = ServiceHelper.GetService<IRepository<Shop>>();
+                repoMenu = ServiceHelper.GetService<IRepository<TheMenu>>();
+                repoImage = ServiceHelper.GetService<IRepository<GenericImage>>();
+                repoPrinter = ServiceHelper.GetService<IRepository<Printer>>();
+            } else
+            {
+                MessageBox.Show("Failed to Connect Database");
+            }
+
             InitializeComponent();
         }
 
@@ -111,7 +118,6 @@ namespace DTRMNS
             components = new Container();
             ComponentResourceManager resources = new ComponentResourceManager(typeof(frmConfig));
             panel2 = new Panel();
-            lblVersion = new Label();
             pBox = new PictureBox();
             btnChangeConnection = new Button();
             btnCancel = new Button();
@@ -129,14 +135,11 @@ namespace DTRMNS
             tpShop = new TabPage();
             pGridLuv = new PropertyGrid();
             tpOthers = new TabPage();
-            dgv = new DataGridView();
-            lblLicenceNumber = new Label();
-            btnRegisterSoftware = new Button();
-            btnCopyLicence = new Button();
-            btnSendTestEmailToNotification = new Button();
-            btnSendTestEmailToReport = new Button();
-            btnSendTestEmailToOrders = new Button();
-            btnSendTestEmailToPurchase = new Button();
+            btnTestCashDrawer = new Button();
+            label4 = new Label();
+            cmbReceiptPrinter = new ComboBox();
+            label3 = new Label();
+            cmbCashDrawerPrinter = new ComboBox();
             btnDeleteLogo2 = new Button();
             btnDeleteLogo1 = new Button();
             label2 = new Label();
@@ -152,7 +155,6 @@ namespace DTRMNS
             tpTerminal.SuspendLayout();
             tpShop.SuspendLayout();
             tpOthers.SuspendLayout();
-            ((ISupportInitialize)dgv).BeginInit();
             ((ISupportInitialize)pBoxLogo2).BeginInit();
             ((ISupportInitialize)pBoxLogo1).BeginInit();
             SuspendLayout();
@@ -160,7 +162,6 @@ namespace DTRMNS
             // panel2
             // 
             panel2.BackColor = System.Drawing.SystemColors.Control;
-            panel2.Controls.Add(lblVersion);
             panel2.Controls.Add(pBox);
             panel2.Controls.Add(btnChangeConnection);
             panel2.Controls.Add(btnCancel);
@@ -171,14 +172,6 @@ namespace DTRMNS
             panel2.Padding = new Padding(5);
             panel2.Size = new System.Drawing.Size(1014, 71);
             panel2.TabIndex = 71;
-            // 
-            // lblVersion
-            // 
-            lblVersion.Location = new System.Drawing.Point(537, 8);
-            lblVersion.Name = "lblVersion";
-            lblVersion.Size = new System.Drawing.Size(330, 35);
-            lblVersion.TabIndex = 89;
-            lblVersion.Text = "0.0.0.0";
             // 
             // pBox
             // 
@@ -249,6 +242,7 @@ namespace DTRMNS
             // 
             // cmbMenu
             // 
+            cmbMenu.DisplayMember = "IID";
             cmbMenu.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
             cmbMenu.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -368,14 +362,11 @@ namespace DTRMNS
             // tpOthers
             // 
             tpOthers.BackColor = System.Drawing.SystemColors.Control;
-            tpOthers.Controls.Add(dgv);
-            tpOthers.Controls.Add(lblLicenceNumber);
-            tpOthers.Controls.Add(btnRegisterSoftware);
-            tpOthers.Controls.Add(btnCopyLicence);
-            tpOthers.Controls.Add(btnSendTestEmailToNotification);
-            tpOthers.Controls.Add(btnSendTestEmailToReport);
-            tpOthers.Controls.Add(btnSendTestEmailToOrders);
-            tpOthers.Controls.Add(btnSendTestEmailToPurchase);
+            tpOthers.Controls.Add(btnTestCashDrawer);
+            tpOthers.Controls.Add(label4);
+            tpOthers.Controls.Add(cmbReceiptPrinter);
+            tpOthers.Controls.Add(label3);
+            tpOthers.Controls.Add(cmbCashDrawerPrinter);
             tpOthers.Controls.Add(btnDeleteLogo2);
             tpOthers.Controls.Add(btnDeleteLogo1);
             tpOthers.Controls.Add(label2);
@@ -397,93 +388,53 @@ namespace DTRMNS
             tpOthers.TabIndex = 2;
             tpOthers.Text = "OTHERS";
             // 
-            // dgv
+            // btnTestCashDrawer
             // 
-            dgv.AllowUserToAddRows = false;
-            dgv.AllowUserToDeleteRows = false;
-            dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv.Location = new System.Drawing.Point(317, 412);
-            dgv.Name = "dgv";
-            dgv.ReadOnly = true;
-            dgv.Size = new System.Drawing.Size(276, 108);
-            dgv.TabIndex = 184;
+            btnTestCashDrawer.Location = new System.Drawing.Point(895, 22);
+            btnTestCashDrawer.Name = "btnTestCashDrawer";
+            btnTestCashDrawer.Size = new System.Drawing.Size(75, 44);
+            btnTestCashDrawer.TabIndex = 148;
+            btnTestCashDrawer.Text = "OPEN";
+            btnTestCashDrawer.UseVisualStyleBackColor = true;
+            btnTestCashDrawer.Click += btnTestCashDrawer_Click;
             // 
-            // lblLicenceNumber
+            // label4
             // 
-            lblLicenceNumber.BorderStyle = BorderStyle.FixedSingle;
-            lblLicenceNumber.ForeColor = System.Drawing.SystemColors.ControlText;
-            lblLicenceNumber.Location = new System.Drawing.Point(152, 172);
-            lblLicenceNumber.Name = "lblLicenceNumber";
-            lblLicenceNumber.Size = new System.Drawing.Size(697, 22);
-            lblLicenceNumber.TabIndex = 182;
-            lblLicenceNumber.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            lblLicenceNumber.Visible = false;
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(553, 95);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(175, 21);
+            label4.TabIndex = 147;
+            label4.Text = "Terminal Receipt Printer";
             // 
-            // btnRegisterSoftware
+            // cmbReceiptPrinter
             // 
-            btnRegisterSoftware.Font = new System.Drawing.Font("Segoe UI", 10F);
-            btnRegisterSoftware.Location = new System.Drawing.Point(65, 168);
-            btnRegisterSoftware.Name = "btnRegisterSoftware";
-            btnRegisterSoftware.Size = new System.Drawing.Size(81, 30);
-            btnRegisterSoftware.TabIndex = 178;
-            btnRegisterSoftware.Text = "Register";
-            btnRegisterSoftware.UseVisualStyleBackColor = true;
-            btnRegisterSoftware.Visible = false;
+            cmbReceiptPrinter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbReceiptPrinter.FormattingEnabled = true;
+            cmbReceiptPrinter.Location = new System.Drawing.Point(553, 119);
+            cmbReceiptPrinter.Name = "cmbReceiptPrinter";
+            cmbReceiptPrinter.Size = new System.Drawing.Size(323, 29);
+            cmbReceiptPrinter.TabIndex = 146;
+            cmbReceiptPrinter.SelectionChangeCommitted += cmbReceiptPrinter_SelectionChangeCommitted;
             // 
-            // btnCopyLicence
+            // label3
             // 
-            btnCopyLicence.BackgroundImage = Properties.Resources.Duplicate;
-            btnCopyLicence.BackgroundImageLayout = ImageLayout.Stretch;
-            btnCopyLicence.Location = new System.Drawing.Point(27, 168);
-            btnCopyLicence.Name = "btnCopyLicence";
-            btnCopyLicence.Size = new System.Drawing.Size(32, 30);
-            btnCopyLicence.TabIndex = 176;
-            btnCopyLicence.UseVisualStyleBackColor = true;
-            btnCopyLicence.Visible = false;
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(553, 13);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(150, 21);
+            label3.TabIndex = 145;
+            label3.Text = "Cash Drawer Printer";
             // 
-            // btnSendTestEmailToNotification
+            // cmbCashDrawerPrinter
             // 
-            btnSendTestEmailToNotification.Location = new System.Drawing.Point(27, 520);
-            btnSendTestEmailToNotification.Name = "btnSendTestEmailToNotification";
-            btnSendTestEmailToNotification.Size = new System.Drawing.Size(276, 30);
-            btnSendTestEmailToNotification.TabIndex = 147;
-            btnSendTestEmailToNotification.Text = "Send Test Email To Notification Email";
-            btnSendTestEmailToNotification.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            btnSendTestEmailToNotification.UseVisualStyleBackColor = true;
-            btnSendTestEmailToNotification.Click += btnSendTestEmailToNotification_Click;
-            // 
-            // btnSendTestEmailToReport
-            // 
-            btnSendTestEmailToReport.Location = new System.Drawing.Point(27, 484);
-            btnSendTestEmailToReport.Name = "btnSendTestEmailToReport";
-            btnSendTestEmailToReport.Size = new System.Drawing.Size(276, 30);
-            btnSendTestEmailToReport.TabIndex = 146;
-            btnSendTestEmailToReport.Text = "Send Test Email To Report Email";
-            btnSendTestEmailToReport.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            btnSendTestEmailToReport.UseVisualStyleBackColor = true;
-            btnSendTestEmailToReport.Click += btnSendTestEmailToReport_Click;
-            // 
-            // btnSendTestEmailToOrders
-            // 
-            btnSendTestEmailToOrders.Location = new System.Drawing.Point(27, 448);
-            btnSendTestEmailToOrders.Name = "btnSendTestEmailToOrders";
-            btnSendTestEmailToOrders.Size = new System.Drawing.Size(276, 30);
-            btnSendTestEmailToOrders.TabIndex = 145;
-            btnSendTestEmailToOrders.Text = "Send Test Email To Orders Email";
-            btnSendTestEmailToOrders.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            btnSendTestEmailToOrders.UseVisualStyleBackColor = true;
-            btnSendTestEmailToOrders.Click += btnSendTestEmailToOrders_Click;
-            // 
-            // btnSendTestEmailToPurchase
-            // 
-            btnSendTestEmailToPurchase.Location = new System.Drawing.Point(27, 412);
-            btnSendTestEmailToPurchase.Name = "btnSendTestEmailToPurchase";
-            btnSendTestEmailToPurchase.Size = new System.Drawing.Size(276, 30);
-            btnSendTestEmailToPurchase.TabIndex = 144;
-            btnSendTestEmailToPurchase.Text = "Send Test Email To Purchase Email";
-            btnSendTestEmailToPurchase.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            btnSendTestEmailToPurchase.UseVisualStyleBackColor = true;
-            btnSendTestEmailToPurchase.Click += btnSendTestEmailToPurchase_Click;
+            cmbCashDrawerPrinter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbCashDrawerPrinter.FormattingEnabled = true;
+            cmbCashDrawerPrinter.Location = new System.Drawing.Point(553, 37);
+            cmbCashDrawerPrinter.Name = "cmbCashDrawerPrinter";
+            cmbCashDrawerPrinter.Size = new System.Drawing.Size(323, 29);
+            cmbCashDrawerPrinter.TabIndex = 144;
+            cmbCashDrawerPrinter.SelectionChangeCommitted += cmbCashDrawerPrinter_SelectionChangeCommitted;
             // 
             // btnDeleteLogo2
             // 
@@ -588,7 +539,6 @@ namespace DTRMNS
             tpShop.ResumeLayout(false);
             tpOthers.ResumeLayout(false);
             tpOthers.PerformLayout();
-            ((ISupportInitialize)dgv).EndInit();
             ((ISupportInitialize)pBoxLogo2).EndInit();
             ((ISupportInitialize)pBoxLogo1).EndInit();
             ResumeLayout(false);
@@ -608,23 +558,10 @@ namespace DTRMNS
 
         private void frmConfig_Load(object sender, System.EventArgs e)
         {
-            if (bslayer == null ||  DTRMSimpleBusiness.Instance.OfficeConnectionStatus == ConnectionStatus.Disconnected)
-            {
-                tabMain.TabPages.Remove(tabMain.TabPages["tpShop"]);
-                tabMain.TabPages.Remove(tabMain.TabPages["tpOthers"]);
-            }
+            //if (DTRMSimpleBusiness.Instance == null || DTRMSimpleBusiness.Instance.OfficeConnectionStatus == ConnectionStatus.Disconnected)
+            //{
 
-            //this section is for version printing even if the system not connected
-            #region Display Application Version
-            if (bslayer == null)
-            {
-                //bslayer = new DTRMSimpleBusiness();
-                lblVersion.Text = "Version : " +  DTRMSimpleBusiness.Instance.ApplicationVersion;
-                bslayer = null;
-            }
-            if (bslayer != null)
-                lblVersion.Text = "Version : " +  DTRMSimpleBusiness.Instance.ApplicationVersion;
-            #endregion
+            //}
 
             LoadConfig();
 
@@ -645,25 +582,16 @@ namespace DTRMNS
 
             pGridConfig.SelectedObject = config;
 
-
-            if (!blnEmpty)
+            if (blnDatabaseConnected && DTRMSimpleBusiness.Instance.LoggedUser != null)
             {
-                if (await repoShop.IsDatabaseExist())
-                {
-                    try
-                    {
-                        LoadMenuList();
-                    } catch
-                    {
-                    }
-
-                    try
-                    {
-                        await LoadCompanyDetails();
-                    } catch
-                    {
-                    }
-                }
+                await LoadMenuList();
+                await LoadCompanyDetails();
+                await LoadReceiptPrinters();
+                await LoadCashDrawerPrinters();
+            } else
+            {
+                tabMain.TabPages.Remove(tabMain.TabPages["tpShop"]);
+                tabMain.TabPages.Remove(tabMain.TabPages["tpOthers"]);
             }
             EnsureConnectionImage();
         }
@@ -675,7 +603,32 @@ namespace DTRMNS
             Close();
         }
 
-        private async void LoadMenuList()
+
+        async Task LoadReceiptPrinters()
+        {
+            if (repoPrinter != null)
+            {
+                var printers = await repoPrinter.GetAllAsync();
+                cmbReceiptPrinter.DataSource = printers;
+                cmbReceiptPrinter.DisplayMember = "ApplicationName";
+                cmbReceiptPrinter.ValueMember = "IID";
+                if (config.TerminalReceiptPrinterIID != null)
+                    cmbReceiptPrinter.SelectedValue = config.TerminalReceiptPrinterIID;
+            }
+        }
+        async Task LoadCashDrawerPrinters()
+        {
+            if (repoPrinter != null)
+            {
+                var printers = await repoPrinter.GetAllAsync();
+                cmbCashDrawerPrinter.DataSource = printers;
+                cmbCashDrawerPrinter.DisplayMember = "ApplicationName";
+                cmbCashDrawerPrinter.ValueMember = "IID";
+                if (config.TerminalCashDrawerPrinterIID != null)
+                    cmbCashDrawerPrinter.SelectedValue = config.TerminalCashDrawerPrinterIID;
+            }
+        }
+        private async Task LoadMenuList()
         {
             if (!blnEmpty)
             {
@@ -692,14 +645,14 @@ namespace DTRMNS
             }
         }
 
-        private void cmbMenus_SelectionChangeCommitted(object sender, EventArgs e)
+        private async void cmbMenus_SelectionChangeCommitted(object sender, EventArgs e)
         {
             if (!blnEmpty)
             {
                 config.ActiveMenuIID = cmbMenu.SelectedValue.ToString();
                 UF.SaveConfig(config);
-                LoadMenuList();
-                 DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+                await LoadMenuList();
+                await DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
             }
         }
 
@@ -711,7 +664,7 @@ namespace DTRMNS
             {
                 try
                 {
-                    cmbMenuTaxRates.DataSource = await  DTRMSimpleBusiness.Instance.GetAllTaxRates();
+                    cmbMenuTaxRates.DataSource = await DTRMSimpleBusiness.Instance.GetAllTaxRates();
                     //cmbMenuTaxRates.DisplayMember = "TaxPercent";
                     //cmbMenuTaxRates.ValueMember = "TaxPercent";
                 } catch
@@ -749,9 +702,9 @@ namespace DTRMNS
             if (!blnEmpty)
             {
                 Shop shop = (Shop)pGridLuv.SelectedObject;
-                shop.VoidText = (shop.VoidText.Length > 5 ? shop.VoidText.Substring(0, 5) : shop.VoidText);
+                shop.CashDrawerText = (shop.CashDrawerText.Length > 5 ? shop.CashDrawerText.Substring(0, 5) : shop.CashDrawerText);
                 repoShop.Save(shop);
-                 DTRMSimpleBusiness.Instance.shop = shop;
+                DTRMSimpleBusiness.Instance.shop = shop;
             }
         }
 
@@ -775,7 +728,7 @@ namespace DTRMNS
                         return;
                     }
                     await repoMenu.Save(fm);
-                    LoadMenuList();
+                    await LoadMenuList();
                 }
             }
         }
@@ -789,8 +742,10 @@ namespace DTRMNS
                     MessageBox.Show("Configuration file saved");
                     if (!blnEmpty)
                     {
-                        //  DTRMSimpleBusiness.Instance.config = config;
-                        SaveShop();
+                        if (blnDatabaseConnected && DTRMSimpleBusiness.Instance.LoggedUser != null)
+                        {
+                            SaveShop();
+                        }
                     }
                     this.DialogResult = DialogResult.OK;
                     Close();
@@ -813,7 +768,7 @@ namespace DTRMNS
                     TrmGetValue frm = new TrmGetValue(NumberModes.FloatMode);
                     if (frm.ShowDialog() == DialogResult.OK)
                     {
-                         DTRMSimpleBusiness.Instance.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
+                        DTRMSimpleBusiness.Instance.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
                         LoadTaxRates();
                     }
                 }
@@ -850,7 +805,7 @@ namespace DTRMNS
 
         private void btnLoadLogo1_Click(object sender, EventArgs e)
         {
-            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance< frmGenericImageEditor>(ServiceHelper.Services, null, "Logo1");
+            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, null, "Logo1");
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBoxLogo1.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
@@ -868,36 +823,33 @@ namespace DTRMNS
 
         private async void btnDeleteLogo1_Click(object sender, EventArgs e)
         {
-            await repoImage.DeleteByField("ReferenceIID","Logo1");
+            await repoImage.DeleteByField("ReferenceIID", "Logo1");
             pBoxLogo1.Image = null;
             LoadLogoImages();
         }
 
         private async void btnDeleteLogo2_Click(object sender, EventArgs e)
         {
-            await repoImage.DeleteByField("ReferenceIID","Logo2");
+            await repoImage.DeleteByField("ReferenceIID", "Logo2");
             pBoxLogo2.Image = null;
             LoadLogoImages();
         }
 
-        private void btnSendTestEmailToPurchase_Click(object sender, EventArgs e)
+
+
+        private void cmbReceiptPrinter_SelectionChangeCommitted(object sender, EventArgs e)
         {
-             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.PurchaseEmail, "Test email from DTRMSimple to Purchase", "test", null);
+            config.TerminalReceiptPrinterIID = cmbReceiptPrinter.SelectedValue.ToString();
         }
 
-        private void btnSendTestEmailToOrders_Click(object sender, EventArgs e)
+        private void cmbCashDrawerPrinter_SelectionChangeCommitted(object sender, EventArgs e)
         {
-             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.OrdersEmail, "Test email from DTRMSimple to Orders", "test", null);
+            config.TerminalCashDrawerPrinterIID = cmbCashDrawerPrinter.SelectedValue.ToString();
         }
 
-        private void btnSendTestEmailToReport_Click(object sender, EventArgs e)
+        private async void btnTestCashDrawer_Click(object sender, EventArgs e)
         {
-             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.ReportEmail, "Test email from DTRMSimple to Report", "test", null);
-        }
-
-        private void btnSendTestEmailToNotification_Click(object sender, EventArgs e)
-        {
-             DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.NotificationEmail, "Test email from DTRMSimple to Notification", "test", null);
+           await DTRMSimpleBusiness.Instance.OpenCashDrawer();
         }
     }
 }

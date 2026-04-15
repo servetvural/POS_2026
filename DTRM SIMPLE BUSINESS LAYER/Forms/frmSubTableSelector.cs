@@ -58,7 +58,7 @@ namespace DTRMNS
 
                 TableButton btn = new TableButton();
                 btn.Text = table.TableName;
-                btn.IID = table.IID;
+                //btn.IID = table.IID;
                 btn.Font = new Font("Arial", 12, FontStyle.Bold);
                 if (locker.Length > 0)
                 {
@@ -67,7 +67,7 @@ namespace DTRMNS
                     busyTableCounter++;
                 } else
                 {
-                    if (table.HasActiveOrder())
+                    if (table.HasActiveOrder)
                     {
                         btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
                         btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
@@ -97,7 +97,7 @@ namespace DTRMNS
             if (e.Button == MouseButtons.Right)
             {
                 TableButton tableButton = (TableButton)sender;
-                Masa table = await DTRMSimpleBusiness.Instance.GetTable(tableButton.IID);                
+                Masa table = await repoTable.Get(tableButton.Table.IID);                
                     return;                               
             }
         }                      
@@ -111,11 +111,11 @@ namespace DTRMNS
         {
             for (int i = 0; i < tablelist.Count; i++)
             {
-                if (string.IsNullOrEmpty(config.DTClientLocalReceiptPrinterIID))
+                if (string.IsNullOrEmpty(config.TerminalReceiptPrinterIID))
                 {
-                    await DTRMSimpleBusiness.Instance.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1, config.DTClientLocalReceiptPrinterIID);
+                    await DTRMSimpleBusiness.Instance.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1, config.TerminalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }

@@ -63,6 +63,11 @@ public interface IRepository<T> where T : BaseClass
     //Task<List<StockItemView>> GetStockItesWithSupplier(string SupplierIID = null);
     #endregion
 
+    Task<List<Masa>> GetAllTablesWithActiveOrders();
+    Task<List<Masa>> GetAllTablesWithActiveOrders(string salonIID);
+    Task<Masa> GetTableWithActiveOrders(string tableIID);
+    Task<Order> GetOrderToEditAsync(string orderIID, string terminalName);
+    Task<Order> GetTableWithOrderToEditAsync(string tableIID, string terminalName);
     Task<GenericImage> GetImageAsync(string EntityIID);
 
     Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment);
