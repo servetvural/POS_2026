@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
@@ -13,14 +12,13 @@ namespace DTRMNS {
     public partial class frmKitchenOrderFullScreen : Form {
         PosConfig config;
         IRepository<GenericImage> repoImage;
-        private DTRMSimpleBusiness bslayer;
+       
         private KitchenOrderItem korderitem;
-        public frmKitchenOrderFullScreen(PosConfig configAsService, IRepository<GenericImage> _repoImage,  KitchenOrderItem korderitem) {
+        public frmKitchenOrderFullScreen(KitchenOrderItem korderitem) {
             InitializeComponent();
-            config = configAsService;
-            repoImage = _repoImage;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoImage = ServiceHelper.GetService<IRepository<GenericImage>>();
 
-            bslayer = DTRMSimpleBusiness.Instance;
             this.korderitem = korderitem;
         }
 

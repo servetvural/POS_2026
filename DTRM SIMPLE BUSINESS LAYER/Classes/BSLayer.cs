@@ -925,16 +925,7 @@ namespace DTRMNS
                 string str = ex.Message;
             }
         }
-        public DataTable GetAllLogItems()
-        {
-            try
-            {
-                return GetDataTable("Select *, (Quantity * price) as Total from LogItems order by EventDateTime");
-            } catch
-            {
-                return null;
-            }
-        }
+       
 
         public async Task DeleteLogItems(List<string> IIDList)
         {

@@ -8,6 +8,7 @@ using System.IO;
 using POSWinFormLayer.Library;
 
 using POSLayer.Library;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS {
     public partial class frmScreenSaver : Form {
@@ -17,7 +18,7 @@ namespace DTRMNS {
         private List<ScreenSaverImage> nonDrawableList;
         private List<ScreenSaverImage> drawingList;
         private int totalimagecount;
-        private DTRMSimpleBusiness bslayer;
+       
         private int singleDisplayCounter;
 
         private Font singleImageFont;
@@ -32,24 +33,19 @@ namespace DTRMNS {
         public frmScreenSaver()
         {
             InitializeComponent();
-        }
-        public frmScreenSaver(PosConfig configAsService)
-        {
-            InitializeComponent();
-            config = configAsService;
-            bslayer = DTRMSimpleBusiness.Instance;
+            config = ServiceHelper.GetService<PosConfig>();
         }
 
         private void frmScreenSaver_Load(object sender, EventArgs e)
         {
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
-            if (bslayer == null)
+            if (DTRMSimpleBusiness.Instance == null)
             {
                 tmrMain.Enabled = false;
             } 
 
-            if (bslayer != null)
+            if (DTRMSimpleBusiness.Instance != null)
             {
                 switch (config.Screen_Saver_Color)
                 {

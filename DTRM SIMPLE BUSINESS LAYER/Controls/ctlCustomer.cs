@@ -20,7 +20,7 @@ namespace DTRMNS {
         private Label label7;
         private Label label10;
 
-        private DTRMSimpleBusiness bslayer;
+       
         private Button btnAddCustomerToDatabase;
 
 
@@ -69,13 +69,13 @@ namespace DTRMNS {
             InitializeComponent();
         }
 
-        public ctlCustomer(IRepository<Customer> _repoCustomer, DTRMSimpleBusiness bs, GenericFunctionCall CloseFunction,
+        public ctlCustomer( GenericFunctionCall CloseFunction,
          RemoteCompleteAttachedOrder CompleteAttachedOrder,
          int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive) {
             InitializeComponent();
-            repoCustomer = _repoCustomer;
+            repoCustomer = ServiceHelper.GetService<IRepository<Customer>>();
 
-            bslayer = bs;
+
             this.CloseFunction = CloseFunction;
             this.CompleteAttachedOrder = CompleteAttachedOrder;
             this.NumberOfCopy = NumberOfCopy;
@@ -598,21 +598,21 @@ namespace DTRMNS {
         public void LoadSearchResults() {
             LoadCustomer();
         }
-        private void btnGetByName_Click(object sender, System.EventArgs e) {
+        private async void btnGetByName_Click(object sender, System.EventArgs e) {
             if (txtName.Text.Trim().Length > 3)
-            ReloadSearch("Name");
+          await  ReloadSearch("Name");
         }
-        private void btnGetByAddress_Click(object sender, System.EventArgs e) {
+        private async void btnGetByAddress_Click(object sender, System.EventArgs e) {
             if (txtAddress.Text.Trim().Length > 3)
-             ReloadSearch("Address");
+            await ReloadSearch("Address");
         }
-        private void btnGetByPostCode_Click(object sender, System.EventArgs e) {
+        private async void btnGetByPostCode_Click(object sender, System.EventArgs e) {
             if (txtPostCode1.Text.Trim().Length > 1)
-            ReloadSearch("PostCode");
+          await  ReloadSearch("PostCode");
         }
-        private void btnGetByPhone_Click(object sender, System.EventArgs e) {
+        private async void btnGetByPhone_Click(object sender, System.EventArgs e) {
             if (txtTel.Text.Trim().Length > 3)
-                ReloadSearch("Phone");
+              await  ReloadSearch("Phone");
         }
         private async Task ReloadSearch(string SearchType) {
             switch (SearchType) {

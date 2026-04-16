@@ -6,12 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS.Forms;
-
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -24,27 +20,20 @@ namespace DTRMNS {
         PosConfig config;
         IRepository<User> repoUser;
         IRepository<Employee> repoEmployee;
-        IRepository<Bonus> repoBonus;
-
-        private DTRMSimpleBusiness bslayer;
-
-
+        IRepository<Bonus> repoBonus;    
 
         private BindingList<StaffIncome> staffIncomes = new BindingList<StaffIncome>();
         private BindingList<Expense> expenses= new BindingList<Expense>();
-
-
         private double stepOneTotal;
 
         bool blnTerminate = false;
-        public frmKassaCalculator( PosConfig configAsService, IRepository<User> _repoUser, IRepository<Employee> _repoEmployee,
-            IRepository<Bonus> _repoBonus ) {
+        public frmKassaCalculator() {
             InitializeComponent();
 
-            config = configAsService;
-            repoUser = _repoUser;
-            repoEmployee = _repoEmployee;
-            repoBonus = _repoBonus;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoUser = ServiceHelper.GetService<IRepository<User>>();
+            repoEmployee = ServiceHelper.GetService<IRepository<Employee>>();
+            repoBonus = ServiceHelper.GetService<IRepository<Bonus>>();
 
             if (config.IsValid())
             {
@@ -56,8 +45,6 @@ namespace DTRMNS {
                     Environment.Exit(0);
                 }
             }
-
-            bslayer = DTRMSimpleBusiness.Instance;
         }
 
         async Task<bool> LoginUser()
@@ -96,11 +83,6 @@ namespace DTRMNS {
                 return false;
             }
         }
-
-        //public frmKassaCalculator(DTRMSimpleBusiness bslayer) {
-        //    InitializeComponent();
-        //    this.bslayer = bslayer;
-        //}
 
         private async void frmKassaCalculator_Load(object sender, EventArgs e) {
             if (blnTerminate)
@@ -221,8 +203,7 @@ namespace DTRMNS {
             frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
             if (fsp.ShowDialog() == DialogResult.OK) {
                 List<string> report = new List<string>();
-                //report.Add("yayayaya ");
-                //report.Add("ha ha aha");
+
                 report.Add("Managed By     : " + cmbManagedBy.Text);
                 report.Add("Controlled By  : " + cmbController.Text);
                 report.Add("Date           : " + lblDate.Text);
@@ -236,9 +217,7 @@ namespace DTRMNS {
                 report.Add("Pin Terminal   : " + UF.MaximumString(txtPinTerminalTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
                 report.Add("Pin Difference : " + UF.MaximumString((txtPinTerminalTotal.Value - txtPinKassaTotal.Value).ToString("N2"), rightmax, PrintAligns.Far));                 
                 report.Add("Bahsis Total   : " + UF.MaximumString(txtBahsisTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
-               // report.Add("drawline");
-                //report.Add("CASH Total : " + stepOneTotal.ToString("N2"));
-                //report.Add("drawline");
+
                 report.Add("newline");
                 report.Add("EXPENSES");
                 report.Add("drawline");
@@ -247,23 +226,19 @@ namespace DTRMNS {
                 }
                 report.Add("drawline");
                 report.Add("Expenses Total : " + UF.MaximumString(txtExpensesTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
-               // report.Add("drawline");
-               // report.Add("newline");
+
 
                 report.Add("Reserve Total  : " + UF.MaximumString(txtRateTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
                 report.Add("Tip Total      : " + UF.MaximumString(txtBonusTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
                 report.Add("NR of Tips     : " + UF.MaximumString(txtHowManyBonus.Value.ToString("N0"), rightmax, PrintAligns.Far));               
                 report.Add("drawline");
                 report.Add("REQUIRED CASH  : " + UF.MaximumString(txtStepTwoTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
-                //report.Add("drawline");
+
                 report.Add("newline");
 
                 report.Add("Short Amount   : " + UF.MaximumString(txtShortAmount.Value.ToString("N2"), rightmax, PrintAligns.Far));
                 report.Add("Extra Amount   : " + UF.MaximumString(txtExtraAmount.Value.ToString("N2"), rightmax, PrintAligns.Far));
-                //report.Add("newline");
-               
-                //report.Add("Total Tips Hour : " + totalTipHours.ToString("N0"));
-                //report.Add("newline");
+
                 report.Add("drawline");
                 report.Add("GIVEN CASH     : " + UF.MaximumString(txtGrandTotal.Value.ToString("N2"), rightmax, PrintAligns.Far));
                 report.Add("drawline");
@@ -445,7 +420,6 @@ namespace DTRMNS {
                 if (item.shortApplicable) {
                     item.shortAmount= txtShortAmount.Value / shortableCount;
                 }
-               // item.tipIncome = txtBahsisTotal.Value / staffIncomes.Count();
             }
             LoadStaffList();
         }

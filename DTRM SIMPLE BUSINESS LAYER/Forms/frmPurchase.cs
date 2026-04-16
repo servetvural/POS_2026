@@ -8,9 +8,7 @@ using POSLayer.Models;
 namespace DTRMNS {
     public partial class frmPurchase : Form {
         private StockItemUsage stockItemUsage;
-        private StockItem stockItem;
-        private DTRMSimpleBusiness bslayer;
-
+        private StockItem stockItem;   
         public int sentQuantity;
 
         public frmPurchase() {
@@ -19,11 +17,9 @@ namespace DTRMNS {
         public frmPurchase(StockItemUsage stockItemUsage) {
             InitializeComponent();
             this.stockItemUsage = stockItemUsage;
-
-            bslayer = DTRMSimpleBusiness.Instance;
         }
-        private void frmPurchase_Load(object sender, EventArgs e) {
-            LoadStockItemUsage();
+        private async void frmPurchase_Load(object sender, EventArgs e) {
+           await LoadStockItemUsage();
         }
 
         private async Task LoadStockItemUsage() {

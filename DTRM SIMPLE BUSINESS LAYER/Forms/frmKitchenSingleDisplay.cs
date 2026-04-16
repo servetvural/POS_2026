@@ -1,41 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
-namespace DTRMNS {
+namespace DTRMNS
+{
     public partial class frmKitchenSingleDisplay : Form
     {
         PosConfig config;
         IRepository<Distribution> repoDistribution;
 
-        private DTRMSimpleBusiness bslayer;
-        private bool blnForSpecificDistribution;
 
+        private bool blnForSpecificDistribution;
         Distribution distribution;
+
         public frmKitchenSingleDisplay()
         {
             InitializeComponent();
-        }
-        public frmKitchenSingleDisplay(PosConfig configAsService,IRepository<Distribution> _repoDistribution)
-        {
-            InitializeComponent();
-            config = configAsService;
-            repoDistribution = _repoDistribution;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoDistribution = ServiceHelper.GetService<IRepository<Distribution>>();
 
-            bslayer = DTRMSimpleBusiness.Instance;
         }
-       
-        public  frmKitchenSingleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution, DTRMSimpleBusiness bslayer, Distribution _distribution, bool CloseVisible, bool FullScreen)
+
+        public frmKitchenSingleDisplay(Distribution _distribution, bool CloseVisible, bool FullScreen)
         {
             InitializeComponent();
-            this.bslayer = bslayer;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoDistribution = ServiceHelper.GetService<IRepository<Distribution>>();
+
             if (FullScreen)
             {
                 this.FormBorderStyle = FormBorderStyle.None;
@@ -44,8 +37,8 @@ namespace DTRMNS {
             blnForSpecificDistribution = true;
             ctlKitchen.ChangeDistributionVisible = false;
 
-            distribution =_distribution;
-            ctlKitchen.Initiate( distribution, CloseVisible);
+            distribution = _distribution;
+            ctlKitchen.Initiate(distribution, CloseVisible);
 
         }
 
@@ -63,12 +56,12 @@ namespace DTRMNS {
 
         private async void CtlKitchen_DisplayTypeWillBeChange()
         {
-            frmDistributionSelector frm = ActivatorUtilities.CreateInstance< frmDistributionSelector>(ServiceHelper.Services, true, await repoDistribution.Get(config.Default_Distribution_IID));
+            frmDistributionSelector frm = new frmDistributionSelector(await repoDistribution.Get(config.Default_Distribution_IID), config.ActiveMenuIID);
             if (frm.ShowDialog() == DialogResult.OK)
             {
-                config.Default_Distribution_IID  = frm.distribution.IID;
+                config.Default_Distribution_IID = frm.distribution.IID;
                 UF.SaveConfig(config);
-                ctlKitchen.DistributionChanged(frm.distribution);                
+                ctlKitchen.DistributionChanged(frm.distribution);
             }
         }
 

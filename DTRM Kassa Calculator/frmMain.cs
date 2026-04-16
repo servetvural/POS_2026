@@ -1,31 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using DTRMNS;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 
 namespace DTRM_Kassa_Calculator {
     public partial class frmMain : Form {
-        private DTRMSimpleBusiness bslayer;
-        public frmMain(DTRMSimpleBusiness bslayer) {
+       
+        public frmMain() {
             InitializeComponent();
-            this.bslayer = bslayer;
         }
 
         private void frmKassaCalculator_Load(object sender, EventArgs e) {
             try {
                 if (!UF.IsConfigFileExist()) {
-                    if (!AskForConfig(null)) {
+                    if (!AskForConfig()) {
 
                         Close();
                         Application.Exit();
@@ -37,7 +26,7 @@ namespace DTRM_Kassa_Calculator {
                    
                 //}
             } catch {
-                AskForConfig(null);
+                AskForConfig();
             }
         }
 
@@ -45,11 +34,11 @@ namespace DTRM_Kassa_Calculator {
             this.Close();
         }
         private void btnSettings_Click(object sender, EventArgs e) {
-            AskForConfig(bslayer);
+            AskForConfig();
         }
 
-        private bool AskForConfig(DTRMSimpleBusiness testbslayer) {
-            frmConfig frm = ActivatorUtilities.CreateInstance < frmConfig>(ServiceHelper.Services);
+        private bool AskForConfig( ) {
+            frmConfig frm = new frmConfig();
             if (frm.ShowDialog() == DialogResult.OK) {
                // bslayer.CustomInitialize(UF.GetConfig());
                 return true;

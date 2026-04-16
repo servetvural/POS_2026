@@ -493,6 +493,31 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+    public async Task<int> DeleteRange(List<T> items)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            DbSet<T> table = _db.Set<T>();
+
+            // Extract IDs to find all existing records in one query
+            var ids = items.Select(x => x.IID).ToList();
+            var existingItems = await table.Where(x => ids.Contains(x.IID)).ToListAsync();
+
+            if (existingItems.Any())
+            {
+                table.RemoveRange(existingItems);
+                return await _db.SaveChangesAsync(); // Returns the number of rows deleted
+            }
+
+            return 0;
+        } catch (Exception ex)
+        {
+            // Log ex.Message here
+            return 0;
+        }
+    }
+
 
     /// <summary>
     /// Use carefully, Deletes all the items in the database in which value of the fieldName matches...!!!

@@ -3668,7 +3668,7 @@ namespace DTRMNS
                 }
                 if (blnPrint)
                 {
-                    frmPinZWarning frm = new frmPinZWarning(DTRMSimpleBusiness.Instance, await repoOrder.GetOrdersTotalForPaymentMethod(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
+                    frmPinZWarning frm = new frmPinZWarning(  await repoOrder.GetOrdersTotalForPaymentMethod(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
                     if (frm.ShowDialog() == DialogResult.Cancel)
                     {
                         return;

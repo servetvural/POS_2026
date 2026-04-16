@@ -12,18 +12,16 @@ namespace DTRMNS {
     public partial class frmPinZWarning : Form {
         bool blnCompare;
         double CardTotal;
-        private DTRMSimpleBusiness bslayer;
+       
         public frmPinZWarning() {
             InitializeComponent();
             blnCompare = false;
-            bslayer = DTRMSimpleBusiness.Instance;
         }
 
-        public frmPinZWarning(DTRMSimpleBusiness bslayer, double CardTotal) {
+        public frmPinZWarning(double CardTotal) {
             InitializeComponent();
             this.CardTotal = CardTotal;
             blnCompare = false;
-            this.bslayer = bslayer;
         }
 
 

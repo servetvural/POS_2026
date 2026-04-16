@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 
 using PosLibrary;
@@ -19,12 +13,11 @@ namespace DTRMNS.Forms
 {
     public partial class frmReportArchive : Form
     {
-        private DTRMSimpleBusiness bslayer;
+       
 
         public frmReportArchive()
         {
             InitializeComponent();
-            bslayer = DTRMSimpleBusiness.Instance;
         }
         private void frmReportArchive_Load(object sender, EventArgs e)
         {
@@ -99,7 +92,7 @@ namespace DTRMNS.Forms
             }
         }
 
-        private void PrintSessionsAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        private async void PrintSessionsAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
         {
             object[] arguments = (object[])args;
             List<CustomReportPrintJob> jobList = (List<CustomReportPrintJob>)arguments[0];
@@ -107,7 +100,7 @@ namespace DTRMNS.Forms
             for (int i = 0; i < jobList.Count; i++)
             {
                 CustomReportPrintJob job = jobList[i];
-                 DTRMSimpleBusiness.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
+                await DTRMSimpleBusiness.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
                 int percent = (100 / jobList.Count) * (i + 1);
                 bgWorker.ReportProgress(percent, "Printing Session : " + job.SessionStartDate.ToString());
             }                 
@@ -171,12 +164,12 @@ namespace DTRMNS.Forms
             }
         }
 
-        private void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        private async void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
         {
             SessionDataShort[] sessionList = (SessionDataShort[])args;
             for (int i = 0; i < sessionList.Length; i++)
             {
-                 DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+               await  DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
                 // DTRMSimpleBusiness.Instance.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / sessionList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
@@ -212,7 +205,7 @@ namespace DTRMNS.Forms
             object result = frm.AsyncResult;
         }
 
-        private void ArchiveSessionsInToDirectoryAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        private async void ArchiveSessionsInToDirectoryAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
         {
             object[] arguments = (object[])args;
             string directoryPath = (string)arguments[0];
@@ -220,7 +213,7 @@ namespace DTRMNS.Forms
 
             for (int i = 0; i < SessionIIDList.Length; i++)
             {
-                 DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
+               await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
                 int percent = (100 / SessionIIDList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Archiving " + SessionIIDList[i]);
             }

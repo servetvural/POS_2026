@@ -16,7 +16,6 @@ namespace DTRMNS
         IRepository<Distribution> repoDistribution;
 
         public Distribution distribution;
-        // private List<Distribution> existingList;
 
         string menuIID;
 
@@ -39,15 +38,6 @@ namespace DTRMNS
         {
             _distributionSource.DataSource = (await repoDistribution.GetListByField("MenuIID", menuIID)).ToBindingList();
             dgv.DataSource = _distributionSource;
-
-            //dgv.Rows.Cast<DataGridViewRow>().ToList().ForEach(r => r.Selected = false);
-
-            //for (int i = 0; i < dgv.Rows.Count; i++)
-            //{
-            //    string IID = (dgv.Rows[i].DataBoundItem as Distribution).IID;
-            //    if (distribution.IID == IID)
-            //        dgv.Rows[i].Selected = true;
-            //}
 
             foreach (DataGridViewRow row in dgv.Rows)
             {

@@ -1,76 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace DTRMNS.Forms
 {
     public partial class frmLog : Form
     {
-        private DTRMSimpleBusiness bslayer;
+        IRepository<LogItem> repoLogItem;
 
-        private DataTable dt;
+        private BindingSource _logSource = new BindingSource();
+
         public frmLog()
         {
             InitializeComponent();
-            bslayer = DTRMSimpleBusiness.Instance;
         }
 
-        private void frmLog_Load(object sender, EventArgs e)
+        private async void frmLog_Load(object sender, EventArgs e)
         {
-            LoadLogs();
+            await LoadLogs();
         }
 
-        private void LoadLogs()
+        private async Task LoadLogs()
         {
-            dgvLog.DataSource = null;
-            dt =  DTRMSimpleBusiness.Instance.GetAllLogItems();  
-            ProcessData();
-            dgvLog.DataSource = dt;
-           
+            _logSource.DataSource = await repoLogItem.GetAllAsync();
+            dgvLog.DataSource = _logSource;
+            await ProcessData();
         }
 
-        void ProcessData()
+        async Task ProcessData()
         {
-            float total = 0;
-
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                total += float.Parse(dt.Rows[i]["Total"].ToString());
-            }
-
-            lblStatus.Text = dt.Rows.Count.ToString() + " Delete, Total of = " + total.ToString("c2");
+            List<LogItem> logItems = await repoLogItem.GetAllAsync();
+            lblStatus.Text = _logSource.Count.ToString() + " Delete, Total of = " + logItems.Sum(x => x.Total).ToString("c2");
         }
 
-        private void btnReload_Click(object sender, EventArgs e)
+        private async void btnReload_Click(object sender, EventArgs e)
         {
-            LoadLogs();
+            await LoadLogs();
         }
 
-        private void btnClearAll_Click(object sender, EventArgs e)
+        private async void btnClearAll_Click(object sender, EventArgs e)
         {
             if (dgvLog.Rows.Count > 0)
             {
                 if (MessageBox.Show("Delete ALL Log Entries ??") == DialogResult.OK)
                 {
-                     DTRMSimpleBusiness.Instance.DeleteAllLogItems();
-                    LoadLogs();
+                    await repoLogItem.DeleteAll();
+                    await LoadLogs();
                 }
-            }               
+            }
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Maximized)
                 this.WindowState = FormWindowState.Normal;
-            else 
+            else
                 this.WindowState = FormWindowState.Maximized;
         }
 
@@ -87,19 +78,18 @@ namespace DTRMNS.Forms
             }
         }
 
-        private void btnDeleteSelected_Click(object sender, EventArgs e)
+        private async void btnDeleteSelected_Click(object sender, EventArgs e)
         {
             if (dgvLog.SelectedRows.Count > 0)
             {
                 if (MessageBox.Show("Delete Selected Log Entries ??") == DialogResult.OK)
                 {
-                    List<string> IIDList = new List<string>();
-                    for (int i = 0; i < dgvLog.SelectedRows.Count; i++)
-                    {
-                        IIDList.Add(dgvLog.SelectedRows[i].Cells["IID"].Value.ToString());
-                    }
-                     DTRMSimpleBusiness.Instance.DeleteLogItems(IIDList);
-                    LoadLogs();
+                    List<LogItem> logItems = dgvLog.SelectedRows.Cast<DataGridViewRow>()
+                             .Select(row => row.DataBoundItem as LogItem)
+                             .Where(item => item != null)
+                             .ToList();
+                    await repoLogItem.DeleteRange(logItems);
+                    await LoadLogs();
                 }
             }
         }
@@ -108,24 +98,10 @@ namespace DTRMNS.Forms
         {
             if (dgvLog.SelectedRows.Count > 0)
             {
-                LogItem log = new LogItem()
-                {
-                    IID = dgvLog.SelectedRows[0].Cells["IID"].Value.ToString(),
-                   OrderItemText= dgvLog.SelectedRows[0].Cells["OrderItemText"].Value.ToString(),
-                   Quantity = double.Parse( dgvLog.SelectedRows[0].Cells["Quantity"].Value.ToString()),
-                   Price =double.Parse( dgvLog.SelectedRows[0].Cells["Price"].Value.ToString()),
-                   Reason = dgvLog.SelectedRows[0].Cells["Reason"].Value.ToString(),
-                   EventDateTime =DateTime.Parse(  dgvLog.SelectedRows[0].Cells["EventDateTime"].Value.ToString()),
-                  ComputerName=  dgvLog.SelectedRows[0].Cells["ComputerName"].Value.ToString(),
-                   OrderContent = dgvLog.SelectedRows[0].Cells["OrderContent"].Value.ToString(),
-                  Reference =  dgvLog.SelectedRows[0].Cells["Reference"].Value.ToString()
-            };
-
-                //string OrderContent = dgvLog.SelectedRows[0].Cells["OrderContent"].Value.ToString();
-
+                LogItem log = dgvLog.SelectedRows[0].DataBoundItem as LogItem;
                 frmTextViewer frm = new frmTextViewer(log.OrderContent + log.ToSimpleString());
                 frm.ShowDialog();
-                
+
             }
         }
     }

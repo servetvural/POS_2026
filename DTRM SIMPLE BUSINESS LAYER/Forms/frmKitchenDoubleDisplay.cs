@@ -13,18 +13,12 @@ namespace DTRMNS {
     public partial class frmKitchenDoubleDisplay : Form {
         PosConfig config;
         IRepository<Distribution> repoDistribution;
-
-        private DTRMSimpleBusiness bslayer;
-        public frmKitchenDoubleDisplay(PosConfig configAsService, IRepository<Distribution> _repoDistribution) {
+                                      
+        public frmKitchenDoubleDisplay() {
             InitializeComponent();
-            config = configAsService;
-            repoDistribution = _repoDistribution;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoDistribution = ServiceHelper.GetService<IRepository<Distribution>>();
 
-            bslayer = DTRMSimpleBusiness.Instance;
-        }
-        public frmKitchenDoubleDisplay(DTRMSimpleBusiness bslayer) {
-            InitializeComponent();
-            this.bslayer = bslayer;
         }
         private async void frmKitchenDisplay_Load(object sender, EventArgs e) {
             ctlKitchenFirst.Initiate(await repoDistribution.Get(config.Default_Distribution_IID), false);

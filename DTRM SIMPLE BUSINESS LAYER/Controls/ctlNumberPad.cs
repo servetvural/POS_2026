@@ -39,7 +39,7 @@ namespace DTRMNS {
         private Button btnC;
         private Button button7;
 
-        private DTRMSimpleBusiness bslayer;
+       
         private string ItemPrice;
         private HoldingActions elde;
         private TextBox txtDisplay;
@@ -833,9 +833,6 @@ namespace DTRMNS {
         private async Task LoadEntities() {
             pnlDistributions.Controls.Clear();
 
-            //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("SELECT EntityButton.*, Entity.DistributionIID, Entity.EntityName FROM EntityButton LEFT OUTER JOIN " +
-            //          " Entity ON EntityButton.ParentEntityIID = Entity.IID WHERE  EntityButton.PadFlag > 0 and EntityButton.ParentMenuIID = '" +  DTRMSimpleBusiness.Instance.config.ActiveMenuIID + "' Order by Entitybutton.EntityButtonName");
-
             List<CategoryItem> entityButtons = await  DTRMSimpleBusiness.Instance.GetEntityButtonsForNumberPad();
 
             List<Category> entities =await repoCategory.GetListByField("MenuIID",config.ActiveMenuIID);
@@ -854,7 +851,7 @@ namespace DTRMNS {
                 btn.Font = new Font("Arial", 9f, FontStyle.Bold);
                 btn.Tag = entitybutton;
                 btn.PrintableTypeIID = parentEntity.DistributionIID;
-                btn.EntityName = parentEntity.CategoryName; // dt.Rows[i]["EntityName"].ToString();
+                btn.EntityName = parentEntity.CategoryName; 
                 pnlDistributions.Controls.Add(btn);
                 btn.Click += new EventHandler(btnEntityButton_Click);
             }

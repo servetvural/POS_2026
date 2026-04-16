@@ -13,6 +13,7 @@ namespace DTRMNS {
     /// </summary>
     public partial class UPEntity : TableLayoutPanel {
         private PosConfig config;
+
         public string IID;
         public Category category;
         public UPEntityButton SelectedButton;
@@ -20,7 +21,7 @@ namespace DTRMNS {
         public int ButtonWidth;        
         public List<UPEntityButton> UIEButtons;
         public string OrderGroupIID = "";
-        private DTRMSimpleBusiness bslayer;     
+            
         public FlowLayoutPanel UIEButtonsPanel;
         public GenericFunctionCallReturnBool DoneEventHandler;
 

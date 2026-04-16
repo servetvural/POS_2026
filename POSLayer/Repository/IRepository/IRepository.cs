@@ -28,6 +28,7 @@ public interface IRepository<T> where T : BaseClass
     Task<int> Delete(string IID);
     Task<int> Delete(T obj);
     Task<int> DeleteAll();
+    Task<int> DeleteRange(List<T> items);
     Task<int> DeleteByField(string fieldName, object value);
 
     Task Sort();
