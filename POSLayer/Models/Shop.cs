@@ -23,9 +23,14 @@ public partial class Shop    : BaseClass
     #region 11.Miscellaneous        
     public string? CurrentSessionIID { get; set; }
 
+    public Session? CurrentSession => sessions.FirstOrDefault(s => s.IID == CurrentSessionIID);
+
+    public string? BonusIID { get; set; }
+    public Bonus? Bonus { get; set; }
+
     //public DateTime SessionStartDateTime { get; set; } = DateTime.Now;
 
-   //Text of the button which opens the cash drawer if any attached
+    //Text of the button which opens the cash drawer if any attached
     public string CashDrawerText { get; set; } = "OPEN";
 
     //Default tax rate for newly created categories in the menu
@@ -65,7 +70,8 @@ public partial class Shop    : BaseClass
 
     public DateTime KitchenModified { get; set; }
 
-   
+
+    public List<Session> sessions { get; set; } = new();
 
  
 

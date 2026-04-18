@@ -31,8 +31,7 @@ namespace DTRMNS
             InitializeComponent();
         }
         public frmStockItem(IRepository<StockItem> _repoStockItem, IRepository<Supplier> _repoSupplier,
-            IRepository<GenericImage> _repoImage,
-            DTRMSimpleBusiness bslayer, StockItem stockItem)
+            IRepository<GenericImage> _repoImage, StockItem stockItem)
         {
             InitializeComponent();
             repoStockItem = _repoStockItem;

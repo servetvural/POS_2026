@@ -14,12 +14,11 @@ namespace DTRMSimpleBackOffice {
         IRepository<Bonus> repoBonus;
         private Bonus bonus;
 
-        private int[] vals = new int[21];
-        
+        private int[] vals = new int[21];          
 
-        public frmBonus(IRepository<Bonus> _repoBonus,  Bonus bonus) {
+        public frmBonus( Bonus bonus) {
             InitializeComponent();
-            repoBonus = _repoBonus;
+            repoBonus = ServiceHelper.GetService<IRepository<Bonus>>();
 
             this.bonus = bonus;
         }

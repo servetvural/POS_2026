@@ -344,7 +344,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnStockUsage_Click(object sender, EventArgs e)
         {
-            frmStockItemUsage frm = ActivatorUtilities.CreateInstance<frmStockItemUsage>(ServiceHelper.Services);
+            frmStockItemUsage frm = new frmStockItemUsage();
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();

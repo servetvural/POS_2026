@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+
+using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
@@ -15,14 +17,14 @@ namespace DTRMNS {
         private bool blnLockID;
         private string setID;
 
-        public frmGenericImageEditor(IRepository<GenericImage> _repoImage,  GenericImage gim) {
+        public frmGenericImageEditor(GenericImage gim) {
             InitializeComponent();
-            repoImage = _repoImage;
+            repoImage = ServiceHelper.GetService<IRepository<GenericImage>>();
             this.gim = gim;
         }
-        public frmGenericImageEditor(IRepository<GenericImage> _repoImage,  GenericImage gim,string setID) {
+        public frmGenericImageEditor(GenericImage gim,string setID) {
             InitializeComponent();
-            repoImage = _repoImage;
+            repoImage = ServiceHelper.GetService<IRepository<GenericImage>>();
             this.gim = gim;
             this.setID = setID;
             blnLockID = true;

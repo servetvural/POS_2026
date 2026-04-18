@@ -1285,6 +1285,52 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+    /// <summary>
+    /// Retrieves a shop by its identifier, including the current session and associated bonus information.
+    /// </summary>
+    /// <param name="ShopIID"></param>
+    /// <returns></returns>
+    public async Task<Shop> GetShopWithCurrentSession(string ShopIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var shop = await _db.Shops.Include(b => b.Bonus).FirstOrDefaultAsync(s => s.IID == ShopIID);
+
+            if (shop != null && !string.IsNullOrEmpty(shop.CurrentSessionIID))
+            {
+                // Explicitly load only the session matching the CurrentSessionIID
+                shop.sessions.Add(await _db.Sessions.FirstOrDefaultAsync(s => s.IID == shop.CurrentSessionIID));
+            }
+            return shop;
+        } catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    public async Task<double> GetSessionOrderTotal(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var session = await _db.Sessions
+                 .Where(s => s.IID == sessionIID)
+                 .Include(s => s.Orders)
+                     .ThenInclude(o => o.Items)
+                 .FirstOrDefaultAsync();
+
+            if (session == null)
+                return 0;
+
+            return session.Total;
+
+        } catch (Exception ex)
+        {
+            return 0;
+        }
+    }
+
     public async Task MoveXOrdersToOrdersAsync(int sessionIID)
     {
         // Access the underlying DbContext from your repository

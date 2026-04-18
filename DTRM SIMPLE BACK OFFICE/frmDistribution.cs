@@ -31,7 +31,7 @@ namespace DTRMSimpleBackOffice
 
         public frmDistribution(PosConfig configAsService, IRepository<TheMenu> _repoMenu, IRepository<Distribution> _repoDistribution,
             IRepository<DistributionPrinter> _repoDistributionPrinter,
-            IRepository<Printer> _repoPrinter, DTRMSimpleBusiness bslayer, Distribution _distribution)
+            IRepository<Printer> _repoPrinter,Distribution _distribution)
         {
             InitializeComponent();
             config = configAsService;

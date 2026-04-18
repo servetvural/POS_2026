@@ -1017,6 +1017,11 @@ public class PosConfig
     public string TerminalCashDrawerPrinterIID { get; set; }
 
 
+    [BrowsableAttribute(false)]
+    public string? ShopIID { get; set; }
+  //  public Shop? Shop { get; set; }
+
+
     #endregion
 
 

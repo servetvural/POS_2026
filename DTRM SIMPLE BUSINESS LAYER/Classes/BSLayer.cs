@@ -32,13 +32,11 @@ namespace DTRMNS
         public User LoggedUser { get; set; }
         public Order AttachedOrder { get; set; }
         public TheMenu ActiveMenu { get; set; }
-        public string ReportLockClientIP { get; set; }
         public ConnectionStatus OfficeConnectionStatus { get; set; } = ConnectionStatus.Disconnected;
-        public Bitmap imgReportSnapShot { get; set; }
-        public string ApplicationVersion { get; set; } = "10.0.0.0";
+        public Bitmap imgReportSnapShot { get; set; }               
         public string StepableOrderItemGroupIID { get; set; } = "";
         public int maxHeight { get; set; }
-        public Bonus currentBonusScheme { get; set; }
+       // public Bonus currentBonusScheme { get; set; }
         private CultureInfo ci { get; set; }
 
 
@@ -163,52 +161,52 @@ namespace DTRMNS
         IRepository<StockItemUsage> repoStockItemUsage;
         IRepository<GenericImage> repoImage;
 
-        private DTRMSimpleBusiness(PosConfig configAsService, IRepository<Shop> _repoShop,
-            IRepository<Session> _repoSession,
-            IRepository<Employee> _repoEmployee,
-            IRepository<TheMenu> _repoMenu,
-            IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
-            IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem, IRepository<RecipeItem> _repoRecipeItem,
-            IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter, IRepository<DistributionPrinter> _repoDistributionPrinter,
-            IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
-            IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
-            IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
-            IRepository<Masa> _repoTable,
-            IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
-            IRepository<Supplier> _repoSupplier, 
-            IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
-            IRepository<GenericImage> _repoImage)
-        {
-            config = configAsService;
-            repoShop = _repoShop;
-            repoSession = _repoSession;
-            repoEmployee = _repoEmployee;
-            repoMenu = _repoMenu;
-            repoUser = _repoUser;
-            repoDebug = _repoDebug;
-            repoCategory = _repoCategory;
-            repoCategoryItem = _repoCategoryItem;
-            repoRecipeItem = _repoRecipeItem;
-            repoDistribution = _repoDistribution;
-            repoPrinter = _repoPrinter;
-            repoDistributionPrinter = _repoDistributionPrinter;
-            repoOrder = _repoOrder;
-            repoOrderItem = _repoOrderItem;
-            repoCustomer = _repoCustomer;
-            repoBonus = _repoBonus;
-            repoKitchenOrder = _repoKitchenOrder;
-            repoKitchenOrderItem = _repoKitchenOrderItem;
-            repoTable = _repoTable;
-            repoXOrder = _repoXOrder;
-            repoXOrderItem = _repoXOrderItem;
-            repoSupplier = _repoSupplier;
-            repoStockItem = _repoStockItem;
-            repoStockItemUsage = _repoStockItemUsage;
+        //private DTRMSimpleBusiness(PosConfig configAsService, IRepository<Shop> _repoShop,
+        //    IRepository<Session> _repoSession,
+        //    IRepository<Employee> _repoEmployee,
+        //    IRepository<TheMenu> _repoMenu,
+        //    IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
+        //    IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem, IRepository<RecipeItem> _repoRecipeItem,
+        //    IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter, IRepository<DistributionPrinter> _repoDistributionPrinter,
+        //    IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
+        //    IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
+        //    IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
+        //    IRepository<Masa> _repoTable,
+        //    IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
+        //    IRepository<Supplier> _repoSupplier, 
+        //    IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
+        //    IRepository<GenericImage> _repoImage)
+        //{
+        //    config = configAsService;
+        //    repoShop = _repoShop;
+        //    repoSession = _repoSession;
+        //    repoEmployee = _repoEmployee;
+        //    repoMenu = _repoMenu;
+        //    repoUser = _repoUser;
+        //    repoDebug = _repoDebug;
+        //    repoCategory = _repoCategory;
+        //    repoCategoryItem = _repoCategoryItem;
+        //    repoRecipeItem = _repoRecipeItem;
+        //    repoDistribution = _repoDistribution;
+        //    repoPrinter = _repoPrinter;
+        //    repoDistributionPrinter = _repoDistributionPrinter;
+        //    repoOrder = _repoOrder;
+        //    repoOrderItem = _repoOrderItem;
+        //    repoCustomer = _repoCustomer;
+        //    repoBonus = _repoBonus;
+        //    repoKitchenOrder = _repoKitchenOrder;
+        //    repoKitchenOrderItem = _repoKitchenOrderItem;
+        //    repoTable = _repoTable;
+        //    repoXOrder = _repoXOrder;
+        //    repoXOrderItem = _repoXOrderItem;
+        //    repoSupplier = _repoSupplier;
+        //    repoStockItem = _repoStockItem;
+        //    repoStockItemUsage = _repoStockItemUsage;
 
-            repoImage = _repoImage;
+        //    repoImage = _repoImage;
 
-            shop = repoShop.GetFirst().Result;
-        }
+        //    shop = repoShop.GetFirst().Result;
+        //}
 
 
         /// <summary>
@@ -238,15 +236,13 @@ namespace DTRMNS
         {
             try
             {
-                shop = await repoShop.GetFirst();
+                shop = await repoShop.Get(config.ShopIID,"Bonus");
                 ci = GetDBCulture();
                 CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(config.Terminal_Currency_Culture);
             } catch
             {
                 return false;
             }
-
-            ReportLockClientIP = "";
 
             if (ActiveMenu == null)
                 await GetActiveMenu(false, true);
@@ -2049,9 +2045,7 @@ namespace DTRMNS
         }
         public double GetCurrentSessionXSum()
         {
-            DataTable dt =
-                GetDataTable("Select isnull(Sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" +
-                                shop.CurrentSessionIID + "'");
+            DataTable dt = GetDataTable("Select isnull(Sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + shop.CurrentSessionIID + "'");
             return double.Parse(dt.Rows[0]["Total"].ToString());
         }
 
@@ -2644,9 +2638,25 @@ namespace DTRMNS
 
         #region BONUS FUNCTIONS            
 
+        public async Task<bool> SetBonus(string BonusIID)
+        {
+            try
+            {
+                shop.BonusIID = BonusIID;
+                await repoShop.Save(shop);
+                shop = await repoShop.Get(config.ShopIID,"Bonus");
+                return true;
+            } catch
+            {
+                return false;
+            }
+        }
         public async void SetSuitableBonus()
         {
-            this.currentBonusScheme = await GetSuitableBonus();
+            Bonus candidate = await GetSuitableBonus();
+            shop.BonusIID = candidate != null ? candidate.IID : "";
+             await repoShop.Save(shop);
+            shop = await repoShop.Get(config.ShopIID,"Bonus");
         }
 
         public async Task<Bonus> GetSuitableBonus()

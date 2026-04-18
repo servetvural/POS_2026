@@ -17,7 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DTRMSimpleBackOffice {
     public partial class frmCurrentSessionDisplay : Form {
-        IRepository<Session> repoSession;    
+        IRepository<Session> repoSession;
+        IRepository<Order> repoOrder;
 
         private bool blnLoading;
         private Session CurrentSessionData;
@@ -26,28 +27,27 @@ namespace DTRMSimpleBackOffice {
 
         private int seconds;
 
+        private BindingSource _orderSource = new BindingSource();
+        private BindingSource _orderItemSource = new BindingSource();
         public frmCurrentSessionDisplay() {
             InitializeComponent();
-        }
-        public frmCurrentSessionDisplay(IRepository<Session> _repoSession) {
-            InitializeComponent();
-            repoSession = _repoSession;
+            repoSession = ServiceHelper.GetService<IRepository<Session>>();
+            repoOrder = ServiceHelper.GetService<IRepository<Order>>();
         }
         private void frmCurrentSessionDisplay_Load(object sender, EventArgs e) {
             
-            //cmbInterval.SelectedIndex = 0;
 
         }
 
-        private void LoadValues() {
+        private async void LoadValues() {
             if (blnLoading)
                 return;
 
             blnLoading = true;
             //Do loading here
-            UpdateSessionLabels();
+           await UpdateSessionLabels();
 
-            LoadOrders();
+           await LoadOrders();
 
             blnLoading = false;
         }
@@ -57,12 +57,21 @@ namespace DTRMSimpleBackOffice {
                 SystemSounds.Hand.Play();
         }
 
-        private void LoadOrders() {
-            //IID, OrderDate, CalculatedValue
-            dgvOrderItems.DataSource = null;
-            dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, CalculatedValue from OrdersView where SessionIID = '" + 
-                CurrentSessionData.IID + "' order by OrderDate desc");
-            //dgvOrders_SelectionChanged(null, null);
+        private async Task LoadOrders() {
+            BindingList<Order> orders = CurrentSessionData.Orders.ToBindingList(); //new BindingList<Order>(await repoOrder.GetListByField("SessionIID",CurrentSessionData.IID,"Items"));  
+
+            dgvOrders.AutoGenerateColumns = false;
+            dgvOrderItems.AutoGenerateColumns = false;
+
+            _orderSource.DataSource = orders;
+            _orderSource.Sort = "OrderDate DESC";
+            dgvOrders.DataSource = _orderSource;
+            _orderItemSource.DataSource =_orderSource;
+
+            _orderItemSource.DataMember = "Items";
+            _orderItemSource.Sort = "DOrder DESC";
+            dgvOrderItems.DataSource = _orderItemSource;
+
         }
 
         private void btnGetSales_Click(object sender, EventArgs e) {
@@ -70,10 +79,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void dgvOrders_SelectionChanged(object sender, EventArgs e) {
-            if (dgvOrders.SelectedRows.Count > 0 ) {
-                string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                dgvOrderItems.DataSource = GetOrderItemsForOrderCustom(OrderIID);
-            }
+
         }
 
         private DataTable GetOrderItemsForOrderCustom(string OrderIID) {
@@ -81,30 +87,30 @@ namespace DTRMSimpleBackOffice {
         }
 
 
-        private async void UpdateSessionLabels() {
+        private async Task UpdateSessionLabels() {
             //Update session values dynamically
-            CurrentSessionData = await repoSession.Get(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
+            CurrentSessionData = await repoSession.Get(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID,"Orders, Orders.Items");
             int changeCount = 0;
             
             if (CurrentSessionData != null) {
-                if (CurrentSessionData.GrossSessionTotal != oldGrossSessionTotal ||
-                    CurrentSessionData.GrossSessionTotalUncompleted != oldGrossSessionTotalUncompleted )
-                {
+                //if (CurrentSessionData.GrossSessionTotal != oldGrossSessionTotal ||
+                //    CurrentSessionData.GrossSessionTotalUncompleted != oldGrossSessionTotalUncompleted )
+                //{
                     lblSessionStartDateTime.Text = CurrentSessionData.StartDate.ToString("dd/MMM/yy ddd HH:mm");
-                    double grossSessionTotal = CurrentSessionData.GrossSessionTotal;
-                    if (grossSessionTotal != oldGrossSessionTotal)
-                    {
-                        oldGrossSessionTotal = grossSessionTotal;
-                        changeCount++;                        
-                    }
+                    double grossSessionTotal = CurrentSessionData.GrossSessionTotalDynamic;
+                    //if (grossSessionTotal != oldGrossSessionTotal)
+                    //{
+                    //    oldGrossSessionTotal = grossSessionTotal;
+                    //    changeCount++;                        
+                    //}
                     lblGrossTotal.Text = grossSessionTotal.ToString("c2");
-                    double grossSessionTotalUncompleted = CurrentSessionData.GrossSessionTotalUncompleted;
-                    if (grossSessionTotalUncompleted != oldGrossSessionTotalUncompleted)
-                    {
-                        oldGrossSessionTotalUncompleted = grossSessionTotalUncompleted;
-                        changeCount++;
-                    }
-                    lblUnpaidTotal.Text = grossSessionTotalUncompleted.ToString("c2");
+                    //double grossSessionTotalUncompleted = CurrentSessionData.GrossSessionTotalUncompleted;
+                    //if (grossSessionTotalUncompleted != oldGrossSessionTotalUncompleted)
+                    //{
+                    //    oldGrossSessionTotalUncompleted = grossSessionTotalUncompleted;
+                    //    changeCount++;
+                    //}
+                    lblUnpaidTotal.Text = CurrentSessionData.BalanceDynamic.ToString("c2");
                     lblX1Total.Text = CurrentSessionData.X1Total.ToString("c2");
                     lblX2Total.Text = CurrentSessionData.X2Total.ToString("c2");
                     lblX3Total.Text = CurrentSessionData.X3Total.ToString("c2");
@@ -113,14 +119,14 @@ namespace DTRMSimpleBackOffice {
 
                     if (changeCount > 0)
                         SoundNotify();
-                }
+                //}
             }
         }
 
-        private void btnPrintReport_Click(object sender, EventArgs e) {
+        private async void btnPrintReport_Click(object sender, EventArgs e) {
              frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
              if (fsp.ShowDialog() == DialogResult.OK) {
-                DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.YReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
+               await DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.YReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
              }
         }
 

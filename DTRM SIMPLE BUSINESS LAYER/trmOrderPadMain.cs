@@ -442,8 +442,8 @@ namespace DTRMNS
             }
 
             //If Bonus Scheme Auto Selected
-            if (DTRMSimpleBusiness.Instance.currentBonusScheme != null)
-                mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.currentBonusScheme.PlanName + " (or Change)";
+            if (DTRMSimpleBusiness.Instance.shop.Bonus != null)
+                mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.shop.Bonus.PlanName + " (or Change)";
 
         }
         private async void BonusScheme_Click(object sender, EventArgs e)
@@ -451,9 +451,9 @@ namespace DTRMNS
             ToolStripMenuItem btn = (ToolStripMenuItem)sender;
             string bonusIID = btn.Tag.ToString();
 
-            DTRMSimpleBusiness.Instance.currentBonusScheme = await repoBonus.Get(bonusIID);
-            mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.currentBonusScheme.PlanName + " (or Change)";
-            pnlBonus.UpdateBonusDisplay();
+            await DTRMSimpleBusiness.Instance.SetBonus(bonusIID);
+            mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.shop.Bonus.PlanName + " (or Change)";
+            await pnlBonus.UpdateBonusDisplay();
 
         }
 
@@ -1820,7 +1820,7 @@ namespace DTRMNS
             mnuFunctions.Location = new Point(435, 0);
             mnuFunctions.Name = "mnuFunctions";
             mnuFunctions.Padding = new Padding(7, 2, 0, 2);
-            mnuFunctions.Size = new Size(91, 68);
+            mnuFunctions.Size = new Size(211, 68);
             mnuFunctions.TabIndex = 31;
             mnuFunctions.Text = "menuStrip1";
             // 
@@ -2069,7 +2069,7 @@ namespace DTRMNS
             cmdCancel.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             cmdCancel.ForeColor = Color.White;
             cmdCancel.ImeMode = ImeMode.NoControl;
-            cmdCancel.Location = new Point(527, 3);
+            cmdCancel.Location = new Point(1, 82);
             cmdCancel.Margin = new Padding(1, 3, 1, 1);
             cmdCancel.Name = "cmdCancel";
             cmdCancel.Size = new Size(111, 74);
@@ -2089,7 +2089,7 @@ namespace DTRMNS
             btnExpandShrinkHoldButtonDetails.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             btnExpandShrinkHoldButtonDetails.ForeColor = Color.White;
             btnExpandShrinkHoldButtonDetails.ImeMode = ImeMode.NoControl;
-            btnExpandShrinkHoldButtonDetails.Location = new Point(1, 82);
+            btnExpandShrinkHoldButtonDetails.Location = new Point(114, 82);
             btnExpandShrinkHoldButtonDetails.Margin = new Padding(1, 3, 1, 1);
             btnExpandShrinkHoldButtonDetails.Name = "btnExpandShrinkHoldButtonDetails";
             btnExpandShrinkHoldButtonDetails.Size = new Size(89, 74);
@@ -2571,14 +2571,14 @@ namespace DTRMNS
             //return true;
             try
             {
-                if (DTRMSimpleBusiness.Instance.currentBonusScheme == null)
+                if (DTRMSimpleBusiness.Instance.shop.Bonus == null)
                 {
                     return false;
                 }
 
-                if (!DTRMSimpleBusiness.Instance.currentBonusScheme.WithinRange(DateTime.Now.TimeOfDay))
+                if (!DTRMSimpleBusiness.Instance.shop.Bonus.WithinRange(DateTime.Now.TimeOfDay))
                     return false;
-                else if (DTRMSimpleBusiness.Instance.currentBonusScheme.WithinInvisibleRange(DateTime.Now.TimeOfDay))
+                else if (DTRMSimpleBusiness.Instance.shop.Bonus.WithinInvisibleRange(DateTime.Now.TimeOfDay))
                 {
                     return false;
                 } else

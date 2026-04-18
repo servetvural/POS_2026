@@ -19,14 +19,11 @@ namespace DTRMNS
 
         private Stack<UndoItem> undoList;
         private bool blnUseSearch;
+
         public frmStockItemUsage()
         {
             InitializeComponent();
-        }
-        public frmStockItemUsage(PosConfig configAsService)
-        {
-            InitializeComponent();
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
             this.undoList = new Stack<UndoItem>();
         }
         private void frmStockItemUsage_Load(object sender, EventArgs e)

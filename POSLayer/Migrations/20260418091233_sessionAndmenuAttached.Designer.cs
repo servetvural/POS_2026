@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Context;
 
@@ -11,9 +12,11 @@ using POSLayer.Context;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260418091233_sessionAndmenuAttached")]
+    partial class sessionAndmenuAttached
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,6 +120,9 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShopIID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<TimeSpan>("StartTime")
                         .HasColumnType("time");
 
@@ -124,6 +130,8 @@ namespace POSLayer.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("IID");
+
+                    b.HasIndex("ShopIID");
 
                     b.ToTable("Bonus");
                 });
@@ -1026,9 +1034,6 @@ namespace POSLayer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BonusIID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("CashDrawerText")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1124,8 +1129,6 @@ namespace POSLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IID");
-
-                    b.HasIndex("BonusIID");
 
                     b.ToTable("Shops");
                 });
@@ -1409,6 +1412,15 @@ namespace POSLayer.Migrations
                     b.ToTable("XorderItems");
                 });
 
+            modelBuilder.Entity("POSLayer.Models.Bonus", b =>
+                {
+                    b.HasOne("POSLayer.Models.Shop", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopIID");
+
+                    b.Navigation("Shop");
+                });
+
             modelBuilder.Entity("POSLayer.Models.Category", b =>
                 {
                     b.HasOne("POSLayer.Models.Distribution", "Distribution")
@@ -1589,21 +1601,12 @@ namespace POSLayer.Migrations
                         .HasForeignKey("MenuIID");
 
                     b.HasOne("POSLayer.Models.Shop", "Shop")
-                        .WithMany("sessions")
+                        .WithMany()
                         .HasForeignKey("ShopIID");
 
                     b.Navigation("Menu");
 
                     b.Navigation("Shop");
-                });
-
-            modelBuilder.Entity("POSLayer.Models.Shop", b =>
-                {
-                    b.HasOne("POSLayer.Models.Bonus", "Bonus")
-                        .WithMany()
-                        .HasForeignKey("BonusIID");
-
-                    b.Navigation("Bonus");
                 });
 
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>
@@ -1728,11 +1731,6 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Session", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("POSLayer.Models.Shop", b =>
-                {
-                    b.Navigation("sessions");
                 });
 
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>

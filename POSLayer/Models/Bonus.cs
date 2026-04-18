@@ -5,8 +5,8 @@ namespace POSLayer.Models;
 public partial class Bonus : BaseClass
 {
 
-    public string? ShopIID { get; set; }
-    public Shop? Shop { get; set; }
+    //public string? ShopIID { get; set; }
+    //public Shop? Shop { get; set; }
 
     public string PlanName { get; set; } = string.Empty;
 
@@ -71,32 +71,47 @@ public partial class Bonus : BaseClass
 
     private int[] vals;
 
+    public Bonus()
+    {
+        LoadVals();
+    }
+
     private void LoadVals()
     {
-        if (vals == null)
-            vals = new int[21];
+        vals = new int[]
+        {
+            Barrier0, Barrier1, Barrier2, Barrier3, Barrier4,
+            Barrier5, Barrier6, Barrier7, Barrier8, Barrier9,
+            Barrier10, Barrier11, Barrier12, Barrier13, Barrier14,
+            Barrier15, Barrier16, Barrier17, Barrier18, Barrier19,
+            Barrier20
+        };
 
-        vals[0] = Barrier0;
-        vals[1] = Barrier1;
-        vals[2] = Barrier2;
-        vals[3] = Barrier3;
-        vals[4] = Barrier4;
-        vals[5] = Barrier5;
-        vals[6] = Barrier6;
-        vals[7] = Barrier7;
-        vals[8] = Barrier8;
-        vals[9] = Barrier9;
-        vals[10] = Barrier10;
-        vals[11] = Barrier11;
-        vals[12] = Barrier12;
-        vals[13] = Barrier13;
-        vals[14] = Barrier14;
-        vals[15] = Barrier15;
-        vals[16] = Barrier16;
-        vals[17] = Barrier17;
-        vals[18] = Barrier18;
-        vals[19] = Barrier19;
-        vals[20] = Barrier20;
+
+        //if (vals == null)
+        //    vals = new int[21];
+
+        //vals[0] = Barrier0;
+        //vals[1] = Barrier1;
+        //vals[2] = Barrier2;
+        //vals[3] = Barrier3;
+        //vals[4] = Barrier4;
+        //vals[5] = Barrier5;
+        //vals[6] = Barrier6;
+        //vals[7] = Barrier7;
+        //vals[8] = Barrier8;
+        //vals[9] = Barrier9;
+        //vals[10] = Barrier10;
+        //vals[11] = Barrier11;
+        //vals[12] = Barrier12;
+        //vals[13] = Barrier13;
+        //vals[14] = Barrier14;
+        //vals[15] = Barrier15;
+        //vals[16] = Barrier16;
+        //vals[17] = Barrier17;
+        //vals[18] = Barrier18;
+        //vals[19] = Barrier19;
+        //vals[20] = Barrier20;
     }
 
     public int GetPassedBarrierNumber(double ciro)
@@ -138,6 +153,9 @@ public partial class Bonus : BaseClass
 
     public BonusStatus GetBonusStatus(double ciro)
     {
+       if (vals == null || vals.Sum() == 0 )
+            LoadVals();
+
         for (int i = 1; i < vals.Length; i++)
         {
             if (vals[i] == 0)

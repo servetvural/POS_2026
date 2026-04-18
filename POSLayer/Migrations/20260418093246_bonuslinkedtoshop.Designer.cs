@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using POSLayer.Context;
 
@@ -11,9 +12,11 @@ using POSLayer.Context;
 namespace POSLayer.Migrations
 {
     [DbContext(typeof(PosDbContext))]
-    partial class PosDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260418093246_bonuslinkedtoshop")]
+    partial class bonuslinkedtoshop
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1589,7 +1592,7 @@ namespace POSLayer.Migrations
                         .HasForeignKey("MenuIID");
 
                     b.HasOne("POSLayer.Models.Shop", "Shop")
-                        .WithMany("sessions")
+                        .WithMany()
                         .HasForeignKey("ShopIID");
 
                     b.Navigation("Menu");
@@ -1728,11 +1731,6 @@ namespace POSLayer.Migrations
             modelBuilder.Entity("POSLayer.Models.Session", b =>
                 {
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("POSLayer.Models.Shop", b =>
-                {
-                    b.Navigation("sessions");
                 });
 
             modelBuilder.Entity("POSLayer.Models.StockItem", b =>

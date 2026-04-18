@@ -33,7 +33,7 @@ namespace DTRMSimpleBackOffice {
         }
 
         private void btnAdd_Click(object sender, EventArgs e) {
-            frmBonus frm = ActivatorUtilities.CreateInstance<frmBonus>(ServiceHelper.Services, new Bonus());
+            frmBonus frm =new frmBonus(new Bonus());
             if (frm.ShowDialog() == DialogResult.OK)
                 LoadBonusList();
         }
@@ -41,7 +41,7 @@ namespace DTRMSimpleBackOffice {
         private async void btnEdit_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 Bonus bonus = dgv.SelectedRows[0].DataBoundItem as Bonus;
-                frmBonus frm = ActivatorUtilities.CreateInstance< frmBonus>(ServiceHelper.Services, bonus);
+                frmBonus frm = new frmBonus(bonus);
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadBonusList();
             }
@@ -95,7 +95,6 @@ namespace DTRMSimpleBackOffice {
             using (OpenFileDialog sfd = new OpenFileDialog())
             {
                 sfd.Filter = "JSON Files (*.json)|";
-                // sfd.FileName = "Stock Item List";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     if (sfd.FileName != null && sfd.FileName != "")

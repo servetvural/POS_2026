@@ -9,6 +9,8 @@ public partial class TheMenu  : BaseClass
 {
     public string? MenuName { get; set; }
 
+    public List<Session> sessions { get; set; } = new();
+
     public List<Distribution> distributions { get; set; } = new();
     public List<Category> categories { get; set; } = new();
 

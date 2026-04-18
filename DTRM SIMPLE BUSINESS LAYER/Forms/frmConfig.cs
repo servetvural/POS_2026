@@ -27,10 +27,12 @@ namespace DTRMNS
     public class frmConfig : Form
     {
         public PosConfig config;
+        public Shop shop;
         IRepository<Shop> repoShop;
         IRepository<TheMenu> repoMenu;
         IRepository<GenericImage> repoImage;
         IRepository<Printer> repoPrinter;
+        IRepository<Bonus> repoBonus;
 
 
         private Panel panel2;
@@ -49,7 +51,7 @@ namespace DTRMNS
         private TabPage tpOthers;
         private Button btnCancel;
         private PropertyGrid pGridConfig;
-        private PropertyGrid pGridLuv;
+        private PropertyGrid pGridShop;
         private IContainer components;
 
 
@@ -70,7 +72,15 @@ namespace DTRMNS
         private Label label4;
         private ComboBox cmbReceiptPrinter;
         private Button btnTestCashDrawer;
+        private Label label6;
+        private ComboBox cmbShop;
+        private Label label7;
+        private ComboBox cmbBonus;
+        private Panel panel1;
         bool blnDatabaseConnected;
+
+
+
 
         public frmConfig()
         {
@@ -86,6 +96,7 @@ namespace DTRMNS
                 repoMenu = ServiceHelper.GetService<IRepository<TheMenu>>();
                 repoImage = ServiceHelper.GetService<IRepository<GenericImage>>();
                 repoPrinter = ServiceHelper.GetService<IRepository<Printer>>();
+                repoBonus = ServiceHelper.GetService<IRepository<Bonus>>();
             } else
             {
                 MessageBox.Show("Failed to Connect Database");
@@ -133,7 +144,11 @@ namespace DTRMNS
             tpTerminal = new TabPage();
             pGridConfig = new PropertyGrid();
             tpShop = new TabPage();
-            pGridLuv = new PropertyGrid();
+            label7 = new Label();
+            cmbBonus = new ComboBox();
+            label6 = new Label();
+            cmbShop = new ComboBox();
+            pGridShop = new PropertyGrid();
             tpOthers = new TabPage();
             btnTestCashDrawer = new Button();
             label4 = new Label();
@@ -148,6 +163,7 @@ namespace DTRMNS
             pBoxLogo2 = new PictureBox();
             btnLoadLogo1 = new Button();
             pBoxLogo1 = new PictureBox();
+            panel1 = new Panel();
             panel2.SuspendLayout();
             ((ISupportInitialize)pBox).BeginInit();
             ((ISupportInitialize)catalogListBindingSource).BeginInit();
@@ -157,6 +173,7 @@ namespace DTRMNS
             tpOthers.SuspendLayout();
             ((ISupportInitialize)pBoxLogo2).BeginInit();
             ((ISupportInitialize)pBoxLogo1).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel2
@@ -341,7 +358,8 @@ namespace DTRMNS
             // 
             // tpShop
             // 
-            tpShop.Controls.Add(pGridLuv);
+            tpShop.Controls.Add(pGridShop);
+            tpShop.Controls.Add(panel1);
             tpShop.Location = new System.Drawing.Point(4, 44);
             tpShop.Name = "tpShop";
             tpShop.Padding = new Padding(3);
@@ -350,14 +368,55 @@ namespace DTRMNS
             tpShop.Text = "SHOP SETTINGS";
             tpShop.UseVisualStyleBackColor = true;
             // 
-            // pGridLuv
+            // label7
             // 
-            pGridLuv.BackColor = System.Drawing.SystemColors.Control;
-            pGridLuv.Location = new System.Drawing.Point(3, 3);
-            pGridLuv.Name = "pGridLuv";
-            pGridLuv.PropertySort = PropertySort.Categorized;
-            pGridLuv.Size = new System.Drawing.Size(1039, 588);
-            pGridLuv.TabIndex = 126;
+            label7.AutoSize = true;
+            label7.Location = new System.Drawing.Point(409, 11);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(209, 21);
+            label7.TabIndex = 130;
+            label7.Text = "Shop's Active Bonus Scheme";
+            // 
+            // cmbBonus
+            // 
+            cmbBonus.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbBonus.FormattingEnabled = true;
+            cmbBonus.Location = new System.Drawing.Point(409, 35);
+            cmbBonus.Name = "cmbBonus";
+            cmbBonus.Size = new System.Drawing.Size(300, 29);
+            cmbBonus.TabIndex = 129;
+            cmbBonus.SelectionChangeCommitted += cmbBonus_SelectionChangeCommitted;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new System.Drawing.Point(13, 11);
+            label6.Name = "label6";
+            label6.Size = new System.Drawing.Size(46, 21);
+            label6.TabIndex = 128;
+            label6.Text = "Shop";
+            // 
+            // cmbShop
+            // 
+            cmbShop.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbShop.FormattingEnabled = true;
+            cmbShop.Location = new System.Drawing.Point(13, 35);
+            cmbShop.Name = "cmbShop";
+            cmbShop.Size = new System.Drawing.Size(300, 29);
+            cmbShop.TabIndex = 127;
+            cmbShop.SelectionChangeCommitted += cmbShop_SelectionChangeCommitted;
+            // 
+            // pGridShop
+            // 
+            pGridShop.BackColor = System.Drawing.SystemColors.Control;
+            pGridShop.Dock = DockStyle.Fill;
+            pGridShop.HelpVisible = false;
+            pGridShop.Location = new System.Drawing.Point(3, 92);
+            pGridShop.Name = "pGridShop";
+            pGridShop.PropertySort = PropertySort.Categorized;
+            pGridShop.Size = new System.Drawing.Size(1000, 477);
+            pGridShop.TabIndex = 126;
+            pGridShop.ToolbarVisible = false;
             // 
             // tpOthers
             // 
@@ -518,6 +577,18 @@ namespace DTRMNS
             pBoxLogo1.TabIndex = 136;
             pBoxLogo1.TabStop = false;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(label7);
+            panel1.Controls.Add(cmbShop);
+            panel1.Controls.Add(cmbBonus);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new System.Drawing.Point(3, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(1000, 89);
+            panel1.TabIndex = 131;
+            // 
             // frmConfig
             // 
             BackColor = System.Drawing.SystemColors.Control;
@@ -541,6 +612,8 @@ namespace DTRMNS
             tpOthers.PerformLayout();
             ((ISupportInitialize)pBoxLogo2).EndInit();
             ((ISupportInitialize)pBoxLogo1).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
 
         }
@@ -584,8 +657,11 @@ namespace DTRMNS
 
             if (blnDatabaseConnected && DTRMSimpleBusiness.Instance.LoggedUser != null)
             {
+                await LoadShops();
+                
                 await LoadMenuList();
-                await LoadCompanyDetails();
+                await LoadShopDetails();
+                await LoadBonusList();
                 await LoadReceiptPrinters();
                 await LoadCashDrawerPrinters();
             } else
@@ -673,13 +749,20 @@ namespace DTRMNS
             }
         }
 
-        private async Task LoadCompanyDetails()
+
+        private async Task LoadShopDetails()
         {
             if (!blnEmpty)
             {
                 try
                 {
-                    pGridLuv.SelectedObject = await repoShop.GetFirst();
+                    //Get Assigned shop if not available first shop if not create a shop
+                    shop = await repoShop.GetShopWithCurrentSession(config.ShopIID);
+                    if (shop == null)
+                        shop = await repoShop.GetFirst() ?? new Shop();
+
+
+                    pGridShop.SelectedObject = new ShopWrapper(shop);
                     LoadTaxRates();
                     LoadLogoImages();
                 } catch
@@ -701,7 +784,7 @@ namespace DTRMNS
         {
             if (!blnEmpty)
             {
-                Shop shop = (Shop)pGridLuv.SelectedObject;
+                //Shop shop = ((ShopWrapper)pGridShop.SelectedObject).;
                 shop.CashDrawerText = (shop.CashDrawerText.Length > 5 ? shop.CashDrawerText.Substring(0, 5) : shop.CashDrawerText);
                 repoShop.Save(shop);
                 DTRMSimpleBusiness.Instance.shop = shop;
@@ -805,7 +888,7 @@ namespace DTRMNS
 
         private void btnLoadLogo1_Click(object sender, EventArgs e)
         {
-            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, null, "Logo1");
+            frmGenericImageEditor frm = new frmGenericImageEditor( null, "Logo1");
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBoxLogo1.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
@@ -814,7 +897,7 @@ namespace DTRMNS
 
         private void btnLoadLogo2_Click(object sender, EventArgs e)
         {
-            frmGenericImageEditor frm = ActivatorUtilities.CreateInstance<frmGenericImageEditor>(ServiceHelper.Services, null, "Logo2");
+            frmGenericImageEditor frm =new frmGenericImageEditor(null, "Logo2");
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 pBoxLogo2.Image = UFWin.ByteArrayToImage(frm.gim.DisplayImage);
@@ -849,7 +932,52 @@ namespace DTRMNS
 
         private async void btnTestCashDrawer_Click(object sender, EventArgs e)
         {
-           await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+            await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+        }
+
+
+
+
+        private async Task LoadShops()
+        {
+            if (repoShop != null)
+            {
+                var shops = await repoShop.GetAllAsync();
+                cmbShop.DataSource = shops;
+                cmbShop.DisplayMember = "ShopName";
+                cmbShop.ValueMember = "IID";
+                if (config.ShopIID != null)
+                {
+                    cmbShop.SelectedValue = config.ShopIID;
+                   // config.Shop = shops.FirstOrDefault(s => s.IID == config.ShopIID);
+                }
+            }
+        }
+
+        private void cmbShop_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            config.ShopIID = cmbShop.SelectedValue.ToString();
+        }
+
+
+        private async Task LoadBonusList()
+        {
+            if (repoBonus != null)
+            {
+                var bonusList = await repoBonus.GetAllAsync();
+                cmbBonus.DataSource = bonusList;
+                cmbBonus.DisplayMember = "PlanName";
+                cmbBonus.ValueMember = "IID";
+                if (shop.BonusIID != null)
+                    cmbBonus.SelectedValue = shop.BonusIID;
+            }
+        }
+
+        private async void cmbBonus_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            shop.BonusIID = cmbBonus.SelectedValue.ToString();
+            shop.Bonus = await repoBonus.Get(shop.BonusIID);
+            pGridShop.Refresh();
         }
     }
 }

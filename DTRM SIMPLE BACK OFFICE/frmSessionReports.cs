@@ -15,9 +15,9 @@ using POSWinFormLayer.Library;
 namespace DTRMSimpleBackOffice {
     public partial class frmSessionReports : Form {
         PosConfig config;
-        public frmSessionReports(PosConfig configAsService) {
+        public frmSessionReports() {
             InitializeComponent();
-            config = configAsService;
+            config = ServiceHelper.GetService<PosConfig>();
         }
         private void frmSessionReports_Load(object sender, EventArgs e) {
             ShowHideButtons(false);
@@ -705,6 +705,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
 
         private void LoadOrderItems() {
             if (dgvOrders.SelectedRows.Count > 0) {
+                
                 
                 string orderIID = dgvOrders.SelectedRows[0].Cells["colOrderIID"].Value.ToString();
                 lblOrderTotal.Text = DTRMSimpleBusiness.Instance.GetOrderTotal(orderIID).ToString("f2");

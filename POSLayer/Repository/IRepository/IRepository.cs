@@ -75,4 +75,9 @@ public interface IRepository<T> where T : BaseClass
     Task<List<Order>> GetPendingOrdersForSession(string sessionIID);
 
     Task<List<Category>> GetCategoryTotalsForSession(string sessionIID);
+
+    Task<Shop> GetShopWithCurrentSession(string ShopIID);
+    Task<double> GetSessionOrderTotal(string sessionIID);
+
+    //Task<double> GetCurrentSessionXSum();
 }

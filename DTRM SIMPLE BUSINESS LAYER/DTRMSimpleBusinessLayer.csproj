@@ -57,10 +57,10 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <PackageReference Include="Dronax.PosLibrary" Version="1.0.3" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.4" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="System.IO.Ports" Version="10.0.5" />
-    <PackageReference Include="System.Management" Version="10.0.5" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.6" />
+    <PackageReference Include="System.Management" Version="10.0.6" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Components\EntityButtonSpecial.cs">

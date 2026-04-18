@@ -9,12 +9,17 @@ public partial class Session      : BaseClass
     public string? ShopIID { get; set; }
     public Shop? Shop { get; set; }
 
+    public string? MenuIID { get; set; }
+    public TheMenu? Menu { get; set; }
 
     public DateTime StartDate { get; set; } = DateTime.Now;
 
     public DateTime? EndDate { get; set; }
 
     public double GrossSessionTotal { get; set; }
+
+    public double GrossSessionTotalDynamic => Orders.Sum(x => x.Total);
+    public double BalanceDynamic => Orders.Sum(x => x.Balance);
 
     public double Peny1 { get; set; }
 

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 
 namespace DTRMNS.Controls {
     public partial class ctlBonus : UserControl {
         PosConfig config;
+        IRepository<Session> repoSession;
 
         private bool blnUpdating;
 
@@ -34,6 +37,7 @@ namespace DTRMNS.Controls {
         public ctlBonus( ) {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
+            repoSession = ServiceHelper.GetService<IRepository<Session>>();
         }
 
         public void Activate() {           
@@ -41,12 +45,12 @@ namespace DTRMNS.Controls {
              DTRMSimpleBusiness.Instance.SetSuitableBonus();              
         }
 
-        public void UpdateBonusDisplay() {
+        public async Task UpdateBonusDisplay() {
             blnUpdating = true;
-            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.currentBonusScheme != null) {
-                double ciro =  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum();
+            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.shop.Bonus != null) {
+                double ciro = await repoSession.GetSessionOrderTotal(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
 
-                BonusStatus status =  DTRMSimpleBusiness.Instance.currentBonusScheme.GetBonusStatus(ciro);
+                BonusStatus status =  DTRMSimpleBusiness.Instance.shop.Bonus.GetBonusStatus(ciro);
 
 
                 if (config.Display_Session_Total_On_Bonus_Bar)
@@ -55,7 +59,7 @@ namespace DTRMNS.Controls {
                     lblCiro.Text = "";
                 lblPrevious.Text = status.PreviousBarrierNumber.ToString();
                 lblNext.Text = status.NextBarrierNumber.ToString();
-                pBar.Maximum = status.Difference;
+                pBar.Maximum = status.Difference == 0 ? status.AchievedDifference : status.Difference;
 
                 if (config.Display_Progress_On_Bonus_Bar)
                     pBar.Value = status.AchievedDifference;
@@ -70,41 +74,45 @@ namespace DTRMNS.Controls {
             blnUpdating = false;
         }
 
-        private void tmrMain_Tick(object sender, EventArgs e) {
+        private async void tmrMain_Tick(object sender, EventArgs e) {
 
             // Try to get the instance safely
             var business = DTRMSimpleBusiness.Instance;
 
             if (business != null && !blnUpdating)
             {
-                UpdateBonusDisplay();
+                await UpdateBonusDisplay();
             }
-
-
-            //if (!blnUpdating)
-            //    UpdateBonusDisplay();
         }
 
-        private void ctlBonus_Click(object sender, EventArgs e) {
+        private async void ctlBonus_Click(object sender, EventArgs e) {
             if (!blnUpdating) {
-                UpdateBonusDisplay();
+               await  UpdateBonusDisplay();
             }
         }
 
-        private void pBar_Click(object sender, EventArgs e) {
-            UpdateBonusDisplay();
+        private async void pBar_Click(object sender, EventArgs e) {
+            if (!blnUpdating) {
+                await UpdateBonusDisplay();
+            }
         }
 
-        private void lblPrevious_Click(object sender, EventArgs e) {
-            UpdateBonusDisplay();
+        private async void lblPrevious_Click(object sender, EventArgs e) {
+            if (!blnUpdating) {
+                await UpdateBonusDisplay();
+            }
         }
 
-        private void lblNext_Click(object sender, EventArgs e) {
-            UpdateBonusDisplay();
+        private async void lblNext_Click(object sender, EventArgs e) {
+            if (!blnUpdating) {
+                await UpdateBonusDisplay();
+            }
         }
 
-        private void lblCiro_Click(object sender, EventArgs e) {
-            UpdateBonusDisplay();
+        private async void lblCiro_Click(object sender, EventArgs e) {
+            if (!blnUpdating) {
+                await UpdateBonusDisplay();
+            }
         }
     }
 }
