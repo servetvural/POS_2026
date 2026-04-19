@@ -30,50 +30,20 @@ namespace DTRMSimpleBackOffice {
         {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSessionReportsQuick));
             dgvDatabase = new System.Windows.Forms.DataGridView();
-            dbIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colDBStartDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colDBEndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            cellDatabaseGrossTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            sessionViewBindingSource = new System.Windows.Forms.BindingSource(components);
             dgvOrders = new System.Windows.Forms.DataGridView();
-            colOrderIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colPaymentMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colCalculatedValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ordersViewBindingSource = new System.Windows.Forms.BindingSource(components);
-            orderItemBindingSource = new System.Windows.Forms.BindingSource(components);
             dgvArchive = new System.Windows.Forms.DataGridView();
-            colArcIID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colArcStartDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            colArcEndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            cellArchivedGrossTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             pnlOrders = new System.Windows.Forms.Panel();
             pnl3661 = new System.Windows.Forms.Panel();
             btnLoadSelectables = new System.Windows.Forms.Button();
@@ -105,27 +75,19 @@ namespace DTRMSimpleBackOffice {
             btnShowHideArchive = new System.Windows.Forms.ToolStripButton();
             btnRefreshDatabase = new System.Windows.Forms.ToolStripButton();
             btnBackup = new System.Windows.Forms.ToolStripButton();
-            dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn11 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            sessionBindingSource = new System.Windows.Forms.BindingSource(components);
+            orderBindingSource = new System.Windows.Forms.BindingSource(components);
+            startDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            endDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            startDateDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            endDateDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            paymentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvDatabase).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)sessionViewBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ordersViewBindingSource).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)orderItemBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvArchive).BeginInit();
             pnlOrders.SuspendLayout();
             pnl3661.SuspendLayout();
@@ -136,6 +98,8 @@ namespace DTRMSimpleBackOffice {
             pnlArchivedSessions.SuspendLayout();
             tsArchivedSessions.SuspendLayout();
             barMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)sessionBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)orderBindingSource).BeginInit();
             SuspendLayout();
             // 
             // dgvDatabase
@@ -146,8 +110,8 @@ namespace DTRMSimpleBackOffice {
             dgvDatabase.AutoGenerateColumns = false;
             dgvDatabase.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvDatabase.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDatabase.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dbIID, colDBStartDate, colDBEndDate, cellDatabaseGrossTotal });
-            dgvDatabase.DataSource = sessionViewBindingSource;
+            dgvDatabase.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { startDateDataGridViewTextBoxColumn, endDateDataGridViewTextBoxColumn, totalDataGridViewTextBoxColumn });
+            dgvDatabase.DataSource = sessionBindingSource;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
@@ -169,52 +133,6 @@ namespace DTRMSimpleBackOffice {
             dgvDatabase.TabIndex = 1;
             dgvDatabase.SelectionChanged += dgvDatabase_SelectionChanged;
             // 
-            // dbIID
-            // 
-            dbIID.DataPropertyName = "IID";
-            dbIID.HeaderText = "IID";
-            dbIID.Name = "dbIID";
-            dbIID.ReadOnly = true;
-            dbIID.Visible = false;
-            dbIID.Width = 5;
-            // 
-            // colDBStartDate
-            // 
-            colDBStartDate.DataPropertyName = "StartDate";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colDBStartDate.DefaultCellStyle = dataGridViewCellStyle1;
-            colDBStartDate.HeaderText = "Session Start @";
-            colDBStartDate.Name = "colDBStartDate";
-            colDBStartDate.ReadOnly = true;
-            colDBStartDate.Width = 160;
-            // 
-            // colDBEndDate
-            // 
-            colDBEndDate.DataPropertyName = "EndDate";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colDBEndDate.DefaultCellStyle = dataGridViewCellStyle2;
-            colDBEndDate.HeaderText = "Session End @";
-            colDBEndDate.Name = "colDBEndDate";
-            colDBEndDate.ReadOnly = true;
-            colDBEndDate.Width = 160;
-            // 
-            // cellDatabaseGrossTotal
-            // 
-            cellDatabaseGrossTotal.DataPropertyName = "GrossSessionTotal";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = "0";
-            cellDatabaseGrossTotal.DefaultCellStyle = dataGridViewCellStyle3;
-            cellDatabaseGrossTotal.HeaderText = "Gross Total";
-            cellDatabaseGrossTotal.Name = "cellDatabaseGrossTotal";
-            cellDatabaseGrossTotal.ReadOnly = true;
-            // 
-            // sessionViewBindingSource
-            // 
-            sessionViewBindingSource.DataSource = typeof(SessionView);
-            // 
             // dgvOrders
             // 
             dgvOrders.AllowUserToAddRows = false;
@@ -222,16 +140,16 @@ namespace DTRMSimpleBackOffice {
             dgvOrders.AutoGenerateColumns = false;
             dgvOrders.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvOrders.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colOrderIID, orderDateDataGridViewTextBoxColumn, colPaymentMethod, colCalculatedValue });
-            dgvOrders.DataSource = ordersViewBindingSource;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvOrders.DefaultCellStyle = dataGridViewCellStyle8;
+            dgvOrders.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { orderDateDataGridViewTextBoxColumn, paymentDataGridViewTextBoxColumn, totalDataGridViewTextBoxColumn2 });
+            dgvOrders.DataSource = orderBindingSource;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvOrders.DefaultCellStyle = dataGridViewCellStyle7;
             dgvOrders.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvOrders.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
             dgvOrders.Location = new System.Drawing.Point(5, 112);
@@ -243,58 +161,6 @@ namespace DTRMSimpleBackOffice {
             dgvOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             dgvOrders.Size = new System.Drawing.Size(524, 455);
             dgvOrders.TabIndex = 71;
-            dgvOrders.SelectionChanged += dgvOrders_SelectionChanged;
-            // 
-            // colOrderIID
-            // 
-            colOrderIID.DataPropertyName = "IID";
-            colOrderIID.HeaderText = "IID";
-            colOrderIID.Name = "colOrderIID";
-            colOrderIID.ReadOnly = true;
-            colOrderIID.Visible = false;
-            colOrderIID.Width = 5;
-            // 
-            // orderDateDataGridViewTextBoxColumn
-            // 
-            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.Format = "dd/MMM/yy HH:mm:ss";
-            dataGridViewCellStyle5.NullValue = null;
-            orderDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
-            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
-            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
-            orderDateDataGridViewTextBoxColumn.Width = 150;
-            // 
-            // colPaymentMethod
-            // 
-            colPaymentMethod.DataPropertyName = "Payment";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            colPaymentMethod.DefaultCellStyle = dataGridViewCellStyle6;
-            colPaymentMethod.HeaderText = "Pymt";
-            colPaymentMethod.Name = "colPaymentMethod";
-            colPaymentMethod.ReadOnly = true;
-            colPaymentMethod.Width = 60;
-            // 
-            // colCalculatedValue
-            // 
-            colCalculatedValue.DataPropertyName = "CalculatedValue";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.Format = "N2";
-            dataGridViewCellStyle7.NullValue = null;
-            colCalculatedValue.DefaultCellStyle = dataGridViewCellStyle7;
-            colCalculatedValue.HeaderText = "Total";
-            colCalculatedValue.Name = "colCalculatedValue";
-            colCalculatedValue.ReadOnly = true;
-            colCalculatedValue.Width = 90;
-            // 
-            // ordersViewBindingSource
-            // 
-            ordersViewBindingSource.DataSource = typeof(OrdersView);
-            // 
-            // orderItemBindingSource
-            // 
-            orderItemBindingSource.DataSource = typeof(OrderItem);
             // 
             // dgvArchive
             // 
@@ -304,16 +170,16 @@ namespace DTRMSimpleBackOffice {
             dgvArchive.AutoGenerateColumns = false;
             dgvArchive.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvArchive.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvArchive.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { colArcIID, colArcStartDate, colArcEndDate, cellArchivedGrossTotal });
-            dgvArchive.DataSource = sessionViewBindingSource;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            dgvArchive.DefaultCellStyle = dataGridViewCellStyle12;
+            dgvArchive.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { startDateDataGridViewTextBoxColumn1, endDateDataGridViewTextBoxColumn1, totalDataGridViewTextBoxColumn1 });
+            dgvArchive.DataSource = sessionBindingSource;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            dgvArchive.DefaultCellStyle = dataGridViewCellStyle11;
             dgvArchive.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvArchive.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
             dgvArchive.Location = new System.Drawing.Point(5, 59);
@@ -326,49 +192,6 @@ namespace DTRMSimpleBackOffice {
             dgvArchive.Size = new System.Drawing.Size(540, 508);
             dgvArchive.TabIndex = 2;
             dgvArchive.SelectionChanged += dgvArchive_SelectionChanged;
-            // 
-            // colArcIID
-            // 
-            colArcIID.DataPropertyName = "IID";
-            colArcIID.HeaderText = "IID";
-            colArcIID.Name = "colArcIID";
-            colArcIID.ReadOnly = true;
-            colArcIID.Visible = false;
-            colArcIID.Width = 5;
-            // 
-            // colArcStartDate
-            // 
-            colArcStartDate.DataPropertyName = "StartDate";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colArcStartDate.DefaultCellStyle = dataGridViewCellStyle9;
-            colArcStartDate.HeaderText = "Session Start @";
-            colArcStartDate.Name = "colArcStartDate";
-            colArcStartDate.ReadOnly = true;
-            colArcStartDate.Width = 180;
-            // 
-            // colArcEndDate
-            // 
-            colArcEndDate.DataPropertyName = "EndDate";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            colArcEndDate.DefaultCellStyle = dataGridViewCellStyle10;
-            colArcEndDate.HeaderText = "Session End @";
-            colArcEndDate.Name = "colArcEndDate";
-            colArcEndDate.ReadOnly = true;
-            colArcEndDate.Width = 180;
-            // 
-            // cellArchivedGrossTotal
-            // 
-            cellArchivedGrossTotal.DataPropertyName = "GrossSessionTotal";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle11.Format = "C2";
-            dataGridViewCellStyle11.NullValue = "0";
-            cellArchivedGrossTotal.DefaultCellStyle = dataGridViewCellStyle11;
-            cellArchivedGrossTotal.HeaderText = "Gross Total";
-            cellArchivedGrossTotal.Name = "cellArchivedGrossTotal";
-            cellArchivedGrossTotal.ReadOnly = true;
-            cellArchivedGrossTotal.Width = 120;
             // 
             // pnlOrders
             // 
@@ -699,187 +522,108 @@ namespace DTRMSimpleBackOffice {
             btnBackup.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             btnBackup.Click += btnBackup_Click;
             // 
-            // dataGridViewTextBoxColumn6
+            // sessionBindingSource
             // 
-            dataGridViewTextBoxColumn6.DataPropertyName = "Quantity";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.Format = "N0";
-            dataGridViewCellStyle13.NullValue = null;
-            dataGridViewTextBoxColumn6.DefaultCellStyle = dataGridViewCellStyle13;
-            dataGridViewTextBoxColumn6.HeaderText = "Quantity";
-            dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            dataGridViewTextBoxColumn6.ReadOnly = true;
-            dataGridViewTextBoxColumn6.Visible = false;
-            dataGridViewTextBoxColumn6.Width = 60;
+            sessionBindingSource.DataSource = typeof(Session);
             // 
-            // dataGridViewTextBoxColumn7
+            // orderBindingSource
             // 
-            dataGridViewTextBoxColumn7.DataPropertyName = "OrderItemText";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle14;
-            dataGridViewTextBoxColumn7.HeaderText = "Item";
-            dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
-            dataGridViewTextBoxColumn7.ReadOnly = true;
-            dataGridViewTextBoxColumn7.Width = 200;
+            orderBindingSource.DataSource = typeof(Order);
             // 
-            // dataGridViewTextBoxColumn8
+            // startDateDataGridViewTextBoxColumn
             // 
-            dataGridViewTextBoxColumn8.DataPropertyName = "Price";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle15.Format = "N2";
-            dataGridViewCellStyle15.NullValue = null;
-            dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle15;
-            dataGridViewTextBoxColumn8.HeaderText = "Price";
-            dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
-            dataGridViewTextBoxColumn8.ReadOnly = true;
-            dataGridViewTextBoxColumn8.Width = 60;
+            startDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            startDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            startDateDataGridViewTextBoxColumn.HeaderText = "Session Start @";
+            startDateDataGridViewTextBoxColumn.Name = "startDateDataGridViewTextBoxColumn";
+            startDateDataGridViewTextBoxColumn.ReadOnly = true;
+            startDateDataGridViewTextBoxColumn.Width = 160;
             // 
-            // dataGridViewTextBoxColumn9
+            // endDateDataGridViewTextBoxColumn
             // 
-            dataGridViewTextBoxColumn9.DataPropertyName = "IID";
-            dataGridViewTextBoxColumn9.HeaderText = "IID";
-            dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-            dataGridViewTextBoxColumn9.ReadOnly = true;
-            dataGridViewTextBoxColumn9.Visible = false;
+            endDateDataGridViewTextBoxColumn.DataPropertyName = "EndDate";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            endDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            endDateDataGridViewTextBoxColumn.HeaderText = "Session End @";
+            endDateDataGridViewTextBoxColumn.Name = "endDateDataGridViewTextBoxColumn";
+            endDateDataGridViewTextBoxColumn.ReadOnly = true;
+            endDateDataGridViewTextBoxColumn.Width = 160;
             // 
-            // dataGridViewTextBoxColumn10
+            // totalDataGridViewTextBoxColumn
             // 
-            dataGridViewTextBoxColumn10.DataPropertyName = "IID";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle16.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle16;
-            dataGridViewTextBoxColumn10.HeaderText = "IID";
-            dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
-            dataGridViewTextBoxColumn10.ReadOnly = true;
-            dataGridViewTextBoxColumn10.Visible = false;
-            dataGridViewTextBoxColumn10.Width = 150;
+            totalDataGridViewTextBoxColumn.DataPropertyName = "Total";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "N2";
+            totalDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            totalDataGridViewTextBoxColumn.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn.Name = "totalDataGridViewTextBoxColumn";
+            totalDataGridViewTextBoxColumn.ReadOnly = true;
+            totalDataGridViewTextBoxColumn.Width = 80;
             // 
-            // dataGridViewTextBoxColumn11
+            // startDateDataGridViewTextBoxColumn1
             // 
-            dataGridViewTextBoxColumn11.DataPropertyName = "OrderDate";
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.Format = "F";
-            dataGridViewCellStyle17.NullValue = null;
-            dataGridViewTextBoxColumn11.DefaultCellStyle = dataGridViewCellStyle17;
-            dataGridViewTextBoxColumn11.HeaderText = "OrderDate";
-            dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
-            dataGridViewTextBoxColumn11.ReadOnly = true;
-            dataGridViewTextBoxColumn11.Width = 150;
+            startDateDataGridViewTextBoxColumn1.DataPropertyName = "StartDate";
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            startDateDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle8;
+            startDateDataGridViewTextBoxColumn1.HeaderText = "Session Start @\t";
+            startDateDataGridViewTextBoxColumn1.Name = "startDateDataGridViewTextBoxColumn1";
+            startDateDataGridViewTextBoxColumn1.ReadOnly = true;
+            startDateDataGridViewTextBoxColumn1.Width = 160;
             // 
-            // dataGridViewTextBoxColumn12
+            // endDateDataGridViewTextBoxColumn1
             // 
-            dataGridViewTextBoxColumn12.DataPropertyName = "CalculatedValue";
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle18.Format = "N2";
-            dataGridViewCellStyle18.NullValue = null;
-            dataGridViewTextBoxColumn12.DefaultCellStyle = dataGridViewCellStyle18;
-            dataGridViewTextBoxColumn12.HeaderText = "Total";
-            dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
-            dataGridViewTextBoxColumn12.ReadOnly = true;
-            dataGridViewTextBoxColumn12.Width = 60;
+            endDateDataGridViewTextBoxColumn1.DataPropertyName = "EndDate";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.Format = "dd/MM/yyyy ddd HH:mm:ss";
+            endDateDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle9;
+            endDateDataGridViewTextBoxColumn1.HeaderText = "Session End @";
+            endDateDataGridViewTextBoxColumn1.Name = "endDateDataGridViewTextBoxColumn1";
+            endDateDataGridViewTextBoxColumn1.ReadOnly = true;
+            endDateDataGridViewTextBoxColumn1.Width = 160;
             // 
-            // dataGridViewTextBoxColumn13
+            // totalDataGridViewTextBoxColumn1
             // 
-            dataGridViewTextBoxColumn13.DataPropertyName = "IID";
-            dataGridViewTextBoxColumn13.HeaderText = "IID";
-            dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
-            dataGridViewTextBoxColumn13.ReadOnly = true;
-            dataGridViewTextBoxColumn13.Visible = false;
+            totalDataGridViewTextBoxColumn1.DataPropertyName = "Total";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle10.Format = "N2";
+            totalDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle10;
+            totalDataGridViewTextBoxColumn1.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn1.Name = "totalDataGridViewTextBoxColumn1";
+            totalDataGridViewTextBoxColumn1.ReadOnly = true;
+            totalDataGridViewTextBoxColumn1.Width = 80;
             // 
-            // dataGridViewTextBoxColumn14
+            // orderDateDataGridViewTextBoxColumn
             // 
-            dataGridViewTextBoxColumn14.DataPropertyName = "Quantity";
-            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewTextBoxColumn14.DefaultCellStyle = dataGridViewCellStyle19;
-            dataGridViewTextBoxColumn14.HeaderText = "Quantity";
-            dataGridViewTextBoxColumn14.Name = "dataGridViewTextBoxColumn14";
-            dataGridViewTextBoxColumn14.ReadOnly = true;
-            dataGridViewTextBoxColumn14.Visible = false;
-            dataGridViewTextBoxColumn14.Width = 60;
+            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.Format = "dd/MMM/yy ddd HH:mm:ss";
+            orderDateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
+            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
+            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
+            orderDateDataGridViewTextBoxColumn.Width = 200;
             // 
-            // dataGridViewTextBoxColumn15
+            // paymentDataGridViewTextBoxColumn
             // 
-            dataGridViewTextBoxColumn15.DataPropertyName = "OrderItemText";
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewTextBoxColumn15.DefaultCellStyle = dataGridViewCellStyle20;
-            dataGridViewTextBoxColumn15.HeaderText = "Item";
-            dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            dataGridViewTextBoxColumn15.ReadOnly = true;
-            dataGridViewTextBoxColumn15.Visible = false;
-            dataGridViewTextBoxColumn15.Width = 200;
+            paymentDataGridViewTextBoxColumn.DataPropertyName = "Payment";
+            paymentDataGridViewTextBoxColumn.HeaderText = "Payment";
+            paymentDataGridViewTextBoxColumn.Name = "paymentDataGridViewTextBoxColumn";
+            paymentDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn16
+            // totalDataGridViewTextBoxColumn2
             // 
-            dataGridViewTextBoxColumn16.DataPropertyName = "Price";
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle21.Format = "N2";
-            dataGridViewCellStyle21.NullValue = null;
-            dataGridViewTextBoxColumn16.DefaultCellStyle = dataGridViewCellStyle21;
-            dataGridViewTextBoxColumn16.HeaderText = "Price";
-            dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            dataGridViewTextBoxColumn16.ReadOnly = true;
-            dataGridViewTextBoxColumn16.Width = 60;
-            // 
-            // dataGridViewTextBoxColumn17
-            // 
-            dataGridViewTextBoxColumn17.DataPropertyName = "Total";
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle22.Format = "N2";
-            dataGridViewCellStyle22.NullValue = null;
-            dataGridViewTextBoxColumn17.DefaultCellStyle = dataGridViewCellStyle22;
-            dataGridViewTextBoxColumn17.HeaderText = "Total";
-            dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
-            dataGridViewTextBoxColumn17.ReadOnly = true;
-            dataGridViewTextBoxColumn17.Visible = false;
-            dataGridViewTextBoxColumn17.Width = 60;
-            // 
-            // dataGridViewTextBoxColumn18
-            // 
-            dataGridViewTextBoxColumn18.DataPropertyName = "IID";
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle23.Format = "N2";
-            dataGridViewCellStyle23.NullValue = null;
-            dataGridViewTextBoxColumn18.DefaultCellStyle = dataGridViewCellStyle23;
-            dataGridViewTextBoxColumn18.HeaderText = "IID";
-            dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
-            dataGridViewTextBoxColumn18.ReadOnly = true;
-            dataGridViewTextBoxColumn18.Visible = false;
-            dataGridViewTextBoxColumn18.Width = 60;
-            // 
-            // dataGridViewTextBoxColumn19
-            // 
-            dataGridViewTextBoxColumn19.DataPropertyName = "StartDate";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle24.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            dataGridViewTextBoxColumn19.DefaultCellStyle = dataGridViewCellStyle24;
-            dataGridViewTextBoxColumn19.HeaderText = "Session Start @";
-            dataGridViewTextBoxColumn19.Name = "dataGridViewTextBoxColumn19";
-            dataGridViewTextBoxColumn19.ReadOnly = true;
-            dataGridViewTextBoxColumn19.Visible = false;
-            dataGridViewTextBoxColumn19.Width = 150;
-            // 
-            // dataGridViewTextBoxColumn20
-            // 
-            dataGridViewTextBoxColumn20.DataPropertyName = "EndDate";
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle25.Format = "dd/MM/yyyy ddd HH:mm:ss";
-            dataGridViewTextBoxColumn20.DefaultCellStyle = dataGridViewCellStyle25;
-            dataGridViewTextBoxColumn20.HeaderText = "Session End @";
-            dataGridViewTextBoxColumn20.Name = "dataGridViewTextBoxColumn20";
-            dataGridViewTextBoxColumn20.ReadOnly = true;
-            dataGridViewTextBoxColumn20.Width = 150;
-            // 
-            // dataGridViewTextBoxColumn21
-            // 
-            dataGridViewTextBoxColumn21.DataPropertyName = "GrossSessionTotal";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle26.Format = "N2";
-            dataGridViewCellStyle26.NullValue = "0";
-            dataGridViewTextBoxColumn21.DefaultCellStyle = dataGridViewCellStyle26;
-            dataGridViewTextBoxColumn21.HeaderText = "Gross Total";
-            dataGridViewTextBoxColumn21.Name = "dataGridViewTextBoxColumn21";
-            dataGridViewTextBoxColumn21.ReadOnly = true;
-            dataGridViewTextBoxColumn21.Width = 200;
+            totalDataGridViewTextBoxColumn2.DataPropertyName = "Total";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            totalDataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle6;
+            totalDataGridViewTextBoxColumn2.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn2.Name = "totalDataGridViewTextBoxColumn2";
+            totalDataGridViewTextBoxColumn2.ReadOnly = true;
+            totalDataGridViewTextBoxColumn2.Width = 80;
             // 
             // frmSessionReportsQuick
             // 
@@ -899,10 +643,7 @@ namespace DTRMSimpleBackOffice {
             WindowState = System.Windows.Forms.FormWindowState.Maximized;
             Load += frmSessionReportsQuick_Load;
             ((System.ComponentModel.ISupportInitialize)dgvDatabase).EndInit();
-            ((System.ComponentModel.ISupportInitialize)sessionViewBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ordersViewBindingSource).EndInit();
-            ((System.ComponentModel.ISupportInitialize)orderItemBindingSource).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvArchive).EndInit();
             pnlOrders.ResumeLayout(false);
             pnlOrders.PerformLayout();
@@ -920,6 +661,8 @@ namespace DTRMSimpleBackOffice {
             tsArchivedSessions.PerformLayout();
             barMain.ResumeLayout(false);
             barMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)sessionBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)orderBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -927,26 +670,8 @@ namespace DTRMSimpleBackOffice {
 
         #endregion
         private System.Windows.Forms.DataGridView dgvDatabase;
-        private System.Windows.Forms.BindingSource sessionViewBindingSource;
-        private System.Windows.Forms.BindingSource ordersViewBindingSource;
-        private System.Windows.Forms.BindingSource orderItemBindingSource;
         private System.Windows.Forms.DataGridView dgvOrders;
         private System.Windows.Forms.DataGridView dgvArchive;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn11;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn13;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn14;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
         private System.Windows.Forms.ToolStrip tsArchivedSessions;
         private System.Windows.Forms.ToolStripButton btnSessionARCReload;
         private System.Windows.Forms.ToolStripButton btnLoadSessions;
@@ -962,7 +687,6 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripButton btnLoadSessionsFromDirectory;
         private System.Windows.Forms.Panel pnlOrders;
         private System.Windows.Forms.Panel pnlSessions;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private System.Windows.Forms.Panel pnlArchivedSessions;
         private System.Windows.Forms.Panel pnl3661;
         private System.Windows.Forms.Button btnSil;
@@ -972,24 +696,23 @@ namespace DTRMSimpleBackOffice {
         private System.Windows.Forms.ToolStripLabel lblCard;
         private System.Windows.Forms.ToolStripLabel lblCash;
         private System.Windows.Forms.ToolStripButton btnShowHideArchive;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colArcIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colArcStartDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colArcEndDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn cellArchivedGrossTotal;
         private System.Windows.Forms.ToolStripButton btnAllSessionTotal;
         private System.Windows.Forms.ToolStripLabel lblInfo;
         private System.Windows.Forms.ToolStripButton btnWizard;
         private System.Windows.Forms.ToolStripLabel lblDatabaseSelectedTotal;
         private System.Windows.Forms.ToolStripLabel lblSelectedOrdersTotal;
         private System.Windows.Forms.ToolStripButton btnRefreshDatabase;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dbIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDBStartDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDBEndDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn cellDatabaseGrossTotal;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colOrderIID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn orderDateDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colPaymentMethod;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colCalculatedValue;
         private System.Windows.Forms.ToolStripButton btnBackup;
+        private System.Windows.Forms.BindingSource sessionBindingSource;
+        private System.Windows.Forms.BindingSource orderBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn startDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn endDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn startDateDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn endDateDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderDateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn paymentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn2;
     }
 }

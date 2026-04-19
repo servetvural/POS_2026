@@ -136,7 +136,7 @@ namespace DTRMSimpleBackOffice {
                 Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
                 frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
-                    DTRMSimpleBusiness.Instance.PrintReceipt(OrderIID, frm.SelectedPrinter, 1);
+                    DTRMSimpleBusiness.Instance.PrintReceipt(order, frm.SelectedPrinter, 1);
                 }
             }
         }
@@ -155,7 +155,7 @@ namespace DTRMSimpleBackOffice {
                 Graphics g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                int imgHeight = DTRMSimpleBusiness.Instance.ViewReceipt(g, OrderIID, printer, 1);
+                int imgHeight = DTRMSimpleBusiness.Instance.ViewReceipt(g, order, printer, 1);
                 Image imgFinal = DRUF.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
 
                 frmViewImage frm = new frmViewImage(imgFinal);

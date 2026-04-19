@@ -18,13 +18,13 @@ namespace DTRMNS
         IRepository<Masa> repoTable;
 
         private string rootTableIID;
-        private GenericEventHandler ButtonClickHandler;
+        private GenericEventHandlerAsync ButtonClickHandler;
         private List<Masa> tablelist;
         private TableButton SourceTable;
 
         private TableButton sourceMergeTable;
 
-        public frmSubTableSelector(PosConfig configAsService, IRepository<Masa> _repoTable, string rootTableIID, GenericEventHandler ButtonClickHandler)
+        public frmSubTableSelector(PosConfig configAsService, IRepository<Masa> _repoTable, string rootTableIID, GenericEventHandlerAsync ButtonClickHandler)
         {
             InitializeComponent();
             config = configAsService;

@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Net.Mail;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -39,23 +40,33 @@ namespace DTRMNS
        // public Bonus currentBonusScheme { get; set; }
         private CultureInfo ci { get; set; }
 
+        public GenericImage printLogo { get; set; }
 
-        public event GenericFunctionCall OrderLoaded;
-        public void OnOrderLoaded()
+        public event GenericFunctionCallAsync OrderLoaded;
+        public async Task OnOrderLoaded()
         {
-            this.OrderLoaded?.Invoke();
+            if (this.OrderLoaded != null)
+            {
+                await this.OrderLoaded.Invoke();
+            }
         }
 
-        public event GenericFunctionCall OrderUnloaded;
-        public void OnOrderUnloaded()
+        public event GenericFunctionCallAsync OrderUnloaded;
+        public async Task OnOrderUnloaded()
         {
-            OrderUnloaded?.Invoke();
+            if (this.OrderUnloaded != null)
+            {
+                await this.OrderUnloaded.Invoke();
+            }
         }
 
-        public event GenericFunctionCall DisplayOrder;
-        public void OnDisplayOrder()
+        public event GenericFunctionCallAsync DisplayOrder;
+        public async Task OnDisplayOrder()
         {
-            DisplayOrder?.Invoke();
+            if (this.DisplayOrder != null)
+            {
+                await this.DisplayOrder.Invoke();
+            }
         }
 
         public event KitchenEventHandler KitchenRequestOccured;
@@ -121,6 +132,8 @@ namespace DTRMNS
 
             //shop = repoShop.GetFirst().Result;
             InitializeAsync();
+
+
         }
 
         private async Task InitializeAsync()
@@ -128,7 +141,8 @@ namespace DTRMNS
             try
             {
                 shop = await repoShop.GetFirst();
-            }catch
+                printLogo = await repoImage.GetByField("ReferenceIID", "Logo1");
+            } catch
             {
                     //Handle the case where shop is not found, maybe log an error or set a default value
                     shop = null; // or new Shop() with default values
@@ -426,10 +440,8 @@ namespace DTRMNS
                 case OrderTypes.Sitin:
                     return eb.SitinTax;
                 case OrderTypes.TakeAway:
-                case OrderTypes.InternetTakeAway:
                     return eb.TaTax;
                 case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
                     return eb.DTax;
                 default:
                     return eb.SaleTax;
@@ -446,10 +458,8 @@ namespace DTRMNS
                 case OrderTypes.Sitin:
                     return eb.SitinTax;
                 case OrderTypes.TakeAway:
-                case OrderTypes.InternetTakeAway:
                     return eb.TaTax;
                 case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
                     return eb.DTax;
                 default:
                     return eb.SaleTax;
@@ -595,7 +605,7 @@ namespace DTRMNS
         ///Used to return an inhouse order , this function is ONLY CALLED BY RETURN ORDER
         private async void ReturnTable(Order order)
         {
-            Masa table =  await repoTable.Get(order.TableIID, "Table");
+            Masa table =  await repoTable.Get(order.TableIID);
             if (table == null)
                 return;
             if ((int)order.Status >= (int)StatusFlags.Completed)
@@ -607,10 +617,10 @@ namespace DTRMNS
                 await repoTable.Save(table);
 
                 //delete table details from order	
-                order.TableIID = "";
+                order.TableIID = null;
 
                 //unbusy order, save order
-                order.LockedClientIP = "";
+                order.LockedClientIP = null;
                 await repoOrder.Save(order);
             } else
             {
@@ -946,8 +956,8 @@ namespace DTRMNS
             {
                 if (order.Items.Count > 0)
                 {
-                    order.LockedClientIP = "";
-                    order.TableIID = "";
+                    order.LockedClientIP = null;
+                    order.TableIID = null;
                     await SaveOrder(order);
                 } else
                     await DeleteOrder(order.IID);
@@ -1032,10 +1042,8 @@ namespace DTRMNS
                 case OrderTypes.Sitin:
                     return await repoPrinter.Get(config.TerminalReceiptPrinterIID);
                 case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
                     return await repoPrinter.GetDBContext().Printers.Where(x => x.DeliveryPrinter && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
                 case OrderTypes.TakeAway:
-                case OrderTypes.InternetTakeAway:
                     return await repoPrinter.GetDBContext().Printers.Where(x => x.TakeAwayPrinter && x.LocalTerminal == config.Terminal_Name).FirstOrDefaultAsync();
                 default:
                     return await repoPrinter.Get(config.TerminalReceiptPrinterIID);
@@ -1139,7 +1147,7 @@ namespace DTRMNS
                     List<Printer> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
-                        new ReportGenerator(printerList[i], 2).PrintKitchen(korder);
+                        new ReportGenerator(printerList[i], 2,printLogo).PrintKitchen(korder);
                     }
                 }
                 return true;
@@ -1157,7 +1165,7 @@ namespace DTRMNS
                     List<Printer> printerList = GetApplicationPrinterList(korder);
                     for (int i = 0; i < printerList.Count; i++)
                     {
-                        new ReportGenerator(printerList[i], 2).PrintKitchen(korder);
+                        new ReportGenerator(printerList[i], 2,printLogo).PrintKitchen(korder);
                     }
                 }
                 return true;
@@ -1416,7 +1424,7 @@ namespace DTRMNS
 
                 if (SelectedPrinterIID != null)
                 {
-                    PrintReceipt(order.IID, await GetPrinterForClient(SelectedPrinterIID), NumberOfCopy);
+                    PrintReceipt(order, await GetPrinterForClient(SelectedPrinterIID), NumberOfCopy);
                 }
                 return true;
             } catch
@@ -1426,25 +1434,25 @@ namespace DTRMNS
         }
 
         /// NEW PRINT RECEIPT FUNCTIONS /////
-        public int PrintReceipt(string orderiid, Printer printer, int NumberOfCopy)
+        public int PrintReceipt(Order  order, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = new ReportGenerator(printer, 2);
-            generator.PrintReceipt(orderiid);
+            ReportGenerator generator = new ReportGenerator(printer, 2, printLogo);
+            generator.PrintReceipt(order);
             return generator.FinalLength;
         }
 
         public int PrintKassaReport(List<string> report, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = new ReportGenerator(printer, 2);
+            ReportGenerator generator = new ReportGenerator(printer, 2,printLogo);
             generator.PrintKassaReport(report);
             return generator.FinalLength;
         }
 
 
-        public int ViewReceipt(Graphics g, string orderiid, Printer printer, int NumberOfCopy)
+        public int ViewReceipt(Graphics g, Order order, Printer printer, int NumberOfCopy)
         {
-            ReportGenerator generator = ActivatorUtilities.CreateInstance<ReportGenerator>(ServiceHelper.Services, g, this, printer, 2);
-            generator.PrintReceipt(orderiid);
+            ReportGenerator generator = new ReportGenerator(g, printer, 2,printLogo);
+            generator.PrintReceipt(order);
             return generator.FinalLength;
         }
 
@@ -1467,7 +1475,7 @@ namespace DTRMNS
 
         public async Task<bool> PrintReport(ReportFormatTypes reportFormat, string SessionIID, string PrinterIID, bool LatePrinting)
         {
-            ReportGenerator generator = new ReportGenerator(await GetPrinterForClient(PrinterIID), 2);
+            ReportGenerator generator = new ReportGenerator(await GetPrinterForClient(PrinterIID), 2,printLogo);
             if (LatePrinting)
                 return await generator.PrintLateSessionReport(SessionIID, reportFormat);
             else
@@ -1482,7 +1490,7 @@ namespace DTRMNS
         {
             try
             {
-                ReportGenerator generator = new ReportGenerator(await GetPrinterForClient(PrinterIID), 2);
+                ReportGenerator generator = new ReportGenerator(await GetPrinterForClient(PrinterIID), 2,printLogo);
                 generator.PrintPriceList(catalogIID);
             } catch
             {
@@ -2384,7 +2392,7 @@ namespace DTRMNS
 
             if (printer != null)
             {
-                return new ReportGenerator(printer, 2).PrintDataTable(dt, CustomReportName, columnSize, blnIncludeHeaders);
+                return new ReportGenerator(printer, 2, printLogo).PrintDataTable(dt, CustomReportName, columnSize, blnIncludeHeaders);
             }
 
             return false;

@@ -3,7 +3,6 @@ using System.Windows.Forms;
 
 namespace DTRMNS {
     public partial class frmPassword : Form {
-        public DTRMSimpleBusiness bslayer;
         public string Password;
 
         public frmPassword() {
@@ -11,7 +10,6 @@ namespace DTRMNS {
         }
         public frmPassword(string msg) {
             InitializeComponent();
-            bslayer = DTRMSimpleBusiness.Instance;
             lblMessage.Text = msg;
         }
         private void frmPassword_Load(object sender, EventArgs e) {
@@ -37,18 +35,6 @@ namespace DTRMNS {
                 Password = txtPassword.Text;
                 this.DialogResult = DialogResult.OK;
                 Close();
-                //if (bslayer == null)
-                //    bslayer = new DTRMSimpleBusiness(UF.GetConfig());
-                //else
-                //     DTRMSimpleBusiness.Instance.config = UF.GetConfig();
-
-                //if ( DTRMSimpleBusiness.Instance.DoStartThings()) {
-                //    this.DialogResult = DialogResult.OK;
-                //    Close();
-                //}
-                //else {
-                //    MessageBox.Show("Failed to Connect");
-                //}
             }
         }
     }

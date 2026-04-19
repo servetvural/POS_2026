@@ -6,7 +6,7 @@ using POSLayer.Library;
 
 namespace DTRMNS {
     public partial class ctlBozukPara : UserControl {
-        public event GenericEventHandler ValueChanged;
+        public event GenericEventHandlerAsync ValueChanged;
         private double _Kurus;
         private double _Tane;
         private double _Value;

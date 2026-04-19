@@ -5,15 +5,15 @@ namespace POSLayer.Library;
 
 public enum ReportFunctionTypes { ReportSummary = 0, CategoryReport = 1, CategoryDetailedReport = 2, OrderListReport = 4 };
 public enum ReportPrintTypes { SessionReport, Receipt, Kitchen, PriceList }
-public enum ReportFormatTypes { XReport = 0, ZReport = 1, YReport = 2 }
+public enum ReportFormatTypes { XReport , ZReport , YReport  }
 
 public enum WeekDays { NoDay = 0, Monday = 1, Tuesday = 2, Wednesday = 4, Thursday = 8, Friday = 16, Saturday = 32, Sunday = 64 }
 
-public enum OrderTypes { Unknown = 0, Sitin = 1, TakeAway = 2, Delivery = 4, InternetTakeAway = 8, InternetDelivery = 16, All = 128, Sale = 256, Pad = 512 };
+public enum OrderTypes { Sale , Sitin , TakeAway, Delivery };
 public enum CategoryItemTypes { SimpleItem, ExtraItem, AmountAddition, PercentAddition, CustomAddition, AmountDeduction, PercentDeduction, CustomDeduction, SpaceButton };
 
 public enum AccessLevels { User = 0, Manager = 1, SuperUser = 2, TechnicalSupport = 3 };
-public enum StatusFlags { Unknown, New, Done, Completed, Archived, Holding, Void }
+public enum StatusFlags { New,Holding, Done, Completed, Archived }
 public enum PaymentMethods { NotPaid, Cash, Card, Online }
 public enum AutoPaymentMethods { Selective, AutoCash }
 public enum PrinterTypes { Unknown, Kitchen, Receipt, Mutant }   
@@ -80,12 +80,13 @@ public enum ConnectionStatus { Disconnected = 0, ConnectedLocally, ConnectedRemo
 public delegate void DelegateCreateOrderForCustomer(string CustomerIID, OrderTypes RequestedOrderType);
 public delegate void CallableDelegate2(object param1, object param2);
 public delegate void CallableDelegate(object param1, object param2, object param3, object param4);
-public delegate void GenericEventHandler(object sender, EventArgs e);
-public delegate void GenericFunctionCall();
+//public delegate void GenericEventHandler(object sender, EventArgs e);
+public delegate Task GenericEventHandlerAsync(object sender, EventArgs e);
+public delegate Task GenericFunctionCallAsync();
 public delegate void GenericProgressFunction(object sender, ProgressChangedEventArgs e);
 public delegate bool GenericFunctionCallReturnBool();
 public delegate void ScanEvent(string barcode);
-public delegate bool RemoteCompleteAttachedOrder(int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive);
+public delegate Task<bool> RemoteCompleteAttachedOrderAsync(int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive);
 public delegate void StatusDelegate(string message, int progress);
 public delegate void AsyncCallBack(IAsyncResult result);
 //public delegate void PassControl(Control ctrl);

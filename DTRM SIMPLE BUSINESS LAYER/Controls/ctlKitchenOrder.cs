@@ -366,7 +366,8 @@ namespace DTRMNS {
             if (printer == null)
                 return;
 
-             DTRMSimpleBusiness.Instance.PrintReceipt(korder.OrderIID, printer, 1);
+            
+            DTRMSimpleBusiness.Instance.PrintReceipt(await repoOrder.Get(korder.OrderIID, "Items"), printer, 1);
         }
 
         private async void BtnPrintWithDetails_Click(object sender, EventArgs e) {

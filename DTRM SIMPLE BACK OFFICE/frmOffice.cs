@@ -70,7 +70,7 @@ namespace DTRMSimpleBackOffice
                     repoUser = ServiceHelper.GetService<IRepository<User>>();
 
 
-                    frmPassword frmpswd = ActivatorUtilities.CreateInstance<frmPassword>(ServiceHelper.Services, "Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
+                    frmPassword frmpswd = new frmPassword("Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                     if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
                         DTRMSimpleBusiness.Instance.LoggedUser = await repoUser.GetByField("UserPassword", frmpswd.Password);
@@ -319,7 +319,7 @@ namespace DTRMSimpleBackOffice
 
         private void btnSessionReports_Click(object sender, EventArgs e)
         {
-            frmSessionReports frm = ActivatorUtilities.CreateInstance<frmSessionReports>(ServiceHelper.Services);
+            frmSessionReports frm =new frmSessionReports();
             frm.MdiParent = this;
             frm.WindowState = FormWindowState.Maximized;
             frm.Show();

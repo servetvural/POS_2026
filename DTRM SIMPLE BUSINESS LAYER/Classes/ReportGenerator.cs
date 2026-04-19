@@ -63,32 +63,38 @@ namespace DTRMNS
 
         private Printer aPrinter;
 
-        public ReportGenerator(Graphics g, Printer printer, int linespace)
+
+        GenericImage printLogo;
+        Order order;
+
+        public ReportGenerator(Graphics g, Printer printer, int linespace, GenericImage printLogo)
         {
-            this.g = g;
+            this.g = g;                                                     
             config = ServiceHelper.GetService<PosConfig>();
             repoSession = ServiceHelper.GetService<IRepository<Session>>();
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
+            this.printLogo = printLogo;
             blnCustomGraphic = true;
 
             CreateGenerator(printer, linespace);
         }
-        public ReportGenerator( Printer printer, int linespace)
+        public ReportGenerator(Printer printer, int linespace, GenericImage printLogo)
         {
             if (printer == null)
                 return;
+            this.printLogo = printLogo;
             CreateGenerator(printer, linespace);
         }
         //public ReportGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
         //    CreateGenerator(bslayer, printerNetworkName, linespace);
         //}
-        public ReportGenerator (Printer printer)
+        public ReportGenerator(Printer printer)
         {
             if (printer == null)
                 return;
             CreateGenerator(printer, 2);
         }
-        public void CreateGenerator( Printer printer, int linespace)
+        public void CreateGenerator(Printer printer,  int linespace)
         {
             if (printer == null)
                 return;
@@ -96,6 +102,9 @@ namespace DTRMNS
             config = ServiceHelper.GetService<PosConfig>();
             repoSession = ServiceHelper.GetService<IRepository<Session>>();
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
+
+          
+            //order =  await repoOrder.Get(orderIID, "Items");
 
             float fontSize = config.ReportFontSize;
             string fontName = config.ReportFontName;
@@ -442,10 +451,10 @@ namespace DTRMNS
 
 
         #region RECEIPT
-        public bool PrintReceipt(string orderIID)
+        public bool PrintReceipt(Order order)
         {
-            this.orderIID = orderIID;
-            if (orderIID == null || orderIID == "")
+            this.order = order;
+            if (order == null)
                 return false;
 
             try
@@ -460,6 +469,8 @@ namespace DTRMNS
             {
                 return false;
             }
+
+
         }
         async void pDocument_PrintReceipt(object sender, PrintPageEventArgs e)
         {
@@ -470,20 +481,20 @@ namespace DTRMNS
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            await DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReceiptHeader);
+            DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReceiptHeader);
 
-            await DrawReceipt();
+            DrawReceipt();
             Reset();
         }
-        private async Task DrawReceipt()
+        private void DrawReceipt()
         {
-            Order order = await repoOrder.Get(orderIID, "Items");
+            
 
             DrawDoubleLine();
             DrawText(centeredString("RECEIPT" +
-                (order.OrderType == OrderTypes.Sitin && order.Table != null && order.Table?.TableName != "" ? " - " + order.Table?.TableName : "") +
-                (order.OrderType == OrderTypes.Sale && order.Reference != null && order.Reference != "" ? " - " + order.Reference : "")
-                ));
+                   (order.OrderType == OrderTypes.Sitin && order.Table != null && order.Table?.TableName != "" ? " - " + order.Table?.TableName : "") +
+                   (order.OrderType == OrderTypes.Sale && order.Reference != null && order.Reference != "" ? " - " + order.Reference : "")
+                   ));
             DrawDoubleLine();
 
             //test
@@ -520,9 +531,9 @@ namespace DTRMNS
             {
                 string ItemText = item.OrderItemText.Length > 26 ? item.OrderItemText.Substring(0, 25) : item.OrderItemText;
                 DrawText(string.Format("{0,2:n0}", item.Quantity).PadRight(3) +
-                            ItemText.PadRight(26) +
-                            (config.Show_Tax_Percent_in_everyline ? String.Format("{0,5:N2}%", item.TaxPercent) : "".PadRight(6)) +
-                          String.Format("{0,8:C}", item.Total));
+                              ItemText.PadRight(26) +
+                              (config.Show_Tax_Percent_in_everyline ? String.Format("{0,5:N2}%", item.TaxPercent) : "".PadRight(6)) +
+                            String.Format("{0,8:C}", item.Total));
 
                 //collect tax percent data
                 if (taxlist.ContainsKey(item.TaxPercent))
@@ -576,35 +587,35 @@ namespace DTRMNS
             {
                 foreach (KeyValuePair<double, double> kvp in taxlist)
                 {
-                    DrawText(("Tax " + String.Format("{0,2:N0} %", kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
+                     DrawText(("Tax " + String.Format("{0,2:N0} %", kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
                 //Show Service Charge Tax Total
                 if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
-                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
+                     DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
 
 
                 if (config.Receipts_Print_Tax_Total)
-                    DrawText("Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.ItemTotalVat + order.ServiceChargeTax));
+                     DrawText("Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.ItemTotalVat + order.ServiceChargeTax));
                 if (config.Receipts_Print_Ex_Tax_Total)
-                    DrawText("Ex.Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.Total - order.ItemTotalVat - order.ServiceChargeTax));
+                     DrawText("Ex.Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.Total - order.ItemTotalVat - order.ServiceChargeTax));
 
             }
 
-            DrawText("Payment Method : " + order.Payment);
+             DrawText("Payment Method : " + order.Payment);
 
 
-            DrawLine();
+             DrawLine();
             //Luv luv =  DTRMSimpleBusiness.Instance.GetLuv();
             //DrawText(centeredString(luv.ReceiptFooter));
 
             string[] footer = DTRMSimpleBusiness.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < footer.Length; i++)
             {
-                DrawText(centeredString(footer[i]));
+                 DrawText(centeredString(footer[i]));
             }
 
-            DrawDoubleLine();
+             DrawDoubleLine();
 
         }
         #endregion
@@ -1087,7 +1098,7 @@ namespace DTRMNS
 
                 //DrawText(String.Format("{0,2:N0}" + "".PadRight(2 + quarterspace) + "{1,8:N2}" + "".PadRight(2 + quarterspace) + "{2,8:N2}" + "".PadRight(2 + quarterspace * 2) + "{3,8:N2}", TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
                 DrawText(String.Format("{0,-2:N0} " + pmethod.ToString().PadRight(5) + "{1,12:N2}" + "{2,12:N2}" + "{3,12:N2}",
-                    TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
+                       TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
             }
 
             if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
@@ -1101,7 +1112,7 @@ namespace DTRMNS
                     ServiceChargeTotal = float.Parse(dt.Rows[i]["ServiceChargeTotal"].ToString());
                     ServiceChargeTaxTotal = float.Parse(dt.Rows[i]["ServiceChargeTaxTotal"].ToString());
                     DrawText(String.Format("Srv{0,-2:N0}" + pmethod.ToString().PadRight(5) + "{1,10:N2}" + "{2,12:N2}" + "{3,12:N2}",
-                         DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
+                             DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
 
                     mainGrossTotal += ServiceChargeTotal;
                     mainNetTaxValue += ServiceChargeTaxTotal;
@@ -1110,10 +1121,10 @@ namespace DTRMNS
 
             }
 
-            DrawLine();
+             DrawLine();
             //DrawText(String.Format("".PadRight(4+quarterspace) + "{0,8:N2}" + "".PadRight(2+quarterspace) + "{1,8:N2}" + "".PadRight(2+quarterspace*2) + "{2,8:N2}", mainGrossTotal, mainNetTaxValue, mainTotalNoTax));
-            DrawText(String.Format("{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax, mainNetTaxValue, mainGrossTotal));
-            NewLine();
+             DrawText(String.Format("{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax, mainNetTaxValue, mainGrossTotal));
+             NewLine();
 
         }
 
@@ -1200,16 +1211,16 @@ namespace DTRMNS
             startY += linespace + fontHeight;
         }
 
-        private async Task<bool> EnsureLogo1()
+        private bool EnsureLogo1()
         {
             if (Logo1 != null)
                 return true;
 
-            GenericImage gim = await DTRMSimpleBusiness.Instance.GetGenericImage("Logo1");
-            if (gim == null)
+        
+            if (printLogo == null)
                 return false;
 
-            Logo1 = gim.DisplayImage.ToImage();
+            Logo1 = printLogo.DisplayImage.ToImage();
             if (Logo1 == null)
                 return false;
             else
@@ -1218,7 +1229,7 @@ namespace DTRMNS
             }
         }
 
-        private async Task DrawCompanyHeader(string CustomHeader)
+        private void DrawCompanyHeader(string CustomHeader)
         {
             //DTRMLicence licence =  DTRMSimpleBusiness.Instance.GetLicence();
 
@@ -1227,7 +1238,7 @@ namespace DTRMNS
             {
                 //Image image = Image.FromFile( DTRMSimpleBusiness.Instance.config.ReportLogo);
 
-                if (await EnsureLogo1())
+                if (EnsureLogo1())
                 {
 
                     float receiptWidth = GetReceiptWidth();

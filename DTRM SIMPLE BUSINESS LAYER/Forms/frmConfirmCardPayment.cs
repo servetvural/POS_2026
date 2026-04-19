@@ -41,7 +41,7 @@ namespace DTRMNS {
             }
         }
 
-        private void ctlAlphaNumeric1_BackspaceClicked() {
+        private async Task ctlAlphaNumeric1_BackspaceClicked() {
             txtCode.Text =  txtCode.Text.Trim();
             if (txtCode.Text.Length > 0) {
                 txtCode.Text = txtCode.Text.Substring(0, txtCode.Text.Length-1);
@@ -51,7 +51,7 @@ namespace DTRMNS {
            // SendKeys.Send("{BACKSPACE}");
         }
 
-        private void ctlAlphaNumeric1_EnterClicked() {
+        private async Task ctlAlphaNumeric1_EnterClicked() {
             btnOk_Click(null, null);
         }
     }

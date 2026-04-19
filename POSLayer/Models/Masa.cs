@@ -72,6 +72,6 @@ public partial class Masa : BaseClass
     }
 
     public bool HasActiveOrder=> orders.Any(x => x.Status == StatusFlags.Done);
-    public Order AttachedOrder=> orders.FirstOrDefault(x => x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done);
+    public Order AttachedOrder=> orders.FirstOrDefault(x => x.Status == StatusFlags.New || x.Status == StatusFlags.Done);
    
 }

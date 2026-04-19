@@ -50,14 +50,14 @@ namespace DTRMNS {
             
         }
 
-        private void ctlNumeric1_BackspaceClicked() {
+        private async Task ctlNumeric1_BackspaceClicked() {
             txtCode.Text = txtCode.Text.Trim();
             if (txtCode.Text.Length > 0) {
                 txtCode.Text = txtCode.Text.Substring(0, txtCode.Text.Length - 1);
             }
         }
 
-        private void ctlNumeric1_EnterClicked() {
+        private async Task ctlNumeric1_EnterClicked() {
             btnOk_Click(null, null);
         }
 

@@ -37,9 +37,9 @@ namespace DTRMNS {
         private Label label1;
         private Label label2;
 
-        private GenericFunctionCall CloseFunction;
+        private GenericFunctionCallAsync CloseFunction;
 
-        private RemoteCompleteAttachedOrder CompleteAttachedOrder;
+        private RemoteCompleteAttachedOrderAsync CompleteAttachedOrder;
         private int NumberOfCopy;
         private bool blnArchive;
         private bool blnPrintLocal;
@@ -69,8 +69,8 @@ namespace DTRMNS {
             InitializeComponent();
         }
 
-        public ctlCustomer( GenericFunctionCall CloseFunction,
-         RemoteCompleteAttachedOrder CompleteAttachedOrder,
+        public ctlCustomer( GenericFunctionCallAsync CloseFunction,
+         RemoteCompleteAttachedOrderAsync CompleteAttachedOrder,
          int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive) {
             InitializeComponent();
             repoCustomer = ServiceHelper.GetService<IRepository<Customer>>();
@@ -550,8 +550,7 @@ namespace DTRMNS {
         private void frmCustomer_Load(object sender, System.EventArgs e) {
             LoadCustomer();
             txtTel.Focus();
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ||
-                DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.InternetDelivery) {
+            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ) {
                 txtAddress.BackColor = Color.Bisque;
             }
         }

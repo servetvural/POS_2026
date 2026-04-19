@@ -35,14 +35,14 @@ namespace DTRMNS
         private System.ComponentModel.IContainer components;
 
         //This events required to call functions in frmMain
-        public GenericFunctionCall UnloadOrderEvent;
-        public GenericFunctionCall LoadAttachedOrderEvent;
-        public GenericFunctionCall DetachPanelEvent;
+        public GenericFunctionCallAsync UnloadOrderEvent;
+        public GenericFunctionCallAsync LoadAttachedOrderEvent;
+        public GenericFunctionCallAsync DetachPanelEvent;
         public PassControl PassControlEvent;
         private Panel panel2;
         private Button btnViewCustomerOrTable;
         private VScrollBar vScroll;
-        public RemoteCompleteAttachedOrder CompleteAttachedOrderEvent;
+        public RemoteCompleteAttachedOrderAsync CompleteAttachedOrderEvent;
         private Button btnChangePaymentMethod;
         private BindingSource orderBindingSource;
         private DataGridViewTextBoxColumn colOrderDate;
@@ -60,11 +60,11 @@ namespace DTRMNS
             repoOrder = _repoOrder;
         }
 
-        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, IRepository<Masa> _repoTable, GenericFunctionCall UnloadOrder,
-            GenericFunctionCall LoadAttachedOrder,
-            GenericFunctionCall DetachPanel,
+        public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder, IRepository<Masa> _repoTable, GenericFunctionCallAsync UnloadOrder,
+            GenericFunctionCallAsync LoadAttachedOrder,
+            GenericFunctionCallAsync DetachPanel,
             PassControl AttachPanel,
-            RemoteCompleteAttachedOrder CompleteAttachedOrder)
+            RemoteCompleteAttachedOrderAsync CompleteAttachedOrder)
         {
 
             InitializeComponent();
@@ -285,15 +285,13 @@ namespace DTRMNS
             dgv.RowHeadersWidth = 20;
             dgv.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             dgv.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dgv.RowTemplate.Height = 30;
+            dgv.RowTemplate.Height = 50;
             dgv.RowTemplate.Resizable = DataGridViewTriState.True;
             dgv.ScrollBars = ScrollBars.None;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgv.Size = new System.Drawing.Size(864, 518);
             dgv.TabIndex = 4;
             dgv.CellMouseDoubleClick += dgv_CellMouseDoubleClick;
-            dgv.CellPainting += dgv_CellPainting;
-            dgv.RowPrePaint += dgv_RowPrePaint;
             dgv.Scroll += dgv_Scroll;
             // 
             // colOrderDate
@@ -489,50 +487,50 @@ namespace DTRMNS
 
         private async void LoadSelectedOrder()
         {
-            string SelectedIID = "";
-            Masa table = null;
+          //  string SelectedIID = "";
+           // Masa table = null;
             if (dgv.SelectedRows.Count > 0)
             {
                // SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
                 Order order = dgv.SelectedRows[0].DataBoundItem as Order; // await DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
-                if (order.OrderType == OrderTypes.Sitin)
-                {
-                    if (order.Status == StatusFlags.Completed)
-                    {
-                        //table = new Masa()
-                        //{
-                        //    TableName = "Temp" + order.IID,
-                        //    TableCovers = order.Covers
-                        //};
-                        //order.TableIID = table.IID;
-                        //await repoOrder.Save(order); // DTRMSimpleBusiness.Instance.SaveOrder(order);
-                        //table.LockedClientIP = config.Terminal_Name;
-                        //table.AttachOrder(order);
+                //if (order.OrderType == OrderTypes.Sitin)
+                //{
+                //    if (order.Status == StatusFlags.Completed)
+                //    {
+                //        //table = new Masa()
+                //        //{
+                //        //    TableName = "Temp" + order.IID,
+                //        //    TableCovers = order.Covers
+                //        //};
+                //        //order.TableIID = table.IID;
+                //        //await repoOrder.Save(order); // DTRMSimpleBusiness.Instance.SaveOrder(order);
+                //        //table.LockedClientIP = config.Terminal_Name;
+                //        //table.AttachOrder(order);
 
-                        //await repoTable.Save(table); // DTRMSimpleBusiness.Instance.SaveTable(table);
-                        //await DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
-                    } else
-                    {
-                        table = await DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
-                    }
-                    if (table == null)
-                    {
-                        MessageBox.Show("Order cannot be openned");
-                        return;
-                    } else
-                    {
-                        DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
-                        LoadAttachedOrderEvent();
-                        DetachPanelEvent();
-                    }
-                } else
-                {
-                    order = await DTRMSimpleBusiness.Instance.BarrowOrder(order.IID, config.Terminal_Name);
+                //        //await repoTable.Save(table); // DTRMSimpleBusiness.Instance.SaveTable(table);
+                //        //await DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
+                //    } else
+                //    {
+                //        table = await DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
+                //    }
+                //    if (table == null)
+                //    {
+                //        MessageBox.Show("Order cannot be openned");
+                //        return;
+                //    } else
+                //    {
+                //        DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                //      await LoadAttachedOrderEvent();
+                //       await DetachPanelEvent();
+                //    }
+                //} else
+                //{
+                    order = await repoOrder.GetOrderToEditAsync(order.IID, config.Terminal_Name);
                     DTRMSimpleBusiness.Instance.AttachedOrder = order;
-                    LoadAttachedOrderEvent();
-                    DetachPanelEvent();
+                   await LoadAttachedOrderEvent();
+                   await DetachPanelEvent();
 
-                }
+                //}
             }
         }
 
@@ -590,12 +588,12 @@ namespace DTRMNS
                 Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
                 Printer printer = await DTRMSimpleBusiness.Instance.GetPrinterForOrderType(order.OrderType);
                 if (printer != null)
-                    DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, printer, 1);
+                    DTRMSimpleBusiness.Instance.PrintReceipt(order, printer, 1);
                 else
                 {
                     trmPrinterSelector trm = new trmPrinterSelector(PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
-                        DTRMSimpleBusiness.Instance.PrintReceipt(order.IID, trm.SelectedPrinter, 1);
+                        DTRMSimpleBusiness.Instance.PrintReceipt(order, trm.SelectedPrinter, 1);
 
                 }
 
@@ -603,28 +601,6 @@ namespace DTRMNS
         }
 
 
-
-        private void dgv_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-        {
-            //if (e.RowIndex < 5 && e.RowIndex >= 0)
-            //{
-            //    Order order = (dgv.Rows[e.RowIndex].DataBoundItem as Order);
-
-            //    dgv.Rows[e.RowIndex].Height = order.Items.Count * 20 + 10;
-            //}
-            
-        }
-
-        private void dgv_RowPrePaint(object sender, DataGridViewRowPrePaintEventArgs e)
-        {
-            if (e.RowIndex < 5 && e.RowIndex >= 0)
-            {
-                Order order = (dgv.Rows[e.RowIndex].DataBoundItem as Order);
-
-                dgv.Rows[e.RowIndex].Height = order.Items.Count * 20 + 10;
-            }
-
-        }
 
         private void btnViewCustomerOrTable_Click(object sender, EventArgs e)
         {
@@ -662,15 +638,15 @@ namespace DTRMNS
                     {
                         if (DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                         {
-                            PassControlEvent(new ctlPayment(new GenericFunctionCall(DetachPanelEvent),
-                                new RemoteCompleteAttachedOrder(CompleteAttachedOrderEvent),
+                            PassControlEvent(new ctlPayment(new GenericFunctionCallAsync(DetachPanelEvent),
+                                new RemoteCompleteAttachedOrderAsync(CompleteAttachedOrderEvent),
                                 0, true, false, true));
 
                             return;
                         }
                         DTRMSimpleBusiness.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.Completed;
                         await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
-                        UnloadOrderEvent();
+                        await UnloadOrderEvent();
                         PassControlEvent(this);
                         await LoadOrders(true);
                     }

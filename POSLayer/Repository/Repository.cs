@@ -115,6 +115,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                     query = query.Include(include.Trim());
                 }
             }
+            T t = await query.FirstOrDefaultAsync(x => x.IID == IID);
 
             return await query.FirstOrDefaultAsync(x => x.IID == IID);
         } catch (Exception ex)
@@ -1051,7 +1052,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return await _db.Tables.Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
-            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ToListAsync();
+            ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ToListAsync();
 
         } catch (Exception ex)
         {
@@ -1066,7 +1067,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return await _db.Tables.Where(x => x.SalonIID == salonIID).Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
-            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ThenInclude(o => o.Items).ToListAsync();
+            ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ThenInclude(o => o.Items).ToListAsync();
 
         } catch (Exception ex)
         {
@@ -1090,7 +1091,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return  await _db.Tables.Where(x => x.IID == tableIID).Include(x => x.orders.Where(x => x.TableIID == tableIID && x.OrderType == OrderTypes.Sitin &&
-            (x.Status == StatusFlags.Unknown || x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).FirstOrDefaultAsync();             
+            (x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).FirstOrDefaultAsync();             
 
         } catch (Exception ex)
         {
@@ -1122,6 +1123,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             if (order == null)
                 return null;
 
+            bool isCompletedSitinOrder = order.OrderType == OrderTypes.Sitin && (order.Status == StatusFlags.Completed || order.Status == StatusFlags.Archived);
+
             // 2. Check if it's already locked by someone else and NOT expired
             bool isLockedByOthers = order.LockedClientIP != null
                                     && order.LockedClientIP != terminalName
@@ -1134,7 +1137,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             order.LockedClientIP = terminalName;
             order.LockedUntil = DateTime.UtcNow.AddMinutes(5);
 
-            if (order.OrderType == OrderTypes.Sitin && order.Table != null)
+            //dont lock the table if it's a completed sitin order,
+            if (order.OrderType == OrderTypes.Sitin && !isCompletedSitinOrder && order.Table != null )
             {
                 order.Table.LockedClientIP = terminalName;
                 order.Table.LockedUntil = order.LockedUntil;
@@ -1159,9 +1163,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            
-
-            var order = await _db.Orders.Where(x => x.TableIID == tableIID).Include("Table").Include("Items").FirstOrDefaultAsync();
+            var order = await _db.Orders.Where(x => x.TableIID == tableIID &&
+                ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done)).Include("Table").Include("Items").FirstOrDefaultAsync();
 
             if (order == null)
             {
@@ -1172,9 +1175,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 };
             } else
             {
-
                 // 2. Check if it's already locked by someone else and NOT expired
-                bool isLockedByOthers = order.LockedClientIP != null
+                bool isLockedByOthers = !string.IsNullOrWhiteSpace(order.LockedClientIP)
                                         && order.LockedClientIP != terminalName
                                         && order.LockedUntil > DateTime.UtcNow;
                 if (isLockedByOthers)
@@ -1184,7 +1186,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             }
             // 3. Apply your lock
             order.LockedClientIP = terminalName;
-            order.LockedUntil = DateTime.UtcNow.AddMinutes(5);
+            order.LockedUntil = DateTime.Now.AddMinutes(5);
 
             if (order.OrderType == OrderTypes.Sitin && order.Table != null)
             {
@@ -1210,6 +1212,10 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             return null;
         }
     }
+
+
+   
+
 
     public async Task<GenericImage> GetImageAsync(string EntityIID)
     {

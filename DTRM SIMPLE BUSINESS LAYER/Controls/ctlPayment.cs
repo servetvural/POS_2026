@@ -17,8 +17,8 @@ namespace DTRMNS
         private Button btnOnline;
         private Button btnCard;
 
-        private GenericFunctionCall CloseFunction;
-        private RemoteCompleteAttachedOrder CompleteAttachedOrder;
+        private GenericFunctionCallAsync CloseFunction;
+        private RemoteCompleteAttachedOrderAsync CompleteAttachedOrder;
 
         private int NumberOfCopy;
         private bool blnArchive;
@@ -34,7 +34,7 @@ namespace DTRMNS
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
         }
-        public ctlPayment(GenericFunctionCall CloseFunction, RemoteCompleteAttachedOrder CompleteAttachedOrder,
+        public ctlPayment(GenericFunctionCallAsync CloseFunction, RemoteCompleteAttachedOrderAsync CompleteAttachedOrder,
            int NumberOfCopy, bool blnArchive, bool blnPrintLocal, bool blnEnforceDeliveryArchive)
         {
             InitializeComponent();
@@ -181,7 +181,7 @@ namespace DTRMNS
 
         private void btnOnline_Click(object sender, System.EventArgs e)
         {
-             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
+            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
             CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
             CloseFunction();
         }
@@ -196,14 +196,11 @@ namespace DTRMNS
                 CompleteAttachedOrder(1, true, true, true);
                 CloseFunction();
             }
-
-
-
         }
 
         private void btnCash_Click(object sender, System.EventArgs e)
         {
-             DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
+            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
             CompleteAttachedOrder(1, blnArchive, true, blnEnforceDeliveryArchive);
             CloseFunction();
         }

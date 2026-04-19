@@ -102,7 +102,7 @@ namespace DTRMNS
 
 
 
-        private void CtlBozukPara_ValueChanged(object sender, EventArgs e)
+        private async Task CtlBozukPara_ValueChanged(object sender, EventArgs e)
         {
             CalculateTotals();
         }

@@ -124,10 +124,8 @@ public partial class CategoryItem : BaseClass
             case OrderTypes.Sitin:
                 return SitinPrice;
             case OrderTypes.TakeAway:
-            case OrderTypes.InternetTakeAway:
                 return TaPrice;
             case OrderTypes.Delivery:
-            case OrderTypes.InternetDelivery:
                 return DPrice;
             default:
                 return 0f;
@@ -142,10 +140,8 @@ public partial class CategoryItem : BaseClass
             case OrderTypes.Sitin:
                 return SitinTax;
             case OrderTypes.TakeAway:
-            case OrderTypes.InternetTakeAway:
                 return TaTax;
             case OrderTypes.Delivery:
-            case OrderTypes.InternetDelivery:
                 return DTax;
             default:
                 return 0f;

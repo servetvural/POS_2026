@@ -15,22 +15,22 @@ namespace DTRMNS.Controls {
     public partial class ctlAlphaNumeric : UserControl {
 
         public event Delegate_String OutputOccured;
-        public event GenericFunctionCall BackspaceClicked;
-        public event GenericFunctionCall EnterClicked;
-        public void OnOutputOccured(string str) {
+        public event GenericFunctionCallAsync BackspaceClicked;
+        public event GenericFunctionCallAsync EnterClicked;
+        public async Task OnOutputOccured(string str) {
             if (OutputOccured != null) {
                 OutputOccured(str);
             }
         }
-        public void OnBackspaceClicked() {
+        public async Task OnBackspaceClicked() {
             if (BackspaceClicked != null) {
-                BackspaceClicked();
+                await BackspaceClicked();
             }
         }
 
-        public void OnEnterClicked() {
+        public async Task OnEnterClicked() {
             if (EnterClicked != null) {
-                EnterClicked();
+                await EnterClicked();
             }
         }
 

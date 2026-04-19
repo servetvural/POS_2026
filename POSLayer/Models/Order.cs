@@ -520,12 +520,8 @@ public partial class Order : BaseClass
             switch (OrderType)
             {
                 case OrderTypes.Delivery:
-                case OrderTypes.InternetDelivery:
-                case OrderTypes.InternetTakeAway:
                 case OrderTypes.TakeAway:
                     return true;
-                case OrderTypes.Unknown:
-                case OrderTypes.Pad:
                 case OrderTypes.Sitin:
                 case OrderTypes.Sale:
                     return false;

@@ -67,46 +67,46 @@ namespace DTRMNS
 
         public SplittingStatus SplitStatus = SplittingStatus.Normal;
 
-        public event GenericFunctionCall DisplayOccured;
-        public void OnDisplayOccured()
+        public event GenericFunctionCallAsync DisplayOccured;
+        public async Task OnDisplayOccured()
         {
             if (DisplayOccured != null)
-                DisplayOccured();
+                await DisplayOccured();
         }
 
-        public event GenericFunctionCall TopItemDeleted;
-        public void OnTopItemDeleted()
+        public event GenericFunctionCallAsync TopItemDeleted;
+        public async Task OnTopItemDeleted()
         {
             if (TopItemDeleted != null)
-                TopItemDeleted();
+                await TopItemDeleted();
         }
 
-        public event GenericFunctionCall SplitStarting;
-        public void OnSplitStarting()
+        public event GenericFunctionCallAsync SplitStarting;
+        public async Task OnSplitStarting()
         {
             if (SplitStarting != null)
-                SplitStarting();
+                await SplitStarting();
         }
 
-        public event GenericFunctionCall SplitContinuing;
-        public void OnSplitContinuing()
+        public event GenericFunctionCallAsync SplitContinuing;
+        public async Task OnSplitContinuing()
         {
             if (SplitContinuing != null)
-                SplitContinuing();
+                await SplitContinuing();
         }
 
-        public event GenericFunctionCall SplitEnding;
-        public void OnSplitEnding()
+        public event GenericFunctionCallAsync SplitEnding;
+        public async Task OnSplitEnding()
         {
             if (SplitEnding != null)
-                SplitEnding();
+                await SplitEnding();
         }
 
-        public event GenericFunctionCall ZeroItemsLeft;
-        public void OnZeroItemsLeft()
+        public event GenericFunctionCallAsync ZeroItemsLeft;
+        public async Task OnZeroItemsLeft()
         {
             if (ZeroItemsLeft != null)
-                ZeroItemsLeft();
+                await ZeroItemsLeft();
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -126,7 +126,7 @@ namespace DTRMNS
                 if (config != null)
                 {
                     ilSmall.ImageSize = new Size((int)config.Order_Item_Display_Height, (int)config.Order_Item_Display_Height);
-                    DTRMSimpleBusiness.Instance.DisplayOrder += new GenericFunctionCall(Display);
+                    DTRMSimpleBusiness.Instance.DisplayOrder += new GenericFunctionCallAsync(Display);
                 }
             } catch
             {
@@ -564,7 +564,7 @@ namespace DTRMNS
             }
         }
 
-        public async void Display()
+        public async Task Display()
         {
             Color GroupBackColor = Color.LightGray;
             string GroupIID = "";

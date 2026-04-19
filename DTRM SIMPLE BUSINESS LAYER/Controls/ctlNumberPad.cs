@@ -48,7 +48,7 @@ namespace DTRMNS {
         private Button button15;
         private Button button17;
         private Button button18;
-        private GenericFunctionCall CloseFunction;
+        private GenericFunctionCallAsync CloseFunction;
         private Button btnMultiply;
         private Button btnDivide;
         private Button btnMinus;
@@ -74,7 +74,7 @@ namespace DTRMNS {
             repoCategory = _repoCategory;
         }
 
-        public ctlNumberPad( GenericFunctionCall CloseFunction) {
+        public ctlNumberPad( GenericFunctionCallAsync CloseFunction) {
             InitializeComponent();
             this.CloseFunction = CloseFunction;
             ItemPrice = "";

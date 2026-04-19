@@ -268,14 +268,6 @@ namespace DTRMNS {
                         if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway))
                             return false;
                         break;
-                    case OrderTypes.InternetTakeAway:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.InternetTakeAway))
-                            return false;
-                        break;
-                    case OrderTypes.InternetDelivery:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.InternetDelivery))
-                            return false;
-                        break;
                 }
             }
             return true;

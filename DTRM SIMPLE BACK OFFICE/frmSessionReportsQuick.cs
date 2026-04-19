@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using DTRMNS;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
 using PosLibrary;
 using PosLibrary.Forms;
 
@@ -16,8 +19,25 @@ namespace DTRMSimpleBackOffice
 {
     public partial class frmSessionReportsQuick : Form
     {
-        private bool blnBackUpCompleted;
+        PosConfig config;
+        IRepository<Session> repoSession;
+        IRepository<Order> repoOrder;
 
+
+        double cardTotal = 0;
+        double cashTotal = 0;
+
+
+        double sessionMin;
+        double minBarrierAlt = 2000;
+        double minBarrierUst = 3000;
+
+
+        private BindingSource _sessionSource = new BindingSource();
+        private BindingSource _orderSource = new BindingSource();
+
+
+        private bool blnBackUpCompleted;
         bool IsBackupValid
         {
             get
@@ -31,12 +51,14 @@ namespace DTRMSimpleBackOffice
         public frmSessionReportsQuick()
         {
             InitializeComponent();
+            config = ServiceHelper.GetService<PosConfig>();
+            repoSession = ServiceHelper.GetService<IRepository<Session>>();
         }
         private void frmSessionReportsQuick_Load(object sender, EventArgs e)
         {
             ShowHideButtons(false);
             LoadDBSessions();
-            LoadArchivedSessionsLocal();
+           // LoadArchivedSessionsLocal();
         }
 
 
@@ -49,41 +71,27 @@ namespace DTRMSimpleBackOffice
                 Invoke(new DelegateNoParameter(LoadDBSessions), null);
             else
             {
-                dgvDatabase.DataSource = null;
-                lblTotal.Text = "";
-                lblInfo.Text = "";
-                btnAllSessionTotal.Text = "";
+                BindingList<Session> sessionList = new BindingList<Session>(await repoSession.GetAllAsync("Orders,Orders.Items"));
 
-                string sessionIID = DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
-                try
-                {
-                    DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from SessionSum where IID <> '" + sessionIID + "' order by StartDate desc");
+                dgvDatabase.AutoGenerateColumns = false;
+                dgvOrders.AutoGenerateColumns = false;
 
-                    if (dt == null)
-                    {
-                        MessageBox.Show("No data returned from database.");
-                        return;
-                    }
+                _sessionSource.DataSource = sessionList;
+                _sessionSource.Sort = "StartDate DESC";
+                dgvDatabase.DataSource = _sessionSource;
 
-                    object result = dt.Compute("Sum(GrossSessionTotal)", string.Empty);
 
-                    float total = 0;
-                    if (result == DBNull.Value)
-                    {
-                        total = 0f;
-                        return;
-                    } else
-                    {
-                        total = Convert.ToSingle(result);
-                    }
+                _orderSource.DataSource = _sessionSource;
+                _orderSource.DataMember = "Orders";
+                _orderSource.Sort = "OrderDate ASC";
+                dgvOrders.DataSource = _orderSource;
 
-                    dgvDatabase.DataSource = dt;
 
-                    btnAllSessionTotal.Text = total.ToString("N2");
-                } catch (Exception ex)
-                {
-                    string str = ex.Message;
-                }
+                //if (!sessionList.IsNullOrEmpty())
+                   
+                //    lblAllSessionTotal.Text = sessionList.Sum(x => x.Total).ToString("N2");
+                //else
+                //    lblAllSessionTotal.Text = "?";
             }
         }
         private void LoadArchivedSessionsLocal()
@@ -97,130 +105,121 @@ namespace DTRMSimpleBackOffice
         }
 
 
-        float cardTotal = 0;
-        float cashTotal = 0;
+       
+        //private void LoadOrders()
+        //{
+        //    if (dgvDatabase.SelectedRows.Count > 0)
+        //    {
+        //        string SessionIID = dgvDatabase.SelectedRows[0].Cells["dbIID"].Value.ToString();
+        //        //IID, OrderDate, CalculatedValue
+        //        dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, Payment, CalculatedValue from OrdersView where SessionIID = '" + SessionIID + "' Order by OrderDate asc");
+        //        dgvOrders_SelectionChanged(null, null);
+
+        //        // LoadSRangeList();
+        //        try
+        //        {
+
+        //            cardTotal = 0;
+        //            cashTotal = 0;
 
 
-        float sessionMin;
-        float minBarrierAlt = 2000;
-        float minBarrierUst = 3000;
+        //            for (int i = 0; i < dgvOrders.Rows.Count; i++)
+        //            {
 
-        private void LoadOrders()
-        {
-            if (dgvDatabase.SelectedRows.Count > 0)
-            {
-                string SessionIID = dgvDatabase.SelectedRows[0].Cells["dbIID"].Value.ToString();
-                //IID, OrderDate, CalculatedValue
-                dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, Payment, CalculatedValue from OrdersView where SessionIID = '" + SessionIID + "' Order by OrderDate asc");
-                dgvOrders_SelectionChanged(null, null);
+        //                if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Cash)
+        //                {
+        //                    cashTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
+        //                }
+        //                if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Card)
+        //                {
+        //                    cardTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
+        //                }
+        //            }
+        //            cardTotal = (float)(Math.Truncate(cardTotal * 100) / 100);
+        //            cashTotal = (float)(Math.Truncate(cashTotal * 100) / 100);
 
-                // LoadSRangeList();
-                try
-                {
+        //            lblCard.Text = cardTotal.ToString("0.00");
+        //            lblCash.Text = cashTotal.ToString("0.00");
 
-                    cardTotal = 0;
-                    cashTotal = 0;
+        //            Random rand = new();
+        //            float minBarrier = (float)(rand.NextDouble() * (minBarrierUst - minBarrierAlt) + minBarrierAlt);
+        //            float carpan = (float)(rand.NextDouble() * (2.1 - 1.5) + 1.5);
 
+        //            sessionMin = cardTotal * carpan;
+        //            if (sessionMin < minBarrier)
+        //                sessionMin = minBarrier;
+        //            if (cardTotal > sessionMin)
+        //            {
+        //                sessionMin = cardTotal * carpan;
+        //            }
 
-                    for (int i = 0; i < dgvOrders.Rows.Count; i++)
-                    {
+        //            lblInfo.Text = "Min : " + sessionMin.ToString("N2");
 
-                        if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Cash)
-                        {
-                            cashTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
-                        }
-                        if ((PaymentMethods)int.Parse(dgvOrders.Rows[i].Cells["colPaymentMethod"].Value.ToString()) == PaymentMethods.Card)
-                        {
-                            cardTotal += float.Parse(dgvOrders.Rows[i].Cells["colCalculatedValue"].Value.ToString());
-                        }
-                    }
-                    cardTotal = (float)(Math.Truncate(cardTotal * 100) / 100);
-                    cashTotal = (float)(Math.Truncate(cashTotal * 100) / 100);
+        //            //SessionData sessionData = bslayer.GetSessionDataDynamic(SessionIID);                      
+        //            // lblTotal.Text = sessionData.GrossSessionTotal.ToString("f2");
+        //            lblTotal.Text = (cardTotal + cashTotal).ToString("0.00");
+        //        } catch
+        //        {
+        //        }
+        //    } else
+        //    {
+        //        dgvOrders.DataSource = null;
+        //        // lblTotal.Text = "TOTAL";
+        //        lblCard.Text = "";
+        //        lblCash.Text = "";
+        //    }
 
-                    lblCard.Text = cardTotal.ToString("0.00");
-                    lblCash.Text = cashTotal.ToString("0.00");
-
-                    Random rand = new();
-                    float minBarrier = (float)(rand.NextDouble() * (minBarrierUst - minBarrierAlt) + minBarrierAlt);
-                    float carpan = (float)(rand.NextDouble() * (2.1 - 1.5) + 1.5);
-
-                    sessionMin = cardTotal * carpan;
-                    if (sessionMin < minBarrier)
-                        sessionMin = minBarrier;
-                    if (cardTotal > sessionMin)
-                    {
-                        sessionMin = cardTotal * carpan;
-                    }
-
-                    lblInfo.Text = "Min : " + sessionMin.ToString("N2");
-
-                    //SessionData sessionData = bslayer.GetSessionDataDynamic(SessionIID);                      
-                    // lblTotal.Text = sessionData.GrossSessionTotal.ToString("f2");
-                    lblTotal.Text = (cardTotal + cashTotal).ToString("0.00");
-                } catch
-                {
-                }
-            } else
-            {
-                dgvOrders.DataSource = null;
-                // lblTotal.Text = "TOTAL";
-                lblCard.Text = "";
-                lblCash.Text = "";
-            }
-
-        }
-        private void dgvOrders_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dgvOrders.SelectedRows.Count > 0)
-            {
-                string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
+        //}
+        //private void dgvOrders_SelectionChanged(object sender, EventArgs e)
+        //{
+        //    if (dgvOrders.SelectedRows.Count > 0)
+        //    {
+        //        string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
 
 
-                float total = 0;
-                for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
-                {
-                    try
-                    {
-                        total += float.Parse(dgvOrders.SelectedRows[i].Cells["colCalculatedValue"].Value.ToString());
-                    } catch
-                    {
+        //        float total = 0;
+        //        for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
+        //        {
+        //            try
+        //            {
+        //                total += float.Parse(dgvOrders.SelectedRows[i].Cells["colCalculatedValue"].Value.ToString());
+        //            } catch
+        //            {
 
-                    }
-                }
-                lblSelectedOrdersTotal.Text = total.ToString("N2");
+        //            }
+        //        }
+        //        lblSelectedOrdersTotal.Text = total.ToString("N2");
 
-            } else
-            {
-                cmbRange.DataSource = null;
-                lblInfo.Text = "";
-                lblSelectedOrdersTotal.Text = "";
-            }
-        }
+        //    } else
+        //    {
+        //        cmbRange.DataSource = null;
+        //        lblInfo.Text = "";
+        //        lblSelectedOrdersTotal.Text = "";
+        //    }
+        //}
 
 
         bool blnDgvDatabaseBusy = false;
         private void dgvDatabase_SelectionChanged(object sender, EventArgs e)
         {
-            blnDgvDatabaseBusy = true;
-            cmbRange.DataSource = null;
-            LoadOrders();
-            if (pnl3661.Visible)
+            if (dgvDatabase.SelectedRows.Count > 0)
             {
-                LoadSRangeList();
+                blnDgvDatabaseBusy = true;
+                cmbRange.DataSource = null;
+
+                if (pnl3661.Visible)
+                {
+                    LoadSRangeList();
+                }
+                blnDgvDatabaseBusy = false;
+
             }
-            blnDgvDatabaseBusy = false;
 
-
-
-            float total = 0;
+            double total = 0;
             for (int i = 0; i < dgvDatabase.SelectedRows.Count; i++)
             {
-                try
-                {
-                    total += float.Parse(dgvDatabase.SelectedRows[i].Cells["cellDatabaseGrossTotal"].Value.ToString());
-                } catch
-                {
-                }
+                Session session= (Session)dgvDatabase.SelectedRows[i].DataBoundItem;
+                total += session.Total;
             }
             lblDatabaseSelectedTotal.Text = total.ToString("N2");
         }
@@ -262,13 +261,13 @@ namespace DTRMSimpleBackOffice
 
         }
 
-        private void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
+        private async void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e)
         {
             SessionDataShort[] sessionList = (SessionDataShort[])args;
             for (int i = 0; i < sessionList.Length; i++)
             {
-                DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
-                //bslayer.ReloadSessionFromFile(fileList[i]);
+                await  DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+ 
                 int percent = (100 / sessionList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
             }
@@ -530,15 +529,15 @@ namespace DTRMSimpleBackOffice
 
         private void DeleteSelected()
         {
-            if (pnl3661.Visible)
-            {
-                for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
-                {
-                    string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-                    DTRMSimpleBusiness.Instance.DeleteOrder(orderIID);
-                }
-                LoadOrders();
-            }
+            //if (pnl3661.Visible)
+            //{
+            //    for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
+            //    {
+            //        string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
+            //        DTRMSimpleBusiness.Instance.DeleteOrder(orderIID);
+            //    }
+            //    LoadOrders();
+            //}
         }
 
         private void btnLoadSelectables_Click(object sender, EventArgs e)
@@ -684,9 +683,9 @@ namespace DTRMSimpleBackOffice
             }
         }
 
-        private void btnRefreshDatabase_Click(object sender, EventArgs e)
+        private async void btnRefreshDatabase_Click(object sender, EventArgs e)
         {
-            DTRMSimpleBusiness.Instance.RefreshDatabase();
+           await DTRMSimpleBusiness.Instance.RefreshDatabase();
         }
 
         private async void btnBackup_Click(object sender, EventArgs e)

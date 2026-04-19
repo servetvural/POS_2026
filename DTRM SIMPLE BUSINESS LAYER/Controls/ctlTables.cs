@@ -21,15 +21,15 @@ namespace DTRMNS
         IRepository<Salon> repoSalon;
         IRepository<Order> repoOrder;
 
-        private GenericFunctionCall CloseFunction;
-        private GenericEventHandler ButtonClickHandler;
-        private GenericEventHandler DirectButtonClickHandler;
+        private GenericFunctionCallAsync CloseFunction;
+        private GenericEventHandlerAsync ButtonClickHandler;
+        private GenericEventHandlerAsync DirectButtonClickHandler;
         private bool blnChangeOrderType;
         private TableButton SourceTable;
 
         Salon selectedSalon;
 
-        private GenericFunctionCall CloseOrderItemEntityInteractionEvent;
+        private GenericFunctionCallAsync CloseOrderItemEntityInteractionEvent;
 
         public ctlTables()
         {
@@ -40,8 +40,8 @@ namespace DTRMNS
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
         }
 
-        public ctlTables(GenericFunctionCall CloseFunction,
-            GenericEventHandler ButtonClickHandler, GenericEventHandler DirectButtonClickHandler)
+        public ctlTables(GenericFunctionCallAsync CloseFunction,
+            GenericEventHandlerAsync ButtonClickHandler, GenericEventHandlerAsync DirectButtonClickHandler)
         {
             InitializeComponent();
             this.CloseFunction = CloseFunction;
@@ -53,9 +53,9 @@ namespace DTRMNS
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
         }
 
-        public ctlTables(GenericFunctionCall CloseFunction,
-            GenericEventHandler ButtonClickHandler, bool blnChangeOrderType,
-            GenericFunctionCall CloseOrderItemEntityInteraction)
+        public ctlTables(GenericFunctionCallAsync CloseFunction,
+            GenericEventHandlerAsync ButtonClickHandler, bool blnChangeOrderType,
+            GenericFunctionCallAsync CloseOrderItemEntityInteraction)
         {
             InitializeComponent();
             this.CloseFunction = CloseFunction;
@@ -82,9 +82,7 @@ namespace DTRMNS
 
             string locker = "";
             foreach (Masa table in tablelist)
-            {
-
-               
+            {                        
 
                 if (table.LockedClientIP != null && table.LockedClientIP != "")
                     locker = table.LockedClientIP;
@@ -159,9 +157,6 @@ namespace DTRMNS
                         }
                     }
                    // await DTRMSimpleBusiness.Instance.MoveTable(SourceTable.IID, ((TableButton)sender).IID);
-
-                   
-                    
                 }
             }
 

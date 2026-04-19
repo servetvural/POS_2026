@@ -16,16 +16,15 @@ namespace DTRMNS {
         private Button btnDelivery;
         private Button btnClose;
 
-        private GenericFunctionCall CloseFunction;
+        private GenericFunctionCallAsync CloseFunction;
         private OrderTypes RequestedType;
         private Button btnDirectSale;
 
 
-        private GenericFunctionCall CloseOrderItemEntityInteractionEvent;
-        private GenericFunctionCall DetachPanelEvent;
+        private GenericFunctionCallAsync CloseOrderItemEntityInteractionEvent;
+        private GenericFunctionCallAsync DetachPanelEvent;
         private PassControl AttachPanelEvent;
-        private GenericFunctionCall EnsureCompulsoryExtrasEvent;
-
+        private GenericFunctionCallAsync EnsureCompulsoryExtrasEvent;
 
         /// <summary>
         /// Required designer variable.
@@ -35,9 +34,9 @@ namespace DTRMNS {
         public frmOrderTypes() {
             InitializeComponent();
         }
-        public frmOrderTypes(GenericFunctionCall CloseOrderItemEntityInteraction,
-            GenericFunctionCall DetachPanel, PassControl AttachPanel,
-            GenericFunctionCall EnsureCompulsoryExtras, GenericFunctionCall CloseFunction) {
+        public frmOrderTypes(GenericFunctionCallAsync CloseOrderItemEntityInteraction,
+            GenericFunctionCallAsync DetachPanel, PassControl AttachPanel,
+            GenericFunctionCallAsync EnsureCompulsoryExtras, GenericFunctionCallAsync CloseFunction) {
             InitializeComponent();
             CloseOrderItemEntityInteractionEvent = CloseOrderItemEntityInteraction;
             DetachPanelEvent = DetachPanel;
@@ -180,7 +179,7 @@ namespace DTRMNS {
 
         private void btnInHouse_Click(object sender, System.EventArgs e) {
             if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sitin) {
-                ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(ServiceHelper.Services, new GenericFunctionCall(DetachPanelEvent), null, true, new GenericFunctionCall(CloseOrderItemEntityInteractionEvent));
+                ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(ServiceHelper.Services, new GenericFunctionCallAsync(DetachPanelEvent), null, true, new GenericFunctionCallAsync(CloseOrderItemEntityInteractionEvent));
                 AttachPanelEvent(ct);
             } else
                 CloseFunction();

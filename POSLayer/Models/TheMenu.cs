@@ -33,10 +33,8 @@ public partial class TheMenu  : BaseClass
             case OrderTypes.Sitin:
                 return item.SitinPrice;
             case OrderTypes.TakeAway:
-            case OrderTypes.InternetTakeAway:
                 return item.TaPrice;
             case OrderTypes.Delivery:
-            case OrderTypes.InternetDelivery:
                 return item.DPrice;
             default:
                 return item.SalePrice;
@@ -56,10 +54,8 @@ public partial class TheMenu  : BaseClass
             case OrderTypes.Sitin:
                 return item.SitinTax;
             case OrderTypes.TakeAway:
-            case OrderTypes.InternetTakeAway:
                 return item.TaTax;
             case OrderTypes.Delivery:
-            case OrderTypes.InternetDelivery:
                 return item.DTax;
             default:
                 return item.SaleTax;
