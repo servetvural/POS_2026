@@ -1,0 +1,56 @@
+﻿using POSLayer.Library;
+
+using PosLibrary;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace BSLayer.Controls {
+    public partial class ctlNumeric : UserControl {
+
+        public event Delegate_String OutputOccured;
+        public event GenericFunctionCallAsync BackspaceClicked;
+        public event GenericFunctionCallAsync EnterClicked;
+        public async Task OnOutputOccured(string str) {
+            if (OutputOccured != null) {
+                OutputOccured(str);
+            }
+        }
+        public async Task OnBackspaceClicked() {
+            if (BackspaceClicked != null) {
+                await BackspaceClicked();
+            }
+        }
+
+        public async Task OnEnterClicked() {
+            if (EnterClicked != null) {
+                await EnterClicked();
+            }
+        }
+
+        public ctlNumeric() {
+            InitializeComponent();
+        }
+
+        private void Key_Click(object sender, EventArgs e) {
+            if (OutputOccured != null)
+                OutputOccured(((Button)sender).Text);
+        }
+
+        private void btnBackspace_Click(object sender, EventArgs e) {
+            if (BackspaceClicked != null)
+                BackspaceClicked();
+        }
+
+        private void btnEnter_Click(object sender, EventArgs e) {
+            if (EnterClicked != null)
+                EnterClicked();
+        }
+    }
+}

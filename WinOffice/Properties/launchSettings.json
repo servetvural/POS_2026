@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WinOffice": {
+      "commandName": "Project",
+      "commandLineArgs": "owner 6252"
+    }
+  }
+}

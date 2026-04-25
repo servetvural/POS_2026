@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DTRM Simple Back Office": {
-      "commandName": "Project",
-      "commandLineArgs": "owner 6252"
-    }
-  }
-}
