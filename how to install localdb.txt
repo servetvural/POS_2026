@@ -1,7 +1,0 @@
-Need to do 2 things:
-1- Install LocalDB on the client machine. It's a small installer and can be run silently with the following command.
-msiexec /i SqlLocalDB.msi /qn IACCEPTSQLLOCALDBLICENSETERMS=YES
-You should include this installer into the installer of your application. You can find more info on that here.
-
-2- Locate the *.mdf and *.ldf files that you created(by default found in %userprofile%, check here for more info) and make them available on the client machine. Put them in a directory your process can access and use that path in the connection string of your application. 
-For example: Data Source=(LocalDB)\v11.0;AttachDbFileName=C:\ProgramData\MyApp\Data\MyData.mdf;

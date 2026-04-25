@@ -11,7 +11,7 @@ using POSLayer.Repository.IRepository;
 using PosLibrary;
 using POSWinFormLayer.Library;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public partial class frmDistributionList : Form
     {

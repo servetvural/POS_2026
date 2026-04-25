@@ -1,14 +1,11 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing.Printing;
-
-using DTRMNS;
-
 using POSLayer.Models;
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmPrinterDetails : Form
     {
         PosConfig config;

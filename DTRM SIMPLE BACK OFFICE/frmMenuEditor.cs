@@ -22,7 +22,7 @@ using PosLibrary.Forms;
 using POSWinFormLayer;
 
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public partial class FrmMenuEditor : Form
     {

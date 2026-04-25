@@ -6,7 +6,7 @@ using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Views;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmCurrentSessionDisplay {
         /// <summary>
         /// Required designer variable.

@@ -15,7 +15,7 @@ using POSLayer.Repository.IRepository;
 using PosLibrary;
 using PosLibrary.Forms;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public partial class frmSessionReportsQuick : Form
     {

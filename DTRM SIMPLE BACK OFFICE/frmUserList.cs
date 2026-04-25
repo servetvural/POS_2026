@@ -6,7 +6,7 @@ using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmUserList : Form
     {
         IRepository<User> repoUser;

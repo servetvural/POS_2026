@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmViewImage : Form {
         private Image img;
         public frmViewImage(Image img) {

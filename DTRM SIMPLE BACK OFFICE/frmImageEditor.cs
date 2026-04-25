@@ -12,7 +12,7 @@ using DTRMNS;
 using System.Globalization;
 using POSWinFormLayer.Library;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmImageEditor : Form {
 
         public frmImageEditor()

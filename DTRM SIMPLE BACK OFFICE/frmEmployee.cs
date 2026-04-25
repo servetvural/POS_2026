@@ -5,7 +5,7 @@ using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using POSWinFormLayer;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmEmployee : Form {
         IRepository<Employee> repoEmployee;
         IRepository<GenericImage> repoImage;

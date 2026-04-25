@@ -9,7 +9,7 @@ using POSLayer.Repository.IRepository;
 
 using PosLibrary;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmBonus : Form {
         IRepository<Bonus> repoBonus;
         private Bonus bonus;

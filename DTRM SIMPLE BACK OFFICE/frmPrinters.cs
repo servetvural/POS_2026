@@ -17,7 +17,7 @@ using POSWinFormLayer.Library;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Repository.IRepository;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public partial class frmPrinters : Form
     {

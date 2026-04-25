@@ -1,6 +1,6 @@
 ﻿using POSLayer.Views;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmDistributionList {
         /// <summary>
         /// Required designer variable.

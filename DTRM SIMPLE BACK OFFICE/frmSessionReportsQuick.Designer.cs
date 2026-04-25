@@ -1,7 +1,7 @@
 ﻿using POSLayer.Models;
 using POSLayer.Views;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmSessionReportsQuick
     {
         /// <summary>

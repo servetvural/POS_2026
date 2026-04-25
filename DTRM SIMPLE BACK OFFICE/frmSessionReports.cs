@@ -16,7 +16,7 @@ using PosLibrary;
 using PosLibrary.Forms;
 using POSWinFormLayer.Library;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmSessionReports : Form {
         PosConfig config;
         IRepository<Session> repoSession;

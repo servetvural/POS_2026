@@ -20,7 +20,7 @@ using POSLayer.Repository.IRepository;
 
 using POSWinFormLayer;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     static class Program
     {

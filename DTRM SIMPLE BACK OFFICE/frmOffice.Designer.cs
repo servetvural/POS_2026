@@ -1,4 +1,4 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿namespace POSOffice {
     partial class frmOffice {
         /// <summary>
         /// Required designer variable.

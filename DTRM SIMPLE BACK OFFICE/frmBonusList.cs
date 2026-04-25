@@ -13,7 +13,7 @@ using POSLayer.Library;
 using POSLayer.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmBonusList : Form {
         IRepository<Bonus> repoBonus;
 

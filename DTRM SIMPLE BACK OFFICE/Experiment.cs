@@ -7,7 +7,7 @@ using System.Text;
 using POSLayer.Library;
 using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice;
+namespace POSOffice;
 
 
 //public partial class BaseClass

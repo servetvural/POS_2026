@@ -10,7 +10,7 @@ using POSLayer.Repository.IRepository;
 using POSLayer.Library;
 using System.Threading.Tasks;
 
-namespace DTRMSimpleBackOffice{
+namespace POSOffice{
     /// <summary>
     /// Summary description for frmTables.
     /// </summary>

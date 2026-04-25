@@ -1,6 +1,6 @@
 ﻿using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmBonusList {
         /// <summary>
         /// Required designer variable.
@@ -558,7 +558,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // cmdAdd
             // 
-            this.cmdAdd.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.cmdAdd.Image = global::POSOffice.Properties.Resources.arti32;
             this.cmdAdd.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.cmdAdd.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cmdAdd.Name = "cmdAdd";
@@ -569,7 +569,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // cmdEdit
             // 
-            this.cmdEdit.Image = global::DTRMSimpleBackOffice.Properties.Resources.MatReport_32;
+            this.cmdEdit.Image = global::POSOffice.Properties.Resources.MatReport_32;
             this.cmdEdit.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.cmdEdit.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cmdEdit.Name = "cmdEdit";
@@ -580,7 +580,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.cmdDelete.Image = global::POSOffice.Properties.Resources.eksi32;
             this.cmdDelete.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.cmdDelete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cmdDelete.Name = "cmdDelete";
@@ -591,7 +591,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // cmdReload
             // 
-            this.cmdReload.Image = global::DTRMSimpleBackOffice.Properties.Resources.Reload_32;
+            this.cmdReload.Image = global::POSOffice.Properties.Resources.Reload_32;
             this.cmdReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.cmdReload.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cmdReload.Name = "cmdReload";
@@ -602,7 +602,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnExportAsJson
             // 
-            this.btnExportAsJson.Image = global::DTRMSimpleBackOffice.Properties.Resources.SquareArrowRightExpander32;
+            this.btnExportAsJson.Image = global::POSOffice.Properties.Resources.SquareArrowRightExpander32;
             this.btnExportAsJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnExportAsJson.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnExportAsJson.Name = "btnExportAsJson";
@@ -613,7 +613,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnImportFromJson
             // 
-            this.btnImportFromJson.Image = global::DTRMSimpleBackOffice.Properties.Resources.SquareArrowLeftNarrower32;
+            this.btnImportFromJson.Image = global::POSOffice.Properties.Resources.SquareArrowLeftNarrower32;
             this.btnImportFromJson.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnImportFromJson.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnImportFromJson.Name = "btnImportFromJson";

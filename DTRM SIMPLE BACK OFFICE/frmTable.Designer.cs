@@ -1,4 +1,4 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿namespace POSOffice {
     partial class frmTable {
         /// <summary>
         /// Required designer variable.
@@ -224,7 +224,7 @@
             // 
             // btnCoversMinus
             // 
-            this.btnCoversMinus.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.btnCoversMinus.Image = global::POSOffice.Properties.Resources.eksi32;
             this.btnCoversMinus.Location = new System.Drawing.Point(179, 76);
             this.btnCoversMinus.Name = "btnCoversMinus";
             this.btnCoversMinus.Size = new System.Drawing.Size(60, 35);
@@ -234,7 +234,7 @@
             // 
             // btnCoversPlus
             // 
-            this.btnCoversPlus.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnCoversPlus.Image = global::POSOffice.Properties.Resources.arti32;
             this.btnCoversPlus.Location = new System.Drawing.Point(113, 76);
             this.btnCoversPlus.Name = "btnCoversPlus";
             this.btnCoversPlus.Size = new System.Drawing.Size(60, 35);
@@ -244,7 +244,7 @@
             // 
             // btnXMinus
             // 
-            this.btnXMinus.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.btnXMinus.Image = global::POSOffice.Properties.Resources.eksi32;
             this.btnXMinus.Location = new System.Drawing.Point(179, 138);
             this.btnXMinus.Name = "btnXMinus";
             this.btnXMinus.Size = new System.Drawing.Size(60, 35);
@@ -254,7 +254,7 @@
             // 
             // btnXPlus
             // 
-            this.btnXPlus.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnXPlus.Image = global::POSOffice.Properties.Resources.arti32;
             this.btnXPlus.Location = new System.Drawing.Point(113, 138);
             this.btnXPlus.Name = "btnXPlus";
             this.btnXPlus.Size = new System.Drawing.Size(60, 35);
@@ -264,7 +264,7 @@
             // 
             // btnWMInus
             // 
-            this.btnWMInus.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.btnWMInus.Image = global::POSOffice.Properties.Resources.eksi32;
             this.btnWMInus.Location = new System.Drawing.Point(179, 349);
             this.btnWMInus.Name = "btnWMInus";
             this.btnWMInus.Size = new System.Drawing.Size(60, 35);
@@ -274,7 +274,7 @@
             // 
             // btnWPlus
             // 
-            this.btnWPlus.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnWPlus.Image = global::POSOffice.Properties.Resources.arti32;
             this.btnWPlus.Location = new System.Drawing.Point(113, 349);
             this.btnWPlus.Name = "btnWPlus";
             this.btnWPlus.Size = new System.Drawing.Size(60, 35);
@@ -284,7 +284,7 @@
             // 
             // btnYMinus
             // 
-            this.btnYMinus.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.btnYMinus.Image = global::POSOffice.Properties.Resources.eksi32;
             this.btnYMinus.Location = new System.Drawing.Point(179, 206);
             this.btnYMinus.Name = "btnYMinus";
             this.btnYMinus.Size = new System.Drawing.Size(60, 35);
@@ -294,7 +294,7 @@
             // 
             // btnYPlus
             // 
-            this.btnYPlus.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnYPlus.Image = global::POSOffice.Properties.Resources.arti32;
             this.btnYPlus.Location = new System.Drawing.Point(113, 206);
             this.btnYPlus.Name = "btnYPlus";
             this.btnYPlus.Size = new System.Drawing.Size(60, 35);
@@ -304,7 +304,7 @@
             // 
             // btnHMinus
             // 
-            this.btnHMinus.Image = global::DTRMSimpleBackOffice.Properties.Resources.eksi32;
+            this.btnHMinus.Image = global::POSOffice.Properties.Resources.eksi32;
             this.btnHMinus.Location = new System.Drawing.Point(179, 274);
             this.btnHMinus.Name = "btnHMinus";
             this.btnHMinus.Size = new System.Drawing.Size(60, 35);
@@ -314,7 +314,7 @@
             // 
             // btnHPlus
             // 
-            this.btnHPlus.Image = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnHPlus.Image = global::POSOffice.Properties.Resources.arti32;
             this.btnHPlus.Location = new System.Drawing.Point(113, 274);
             this.btnHPlus.Name = "btnHPlus";
             this.btnHPlus.Size = new System.Drawing.Size(60, 35);

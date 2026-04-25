@@ -1,6 +1,6 @@
 ﻿using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmCategorySelector {
         /// <summary>
         /// Required designer variable.

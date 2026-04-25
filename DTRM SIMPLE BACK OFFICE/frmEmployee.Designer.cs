@@ -1,4 +1,4 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿namespace POSOffice {
     partial class frmEmployee {
         /// <summary>
         /// Required designer variable.
@@ -141,7 +141,7 @@
             // 
             // btnDeletePrepImage
             // 
-            this.btnDeletePrepImage.Image = global::DTRMSimpleBackOffice.Properties.Resources.Cancel;
+            this.btnDeletePrepImage.Image = global::POSOffice.Properties.Resources.Cancel;
             this.btnDeletePrepImage.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.btnDeletePrepImage.Location = new System.Drawing.Point(396, 130);
             this.btnDeletePrepImage.Margin = new System.Windows.Forms.Padding(4);
@@ -153,7 +153,7 @@
             // 
             // btnLoadPrepImageFromDirectory
             // 
-            this.btnLoadPrepImageFromDirectory.Image = global::DTRMSimpleBackOffice.Properties.Resources.FolderOpen_32;
+            this.btnLoadPrepImageFromDirectory.Image = global::POSOffice.Properties.Resources.FolderOpen_32;
             this.btnLoadPrepImageFromDirectory.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.btnLoadPrepImageFromDirectory.Location = new System.Drawing.Point(396, 64);
             this.btnLoadPrepImageFromDirectory.Margin = new System.Windows.Forms.Padding(4);

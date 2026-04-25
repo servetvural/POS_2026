@@ -1,7 +1,7 @@
 ﻿using POSLayer.Models;
 using POSLayer.Views;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmSessionAnalysis {
         /// <summary>
         /// Required designer variable.
@@ -296,7 +296,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnReload
             // 
-            this.btnReload.Image = global::DTRMSimpleBackOffice.Properties.Resources.Reload_32;
+            this.btnReload.Image = global::POSOffice.Properties.Resources.Reload_32;
             this.btnReload.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnReload.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnReload.Name = "btnReload";
@@ -371,7 +371,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnShowOrderItemsAndStockUsage
             // 
-            this.btnShowOrderItemsAndStockUsage.Image = global::DTRMSimpleBackOffice.Properties.Resources.Reload_32;
+            this.btnShowOrderItemsAndStockUsage.Image = global::POSOffice.Properties.Resources.Reload_32;
             this.btnShowOrderItemsAndStockUsage.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnShowOrderItemsAndStockUsage.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnShowOrderItemsAndStockUsage.Name = "btnShowOrderItemsAndStockUsage";
@@ -382,7 +382,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnSelectAllOrders
             // 
-            this.btnSelectAllOrders.Image = global::DTRMSimpleBackOffice.Properties.Resources.Hash32;
+            this.btnSelectAllOrders.Image = global::POSOffice.Properties.Resources.Hash32;
             this.btnSelectAllOrders.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnSelectAllOrders.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSelectAllOrders.Name = "btnSelectAllOrders";
@@ -394,7 +394,7 @@ namespace DTRMSimpleBackOffice {
             // chkShowOrderitemandStockUsage
             // 
             this.chkShowOrderitemandStockUsage.CheckOnClick = true;
-            this.chkShowOrderitemandStockUsage.Image = global::DTRMSimpleBackOffice.Properties.Resources.Unchecked;
+            this.chkShowOrderitemandStockUsage.Image = global::POSOffice.Properties.Resources.Unchecked;
             this.chkShowOrderitemandStockUsage.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.chkShowOrderitemandStockUsage.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.chkShowOrderitemandStockUsage.Name = "chkShowOrderitemandStockUsage";
@@ -508,7 +508,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // btnOrderItemPrint
             // 
-            this.btnOrderItemPrint.Image = global::DTRMSimpleBackOffice.Properties.Resources.Printer32;
+            this.btnOrderItemPrint.Image = global::POSOffice.Properties.Resources.Printer32;
             this.btnOrderItemPrint.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnOrderItemPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOrderItemPrint.Name = "btnOrderItemPrint";
@@ -587,7 +587,7 @@ namespace DTRMSimpleBackOffice {
             this.btnSuppliers.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rbAllSuppliers,
             this.rbSingleSupplier});
-            this.btnSuppliers.Image = global::DTRMSimpleBackOffice.Properties.Resources.MultiPeople2;
+            this.btnSuppliers.Image = global::POSOffice.Properties.Resources.MultiPeople2;
             this.btnSuppliers.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.btnSuppliers.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSuppliers.Name = "btnSuppliers";
@@ -623,7 +623,7 @@ namespace DTRMSimpleBackOffice {
             // chkOrderableOnly
             // 
             this.chkOrderableOnly.CheckOnClick = true;
-            this.chkOrderableOnly.Image = global::DTRMSimpleBackOffice.Properties.Resources.Unchecked;
+            this.chkOrderableOnly.Image = global::POSOffice.Properties.Resources.Unchecked;
             this.chkOrderableOnly.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.chkOrderableOnly.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.chkOrderableOnly.Name = "chkOrderableOnly";
@@ -633,7 +633,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // toolStripButton1
             // 
-            this.toolStripButton1.Image = global::DTRMSimpleBackOffice.Properties.Resources.RefreshGreen;
+            this.toolStripButton1.Image = global::POSOffice.Properties.Resources.RefreshGreen;
             this.toolStripButton1.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
@@ -643,7 +643,7 @@ namespace DTRMSimpleBackOffice {
             // 
             // toolStripButton2
             // 
-            this.toolStripButton2.Image = global::DTRMSimpleBackOffice.Properties.Resources.Printer32;
+            this.toolStripButton2.Image = global::POSOffice.Properties.Resources.Printer32;
             this.toolStripButton2.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
@@ -654,7 +654,7 @@ namespace DTRMSimpleBackOffice {
             // chkReportFormat
             // 
             this.chkReportFormat.CheckOnClick = true;
-            this.chkReportFormat.Image = global::DTRMSimpleBackOffice.Properties.Resources.Unchecked;
+            this.chkReportFormat.Image = global::POSOffice.Properties.Resources.Unchecked;
             this.chkReportFormat.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.chkReportFormat.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.chkReportFormat.Name = "chkReportFormat";

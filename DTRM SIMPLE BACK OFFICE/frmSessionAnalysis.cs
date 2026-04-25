@@ -11,7 +11,7 @@ using POSLayer.Models;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public partial class frmSessionAnalysis : Form
     {

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 using DTRMNS;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmCategoryItemSelector : Form {
         private DataSet ds = new DataSet();
         private string MenuIID;

@@ -1,6 +1,6 @@
 ﻿using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmUserList {
         /// <summary>
         /// Required designer variable.

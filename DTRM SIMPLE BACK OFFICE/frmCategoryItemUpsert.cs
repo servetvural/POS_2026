@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
 using System.Drawing.Configuration;
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     /// <summary>
     /// Summary description for frmEntitiButtonsEditor.

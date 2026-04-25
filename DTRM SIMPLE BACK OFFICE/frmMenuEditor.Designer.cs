@@ -1,7 +1,7 @@
 ﻿using POSLayer.Library;
 using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class FrmMenuEditor {
         /// <summary>
         /// Required designer variable.

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmLanguage : Form {
         public frmLanguage() {
             InitializeComponent();

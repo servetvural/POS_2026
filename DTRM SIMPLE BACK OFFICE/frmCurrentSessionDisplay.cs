@@ -15,7 +15,7 @@ using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmCurrentSessionDisplay : Form {
         IRepository<Session> repoSession;
         IRepository<Order> repoOrder;

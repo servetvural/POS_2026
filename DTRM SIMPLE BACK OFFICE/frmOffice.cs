@@ -17,7 +17,7 @@ using PosLibrary;
 using POSWinFormLayer;
 
 
-namespace DTRMSimpleBackOffice
+namespace POSOffice
 {
     public enum ViewModes { User, Accountant, MenuEditor, Owner };
     public partial class frmOffice : Form

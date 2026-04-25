@@ -21,7 +21,7 @@ using POSLayer.Repository.IRepository;
 
 using POSWinFormLayer;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     public partial class frmCategoryUpsert : Form
     {
         PosConfig config;

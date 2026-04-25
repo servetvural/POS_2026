@@ -1,9 +1,9 @@
-﻿using DTRMSimpleBackOffice.Properties;
+﻿using POSOffice.Properties;
 
 using POSLayer.Library;
 using POSLayer.Models;
 
-namespace DTRMSimpleBackOffice {
+namespace POSOffice {
     partial class frmCategoryItemList {
         /// <summary>
         /// Required designer variable.

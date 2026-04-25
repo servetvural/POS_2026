@@ -1,4 +1,4 @@
-﻿namespace DTRMSimpleBackOffice {
+﻿namespace POSOffice {
     partial class frmBonus {
         /// <summary>
         /// Required designer variable.
@@ -1090,7 +1090,7 @@
             // 
             // btnAddLinear
             // 
-            this.btnAddLinear.BackgroundImage = global::DTRMSimpleBackOffice.Properties.Resources.arti32;
+            this.btnAddLinear.BackgroundImage = global::POSOffice.Properties.Resources.arti32;
             this.btnAddLinear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.btnAddLinear.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.btnAddLinear.Location = new System.Drawing.Point(566, 32);
