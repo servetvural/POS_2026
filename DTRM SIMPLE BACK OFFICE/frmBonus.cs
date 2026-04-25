@@ -18,7 +18,7 @@ namespace DTRMSimpleBackOffice {
 
         public frmBonus( Bonus bonus) {
             InitializeComponent();
-            repoBonus = ServiceHelper.GetService<IRepository<Bonus>>();
+            repoBonus = ServiceHelper.GetRepository<Bonus>();
 
             this.bonus = bonus;
         }

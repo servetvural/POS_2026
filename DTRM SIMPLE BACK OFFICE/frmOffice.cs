@@ -22,10 +22,12 @@ namespace DTRMSimpleBackOffice
     public enum ViewModes { User, Accountant, MenuEditor, Owner };
     public partial class frmOffice : Form
     {
+        PosDbContext context;
         PosConfig config;
         IRepository<TheMenu> repoMenu;
         IRepository<User> repoUser;
 
+        bool blnConnectedToDatabase;
 
         private ConnectionStatus conStatus;
         private ViewModes viewMode = ViewModes.User;
@@ -36,7 +38,19 @@ namespace DTRMSimpleBackOffice
         {
             InitializeComponent();
 
-           
+            context = ServiceHelper.GetService<PosDbContext>();
+            if (context.Database.CanConnect())
+            {   
+                //Initialize Database
+                var initializer = ServiceHelper.GetService<DbInitializer>();
+                initializer.InitializeDatabase();
+
+                config = ServiceHelper.GetService<PosConfig>();
+                repoMenu = ServiceHelper.GetRepository<TheMenu>();
+                repoUser = ServiceHelper.GetRepository<User>();
+                blnConnectedToDatabase = true;
+            }
+
 
             if (!string.IsNullOrEmpty(Program.UserType))
             {
@@ -57,17 +71,20 @@ namespace DTRMSimpleBackOffice
 
             if (conStatus == ConnectionStatus.Disconnected)
             {
-                var context = ServiceHelper.GetService<PosDbContext>();
+               // var context = ServiceHelper.GetService<PosDbContext>();
 
                 if (await context.Database.CanConnectAsync())
                 {
-                    //Initialize Database
-                    var initializer = ServiceHelper.GetService<DbInitializer>();
-                    initializer.InitializeDatabase();
+                    if (!blnConnectedToDatabase)
+                    {        
+                        //Initialize Database
+                        var initializer = ServiceHelper.GetService<DbInitializer>();
+                        initializer.InitializeDatabase();
 
-                    config = ServiceHelper.GetService<PosConfig>();
-                    repoMenu = ServiceHelper.GetService<IRepository<TheMenu>>();
-                    repoUser = ServiceHelper.GetService<IRepository<User>>();
+                        config = ServiceHelper.GetService<PosConfig>();
+                        repoMenu = ServiceHelper.GetRepository<TheMenu>();
+                        repoUser = ServiceHelper.GetRepository<User>();
+                    }                    
 
 
                     frmPassword frmpswd = new frmPassword("Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));

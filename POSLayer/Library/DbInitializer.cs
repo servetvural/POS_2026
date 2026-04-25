@@ -28,7 +28,7 @@ public class DbInitializer
         repoShop = _repoShop;
         repoSession = _repoSession;
         repoUser = _repoUser;
-        this.repoMenu = _repoMenu;
+        repoMenu = _repoMenu;
     }
     public void InitializeDatabase()
     {
@@ -39,11 +39,11 @@ public class DbInitializer
         //using (var scope = ServiceProvider.CreateScope())
         //{
         // var context = scope.ServiceProvider.GetRequiredService<PosDbContext>();
-        var context = ServiceHelper.GetService<PosDbContext>();
+      //  var context = ServiceHelper.GetService<PosDbContext>();
 
         // 1. Create or Update Schema
         // Use Migrate() if using migrations, or EnsureCreated() for simple setups
-        context.Database.Migrate();
+        repoSession.GetDBContext().Database.Migrate();
 
         // 2. Populate (Seed) Data
         SeedData();
