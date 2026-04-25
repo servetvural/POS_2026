@@ -48,7 +48,7 @@ namespace WinLayer.Forms
             colArcEndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             cellArchivedGrossTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             sessionViewBindingSource = new System.Windows.Forms.BindingSource(components);
-            expArchivedSessions = new PosLibrary.Expander();
+            expArchivedSessions = new Expander();
             pnlArchivedSessions = new System.Windows.Forms.Panel();
             pnlArchiveControl = new System.Windows.Forms.Panel();
             btnLoadSessions = new System.Windows.Forms.Button();
@@ -389,7 +389,7 @@ namespace WinLayer.Forms
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.DataGridView dgvArchive;
         private System.Windows.Forms.BindingSource sessionViewBindingSource;
-        private PosLibrary.Expander expArchivedSessions;
+        private Expander expArchivedSessions;
         private System.Windows.Forms.Panel pnlArchivedSessions;
         private System.Windows.Forms.Panel pnlSessions;
         private System.Windows.Forms.DataGridView dgvDatabase;

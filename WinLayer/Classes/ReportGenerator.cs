@@ -137,7 +137,7 @@ namespace WinLayer
             try
             {
                 if (config.Feed_Space_Cut)
-                    PosLibrary.DRShell.SendCutCommandToUSBPrinter(pSettings.PrinterName);
+                    DRShell.SendCutCommandToUSBPrinter(pSettings.PrinterName);
             } catch { }
         }
 

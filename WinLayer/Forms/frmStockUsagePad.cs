@@ -1,5 +1,5 @@
 ﻿using POSLayer.Library;
-using PosLibrary;
+
 
 namespace WinLayer
 {
@@ -100,7 +100,7 @@ namespace WinLayer
                     //else {
                     int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 17, 8 };
                     List<int> cols = new List<int>(arrcols);
-                    BSLayer.Instance.PrintDataTable(await BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                    BSLayer.Instance.PrintDataTable(await BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue), UFWin.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
                     //}
                 }

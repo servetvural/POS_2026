@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary.Forms;
+using WinLayer.Forms;
 using WinLayer;
 
 

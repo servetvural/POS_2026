@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>

@@ -45,7 +45,7 @@
             lvwImages = new System.Windows.Forms.ListView();
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             lblDirectory = new System.Windows.Forms.ToolStripStatusLabel();
-            expander1 = new PosLibrary.Expander();
+            expander1 = new WinLayer.Expander();
             btnClose = new System.Windows.Forms.ToolStripButton();
             toolStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
@@ -306,7 +306,7 @@
         private System.Windows.Forms.ToolStripButton btnSentenceCase;
         private System.Windows.Forms.ToolStripButton btnReplace;
         private System.Windows.Forms.ListView lvwImages;
-        private PosLibrary.Expander expander1;
+        private WinLayer.Expander expander1;
         private System.Windows.Forms.ToolStripButton btnClose;
     }
 }

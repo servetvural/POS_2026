@@ -25,7 +25,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            pBar = new PosLibrary.DRProgressBar();
+            pBar = new DRProgressBar();
             tmrMain = new System.Windows.Forms.Timer(components);
             lblCiro = new System.Windows.Forms.Label();
             lblPrevious = new System.Windows.Forms.Label();
@@ -122,7 +122,7 @@
         }
 
         #endregion
-        public PosLibrary.DRProgressBar pBar;
+        public DRProgressBar pBar;
         public System.Windows.Forms.Timer tmrMain;
         public System.Windows.Forms.Label lblCiro;
         private System.Windows.Forms.Label lblPrevious;

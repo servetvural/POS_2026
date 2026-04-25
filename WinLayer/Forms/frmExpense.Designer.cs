@@ -28,7 +28,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cmbExpense = new System.Windows.Forms.ComboBox();
-            this.txtAmount = new PosLibrary.DoubleTextBox();
+            this.txtAmount = new DoubleTextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -139,6 +139,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cmbExpense;
-        private PosLibrary.DoubleTextBox txtAmount;
+        private DoubleTextBox txtAmount;
     }
 }

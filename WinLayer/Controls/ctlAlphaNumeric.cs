@@ -1,5 +1,7 @@
 ﻿using POSLayer.Library;
-using PosLibrary;
+
+using WinLayer.Library;
+
 
 namespace WinLayer.Controls {
     public partial class ctlAlphaNumeric : UserControl {

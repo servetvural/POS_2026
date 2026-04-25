@@ -30,10 +30,10 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtTipIncome = new PosLibrary.DoubleTextBox();
-            this.txtHours = new PosLibrary.DoubleTextBox();
+            this.txtTipIncome = new DoubleTextBox();
+            this.txtHours = new DoubleTextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.txtShort = new PosLibrary.DoubleTextBox();
+            this.txtShort = new DoubleTextBox();
             this.btnChooseEmployee = new System.Windows.Forms.Button();
             this.txtEmployee = new System.Windows.Forms.TextBox();
             this.chkNoShort = new System.Windows.Forms.CheckBox();
@@ -251,10 +251,10 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label label4;
-        private PosLibrary.DoubleTextBox txtTipIncome;
-        private PosLibrary.DoubleTextBox txtHours;
+        private DoubleTextBox txtTipIncome;
+        private DoubleTextBox txtHours;
         private System.Windows.Forms.Label label5;
-        private PosLibrary.DoubleTextBox txtShort;
+        private DoubleTextBox txtShort;
         private System.Windows.Forms.Button btnChooseEmployee;
         private System.Windows.Forms.TextBox txtEmployee;
         private System.Windows.Forms.CheckBox chkNoShort;

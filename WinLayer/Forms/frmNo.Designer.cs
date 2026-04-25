@@ -24,7 +24,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            txtVal = new PosLibrary.IntegerTextBox();
+            txtVal = new IntegerTextBox();
             btnSave = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
             SuspendLayout();
@@ -91,7 +91,7 @@
 
         #endregion
 
-        private PosLibrary.IntegerTextBox txtVal;
+        private IntegerTextBox txtVal;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
     }

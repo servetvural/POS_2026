@@ -1,7 +1,7 @@
 ﻿using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
+
 
 namespace WinLayer
 {

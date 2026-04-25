@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
 using POSLayer.Models;
-using PosLibrary;
 
 namespace WinLayer
 {
@@ -66,13 +65,13 @@ namespace WinLayer
                 {
                     //  BSLayer.Instance.PrintStockUsage(fsp.SelectedPrinterIID,  BSLayer.Instance.GetDataTableFromGridVisible(dgv, true));
                     if (chkViewDetails.Checked)
-                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, UFWin.GetDataTableFromGridVisible(dgv, true, false),
                             "Stock Usage Report", BSLayer.Instance.GetColumnPrintRatio(dgv), false);
                     else
                     {
                         int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 21, 8 };
                         List<int> cols = new List<int>(arrcols);
-                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, UFWin.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
                     }
 
@@ -134,7 +133,7 @@ namespace WinLayer
         {
             if (dgv.DataSource != null)
             {
-                DataTable dt = DRUF.GetDataTableFromGridVisible(dgv, true, false);
+                DataTable dt = UFWin.GetDataTableFromGridVisible(dgv, true, false);
 
                 SaveFileDialog dlg = new SaveFileDialog();
 

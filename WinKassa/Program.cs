@@ -38,7 +38,7 @@ namespace WinKassa {
 
                  // 3. Register Forms (Forms must be in DI to receive injections)
                  services.AddTransient<frmKassaCalculator>();
-                 services.AddSingleton<DTRMSimpleBusiness>();
+                 services.AddSingleton<BSLayer>();
              })
              .Build();
 

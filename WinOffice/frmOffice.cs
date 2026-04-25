@@ -7,7 +7,6 @@ using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
 using WinLayer;
 
 

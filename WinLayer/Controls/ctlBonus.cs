@@ -24,7 +24,7 @@ namespace WinLayer.Controls {
         public bool EnableAutoUpdate { get { return tmrMain.Enabled; } set { tmrMain.Enabled = value; } }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public PosLibrary.DRProgressBar ProgressBar { get { return pBar; } }
+        public DRProgressBar ProgressBar { get { return pBar; } }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public int ProgressBarWidth {  get { return pBar.Width; }  set { pBar.Width = value; } }

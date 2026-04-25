@@ -30,11 +30,11 @@
             label1 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
             btnAddStockItem = new System.Windows.Forms.Button();
-            txtDisplayOrder = new PosLibrary.IntegerTextBox();
+            txtDisplayOrder = new IntegerTextBox();
             label2 = new System.Windows.Forms.Label();
             txtComment = new System.Windows.Forms.TextBox();
             label4 = new System.Windows.Forms.Label();
-            numQuantity = new PosLibrary.DoubleTextBox();
+            numQuantity = new DoubleTextBox();
             cmbQuantityType = new System.Windows.Forms.ComboBox();
             label5 = new System.Windows.Forms.Label();
             txtStockItem = new System.Windows.Forms.TextBox();
@@ -291,11 +291,11 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnAddStockItem;
-        private PosLibrary.IntegerTextBox txtDisplayOrder;
+        private IntegerTextBox txtDisplayOrder;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtComment;
         private System.Windows.Forms.Label label4;
-        private PosLibrary.DoubleTextBox numQuantity;
+        private DoubleTextBox numQuantity;
         private System.Windows.Forms.ComboBox cmbQuantityType;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtStockItem;

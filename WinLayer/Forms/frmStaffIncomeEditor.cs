@@ -1,5 +1,4 @@
-﻿using PosLibrary;
-using WinLayer.Forms;
+﻿using WinLayer.Forms;
 using POSLayer.Library;
 using Microsoft.Extensions.DependencyInjection;
 

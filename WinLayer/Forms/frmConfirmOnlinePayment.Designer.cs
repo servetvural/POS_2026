@@ -1,6 +1,8 @@
 ﻿
 using POSLayer.Library;
 
+using WinLayer.Library;
+
 namespace WinLayer {
     partial class frmConfirmOnlinePayment {
         /// <summary>
@@ -69,7 +71,7 @@ namespace WinLayer {
             this.ctlAlphaNumeric1.Name = "ctlAlphaNumeric1";
             this.ctlAlphaNumeric1.Size = new System.Drawing.Size(828, 286);
             this.ctlAlphaNumeric1.TabIndex = 3;
-            this.ctlAlphaNumeric1.OutputOccured += new PosLibrary.Delegate_String(this.ctlAlphaNumeric1_OutputOccured);
+            this.ctlAlphaNumeric1.OutputOccured += new Delegate_String(this.ctlAlphaNumeric1_OutputOccured);
             this.ctlAlphaNumeric1.BackspaceClicked += new GenericFunctionCallAsync(this.ctlAlphaNumeric1_BackspaceClicked);
             this.ctlAlphaNumeric1.EnterClicked += new GenericFunctionCallAsync(this.ctlAlphaNumeric1_EnterClicked);
             // 

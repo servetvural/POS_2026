@@ -29,7 +29,7 @@
             txtStockName = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
-            txtConversion = new PosLibrary.IntegerTextBox();
+            txtConversion = new IntegerTextBox();
             label8 = new System.Windows.Forms.Label();
             label10 = new System.Windows.Forms.Label();
             cmbQuantityType = new System.Windows.Forms.ComboBox();
@@ -392,7 +392,7 @@
         private System.Windows.Forms.TextBox txtStockName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private PosLibrary.IntegerTextBox txtConversion;
+        private IntegerTextBox txtConversion;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox cmbQuantityType;

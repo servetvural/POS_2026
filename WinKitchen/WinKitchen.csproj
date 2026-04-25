@@ -31,11 +31,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="CoreWCF.Primitives" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.ConfigurationManager" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.Http" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.WebHttp" Version="1.8.0" />
-    <PackageReference Include="CoreWCF.NetTcp" Version="1.8.0" />
+    <PackageReference Include="CoreWCF.Primitives" Version="1.9.0" />
+    <PackageReference Include="CoreWCF.ConfigurationManager" Version="1.9.0" />
+    <PackageReference Include="CoreWCF.Http" Version="1.9.0" />
+    <PackageReference Include="CoreWCF.WebHttp" Version="1.9.0" />
+    <PackageReference Include="CoreWCF.NetTcp" Version="1.9.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />

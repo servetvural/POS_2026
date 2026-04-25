@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using PosLibrary;
+
 using Newtonsoft.Json;
 using POSLayer.Models;
 using POSLayer.Library;

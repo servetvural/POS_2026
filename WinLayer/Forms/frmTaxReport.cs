@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using PosLibrary;
 
 namespace WinLayer {
     public partial class frmTaxReport : Form {

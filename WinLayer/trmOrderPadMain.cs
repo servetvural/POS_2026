@@ -1,4 +1,4 @@
-﻿using PosLibrary;
+﻿
 using WinLayer.Forms;
 using POSLayer.Library;
 using POSLayer.Models;
@@ -2428,7 +2428,7 @@ namespace WinLayer
                 for (int i = 0; i < pnlSpecial.UIEButtons.Count; i++)
                 {
                     UPEntityButton upeb = (UPEntityButton)pnlSpecial.UIEButtons[i];
-                    if (PosLibrary.DRNumeric.IsBitSet(upeb.categoryItem.AvailableFor, (int)BSLayer.Instance.AttachedOrder.OrderType) &&
+                    if (DRNumeric.IsBitSet(upeb.categoryItem.AvailableFor, (int)BSLayer.Instance.AttachedOrder.OrderType) &&
                         upeb.categoryItem.Compulsary)
                     {
                         bool blnExist = false;
@@ -4577,7 +4577,7 @@ namespace WinLayer
                 {
                     if (screenLockCounter >= config.Seconds_Before_ScreenLock)
                     {
-                        DRUF.TurnOnSS();
+                        UFWin.TurnOnSS();
                         tmrScreenSaverTrigger.Enabled = false;
                         screenLockCounter = 0;
                     }

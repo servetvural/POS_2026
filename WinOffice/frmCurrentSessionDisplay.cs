@@ -3,8 +3,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Media;
-using PosLibrary;
+using System.Media;  
 using WinLayer;
 using POSLayer.Library;
 using System.Threading.Tasks;
@@ -153,7 +152,7 @@ namespace WinOffice {
                 g.Clear(Color.White);
 
                 int imgHeight = BSLayer.Instance.ViewReceipt(g, order, printer, 1);
-                Image imgFinal = DRUF.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
+                Image imgFinal = UFWin.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
 
                 frmViewImage frm = new frmViewImage(imgFinal);
                 frm.Show();

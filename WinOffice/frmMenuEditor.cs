@@ -10,8 +10,7 @@ using Newtonsoft.Json;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
-using PosLibrary.Forms;
+using WinLayer.Forms;
 using WinLayer;
 
 namespace WinOffice

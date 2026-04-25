@@ -2,10 +2,10 @@
 using System.Data;
 using System.Windows.Forms;
 using WinLayer;
-using PosLibrary;
 using POSLayer.Library;
 using POSLayer.Models;
 using Microsoft.Extensions.DependencyInjection;
+using WinLayer.Library;
 
 namespace WinOffice
 {
@@ -247,7 +247,7 @@ namespace WinOffice
                 frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, UFWin.GetDataTableFromGridVisible(dgvStockItems, true, true),
                             "Stock Usage Report", BSLayer.Instance.GetColumnPrintRatio(dgvStockItems), true);
                 }
             }
@@ -260,7 +260,7 @@ namespace WinOffice
                 frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems, true, true),
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, UFWin.GetDataTableFromGridVisible(dgvOrderItems, true, true),
                             "Order Item List", BSLayer.Instance.GetColumnPrintRatio(dgvOrderItems), true);
                 }
             }

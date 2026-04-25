@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
+
 
 namespace WinLayer
 {
@@ -2664,7 +2664,7 @@ namespace WinLayer
             List<Bonus> dailyAvailableBonusList = new List<Bonus>();
             foreach (Bonus bonus in allBonus)
             {
-                if (PosLibrary.DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)dayoftheweek))
+                if (DRNumeric.IsBitSet((int)bonus.DaysAvailable, (int)dayoftheweek))
                 {
                     dailyAvailableBonusList.Add(bonus);
                 }

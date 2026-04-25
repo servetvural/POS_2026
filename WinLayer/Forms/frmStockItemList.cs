@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
+
 
 namespace WinLayer
 {
@@ -237,7 +237,7 @@ namespace WinLayer
         {
             if (dgv.DataSource != null)
             {
-                DataTable dt = DRUF.GetDataTableFromGridVisible(dgv, true, false);
+                DataTable dt = UFWin.GetDataTableFromGridVisible(dgv, true, false);
 
                 SaveFileDialog dlg = new SaveFileDialog();
                 if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -379,7 +379,7 @@ namespace WinLayer
                         cols = new List<int>(arrcols);
                     }
 
-                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, UFWin.GetDataTableFromGridVisible(dgv, true, true),
                        "Stock Items Report " + DateTime.Now.ToString("dd MM yyyy HH:mm"), cols, true);
                 }
             }

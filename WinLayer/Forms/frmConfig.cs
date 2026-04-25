@@ -4,8 +4,6 @@ using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
-using PosLibrary.DBSpace;
 
 namespace WinLayer
 {
@@ -848,25 +846,25 @@ namespace WinLayer
 
         private void btnChangeConnection_Click(object sender, EventArgs e)
         {
-            if (!UF.IsDBListFileExist())
-            {
-                DBList dblist = new DBList();
-                dblist.Items.Add(new DB(".", "DTRMSimple", "sa", "."));
-                DRFile.XmlSerialize(UF.DBListConfigFileName, dblist, typeof(DBList), false);
-            }
+            //if (!UF.IsDBListFileExist())
+            //{
+            //    DBList dblist = new DBList();
+            //    dblist.Items.Add(new DB(".", "DTRMSimple", "sa", "."));
+            //    DRFile.XmlSerialize(UF.DBListConfigFileName, dblist, typeof(DBList), false);
+            //}
 
-            frmConnectionList frm = new frmConnectionList(UF.DBListConfigFileName);
-            if (frm.ShowDialog() == DialogResult.OK)
-            {
-                DB db = frm.SelectedDB;
-                if (config == null)
-                    config = new PosConfig();
-                config.Database_Instance = db.ServerIP;
-                config.Database_Name = db.DatabaseName;
-                config.Database_User_Name = db.UserName;
-                config.Database_Password = db.Password;
-                LoadConfig();
-            }
+            //frmConnectionList frm = new frmConnectionList(UF.DBListConfigFileName);
+            //if (frm.ShowDialog() == DialogResult.OK)
+            //{
+            //    DB db = frm.SelectedDB;
+            //    if (config == null)
+            //        config = new PosConfig();
+            //    config.Database_Instance = db.ServerIP;
+            //    config.Database_Name = db.DatabaseName;
+            //    config.Database_User_Name = db.UserName;
+            //    config.Database_Password = db.Password;
+            //    LoadConfig();
+            //}
         }
 
         private void EnsureConnectionImage()

@@ -250,19 +250,19 @@ namespace WinLayer {
                 switch ( BSLayer.Instance.AttachedOrder.OrderType)
                 {
                     case OrderTypes.Sale:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Direct))
+                        if (!DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Direct))
                             return false;
                         break;
                     case OrderTypes.Sitin:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse))
+                        if (!DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse))
                             return false;
                         break;
                     case OrderTypes.Delivery:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery))
+                        if (!DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery))
                             return false;
                         break;
                     case OrderTypes.TakeAway:
-                        if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway))
+                        if (!DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway))
                             return false;
                         break;
                 }

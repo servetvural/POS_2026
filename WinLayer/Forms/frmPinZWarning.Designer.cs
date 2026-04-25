@@ -1,5 +1,7 @@
 ﻿using POSLayer.Library;
 
+using WinLayer.Library;
+
 namespace WinLayer {
     partial class frmPinZWarning {
         /// <summary>
@@ -107,7 +109,7 @@ namespace WinLayer {
             this.ctlNumeric1.Name = "ctlNumeric1";
             this.ctlNumeric1.Size = new System.Drawing.Size(346, 276);
             this.ctlNumeric1.TabIndex = 5;
-            this.ctlNumeric1.OutputOccured += new PosLibrary.Delegate_String(this.ctlNumeric1_OutputOccured);
+            this.ctlNumeric1.OutputOccured += new Delegate_String(this.ctlNumeric1_OutputOccured);
             this.ctlNumeric1.BackspaceClicked += new GenericFunctionCallAsync(this.ctlNumeric1_BackspaceClicked);
             this.ctlNumeric1.EnterClicked += new GenericFunctionCallAsync(this.ctlNumeric1_EnterClicked);
             // 

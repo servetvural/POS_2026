@@ -42,10 +42,10 @@ namespace WinOffice {
             cmbDistribution = new System.Windows.Forms.ComboBox();
             globalTypeBindingSource = new System.Windows.Forms.BindingSource(components);
             label20 = new System.Windows.Forms.Label();
-            incDisplayOrder = new PosLibrary.IntegerTextBox();
+            incDisplayOrder = new WinLayer.IntegerTextBox();
             btnForceDistributionToAllButtons = new System.Windows.Forms.Button();
-            incHeight = new PosLibrary.IntegerTextBox();
-            incWidth = new PosLibrary.IntegerTextBox();
+            incHeight = new WinLayer.IntegerTextBox();
+            incWidth = new WinLayer.IntegerTextBox();
             btnNewDistribution = new System.Windows.Forms.Button();
             label3 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
@@ -571,10 +571,10 @@ namespace WinOffice {
        private System.Windows.Forms.ComboBox cmbDistribution;
        private System.Windows.Forms.BindingSource globalTypeBindingSource;
        private System.Windows.Forms.Label label20;
-       private PosLibrary.IntegerTextBox incDisplayOrder;
+       private WinLayer.IntegerTextBox incDisplayOrder;
         private System.Windows.Forms.Button btnForceDistributionToAllButtons;
-        private PosLibrary.IntegerTextBox incHeight;
-        private PosLibrary.IntegerTextBox incWidth;
+        private WinLayer.IntegerTextBox incHeight;
+        private WinLayer.IntegerTextBox incWidth;
         private System.Windows.Forms.Button btnNewDistribution;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;

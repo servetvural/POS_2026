@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using PosLibrary;
 using System.Globalization;
 using System.IO;
 using POSLayer.Models;
@@ -56,14 +55,14 @@ namespace WinOffice
         private Button btnSetTaxToDefault;
         private Button btnSetTaxToZero;
         private TextBox txtCategoryItemName;
-        private PosLibrary.IntegerTextBox incWidth;
-        private PosLibrary.IntegerTextBox incHeight;
+        private WinLayer.IntegerTextBox incWidth;
+        private WinLayer.IntegerTextBox incHeight;
         private Label label16;
         private Label label17;
         private TextBox txtImageFile;
         private Label lblFont;
         private Button btnFont;
-        private PosLibrary.IntegerTextBox incDisplayOrder;
+        private WinLayer.IntegerTextBox incDisplayOrder;
         private Label label20;
         private ComboBox cmbDistributions;
         private Label label21;
@@ -1222,17 +1221,17 @@ namespace WinOffice
                 } catch { }
 
                 //Availability
-                if (PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.All))
+                if (DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.All))
                     chkAvailableAll.Checked = true;
                 else
                 {
-                    chkAvailableDirect.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Direct);
-                    chkAvailableInHouse.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse);
-                    chkAvailableTakeAway.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway);
-                    chkAvailableDelivery.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery);
-                    chkAvailableInternetTakeAway.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetTakeAway);
-                    chkAvailableInternetDelivery.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetDelivery);
-                    chkAvailableNone.Checked = PosLibrary.DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale);
+                    chkAvailableDirect.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Direct);
+                    chkAvailableInHouse.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InHouse);
+                    chkAvailableTakeAway.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.TakeAway);
+                    chkAvailableDelivery.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.Delivery);
+                    chkAvailableInternetTakeAway.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetTakeAway);
+                    chkAvailableInternetDelivery.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.InternetDelivery);
+                    chkAvailableNone.Checked = DRNumeric.IsBitSet(categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale);
                 }
 
                 chkCompulsary.Checked = categoryItem.Compulsary;

@@ -76,8 +76,8 @@ namespace WinOffice {
             cmdViewReceipt = new System.Windows.Forms.ToolStripButton();
             pnlOrderItems = new System.Windows.Forms.Panel();
             pnlOrders = new System.Windows.Forms.Panel();
-            expander2 = new PosLibrary.Expander();
-            expander1 = new PosLibrary.Expander();
+            expander2 = new WinLayer.Expander();
+            expander1 = new WinLayer.Expander();
             orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             totalDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -713,8 +713,8 @@ namespace WinOffice {
         private System.Windows.Forms.ToolStripButton cmdViewReceipt;
         private System.Windows.Forms.Panel pnlOrderItems;
         private System.Windows.Forms.Panel pnlOrders;
-        private PosLibrary.Expander expander1;
-        private PosLibrary.Expander expander2;
+        private WinLayer.Expander expander1;
+        private WinLayer.Expander expander2;
         private System.Windows.Forms.BindingSource orderBindingSource;
         private System.Windows.Forms.BindingSource orderItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderDateDataGridViewTextBoxColumn;

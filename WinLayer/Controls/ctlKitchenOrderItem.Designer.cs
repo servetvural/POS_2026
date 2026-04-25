@@ -28,7 +28,7 @@
             this.pBox = new System.Windows.Forms.PictureBox();
             this.btnFullScreen = new System.Windows.Forms.Button();
             this.pnlFullScreen = new System.Windows.Forms.Panel();
-            this.expMain = new PosLibrary.Expander();
+            this.expMain = new Expander();
             ((System.ComponentModel.ISupportInitialize)(this.pBox)).BeginInit();
             this.pnlFullScreen.SuspendLayout();
             this.SuspendLayout();
@@ -138,6 +138,6 @@
         private System.Windows.Forms.Label lblDetail;
         private System.Windows.Forms.Button btnFullScreen;
         private System.Windows.Forms.Panel pnlFullScreen;
-        private PosLibrary.Expander expMain;
+        private Expander expMain;
     }
 }

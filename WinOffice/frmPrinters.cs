@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using PosLibrary;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using POSLayer.Models;
@@ -9,6 +8,7 @@ using POSLayer.Library;
 using WinLayer.Library;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Repository.IRepository;
+using WinLayer;
 
 namespace WinOffice
 {

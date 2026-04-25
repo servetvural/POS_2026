@@ -64,7 +64,7 @@ namespace WinLayer {
                     UPEntityButton eb = ActivatorUtilities.CreateInstance< UPEntityButton>(ServiceHelper.Services, this, item);
                     if (eb.categoryItem.Compulsary || eb.categoryItem.PadFlag == PadFlags.PadOnly)
                         eb.Visible = false;
-                    if (PosLibrary.DRNumeric.IsBitSet(eb.categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale))
+                    if (DRNumeric.IsBitSet(eb.categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale))
                         eb.Visible = false;
                     UIEButtonsPanel.Controls.Add(eb);
                     UIEButtons.Add(eb);

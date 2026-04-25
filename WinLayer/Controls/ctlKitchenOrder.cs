@@ -1,7 +1,7 @@
 ﻿using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
+
 
 namespace WinLayer {
     public partial class ctlKitchenOrder : UserControl {
@@ -98,14 +98,14 @@ namespace WinLayer {
                     lblTime.Font = subFont;
                     totalSeconds = DateTime.Now.Subtract(korder.CreatedDateTime).TotalSeconds;
                     //chkTime.Text = korder.CreatedDateTime.ToString("HH:mm:ss") + " | " + UF.secondsToMinutes(totalSeconds);
-                    lblTime.Text = DRUF.secondsToMinutes(DateTime.Now.Subtract(korder.CreatedDateTime).TotalSeconds);
+                    lblTime.Text = UF.secondsToMinutes(DateTime.Now.Subtract(korder.CreatedDateTime).TotalSeconds);
                 } else {
                     btnDone.Image = Properties.Resources.Cancel;
                     lblTime.Font = subFont;
                     singleResponseTime = korder.CompletedDateTime.Subtract(korder.CreatedDateTime).TotalSeconds;
                     //chkTime.Text = korder.CreatedDateTime.ToString("HH:mm:ss") + " | " +
                     //    korder.CompletedDateTime.ToString("HH:mm:ss") + " | " + UF.secondsToMinutes(singleResponseTime);
-                    lblTime.Text = korder.CreatedDateTime.ToString("HH:mm:ss") + " | " + DRUF.secondsToMinutes(singleResponseTime);
+                    lblTime.Text = korder.CreatedDateTime.ToString("HH:mm:ss") + " | " + UF.secondsToMinutes(singleResponseTime);
                 }
 
                 //lblTime.Height = lblTime.Font.Height;
@@ -317,7 +317,7 @@ namespace WinLayer {
                     } else
                         btnDone.BackColor = Color.Black;                   
                 }
-                lblTime.Text = DRUF.secondsToMinutes(waitingtime);
+                lblTime.Text = UF.secondsToMinutes(waitingtime);
 
                 //This section for progress Bar if visible
                 if (config.Kitchen_Show_Progress_Bar)

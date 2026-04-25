@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
-using PosLibrary;
-using PosLibrary.Forms;
+
+
+using WinLayer.Library;
 
 namespace WinLayer.Forms
 {

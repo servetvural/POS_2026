@@ -1,4 +1,4 @@
-﻿using PosLibrary;
+﻿
 using WinLayer.Controls;
 using System.ComponentModel;
 using POSLayer.Models;
@@ -131,7 +131,7 @@ namespace WinLayer {
                     foreach (var item in pnlCompletedOrders.Controls) {
                         totalResponseTime += ((ctlKitchenOrder)item).singleResponseTime;
                     }
-                    lblResponse.Text = DRUF.secondsToMinutes(Math.Floor(totalResponseTime / pnlCompletedOrders.Controls.Count));
+                    lblResponse.Text = UF.secondsToMinutes(Math.Floor(totalResponseTime / pnlCompletedOrders.Controls.Count));
                 }
             } catch (Exception ex) {
                  BSLayer.Instance.SaveDebug("ctlKitchenDisplay UpdateResponseTime " + ex.Message);
@@ -246,7 +246,7 @@ namespace WinLayer {
                 }
 
                 if (orderList.Count > 0)
-                    lblResponse.Text = DRUF.secondsToMinutes(Math.Floor(totalResponseTime / orderList.Count));
+                    lblResponse.Text = UF.secondsToMinutes(Math.Floor(totalResponseTime / orderList.Count));
                 else
                     lblResponse.Text = "0";
            
