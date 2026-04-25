@@ -1,0 +1,305 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <ProjectType>Local</ProjectType>
+    <ApplicationIcon>gear gray.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BSLayer</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <BaseAddress>285212672</BaseAddress>
+    <AssemblyTitle>Business Layer</AssemblyTitle>
+    <Description>Business Layer for DTRM</Description>
+    <Company>Pos Systems</Company>
+    <Product>DTRM</Product>
+    <Copyright>Pos Systems%40</Copyright>
+    <AssemblyVersion>1.0.%2a</AssemblyVersion>
+
+	  <NoWarn>$(NoWarn);CA1416</NoWarn>
+
+	  <AssemblyName>BSLayer</AssemblyName>
+	  <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Reports\**" />
+    <EmbeddedResource Remove="Reports\**" />
+    <None Remove="Reports\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Update="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <PackageReference Include="Dronax.PosLibrary" Version="1.0.3" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.6" />
+    <PackageReference Include="System.Management" Version="10.0.6" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Components\EntityButtonSpecial.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\TableButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlNumeric.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlAlphaNumeric.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlBonus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlBozukPara.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlCustomer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlHoldButtonExtendable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenOrder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenOrderItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlNumberPad.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlOrders.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlOrderTypes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlPayment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlPrep.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlScrollVertical.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlTables.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Components\InterfaceHolder.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\OrderDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Components\UPEntity.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\UPEntityButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{967B4E0D-AD0C-4609-AB67-0FA40C0206D8}" />
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\SquareArrowDownExpander32.png" />
+    <Content Include="Resources\SquareArrowLeftNarrower32.png" />
+    <Content Include="Resources\SquareArrowRightExpander32.png" />
+    <Content Include="Resources\SquareArrowUpNarrower32.png" />
+    <Content Include="gear gray.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup Label="Compile items now included by globbing that were not in the original project file">
+    <Compile Remove="Classes\ApplicationPrinter.cs" />
+    <Compile Remove="Classes\Backup Classes.cs" />
+    <Compile Remove="Classes\Bonus.cs" />
+    <Compile Remove="Classes\CustomEditor.cs" />
+    <Compile Remove="Classes\Customer.cs" />
+    <Compile Remove="Classes\CustomReportPrintJob.cs" />
+    <Compile Remove="Classes\Declarations.cs" />
+    <Compile Remove="Classes\Distribution.cs" />
+    <Compile Remove="Classes\DTRMBackup.cs" />
+    <Compile Remove="Classes\DTRMConfig.cs" />
+    <Compile Remove="Classes\Employee.cs" />
+    <Compile Remove="Classes\Entity.cs" />
+    <Compile Remove="Classes\EntityButton.cs" />
+    <Compile Remove="Classes\EntityButtonExtended.cs" />
+    <Compile Remove="Classes\EntityButtonStockItemLookUp.cs" />
+    <Compile Remove="Classes\EntityButtonStockItemRecipe.cs" />
+    <Compile Remove="Classes\EntityView.cs" />
+    <Compile Remove="Classes\Expense.cs" />
+    <Compile Remove="Classes\FMenuList.cs" />
+    <Compile Remove="Classes\GenericImage.cs" />
+    <Compile Remove="Classes\GlobalTypeView.cs" />
+    <Compile Remove="Classes\IIDName.cs" />
+    <Compile Remove="Classes\Instruct.cs" />
+    <Compile Remove="Classes\Kassa.cs" />
+    <Compile Remove="Classes\KernelFunctions.cs" />
+    <Compile Remove="Classes\KitchenOrder Classes.cs" />
+    <Compile Remove="Classes\LogItem.cs" />
+    <Compile Remove="Classes\Luv.cs" />
+    <Compile Remove="Classes\Menu.cs" />
+    <Compile Remove="Classes\Order.cs" />
+    <Compile Remove="Classes\OrderItem.cs" />
+    <Compile Remove="Classes\OrdersView.cs" />
+    <Compile Remove="Classes\PrintHandler.cs" />
+    <Compile Remove="Classes\PrintHandlerText.cs" />
+    <Compile Remove="Classes\PropertyGridEditors.cs" />
+    <Compile Remove="Classes\Report.cs" />
+    <Compile Remove="Classes\ScreenSaverImage.cs" />
+    <Compile Remove="Classes\SearchResult.cs" />
+    <Compile Remove="Classes\SessionData.cs" />
+    <Compile Remove="Classes\SessionDataShort.cs" />
+    <Compile Remove="Classes\SessionFamily.cs" />
+    <Compile Remove="Classes\SessionOrderList.cs" />
+    <Compile Remove="Classes\SessionView.cs" />
+    <Compile Remove="Classes\StaffIncome.cs" />
+    <Compile Remove="Classes\StockItem.cs" />
+    <Compile Remove="Classes\StockItemUsage.cs" />
+    <Compile Remove="Classes\StockManager.cs" />
+    <Compile Remove="Classes\Supplier.cs" />
+    <Compile Remove="Classes\Table.cs" />
+    <Compile Remove="Classes\TableGroup.cs" />
+    <Compile Remove="Classes\TaxSummary.cs" />
+    <Compile Remove="Classes\UIEventHandler.cs" />
+    <Compile Remove="Classes\UndoItem.cs" />
+    <Compile Remove="Classes\User.cs" />
+    <Compile Remove="Classes\UtilityFunctions.cs" />
+    <Compile Remove="Library\SqlExpressDesc.cs" />
+    <Compile Remove="Library\ShortGuid.cs" />
+    <Compile Remove="Library\LibraryUF.cs" />
+    <Compile Remove="Library\Definitions.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\NamespaceDoc.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\LicenseInstallForm.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\EvaluationMonitor.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\EncryptedLicenseProvider.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\EncryptedLicense.cs" />
+    <Compile Remove="Infralution.Licensing - Copy\AssemblyInfo.cs" />
+    <Compile Remove="Forms\frmLicenceInput.Designer.cs" />
+    <Compile Remove="Forms\frmLicenceInput.cs" />
+    <Compile Remove="Forms\frmDebug.Designer.cs" />
+    <Compile Remove="Forms\frmDebug.cs" />
+    <Compile Remove="Forms\frmDatabaseAdmin.Designer.cs" />
+    <Compile Remove="Forms\frmDatabaseAdmin.cs" />
+    <Compile Remove="Controls\ctlHoldButton.Designer.cs" />
+    <Compile Remove="Controls\ctlHoldButton.cs" />
+    <Compile Remove="Controls\ctlDebug.Designer.cs" />
+    <Compile Remove="Controls\ctlDebug.cs" />
+    <Compile Remove="Components\IntegerTextBox.Designer.cs" />
+    <Compile Remove="Components\IntegerTextBox.cs" />
+    <Compile Remove="Components\DropDownButtonItem.Designer.cs" />
+    <Compile Remove="Components\DropDownButtonItem.cs" />
+    <Compile Remove="Components\DropDownButton.Designer.cs" />
+    <Compile Remove="Components\DropDownButton.cs" />
+    <Compile Remove="Components\DoubleTextBox.Designer.cs" />
+    <Compile Remove="Components\DoubleTextBox.cs" />
+    <Compile Remove="Components\ButtonX.Designer.cs" />
+    <Compile Remove="Components\ButtonX.cs" />
+    <Compile Remove="Classes\WebSettings.cs" />
+    <Compile Remove="Classes\SimpleEntityButton.cs" />
+    <Compile Remove="Classes\SessionProcessLookUp.cs" />
+    <Compile Remove="Classes\Service.cs" />
+    <Compile Remove="Classes\SaleOrderView.cs" />
+    <Compile Remove="Classes\SaleOrderItem.cs" />
+    <Compile Remove="Classes\SaleOrderCatalogItem.cs" />
+    <Compile Remove="Classes\SaleOrderCatalog.cs" />
+    <Compile Remove="Classes\SaleOrder.cs" />
+    <Compile Remove="Classes\ReportList.cs" />
+    <Compile Remove="Classes\ReportFunctionNameList.cs" />
+    <Compile Remove="Classes\ReportFunctionNameItem.cs" />
+    <Compile Remove="Classes\ReportFunction.cs" />
+    <Compile Remove="Classes\RemoteStation.cs" />
+    <Compile Remove="Classes\PrintQueueItem.cs" />
+    <Compile Remove="Classes\PriceItem.cs" />
+    <Compile Remove="Classes\Invoice.cs" />
+    <Compile Remove="Classes\GeneralConfig.cs" />
+    <Compile Remove="Classes\FingerPrint.cs" />
+    <Compile Remove="Classes\ExtendedGraphics.cs" />
+    <Compile Remove="Classes\ESCPOSCommand.cs" />
+    <Compile Remove="Classes\DTRMLicence.cs" />
+    <Compile Remove="Classes\DataGridViewCsvExporter.cs" />
+    <Compile Remove="Classes\CsvExport.cs" />
+    <Compile Remove="Classes\Client.cs" />
+    <Compile Remove="Classes\ApplicationPrinterSelector.cs" />
+    <Compile Remove="Classes\AppButton.cs" />
+  </ItemGroup>
+  <ItemGroup Label="EmbeddedResource items now included by globbing that were not in the original project file">
+    <EmbeddedResource Remove="Infralution.Licensing - Copy\LicenseInstallForm.resx" />
+    <EmbeddedResource Remove="Forms\frmLicenceInput.resx" />
+    <EmbeddedResource Remove="Forms\frmDebug.resx" />
+    <EmbeddedResource Remove="Forms\frmDatabaseAdmin.resx" />
+    <EmbeddedResource Remove="Controls\ctlHoldButton.resx" />
+    <EmbeddedResource Remove="Controls\ctlDebug.resx" />
+    <EmbeddedResource Remove="Components\IntegerTextBox.resx" />
+    <EmbeddedResource Remove="Components\DropDownButtonItem.resx" />
+    <EmbeddedResource Remove="Components\ButtonX.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties Notes="&lt;Notes Project=&quot;c8c19685-1e1e-443a-86d3-5ff18925b069&quot; xmlns=&quot;clr-namespace:StickyNotes.Model;assembly=StickyNotes&quot;&gt;&lt;Notes.StickyNotes&gt;&lt;Note FilePath=&quot;&quot; Content=&quot;&quot; Date=&quot;2008-11-24T21:37:50.2015+00:00&quot; /&gt;&lt;/Notes.StickyNotes&gt;&lt;/Notes&gt;" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

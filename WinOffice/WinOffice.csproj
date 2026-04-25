@@ -1,0 +1,132 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>WinOffice</RootNamespace>
+    <AssemblyName>WinOffice</AssemblyName>
+    <ApplicationIcon>Disli.ico</ApplicationIcon>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <UpdateUrl>http://www.dronax.com/DTRMSimpleOffice/</UpdateUrl>
+    <SupportUrl>http://www.dronax.com</SupportUrl>
+    <ErrorReportUrl>http://www.dronax.com</ErrorReportUrl>
+    <ProductName>DTRM Simple Back Office</ProductName>
+    <PublisherName>Dronax Limited</PublisherName>
+    <SuiteName>DTRM Simple</SuiteName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <ManifestCertificateThumbprint>E32CDA9CF129700E89B08B21D0F58D24DA72C95F</ManifestCertificateThumbprint>
+    <ManifestKeyFile>DTRM Simple Back Office_1_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>false</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <TargetZone>LocalIntranet</TargetZone>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+
+	  <NoWarn>$(NoWarn);CA1416</NoWarn>
+	  <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+	  <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Update="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Disli.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup Label="Compile items now included by globbing that were not in the original project file">
+    <Compile Remove="frmMenuEditorOld.cs" />
+    <Compile Remove="frmMenuEditorOld.Designer.cs" />
+    <Compile Remove="frmVersion.Designer.cs" />
+    <Compile Remove="frmVersion.cs" />
+    <Compile Remove="frmScreenSaver.Designer.cs" />
+    <Compile Remove="frmScreenSaver.cs" />
+    <Compile Remove="frmEntityButtonStockItemLookUp.Designer.cs" />
+    <Compile Remove="frmEntityButtonStockItemLookUp.cs" />
+    <Compile Remove="frmDebugAnalyser.Designer.cs" />
+    <Compile Remove="frmDebugAnalyser.cs" />
+    <Compile Remove="frmDatabaseVisualiser.Designer.cs" />
+    <Compile Remove="frmDatabaseVisualiser.cs" />
+    <Compile Remove="frmConfig.cs" />
+  </ItemGroup>
+  <ItemGroup Label="EmbeddedResource items now included by globbing that were not in the original project file">
+    <EmbeddedResource Remove="frmMenuEditorOld.resx" />
+    <EmbeddedResource Remove="frmVersion.resx" />
+    <EmbeddedResource Remove="frmScreenSaver.resx" />
+    <EmbeddedResource Remove="frmEntityButtonStockItemLookUp.resx" />
+    <EmbeddedResource Remove="frmDebugAnalyser.resx" />
+    <EmbeddedResource Remove="frmDatabaseVisualiser.resx" />
+    <EmbeddedResource Remove="frmConfig.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
+    <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+    <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="frmSessionReportsQuick.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+</Project>
