@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BSLayer;
-
+using WinLayer;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
-using PosLibrary;
 
 namespace DTRMClientNS
 {
@@ -47,7 +40,7 @@ namespace DTRMClientNS
 
                 try
                 {
-                    if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null)
+                    if (ServiceHelper.Services != null && BSLayer.Instance != null)
                         if (config != null)
                             this.WindowState = FormWindowState.Normal; 
                         else
@@ -139,7 +132,7 @@ namespace DTRMClientNS
                 return; 
             } else
             {
-                DTRMSimpleBusiness.Instance.LoggedUser = user;
+                BSLayer.Instance.LoggedUser = user;
                 this.Hide();
 
                 txtUserPassword.Clear();

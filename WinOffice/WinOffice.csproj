@@ -52,6 +52,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
@@ -109,7 +110,6 @@
     <EmbeddedResource Remove="frmConfig.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
   </ItemGroup>

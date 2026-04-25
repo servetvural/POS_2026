@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BSLayer;
+using WinLayer;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using PosLibrary;
 using WinLayer.Library;
 
 namespace WinOffice

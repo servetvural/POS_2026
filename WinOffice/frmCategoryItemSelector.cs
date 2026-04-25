@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BSLayer;
+using WinLayer;
 
 namespace WinOffice {
     public partial class frmCategoryItemSelector : Form {
@@ -28,7 +22,7 @@ namespace WinOffice {
 
         private void LoadEntityButtonList() {
             try {
-                ds.Tables.Add(DTRMSimpleBusiness.Instance.GetDataTable("Select IID, EntityButtonName from EntityButton where ParentMenuIID = '" + MenuIID + "' order by ParentEntityIID, DisplayOrder"));
+                ds.Tables.Add(BSLayer.Instance.GetDataTable("Select IID, EntityButtonName from EntityButton where ParentMenuIID = '" + MenuIID + "' order by ParentEntityIID, DisplayOrder"));
 
                 dgvEntityButton.DataSource = ds.Tables[0];
             }

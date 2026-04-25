@@ -1,5 +1,9 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Data;
+using System.Diagnostics;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+
+using Microsoft.Win32;
 
 namespace WinLayer;
 public static class UFWin
@@ -486,6 +490,73 @@ public static class UFWin
     {
         return (double)((double)image.Width / (double)image.Height);
 
+    }
+
+
+    public static DataTable GetDataTableFromGridVisible(DataGridView dgv, bool blnIgnoreNoHeaderColumns, bool blnIncludeHeadersAsCaption)
+    {
+        try
+        {
+            DataTable dt = new DataTable();
+            //Create Table columns
+            for (int i = 0; i < dgv.Columns.Count; i++)
+            {
+                if (dgv.Columns[i].Visible && dgv.Columns[i].CellType == typeof(DataGridViewTextBoxCell) && (dgv.Columns[i].GetType() != typeof(DataGridViewImageColumn)))
+                    dt.Columns.Add("column" + i.ToString());
+            }
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                DataRow dr = dt.NewRow();
+                for (int j = 0; j < dgv.Columns.Count; j++)
+                {
+
+                    if (dgv.Columns[j].Visible && dgv.Columns[j].CellType == typeof(DataGridViewTextBoxCell) && (dgv.Columns[j].GetType() != typeof(DataGridViewImageColumn)) && !(blnIgnoreNoHeaderColumns && (dgv.Columns[j].HeaderText == "")))
+                    {
+
+                        dr["column" + j.ToString()] = row.Cells[j].Value.ToString();
+                    }
+                }
+
+                dt.Rows.Add(dr);
+            }
+
+            int table_i = 0;
+            for (int i = 0; i < dgv.Columns.Count; i++)
+            {
+
+                if (dgv.Columns[i].Visible && dgv.Columns[i].CellType == typeof(DataGridViewTextBoxCell) && (dgv.Columns[i].GetType() != typeof(DataGridViewImageColumn)) && !(blnIgnoreNoHeaderColumns && (dgv.Columns[i].HeaderText == "")))
+                {
+                    dt.Columns[table_i].ColumnName = (dgv.Columns[i].HeaderText == "" ? dt.Columns[table_i].ColumnName : dgv.Columns[i].HeaderText);
+
+                    if (blnIncludeHeadersAsCaption)
+                        dt.Columns[table_i].Caption = dgv.Columns[i].HeaderText;
+                    table_i++;
+                }
+            }
+
+            return dt;
+        } catch
+        {
+            return null;
+        }
+    }
+    public static void TurnOnSS()
+    {
+        RegistryKey screenSaverKey = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop");
+        if (screenSaverKey != null)
+        {
+            string screenSaverFilePath = screenSaverKey.GetValue("SCRNSAVE.EXE", string.Empty).ToString();
+            if (!string.IsNullOrEmpty(screenSaverFilePath) && File.Exists(screenSaverFilePath))
+            {
+                Process screenSaverProcess = Process.Start(new ProcessStartInfo(screenSaverFilePath, "/s"));  // "/s" for full-screen mode
+                                                                                                              // screenSaverProcess.WaitForExit();  // Wait for the screensaver to be dismissed by the user
+            }
+        }
+    }
+    public static Image cropImage(Image img, Rectangle cropArea)
+    {
+        Bitmap bmpImage = new Bitmap(img);
+        return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
     }
 
 }

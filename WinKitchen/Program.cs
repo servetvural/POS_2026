@@ -1,4 +1,4 @@
-﻿using BSLayer;
+﻿using WinLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,7 +35,7 @@ namespace WinKitchen {
 
                  // 3. Register Forms (Forms must be in DI to receive injections)
                  services.AddTransient<frmDisplaySelector>();
-                 services.AddSingleton<DTRMSimpleBusiness>();
+                 services.AddSingleton<BSLayer>();
              })
              .Build();
 

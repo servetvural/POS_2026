@@ -31,7 +31,7 @@
             label7 = new System.Windows.Forms.Label();
             btnSave = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
-            txtPassword = new PosLibrary.IntegerTextBox();
+            txtPassword = new WinLayer.IntegerTextBox();
             label2 = new System.Windows.Forms.Label();
             SuspendLayout();
             // 
@@ -174,7 +174,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
-        private PosLibrary.IntegerTextBox txtPassword;
+        private WinLayer.IntegerTextBox txtPassword;
         private System.Windows.Forms.Label label2;
     }
 }

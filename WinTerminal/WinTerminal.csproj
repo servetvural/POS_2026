@@ -99,7 +99,6 @@
     <Content Include="POS.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
   </ItemGroup>
@@ -110,9 +109,10 @@
     <EmbeddedResource Remove="trmLock.resx" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.6">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
   </ItemGroup>
 </Project>

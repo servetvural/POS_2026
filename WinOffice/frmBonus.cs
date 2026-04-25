@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BSLayer;
-
+using WinLayer;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
-using PosLibrary;
 
 namespace WinOffice {
     public partial class frmBonus : Form {
@@ -295,7 +291,7 @@ namespace WinOffice {
             }
 
             //remove this line 24 / 3 / 2024
-            DTRMSimpleBusiness.Instance.SetSuitableBonus();
+            BSLayer.Instance.SetSuitableBonus();
         }
     }
 }

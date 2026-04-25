@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using BSLayer;
+using WinLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +8,6 @@ using PosLayer.Repository;
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;
-using WinLayer;
 
 namespace DTRMClientNS
 {
@@ -55,7 +54,7 @@ namespace DTRMClientNS
 
                   // 3. Register Forms (Forms must be in DI to receive injections)
                   services.AddTransient<FrmLock>();
-                  services.AddSingleton<DTRMSimpleBusiness>();
+                  services.AddSingleton<BSLayer>();
 
                   // 2. Build the provider
                   ServiceProvider = services.BuildServiceProvider();

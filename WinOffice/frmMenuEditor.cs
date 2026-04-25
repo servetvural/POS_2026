@@ -5,22 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BSLayer;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Newtonsoft.Json;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
-using PosLibrary;
-using PosLibrary.Forms;
-
+using WinLayer.Forms;
 using WinLayer;
-
 
 namespace WinOffice
 {
@@ -259,7 +250,7 @@ namespace WinOffice
                             }
 
                             //Save stock item lookups
-                            if (await DTRMSimpleBusiness.Instance.SaveAllRecipes(backup.recipes))
+                            if (await BSLayer.Instance.SaveAllRecipes(backup.recipes))
                             {
                                 statusMessage += "Stock Item Lookups Saved " + Environment.NewLine;
                             }
@@ -298,7 +289,7 @@ namespace WinOffice
                 {
                     if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        DTRMSimpleBusiness.Instance.PrintPriceList(((TheMenu)dgvMenu.SelectedRows[0].DataBoundItem).IID, frm.SelectedPrinterIID);
+                        BSLayer.Instance.PrintPriceList(((TheMenu)dgvMenu.SelectedRows[0].DataBoundItem).IID, frm.SelectedPrinterIID);
                     }
                 }
             }
@@ -410,7 +401,7 @@ namespace WinOffice
         {
             if (dgvMenu.SelectedRows.Count > 0)
             {
-                StockManager sm = await DTRMSimpleBusiness.Instance.GetStockManager();
+                StockManager sm = await BSLayer.Instance.GetStockManager();
                 sm.Reference = "Stock Manager for " + " Bunu duzeltmek lazim " + DateTime.Now.ToString("dd MM yyyy");
                 using (SaveFileDialog sfd = new SaveFileDialog())
                 {
@@ -445,7 +436,7 @@ namespace WinOffice
                         return;
                     }
 
-                    if (await DTRMSimpleBusiness.Instance.SaveStockManager(sm))
+                    if (await BSLayer.Instance.SaveStockManager(sm))
                         await LoadMenuList();
                 }
             }
@@ -459,7 +450,7 @@ namespace WinOffice
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
-                    if (await DTRMSimpleBusiness.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
+                    if (await BSLayer.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
                         MessageBox.Show("Completed");
                     else
                         MessageBox.Show("Completed with Errors");

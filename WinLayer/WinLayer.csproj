@@ -16,15 +16,267 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Library\DRNumeric.cs" />
     <Compile Remove="Library\PrintHandlerText.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dronax.PosLibrary" Version="1.0.3" />
+    <Content Include="Resources\SquareArrowDownExpander32.png" />
+    <Content Include="Resources\SquareArrowLeftNarrower32.png" />
+    <Content Include="Resources\SquareArrowRightExpander32.png" />
+    <Content Include="Resources\SquareArrowUpNarrower32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Components\EntityButtonSpecial.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\InterfaceHolder.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\TableButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\UPEntity.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Components\UPEntityButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlAlphaNumeric.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlBonus.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlBozukPara.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlCustomer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlHoldButtonExtendable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenOrder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlKitchenOrderItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlNumberPad.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlNumeric.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlOrders.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlOrderTypes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlPayment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlPrep.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlScrollVertical.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\ctlTables.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Controls\OrderDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="Forms\frmAppPrinterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmBackupOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmConfirmCardPayment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmConfirmOnlinePayment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmDistributionSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmDump.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmEmployeeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmExpense.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmFileDownloader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmGenericImageEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmImageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmImageList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmIntegerInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmKassaCalculator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmKitchenDoubleDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmKitchenOrderFullScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmKitchenSingleDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmLocalPrinterSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmLogs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmMenuSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmMoneyInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmNo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmNumericInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmPaymentType.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmPinZWarning.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmPrep.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmPurchase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmRecipe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmReportArchive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmScreenSaver.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmSimpleProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStaffIncomeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStockItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStockItemList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStockItemUsage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStockUsagePad.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmStringInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmSubTableSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmSupplier.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmSupplierList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmTableSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmTableSplitter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmTaxReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmTextViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\frmVariables.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmDrawerCount.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmGetValue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmGlobalTypeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmOrderTypeSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmPrinterSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmSelectPrinter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmSupervisorLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Forms\trmYnc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="trmOrderPadMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
 
 </Project>

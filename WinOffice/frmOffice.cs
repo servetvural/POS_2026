@@ -2,15 +2,11 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using BSLayer;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
-using PosLibrary;
-
 using WinLayer;
 
 
@@ -87,24 +83,24 @@ namespace WinOffice
                     frmPassword frmpswd = new frmPassword("Database : " + (blnLocalDatabase ? "localhost" : config.Database_Instance));
                     if (frmpswd.ShowDialog() == DialogResult.OK)
                     {
-                        DTRMSimpleBusiness.Instance.LoggedUser = await repoUser.GetByField("UserPassword", frmpswd.Password);
-                        if (DTRMSimpleBusiness.Instance.LoggedUser == null)
+                        BSLayer.Instance.LoggedUser = await repoUser.GetByField("UserPassword", frmpswd.Password);
+                        if (BSLayer.Instance.LoggedUser == null)
                         { return; }
 
-                        if (DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore())
+                        if (BSLayer.Instance.LoggedUser.IsManagerOrMore())
                         {
                             ConnectActions(true);
 
                             //Identify connection type
                             if (blnLocalDatabase)
                             {
-                                conStatus = DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
+                                conStatus = BSLayer.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedLocally;
                                 btnPrinters.Enabled = true;
                                 btnDisconnect.Image = Properties.Resources.ConnectedLocal32;
                             } else
                             {
                                 //remote connection
-                                conStatus = DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
+                                conStatus = BSLayer.Instance.OfficeConnectionStatus = ConnectionStatus.ConnectedRemotely;
                                 //btnPrinters.Enabled = false;
                                 btnDisconnect.Image = Properties.Resources.ConnectedRemote32;
                             }
@@ -144,8 +140,8 @@ namespace WinOffice
                     conStatus = ConnectionStatus.Disconnected;
                     try
                     {
-                        DTRMSimpleBusiness.Instance.OfficeConnectionStatus = ConnectionStatus.Disconnected;
-                        DTRMSimpleBusiness.Instance.LoggedUser = null;
+                        BSLayer.Instance.OfficeConnectionStatus = ConnectionStatus.Disconnected;
+                        BSLayer.Instance.LoggedUser = null;
                     } catch { }
                     ConnectActions(false);
 
@@ -394,7 +390,7 @@ namespace WinOffice
             backupOptions.includeCustomers = backupOptions.includeImages = backupOptions.includePrinters = backupOptions.includeStock =
                 backupOptions.includeTables = backupOptions.includeUsers = true;
 
-            DatabaseBackup backup = await DTRMSimpleBusiness.Instance.GetDatabaseBackup(backupOptions);
+            DatabaseBackup backup = await BSLayer.Instance.GetDatabaseBackup(backupOptions);
             if (backup != null)
             {
                 DRFile.XmlSerialize(Path.Combine("DatabaseBackup\\", "Database Backup on " +

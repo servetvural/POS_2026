@@ -24,9 +24,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            txtGroupHeight = new PosLibrary.IntegerTextBox();
+            txtGroupHeight = new WinLayer.IntegerTextBox();
             label3 = new System.Windows.Forms.Label();
-            txtGroupWidth = new PosLibrary.IntegerTextBox();
+            txtGroupWidth = new WinLayer.IntegerTextBox();
             label2 = new System.Windows.Forms.Label();
             txtGroupName = new System.Windows.Forms.TextBox();
             label1 = new System.Windows.Forms.Label();
@@ -228,9 +228,9 @@
         private System.Windows.Forms.Button btnHeightPlus;
         private System.Windows.Forms.Button btnWidthMinus;
         private System.Windows.Forms.Button btnWidthPlus;
-        private PosLibrary.IntegerTextBox txtGroupHeight;
+        private WinLayer.IntegerTextBox txtGroupHeight;
         private System.Windows.Forms.Label label3;
-        private PosLibrary.IntegerTextBox txtGroupWidth;
+        private WinLayer.IntegerTextBox txtGroupWidth;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtGroupName;
         private System.Windows.Forms.Label label1;
