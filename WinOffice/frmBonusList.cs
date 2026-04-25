@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Windows.Forms;
-using BSLayer;
-using PosLibrary;
 using Newtonsoft.Json;
-
 using POSLayer.Models;
-using System.Threading.Tasks;
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace WinOffice {
     public partial class frmBonusList : Form {

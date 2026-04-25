@@ -5,22 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BSLayer;
-
 using Microsoft.Extensions.DependencyInjection;
-
 using Newtonsoft.Json;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
 using PosLibrary;
 using PosLibrary.Forms;
-
 using WinLayer;
-
 
 namespace WinOffice
 {

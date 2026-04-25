@@ -1,10 +1,8 @@
 using System;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using BSLayer;
-
+using WinLayer;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using POSLayer.Library;

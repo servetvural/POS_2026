@@ -28,7 +28,6 @@
 	  <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />

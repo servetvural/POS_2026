@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Data;
 using System.Windows.Forms;
-
-using BSLayer;
-
+using WinLayer;
 using PosLibrary;
-
 using POSLayer.Library;
 using POSLayer.Models;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace WinOffice

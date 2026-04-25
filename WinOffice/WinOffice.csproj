@@ -109,7 +109,6 @@
     <EmbeddedResource Remove="frmConfig.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
   </ItemGroup>

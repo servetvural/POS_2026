@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 using System.Media;
 using PosLibrary;
-using BSLayer;
-
+using WinLayer;
 using POSLayer.Library;
 using System.Threading.Tasks;
 using POSLayer.Models;

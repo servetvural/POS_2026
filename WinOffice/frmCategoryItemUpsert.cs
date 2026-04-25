@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using BSLayer;
 using PosLibrary;
 using System.Globalization;
 using System.IO;
@@ -12,7 +11,6 @@ using System.Threading.Tasks;
 using POSLayer.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading;
-using System.Drawing.Configuration;
 
 namespace WinOffice
 {

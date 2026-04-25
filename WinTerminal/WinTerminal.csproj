@@ -99,7 +99,6 @@
     <Content Include="POS.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BSLayer\BSLayer.csproj" />
     <ProjectReference Include="..\POSLayer\POSLayer.csproj" />
     <ProjectReference Include="..\WinLayer\WinLayer.csproj" />
   </ItemGroup>

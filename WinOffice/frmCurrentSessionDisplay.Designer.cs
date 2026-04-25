@@ -1,4 +1,4 @@
-﻿using BSLayer.Controls;
+﻿using WinLayer.Controls;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -694,7 +694,7 @@ namespace WinOffice {
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblUnpaidTotal;
         private System.Windows.Forms.Timer tmrSeconds;
-        private BSLayer.Controls.ctlBonus pnlBonus;
+        private WinLayer.Controls.ctlBonus pnlBonus;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel pnlInformation;
         private System.Windows.Forms.Label label6;

@@ -1,6 +1,6 @@
 using System;
 using System.Windows.Forms;
-using BSLayer;
+using WinLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +8,6 @@ using PosLayer.Repository;
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;
-using WinLayer;
 
 namespace DTRMClientNS
 {

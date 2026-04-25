@@ -2,15 +2,12 @@
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using BSLayer;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
 using PosLibrary;
-
 using WinLayer;
 
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using BSLayer;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
+using WinLayer;
 
 namespace WinKassa {
     public partial class frmMain : Form {

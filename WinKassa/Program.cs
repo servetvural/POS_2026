@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using BSLayer;
-using BSLayer.Forms;
-
+using WinLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using PosLayer.Repository;
-
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;

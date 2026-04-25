@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-
-using BSLayer;
-
+using WinLayer;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
-using PosLibrary;
 
 namespace WinOffice {
     public partial class frmBonus : Form {
