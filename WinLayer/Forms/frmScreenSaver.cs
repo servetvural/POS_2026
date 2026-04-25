@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using System.IO;
-using WinLayer.Library;
+﻿using WinLayer.Library;
 using POSLayer.Library;
 
 namespace WinLayer {
@@ -37,12 +31,12 @@ namespace WinLayer {
         {
             this.Width = Screen.PrimaryScreen.WorkingArea.Width;
             this.Height = Screen.PrimaryScreen.WorkingArea.Height;
-            if (DTRMSimpleBusiness.Instance == null)
+            if (BSLayer.Instance == null)
             {
                 tmrMain.Enabled = false;
             } 
 
-            if (DTRMSimpleBusiness.Instance != null)
+            if (BSLayer.Instance != null)
             {
                 switch (config.Screen_Saver_Color)
                 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Windows.Forms;
-
+﻿
 namespace WinLayer {
     enum MathActions { None, Add, Subtract , Multiply, Divide}
     public partial class frmMoneyInput : Form {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-namespace WinLayer {
+﻿namespace WinLayer {
     public partial class frmDump : Form {
 
         public frmDump() {
@@ -16,16 +13,16 @@ namespace WinLayer {
             dgvIrrelevantOrders.DataSource = null;
             dgvErrorOrders.DataSource = null;
 
-            dgvIrrelevantOrders.DataSource =  DTRMSimpleBusiness.Instance.GetIrrelevantUnpaidOrdersDB();
+            dgvIrrelevantOrders.DataSource =  BSLayer.Instance.GetIrrelevantUnpaidOrdersDB();
             btnDeleteOrders.Visible = dgvIrrelevantOrders.Rows.Count > 0;
 
-            dgvErrorOrders.DataSource =  DTRMSimpleBusiness.Instance.GetRelevantUnpaidCreatedOrNewOrdersDB();
+            dgvErrorOrders.DataSource =  BSLayer.Instance.GetRelevantUnpaidCreatedOrNewOrdersDB();
             btnDeleteErrorOrders.Visible = dgvErrorOrders.Rows.Count > 0;
         }
 
         private void btnDeleteOrders_Click(object sender, EventArgs e) {
             for (int i=0; i < dgvIrrelevantOrders.SelectedRows.Count; i++) {
-                 DTRMSimpleBusiness.Instance.DeleteOrder(dgvIrrelevantOrders.SelectedRows[i].Cells["colIID"].Value.ToString());
+                 BSLayer.Instance.DeleteOrder(dgvIrrelevantOrders.SelectedRows[i].Cells["colIID"].Value.ToString());
 
             }
             LoadOrders();
@@ -40,7 +37,7 @@ namespace WinLayer {
         private void btnDeleteErrorOrders_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvErrorOrders.SelectedRows.Count; i++) {
 
-                 DTRMSimpleBusiness.Instance.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
+                 BSLayer.Instance.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
 
             }
             LoadOrders();

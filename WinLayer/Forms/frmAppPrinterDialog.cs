@@ -46,7 +46,7 @@ namespace WinLayer {
             if (lvwPrinters.SelectedIndices.Count > 0) {
                 ListViewItem lvi = lvwPrinters.SelectedItems[0];
                 this.SelectedPrinterIID = lvi.SubItems[1].Text;
-                this.SelectedPrinter = (Printer)lvi.Tag;  //await  DTRMSimpleBusiness.Instance.GetPrinterForClient(SelectedPrinterIID);
+                this.SelectedPrinter = (Printer)lvi.Tag;  //await  BSLayer.Instance.GetPrinterForClient(SelectedPrinterIID);
                 this.SelectedPrinterNetworkName = SelectedPrinter.NetworkName;
                 this.DialogResult = DialogResult.OK;
                 this.Close();

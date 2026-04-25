@@ -1,5 +1,3 @@
-using System.Windows.Forms;
-
 using POSLayer.Library;
 
 namespace WinLayer {

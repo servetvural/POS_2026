@@ -19,9 +19,9 @@ namespace WinLayer {
 
         public bool blnBeingAltered;
 
-        Font mainFont;// = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Large_Font_Size, FontStyle.Bold);
-        Font subFont; // = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Small_Font_Size, FontStyle.Regular);
-        Font detailFont; // = new Font("Arial",  DTRMSimpleBusiness.Instance.config.Kitchen_Detail_Font_Size, FontStyle.Regular);
+        Font mainFont;// = new Font("Arial",  BSLayer.Instance.config.Kitchen_Large_Font_Size, FontStyle.Bold);
+        Font subFont; // = new Font("Arial",  BSLayer.Instance.config.Kitchen_Small_Font_Size, FontStyle.Regular);
+        Font detailFont; // = new Font("Arial",  BSLayer.Instance.config.Kitchen_Detail_Font_Size, FontStyle.Regular);
 
         public event KitchenEventHandler OrderCompleteRequested;
         public void OnOrderCompleted(KitchenOrder kitchenOrder) {
@@ -67,7 +67,7 @@ namespace WinLayer {
         
 
         private async void CtlKitchenOrder_Load(object sender, EventArgs e) {
-            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null && korder != null)
+            if (ServiceHelper.Services != null && BSLayer.Instance != null && korder != null)
                 await LoadKitchenOrder();
         }
 
@@ -253,7 +253,7 @@ namespace WinLayer {
         private void BtnDone_Click(object sender, EventArgs e) {
 
             if (blnWaiting) {
-                korder.BeingModified =  DTRMSimpleBusiness.Instance.IsKitchenOrderBeingModified(korder.IID);
+                korder.BeingModified =  BSLayer.Instance.IsKitchenOrderBeingModified(korder.IID);
                 if (!korder.BeingModified) {
                     MarkOrderItemsAsCompletedAsRequestedQuantity();
                     OrderCompleteRequested(korder);
@@ -269,15 +269,15 @@ namespace WinLayer {
 
         private async void MarkOrderItemsAsCompletedAsRequestedQuantity() {
             if (config.DebugMode) 
-                 DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
+                 BSLayer.Instance.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
-            korder.CompletedDateTime = DateTime.Now; // DateTime.Parse( DTRMSimpleBusiness.Instance.GetDataTable("Select getdate()").Rows[0][0].ToString());
-            Order relatedOrder = await  DTRMSimpleBusiness.Instance.GetOrder(korder.OrderIID);
+            korder.CompletedDateTime = DateTime.Now; // DateTime.Parse( BSLayer.Instance.GetDataTable("Select getdate()").Rows[0][0].ToString());
+            Order relatedOrder = await  BSLayer.Instance.GetOrder(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.Items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
                 }
-                 DTRMSimpleBusiness.Instance.SaveKitchenOrder(korder);
+                 BSLayer.Instance.SaveKitchenOrder(korder);
 
             } else {
                 foreach (KitchenOrderItem item in korder.Items) {
@@ -292,11 +292,11 @@ namespace WinLayer {
 
                 await repoOrder.Save(relatedOrder);
                 if (config.DebugMode) 
-                     DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
+                     BSLayer.Instance.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
 
-                 DTRMSimpleBusiness.Instance.SaveKitchenOrder(korder);
+                 BSLayer.Instance.SaveKitchenOrder(korder);
                 if (config.DebugMode)
-                     DTRMSimpleBusiness.Instance.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
+                     BSLayer.Instance.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
                 
             }
 
@@ -345,28 +345,28 @@ namespace WinLayer {
         }
 
         private async void BtnPrint_Click(object sender, EventArgs e) {
-            Printer printer = await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();  
+            Printer printer = await  BSLayer.Instance.GetDefaultReceiptPrinter();  
             if (printer == null)
                 return;
 
-             DTRMSimpleBusiness.Instance.PrintForKitchen(korder, printer);
+             BSLayer.Instance.PrintForKitchen(korder, printer);
         }
 
         private async void BtnPrintAsReceipt_Click(object sender, EventArgs e) {
-            Printer printer =await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(); 
+            Printer printer =await  BSLayer.Instance.GetDefaultReceiptPrinter(); 
             if (printer == null)
                 return;
 
             
-            DTRMSimpleBusiness.Instance.PrintReceipt(await repoOrder.Get(korder.OrderIID, "Items"), printer, 1);
+            BSLayer.Instance.PrintReceipt(await repoOrder.Get(korder.OrderIID, "Items"), printer, 1);
         }
 
         private async void BtnPrintWithDetails_Click(object sender, EventArgs e) {
-            Printer printer = await  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();
+            Printer printer = await  BSLayer.Instance.GetDefaultReceiptPrinter();
             if (printer == null)
                 return;
 
-             DTRMSimpleBusiness.Instance.PrintForKitchen(korder, printer, true);
+             BSLayer.Instance.PrintForKitchen(korder, printer, true);
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e) {

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
-using POSLayer.Models;
+﻿using POSLayer.Models;
 using POSLayer.Library;
-using WinLayer;
 using POSLayer.Repository.IRepository;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -70,7 +65,7 @@ namespace WinLayer
 
             try
             {
-                gim = await DTRMSimpleBusiness.Instance.GetGenericImage(stockItem.IID);
+                gim = await BSLayer.Instance.GetGenericImage(stockItem.IID);
                 pBox.BackgroundImage = gim?.DisplayImage.ToImage();
                 txtImageFile.Text = gim?.ImageFileName;
             } catch (Exception ex)
@@ -82,7 +77,7 @@ namespace WinLayer
         private async void btnCancel_Click(object sender, EventArgs e)
         {
             if (blnModified)
-                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, originalValue);
+                await BSLayer.Instance.SetStockItemQuantity(stockItem.IID, originalValue);
             this.DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -133,7 +128,7 @@ namespace WinLayer
                     blnConverted = true
                 };
                 stockItem.UsedQuantity = 0;
-                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, 0);
+                await BSLayer.Instance.SetStockItemQuantity(stockItem.IID, 0);
                 txtUsedQuantity.Text = "0";
                 btnSet0.Image = global::WinLayer.Properties.Resources.ActionUndo;
                 btnSet0.Text = "";
@@ -143,7 +138,7 @@ namespace WinLayer
             {
                 //Already set to 0 so converted back
                 stockItem.UsedQuantity = oldItem.Quantity;
-                await DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
+                await BSLayer.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
                 txtUsedQuantity.Text = oldItem.Quantity.ToString();
                 btnSet0.Text = "Set  0";
                 btnSet0.Image = null;
@@ -169,7 +164,7 @@ namespace WinLayer
                         blnConverted = true
                     };
                     stockItem.UsedQuantity = val;
-                    DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, val);
+                    BSLayer.Instance.SetStockItemQuantity(stockItem.IID, val);
                     txtUsedQuantity.Text = val.ToString();
                     btnSetCustom.Image = global::WinLayer.Properties.Resources.ActionUndo;
                     btnSetCustom.Text = "";
@@ -180,7 +175,7 @@ namespace WinLayer
             {
                 //Already set to custom so convert back 
                 stockItem.UsedQuantity = oldItem.Quantity;
-                DTRMSimpleBusiness.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
+                BSLayer.Instance.SetStockItemQuantity(stockItem.IID, oldItem.Quantity);
                 txtUsedQuantity.Text = oldItem.Quantity.ToString();
                 btnSetCustom.Text = "Set ?";
                 btnSetCustom.Image = null;

@@ -1,14 +1,7 @@
-using System;
-using System.Drawing;
 using System.ComponentModel;
-using System.Windows.Forms;
-using PosLibrary;
-
 using POSLayer.Library;
 using POSLayer.Repository.IRepository;
 using POSLayer.Models;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace WinLayer {
     /// <summary>
@@ -550,26 +543,26 @@ namespace WinLayer {
         private void frmCustomer_Load(object sender, System.EventArgs e) {
             LoadCustomer();
             txtTel.Focus();
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ) {
+            if ( BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery ) {
                 txtAddress.BackColor = Color.Bisque;
             }
         }
 
         public void LoadCustomer() {
             try {
-                CustomerIID =  DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID;
-                txtName.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName;
+                CustomerIID =  BSLayer.Instance.AttachedOrder.CustomerIID;
+                txtName.Text =  BSLayer.Instance.AttachedOrder.Customer.CName;
                 try {
-                    string[] parr =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Postcode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] parr =  BSLayer.Instance.AttachedOrder.Customer.Postcode.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
                     if (parr.Length > 0)
                         txtPostCode1.Text = parr[0];
                     if (parr.Length > 1)
                         txtPostCode2.Text = parr[1];
                 } catch { }
-                txtAddress.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address;
-                txtTown.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Town;
-                txtTel.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel;
-                txtEmail.Text =  DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email;
+                txtAddress.Text =  BSLayer.Instance.AttachedOrder.Customer.Address;
+                txtTown.Text =  BSLayer.Instance.AttachedOrder.Customer.Town;
+                txtTel.Text =  BSLayer.Instance.AttachedOrder.Customer.Tel;
+                txtEmail.Text =  BSLayer.Instance.AttachedOrder.Customer.Email;
             } catch { }
         }
 
@@ -640,17 +633,17 @@ namespace WinLayer {
                 return;
             }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID == null ||  DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID == "")
-                 DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
+            if ( BSLayer.Instance.AttachedOrder.CustomerIID == null ||  BSLayer.Instance.AttachedOrder.CustomerIID == "")
+                 BSLayer.Instance.AttachedOrder.CustomerIID = POSLayer.Library.ShortGuid.NewGuid().ToString();
 
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName = txtName.Text;
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address = txtAddress.Text;
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Town = txtTown.Text;
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel = txtTel.Text;
-            DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email = txtEmail.Text;
+            BSLayer.Instance.AttachedOrder.Customer.CName = txtName.Text;
+            BSLayer.Instance.AttachedOrder.Customer.Address = txtAddress.Text;
+            BSLayer.Instance.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+            BSLayer.Instance.AttachedOrder.Customer.Town = txtTown.Text;
+            BSLayer.Instance.AttachedOrder.Customer.Tel = txtTel.Text;
+            BSLayer.Instance.AttachedOrder.Customer.Email = txtEmail.Text;
 
-            if (await repoCustomer.Save( DTRMSimpleBusiness.Instance.AttachedOrder.Customer) != null) {
+            if (await repoCustomer.Save( BSLayer.Instance.AttachedOrder.Customer) != null) {
                 Success = true;
                 CloseFunction();
                 if (CompleteAttachedOrder != null)
@@ -659,12 +652,12 @@ namespace WinLayer {
         }
 
         public void UICustomerToCustomer() {
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName = txtName.Text;
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address = txtAddress.Text;
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Town = txtTown.Text;
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel = txtTel.Text;
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email = txtEmail.Text;
+             BSLayer.Instance.AttachedOrder.Customer.CName = txtName.Text;
+             BSLayer.Instance.AttachedOrder.Customer.Postcode = txtPostCode1.Text.Trim() + " " + txtPostCode2.Text.Trim();
+             BSLayer.Instance.AttachedOrder.Customer.Address = txtAddress.Text;
+             BSLayer.Instance.AttachedOrder.Customer.Town = txtTown.Text;
+             BSLayer.Instance.AttachedOrder.Customer.Tel = txtTel.Text;
+             BSLayer.Instance.AttachedOrder.Customer.Email = txtEmail.Text;
         }
 
         private void MainKeyHandler(object sender, KeyEventArgs e) {
@@ -714,7 +707,7 @@ namespace WinLayer {
         private async void btnSelect_Click(object sender, EventArgs e) {
             if (dgv.SelectedRows.Count > 0) {
                 string SelectedCustomerIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                // DTRMSimpleBusiness.Instance.CustomerDetailsToOrder(await  DTRMSimpleBusiness.Instance.GetCustomer(SelectedCustomerIID));
+                // BSLayer.Instance.CustomerDetailsToOrder(await  BSLayer.Instance.GetCustomer(SelectedCustomerIID));
                 LoadSearchResults();
             }
         }          
@@ -730,17 +723,17 @@ namespace WinLayer {
         private void btnClearCustomerDetails_Click(object sender, EventArgs e) {
             ClearUI();
             UICustomerToCustomer();
-             DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID = "";
+             BSLayer.Instance.AttachedOrder.CustomerIID = "";
                         
         }
 
         private void btnNotRequired_Click(object sender, EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
+            if ( BSLayer.Instance.AttachedOrder.OrderType == POSLayer.Library.OrderTypes.Delivery)
                 return;
 
-             DTRMSimpleBusiness.Instance.AttachedOrder.CustomerIID = null;
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName = ".";
-             DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel = ".";
+             BSLayer.Instance.AttachedOrder.CustomerIID = null;
+             BSLayer.Instance.AttachedOrder.Customer.CName = ".";
+             BSLayer.Instance.AttachedOrder.Customer.Tel = ".";
             Success = true;
             CloseFunction();
             if (CompleteAttachedOrder != null)

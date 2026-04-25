@@ -1,8 +1,3 @@
-using System;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -35,9 +30,9 @@ namespace WinLayer {
         private async void btnLogon_Click(object sender, System.EventArgs e) {
 
             try {
-                if (DTRMSimpleBusiness.Instance == null || config == null ) {
+                if (BSLayer.Instance == null || config == null ) {
                     //DisplayMessage("STARTING BUSINESS LAYER ..........      ", 2);
-                    if (!DTRMSimpleBusiness.Instance.DoStartThings().Result) {
+                    if (!BSLayer.Instance.DoStartThings().Result) {
                         return;
                     }
                 }

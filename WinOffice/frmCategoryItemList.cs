@@ -60,7 +60,7 @@ namespace WinOffice
 
             category = _category;
 
-            Thread.CurrentThread.CurrentUICulture = DTRMSimpleBusiness.Instance.GetUICulture();
+            Thread.CurrentThread.CurrentUICulture = BSLayer.Instance.GetUICulture();
         }
         private async void FrmMenuEditor_Load(object sender, EventArgs e)
         {
@@ -431,7 +431,7 @@ namespace WinOffice
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     DirectoryInfo dinfo = new DirectoryInfo(dlg.SelectedPath);
-                    if (await DTRMSimpleBusiness.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
+                    if (await BSLayer.Instance.ExportDatabaseImagesIntoFolder(dinfo.FullName))
                         MessageBox.Show("Completed");
                     else
                         MessageBox.Show("Completed with Errors");

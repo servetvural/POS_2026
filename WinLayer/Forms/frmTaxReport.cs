@@ -1,12 +1,5 @@
-﻿using System;
-using System.Data;
-using System.Windows.Forms;
-
-using System.IO;
+﻿using System.Data;
 using PosLibrary;
-
-using POSLayer.Repository.IRepository;
-using POSLayer.Models;
 
 namespace WinLayer {
     public partial class frmTaxReport : Form {
@@ -28,7 +21,7 @@ namespace WinLayer {
 
         public void Reload()
         {
-            this.dsReport = DTRMSimpleBusiness.Instance.GetTaxSummaryReport(FirstStartDate, LastEndDate);
+            this.dsReport = BSLayer.Instance.GetTaxSummaryReport(FirstStartDate, LastEndDate);
             dgvDaily.DataSource = dsReport.Tables["Daily"];
             dgvPercent.DataSource = dsReport.Tables["Percent"];
             for (int i = 0; i < dgvPercent.Rows.Count; i++)
@@ -75,7 +68,7 @@ namespace WinLayer {
         }
 
         private async  void btnArcEmailAsCsv_Click(object sender, EventArgs e) {
-            if (DTRMSimpleBusiness.Instance.shop.NotificationEmail == "") {
+            if (BSLayer.Instance.shop.NotificationEmail == "") {
                 MessageBox.Show("There is no valid email address to send");
                 return;
             }
@@ -98,7 +91,7 @@ namespace WinLayer {
             writer.Write(exporter.csvText);
             writer.Flush();
             stream.Position = 0;
-            if (DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(DTRMSimpleBusiness.Instance.shop.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
+            if (BSLayer.Instance.SendEmailToCustomRecepient(BSLayer.Instance.shop.NotificationEmail, "Tax Report ", "", new System.Net.Mail.Attachment(stream, GenerateFileName(), "text/csv")))
                 MessageBox.Show("Email Sent");
 
             //}            

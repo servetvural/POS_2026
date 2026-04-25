@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿using System.ComponentModel;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -42,15 +37,15 @@ namespace WinLayer.Controls {
 
         public void Activate() {           
 
-             DTRMSimpleBusiness.Instance.SetSuitableBonus();              
+             BSLayer.Instance.SetSuitableBonus();              
         }
 
         public async Task UpdateBonusDisplay() {
             blnUpdating = true;
-            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null &&  DTRMSimpleBusiness.Instance.shop.Bonus != null) {
-                double ciro = await repoSession.GetSessionOrderTotal(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
+            if (ServiceHelper.Services != null && BSLayer.Instance != null &&  BSLayer.Instance.shop.Bonus != null) {
+                double ciro = await repoSession.GetSessionOrderTotal(BSLayer.Instance.shop.CurrentSessionIID);
 
-                BonusStatus status =  DTRMSimpleBusiness.Instance.shop.Bonus.GetBonusStatus(ciro);
+                BonusStatus status =  BSLayer.Instance.shop.Bonus.GetBonusStatus(ciro);
 
 
                 if (config.Display_Session_Total_On_Bonus_Bar)
@@ -77,7 +72,7 @@ namespace WinLayer.Controls {
         private async void tmrMain_Tick(object sender, EventArgs e) {
 
             // Try to get the instance safely
-            var business = DTRMSimpleBusiness.Instance;
+            var business = BSLayer.Instance;
 
             if (business != null && !blnUpdating)
             {

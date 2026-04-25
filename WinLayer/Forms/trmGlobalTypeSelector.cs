@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-using POSLayer.Models;
+﻿using POSLayer.Models;
 
 namespace WinLayer
 {
@@ -22,11 +19,11 @@ namespace WinLayer
 
         private void LoadDistributions()
         {
-            dgv.DataSource = DTRMSimpleBusiness.Instance.GetAllDistributionsForMenu(MenuIID);
+            dgv.DataSource = BSLayer.Instance.GetAllDistributionsForMenu(MenuIID);
         }
         private void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            SelectedDistribution = DTRMSimpleBusiness.Instance.GetDistribution(dgv.Rows[e.RowIndex].Cells[0].Value.ToString()).Result;
+            SelectedDistribution = BSLayer.Instance.GetDistribution(dgv.Rows[e.RowIndex].Cells[0].Value.ToString()).Result;
         }
 
         private void btnClose_Click(object sender, EventArgs e)

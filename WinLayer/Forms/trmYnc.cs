@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 
 namespace WinLayer {
    public partial class trmYnc : Form {

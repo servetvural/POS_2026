@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 
 namespace WinLayer {
@@ -23,7 +19,7 @@ namespace WinLayer {
         }
 
         private async Task LoadStockItemUsage() {
-            stockItem =await  DTRMSimpleBusiness.Instance.GetStockItem(stockItemUsage.StockItemIID);
+            stockItem =await  BSLayer.Instance.GetStockItem(stockItemUsage.StockItemIID);
             txtStockItemName.Text = stockItemUsage.StockItem.StockName;
             txtQuantity.Value = (int)stockItemUsage.OrderableQuantity;
             txtConversion.Text = stockItem.Conversion.ToString();
@@ -51,7 +47,7 @@ namespace WinLayer {
         private async void AddToStockItem(int quantity, int conversion) {
             //stockItem.UsedQuantity -= (quantity * conversion);
             sentQuantity = (quantity * conversion * -1);
-            if (await  DTRMSimpleBusiness.Instance.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
+            if (await  BSLayer.Instance.UpdateStockItemUsedQuantity(stockItem.IID, sentQuantity)) {
                 this.DialogResult = DialogResult.OK;
                 Close();
             }

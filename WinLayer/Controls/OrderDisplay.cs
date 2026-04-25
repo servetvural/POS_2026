@@ -119,7 +119,7 @@ namespace WinLayer
                 if (config != null)
                 {
                     ilSmall.ImageSize = new Size((int)config.Order_Item_Display_Height, (int)config.Order_Item_Display_Height);
-                    DTRMSimpleBusiness.Instance.DisplayOrder += new GenericFunctionCallAsync(Display);
+                    BSLayer.Instance.DisplayOrder += new GenericFunctionCallAsync(Display);
                 }
             } catch
             {
@@ -564,16 +564,16 @@ namespace WinLayer
 
             btnSplit.Visible = false;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
                 btnViewKitchen.Visible = config.Display_Kitchen_Chef_on_Display &&
-                    ((DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
-                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
+                    ((BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale && config.Hold_Order_Available && config.Hold_Order_Display_in_Kitchen) ||
+                    (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && config.Table_Orders_Allowed && config.Table_Orders_Display_Kitchen_Orders));
 
                 cCompletedQuantity.Width = (btnViewKitchen.Visible ? 28 : 0);
             }
 
-            pnlCommand.Height = (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0) ? 54 : 0;
+            pnlCommand.Height = (BSLayer.Instance.AttachedOrder != null && BSLayer.Instance.AttachedOrder.Items.Count > 0) ? 54 : 0;
             string[] arr = null;
             ListViewItem lvi;
             //  OrderItem oi;
@@ -586,24 +586,24 @@ namespace WinLayer
 
             OnDisplayOccured();
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null && OrderToSplit == null)
+            if (BSLayer.Instance.AttachedOrder == null && OrderToSplit == null)
                 btnSplit.Visible = false;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null && OrderToSplit != null && OrderToSplit.Items.Count == 0)
+            if (BSLayer.Instance.AttachedOrder == null && OrderToSplit != null && OrderToSplit.Items.Count == 0)
             {
                 //Now Ordertosplit must be deleted
-                await DTRMSimpleBusiness.Instance.DeleteOrder(OrderToSplit.IID);
+                await BSLayer.Instance.DeleteOrder(OrderToSplit.IID);
                 OrderToSplit = null;
                 SplitStatus = SplittingStatus.Normal;
                 btnSplit.Visible = false;
                 pnlSplit.Visible = false;
             }
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
                 return;
 
 
-            switch (DTRMSimpleBusiness.Instance.AttachedOrder.Status)
+            switch (BSLayer.Instance.AttachedOrder.Status)
             {
                 case StatusFlags.New:
                     switch (SplitStatus)
@@ -628,7 +628,7 @@ namespace WinLayer
                         case SplittingStatus.Normal:
                             btnSplit.Image = Properties.Resources.Split32Down;
 
-                            if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count == 1 && DTRMSimpleBusiness.Instance.AttachedOrder.Items[0].Quantity == 1)
+                            if (BSLayer.Instance.AttachedOrder.Items.Count == 1 && BSLayer.Instance.AttachedOrder.Items[0].Quantity == 1)
                                 btnSplit.Visible = false;
                             else
                                 btnSplit.Visible = true;
@@ -646,19 +646,19 @@ namespace WinLayer
 
 
             string strCompletedQuantity = "";
-            //for (int i = 0; i < DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count; i++)
-            foreach (var oi in DTRMSimpleBusiness.Instance.AttachedOrder.Items)
+            //for (int i = 0; i < BSLayer.Instance.AttachedOrder.Items.Count; i++)
+            foreach (var oi in BSLayer.Instance.AttachedOrder.Items)
             {
 
                 //Display Top Item
                 blnHasSubItems = false;
-                //oi = (OrderItem)DTRMSimpleBusiness.Instance.AttachedOrder.Items[i];
+                //oi = (OrderItem)BSLayer.Instance.AttachedOrder.Items[i];
                 SingleTotal = oi.Price * oi.Quantity;
 
 
                 if ((config.Table_Orders_Display_Kitchen_Orders || config.Table_Orders_Kitchen_Receipt_Count > 0 || config.Hold_Order_Display_in_Kitchen || config.Hold_Order_Print_in_Kitchen) &&
-                    (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin) &&
-                    OrderToSplit == null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Holding))
+                    (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale || BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin) &&
+                    OrderToSplit == null && (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New || BSLayer.Instance.AttachedOrder.Status == StatusFlags.Done || BSLayer.Instance.AttachedOrder.Status == StatusFlags.Holding))
                 {
                     if (config.Display_Kitchen_Orders_As_Reminders)
                     {
@@ -679,7 +679,7 @@ namespace WinLayer
 
                 if (OrderToSplit == null)
                 {
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && !config.Table_Orders_Always_Shrinked)
+                    if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && !config.Table_Orders_Always_Shrinked)
                     {
                         if (GroupIID != oi.OrderGroupIID)
                         {
@@ -691,7 +691,7 @@ namespace WinLayer
                         toplvi.BackColor = GroupBackColor;
                     } else
                     {
-                        if (oi.OrderGroupIID != DTRMSimpleBusiness.Instance.AttachedOrder.IID)
+                        if (oi.OrderGroupIID != BSLayer.Instance.AttachedOrder.IID)
                             toplvi.BackColor = Color.DarkGray;
                     }
                 }
@@ -713,36 +713,36 @@ namespace WinLayer
             if (lvwOrder.Items.Count > 0)
             {
                 //Add Order's main instruction if  any
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.Instruction.Trim().Length > 0)
+                if (BSLayer.Instance.AttachedOrder.Instruction.Trim().Length > 0)
                 {
-                    arr = new string[4] { "", "", DTRMSimpleBusiness.Instance.AttachedOrder.Instruction, "" };
+                    arr = new string[4] { "", "", BSLayer.Instance.AttachedOrder.Instruction, "" };
                     lvi = new ListViewItem(arr);
                     lvwOrder.Items.Add(lvi);
                 }
             }
 
-            OrderTotal = DTRMSimpleBusiness.Instance.AttachedOrder.Total;
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
-                lblScrollUp.Text = DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + DTRMSimpleBusiness.Instance.AttachedOrder.Table?.TableName;
+            OrderTotal = BSLayer.Instance.AttachedOrder.Total;
+            if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
+                lblScrollUp.Text = BSLayer.Instance.LoggedUser.UserName + " @ " + BSLayer.Instance.AttachedOrder.Table?.TableName;
             else
-                lblScrollUp.Text = DTRMSimpleBusiness.Instance.LoggedUser.UserName + " @ " + DTRMSimpleBusiness.Instance.AttachedOrder.OrderType;
+                lblScrollUp.Text = BSLayer.Instance.LoggedUser.UserName + " @ " + BSLayer.Instance.AttachedOrder.OrderType;
 
             if (config.Order_Screen_Display_Service_Charge)
                 pnlDown.Height = 52;
             else
                 pnlDown.Height = 42;
 
-            if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0 && DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.shop.ServiceChargeRate > 0 && BSLayer.Instance.AttachedOrder != null)
             {
                 lblScrollDown.Text = "";
                 if (config.Order_Screen_Display_Service_Charge)
-                    lblScrollDown.Text = "Service Charge " + DTRMSimpleBusiness.Instance.AttachedOrder.ServiceCharge.ToString("c") + " " + Environment.NewLine;
+                    lblScrollDown.Text = "Service Charge " + BSLayer.Instance.AttachedOrder.ServiceCharge.ToString("c") + " " + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + (OrderTotal).ToString("c") + " ";
             } else
                 lblScrollDown.Text = OrderTotal.ToString("c") + " ";
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived))
+            if (BSLayer.Instance.AttachedOrder != null && (BSLayer.Instance.AttachedOrder.Status == StatusFlags.Completed || BSLayer.Instance.AttachedOrder.Status == StatusFlags.Archived))
             {
                 pnlCommand.Visible = btnSplit.Visible = false;
             }
@@ -755,22 +755,22 @@ namespace WinLayer
 
         public async void DisplayChangeGiven()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid > 0)
+            if (BSLayer.Instance.AttachedOrder.MoneyPaid > 0)
             {
-                double fullTotal = DTRMSimpleBusiness.Instance.AttachedOrder.Total;
-                double servicecharge = DTRMSimpleBusiness.Instance.AttachedOrder.ServiceCharge;
+                double fullTotal = BSLayer.Instance.AttachedOrder.Total;
+                double servicecharge = BSLayer.Instance.AttachedOrder.ServiceCharge;
 
-                double paraustu = DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid - fullTotal;
+                double paraustu = BSLayer.Instance.AttachedOrder.MoneyPaid - fullTotal;
                 pnlDown.Height = 80;
                 if (servicecharge > 0 && config.Order_Screen_Display_Service_Charge)
                     pnlDown.Height = 100;
 
                 lblScrollDown.Text = "";
-                if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0 && config.Order_Screen_Display_Service_Charge)
+                if (BSLayer.Instance.shop.ServiceChargeRate > 0 && config.Order_Screen_Display_Service_Charge)
                     lblScrollDown.Text = "Service Charge " + string.Format("{0,15:0.00}", servicecharge.ToString("c")) + Environment.NewLine;
 
                 lblScrollDown.Text += "Total " + string.Format("{0,15:0.00}", fullTotal.ToString("c")) +
-                "\nPaid" + string.Format("{0,15:0.00}", DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid.ToString("c")) +
+                "\nPaid" + string.Format("{0,15:0.00}", BSLayer.Instance.AttachedOrder.MoneyPaid.ToString("c")) +
                 "\nChange " + string.Format("{0,15:0.00}", paraustu.ToString("c"));
 
             }
@@ -824,31 +824,31 @@ namespace WinLayer
         {
             //if (lvwOrder.SelectedItems.Count == 0)
             //{
-            //    DTRMSimpleBusiness.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
+            //    BSLayer.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
             //    return;
             //}
             //ListViewItem lvi = lvwOrder.SelectedItems[0];
 
-            //DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (lvi.Tag as OrderItem).OrderItemText).Selected = true;
+            //BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (lvi.Tag as OrderItem).OrderItemText).Selected = true;
         }
 
 
 
         private async void btnDeleteItem_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
-                DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
-                !DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
+            if (BSLayer.Instance.AttachedOrder != null &&
+                BSLayer.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                BSLayer.Instance.AttachedOrder.Status != StatusFlags.Archived &&
+                !BSLayer.Instance.AttachedOrder.Items.Any(x => x.Selected))
                 return;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Deleting_OrderItem_Requires_Supervision && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
+            if (BSLayer.Instance.AttachedOrder.Status != StatusFlags.New && config.Deleting_OrderItem_Requires_Supervision && BSLayer.Instance.LoggedUser.AccessLevel == AccessLevels.User)
             {
-                if (!DTRMSimpleBusiness.Instance.ConfirmForSupervision())
+                if (!BSLayer.Instance.ConfirmForSupervision())
                     return;
             }
 
-            OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+            OrderItem oi = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
 
 
             bool blnTopItem = false;
@@ -860,26 +860,26 @@ namespace WinLayer
             if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
             {
                 //check is deletable than delete else return directly
-                if (!DTRMSimpleBusiness.Instance.CanDeleteKitchenOrderItemIfPrepared(oi))
+                if (!BSLayer.Instance.CanDeleteKitchenOrderItemIfPrepared(oi))
                     return;
             }
 
-            DTRMSimpleBusiness.Instance.AttachedOrder.DeleteOrderItem(oi);
+            BSLayer.Instance.AttachedOrder.DeleteOrderItem(oi);
             await repoOrderItem.Delete(oi);
 
             //XXX logdelete
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
+            if (BSLayer.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
             {
                 try
                 {
-                    await DTRMSimpleBusiness.Instance.SaveLogItem(new LogItem()
+                    await BSLayer.Instance.SaveLogItem(new LogItem()
                     {
                         OrderItemText = oi.OrderItemText,
                         Quantity = oi.Quantity,
-                        OrderContent = DTRMSimpleBusiness.Instance.AttachedOrder.ToSimpleString(),
+                        OrderContent = BSLayer.Instance.AttachedOrder.ToSimpleString(),
                         Reason = "Deleted",
                         ComputerName = config.Terminal_Name,
-                        Reference = DTRMSimpleBusiness.Instance.AttachedOrder.Reference
+                        Reference = BSLayer.Instance.AttachedOrder.Reference
                     });
                 } catch (Exception ex)
                 {
@@ -888,7 +888,7 @@ namespace WinLayer
             }
 
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count == 0)
+            if (BSLayer.Instance.AttachedOrder.Items.Count == 0)
                 OnZeroItemsLeft();
 
             if (blnTopItem)
@@ -901,44 +901,44 @@ namespace WinLayer
         {
             try
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
-                    !DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
+                if (BSLayer.Instance.AttachedOrder != null &&
+                    BSLayer.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                    BSLayer.Instance.AttachedOrder.Status != StatusFlags.Archived &&
+                    !BSLayer.Instance.AttachedOrder.Items.Any(x => x.Selected))
                     return;
 
-                OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+                OrderItem oi = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
 
                 if (oi != null)
                 {
-                    if (config.Deleting_OrderItem_Requires_Supervision && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User)
+                    if (config.Deleting_OrderItem_Requires_Supervision && BSLayer.Instance.LoggedUser.AccessLevel == AccessLevels.User)
                     {
-                        if (!DTRMSimpleBusiness.Instance.ConfirmForSupervision())
+                        if (!BSLayer.Instance.ConfirmForSupervision())
                             return;
                     }
 
                     if (config.Hold_Order_Kitchen_Prepared_Items_Cannot_Be_Deleted)
                     {
                         //check is deletable than delete else return directly
-                        if (!DTRMSimpleBusiness.Instance.CanDeleteKitchenOrderItemIfPrepared(oi))
+                        if (!BSLayer.Instance.CanDeleteKitchenOrderItemIfPrepared(oi))
                             return;
                     }
 
                     //XXX logdelete
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
+                    if (BSLayer.Instance.AttachedOrder.Status != StatusFlags.New && config.Log_Deleted_Order_Items)
                     {
                         try
                         {
                             if (oi != null)
                             {
-                                await DTRMSimpleBusiness.Instance.SaveLogItem(new LogItem()
+                                await BSLayer.Instance.SaveLogItem(new LogItem()
                                 {
                                     OrderItemText = oi.OrderItemText,
                                     Quantity = 1,
-                                    OrderContent = DTRMSimpleBusiness.Instance.AttachedOrder.ToSimpleString(),
+                                    OrderContent = BSLayer.Instance.AttachedOrder.ToSimpleString(),
                                     Reason = "Decremented",
                                     ComputerName = config.Terminal_Name,
-                                    Reference = DTRMSimpleBusiness.Instance.AttachedOrder.Reference
+                                    Reference = BSLayer.Instance.AttachedOrder.Reference
                                 });
                             }
                         } catch (Exception ex)
@@ -950,11 +950,11 @@ namespace WinLayer
                     if (oi.Quantity == 1)
                     {
                         await repoOrderItem.Delete(oi);
-                        DTRMSimpleBusiness.Instance.AttachedOrder.Items.Remove(oi);
+                        BSLayer.Instance.AttachedOrder.Items.Remove(oi);
                     } else
-                        DTRMSimpleBusiness.Instance.AttachedOrder.DecrementOrderItem(oi);
+                        BSLayer.Instance.AttachedOrder.DecrementOrderItem(oi);
                     Display();
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count == 0)
+                    if (BSLayer.Instance.AttachedOrder.Items.Count == 0)
                         OnZeroItemsLeft();
                 }
             } catch
@@ -966,13 +966,13 @@ namespace WinLayer
         {
             try
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder != null &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Completed &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.Archived &&
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
+                if (BSLayer.Instance.AttachedOrder != null &&
+                    BSLayer.Instance.AttachedOrder.Status != StatusFlags.Completed &&
+                    BSLayer.Instance.AttachedOrder.Status != StatusFlags.Archived &&
+                    BSLayer.Instance.AttachedOrder.Items.Any(x => x.Selected))
                 {
-                    OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
-                    DTRMSimpleBusiness.Instance.AttachedOrder.IncrementOrderItem(oi);
+                    OrderItem oi = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+                    BSLayer.Instance.AttachedOrder.IncrementOrderItem(oi);
                     Display();
                 }
             } catch
@@ -988,8 +988,8 @@ namespace WinLayer
         }
         private void UpdateClock()
         {
-            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null && DTRMSimpleBusiness.Instance.AttachedOrder == null)
-                lblScrollUp.Text = DateTime.Now.ToLongTimeString() + " | " + DTRMSimpleBusiness.Instance?.LoggedUser?.UserName;
+            if (ServiceHelper.Services != null && BSLayer.Instance != null && BSLayer.Instance.AttachedOrder == null)
+                lblScrollUp.Text = DateTime.Now.ToLongTimeString() + " | " + BSLayer.Instance?.LoggedUser?.UserName;
         }
 
         private void btnSplit_Click(object sender, EventArgs e)
@@ -1009,25 +1009,25 @@ namespace WinLayer
 
         private void DoSplit()
         {
-            DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
-            OrderToSplit = DTRMSimpleBusiness.Instance.AttachedOrder;
+            BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
+            OrderToSplit = BSLayer.Instance.AttachedOrder;
             OnSplitStarting();
 
         }
 
         private async Task EndSplit(bool blnMerge, bool blnSplitAndHold)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
                 if (blnMerge)
-                    OrderToSplit.MergeOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
-                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                    OrderToSplit.MergeOrder(BSLayer.Instance.AttachedOrder);
+                BSLayer.Instance.AttachedOrder.ShrinkOrder();
             }
 
             if (OrderToSplit != null)
                 OrderToSplit.ShrinkOrder();
 
-            await DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
+            await BSLayer.Instance.SaveOrder(OrderToSplit);
             OrderToSplit = null;
 
 
@@ -1037,10 +1037,10 @@ namespace WinLayer
                 btnSplit.Visible = true;
                 pnlSplit.Visible = false;
             }
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
                 return;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New)
+            if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New)
             {
                 if (blnSplitAndHold)
                 {
@@ -1049,8 +1049,8 @@ namespace WinLayer
                 } else
                 {
                     //this is where you just waist the ordertodisplay 
-                    await DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                    DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                    await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                    BSLayer.Instance.AttachedOrder = null;
                 }
             }
             OnSplitEnding();
@@ -1088,16 +1088,16 @@ namespace WinLayer
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
                 OrderItem oiNew = oldItem.Clone(false);
                 oiNew.Quantity = 1;
-                oiNew.OrderIID = oiNew.OrderGroupIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID;
+                oiNew.OrderIID = oiNew.OrderGroupIID = BSLayer.Instance.AttachedOrder.IID;
 
                 //Drop 1 from ordertosplit and save
                 if (!oldItem.Decrement())
                     OrderToSplit.DeleteOrderItem(oldItem);
-                await DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
+                await BSLayer.Instance.SaveOrder(OrderToSplit);
 
                 //Add new item to ordertodisplay and save
-                DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem(oiNew);
-                await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                BSLayer.Instance.AttachedOrder.AddOrderItem(oiNew);
+                await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
 
                 Display();
             }
@@ -1113,7 +1113,7 @@ namespace WinLayer
 
                 //Get Select listview item
                 //string IID = lvwOrder.SelectedItems[0].Text;
-                OrderItem oldItem = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+                OrderItem oldItem = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
 
                 //Get copy of orderitem and set quantity 1 and parent order IID to new order iid
                 OrderItem oiNew = oldItem.Clone(false);
@@ -1124,8 +1124,8 @@ namespace WinLayer
 
                 //Drop 1 from ordertodisplay and save
                 if (!oldItem.Decrement())
-                    DTRMSimpleBusiness.Instance.AttachedOrder.DeleteOrderItem(oldItem);
-                await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                    BSLayer.Instance.AttachedOrder.DeleteOrderItem(oldItem);
+                await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
 
                 //Add new item to ordertosplit and save
                 OrderItem oiToIncrement = OrderToSplit.GetIncrementableItem(oiNew.CategoryItemIID, oiNew.DistributionIID, oiNew.OrderGroupIID);
@@ -1133,7 +1133,7 @@ namespace WinLayer
                     OrderToSplit.AddOrderItem(oiNew);
                 else
                     oiToIncrement.Quantity++;
-                await DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
+                await BSLayer.Instance.SaveOrder(OrderToSplit);
 
                 Display();
             }
@@ -1149,12 +1149,12 @@ namespace WinLayer
             {
                 // ListViewItem lvi = lvwSplittingOrder.SelectedItems[0];
                 OrderItem oi = OrderToSplit.Items.FirstOrDefault(x => x.Selected);
-                oi.OrderIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID;
+                oi.OrderIID = BSLayer.Instance.AttachedOrder.IID;
                 OrderToSplit.DeleteOrderItem(oi);
-                await DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
-                DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem(oi);
-                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
-                await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                await BSLayer.Instance.SaveOrder(OrderToSplit);
+                BSLayer.Instance.AttachedOrder.AddOrderItem(oi);
+                BSLayer.Instance.AttachedOrder.ShrinkOrder();
+                await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
                 Display();
             }
             OnSplitContinuing();
@@ -1166,13 +1166,13 @@ namespace WinLayer
             if (lvwOrder.SelectedItems.Count > 0)
             {
                 ListViewItem lvi = lvwOrder.SelectedItems[0];
-                OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+                OrderItem oi = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
                 oi.OrderIID = oi.OrderGroupIID = OrderToSplit.IID;
-                DTRMSimpleBusiness.Instance.AttachedOrder.DeleteOrderItem(oi);
-                await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                BSLayer.Instance.AttachedOrder.DeleteOrderItem(oi);
+                await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
                 OrderToSplit.AddOrderItem(oi);
                 OrderToSplit.ShrinkOrder();
-                await DTRMSimpleBusiness.Instance.SaveOrder(OrderToSplit);
+                await BSLayer.Instance.SaveOrder(OrderToSplit);
                 Display();
             }
             OnSplitContinuing();
@@ -1202,8 +1202,8 @@ namespace WinLayer
         {
             if ( e.Item.Selected)
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
-                DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (e.Item.Tag as OrderItem).OrderItemText).Selected = true;
+                BSLayer.Instance.AttachedOrder.Items.ForEach(x => x.Selected = false);
+                BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.OrderItemText == (e.Item.Tag as OrderItem).OrderItemText).Selected = true;
             }
         }
     }

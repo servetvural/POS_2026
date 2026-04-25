@@ -826,7 +826,7 @@ namespace WinLayer {
         private async Task LoadEntities() {
             pnlDistributions.Controls.Clear();
 
-            List<CategoryItem> entityButtons = await  DTRMSimpleBusiness.Instance.GetEntityButtonsForNumberPad();
+            List<CategoryItem> entityButtons = await  BSLayer.Instance.GetEntityButtonsForNumberPad();
 
             List<Category> entities =await repoCategory.GetListByField("MenuIID",config.ActiveMenuIID);
            
@@ -875,10 +875,10 @@ namespace WinLayer {
                 if (Reg2 == 0)
                     return;
 
-                 DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem( "", 1, 
+                 BSLayer.Instance.AttachedOrder.AddOrderItem( "", 1, 
                    Reg2, "", entitybutton.ItemName,  btn.PrintableTypeIID /*DistributionIID*/, 
-                   OrderItemTypes.NormalOrderItem, 0,  0,  DTRMSimpleBusiness.Instance.GetEBTaxPercent(entitybutton));
-                 DTRMSimpleBusiness.Instance.OnDisplayOrder();
+                   OrderItemTypes.NormalOrderItem, 0,  0,  BSLayer.Instance.GetEBTaxPercent(entitybutton));
+                 BSLayer.Instance.OnDisplayOrder();
 
                 btnC_Click(null, null);
 

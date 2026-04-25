@@ -88,7 +88,7 @@ namespace WinOffice {
             if (InvokeRequired)
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else {
-                dgvArchive.DataSource = DTRMSimpleBusiness.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
+                dgvArchive.DataSource = BSLayer.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
             }
         }
 
@@ -133,10 +133,10 @@ namespace WinOffice {
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                     MemoryStream stream = new MemoryStream();
                     StreamWriter writer = new StreamWriter(stream);
-                    writer.Write(DTRMSimpleBusiness.Instance.GetTaxSummaryReportAsCSVString(FirstStartDate, LastEndDate));
+                    writer.Write(BSLayer.Instance.GetTaxSummaryReportAsCSVString(FirstStartDate, LastEndDate));
                     writer.Flush();
                     stream.Position = 0;
-                    DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(frm.InputValue, "Tax Report", "", new System.Net.Mail.Attachment(stream, FirstStartDate.ToShortDateString() + "_" + LastEndDate.ToShortDateString() + "_report.csv", "text/csv"));
+                    BSLayer.Instance.SendEmailToCustomRecepient(frm.InputValue, "Tax Report", "", new System.Net.Mail.Attachment(stream, FirstStartDate.ToShortDateString() + "_" + LastEndDate.ToShortDateString() + "_report.csv", "text/csv"));
              
 
                 }
@@ -213,7 +213,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private void LoadSessionsInToDatabaseAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e) {
             SessionDataShort[] sessionList = (SessionDataShort[])args;
             for (int i = 0; i < sessionList.Length; i++) {
-                DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+                BSLayer.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
                 //bslayer.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / sessionList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
@@ -251,7 +251,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private void LoadSessionsInToDatabaseFromDirectoryAsync(object args, BackgroundWorker bgWorker, DoWorkEventArgs e) {
             string[] fileList = (string[])args;
             for (int i = 0; i < fileList.Length; i++) {
-                DTRMSimpleBusiness.Instance.ReloadSessionFromFile(fileList[i]);
+                BSLayer.Instance.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / fileList.Length) * (i+1);
                 bgWorker.ReportProgress(percent, "Loading " + fileList[i]);
             }
@@ -299,7 +299,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             string[] SessionIIDList = (string[])arguments[1];
 
             for (int i = 0; i < SessionIIDList.Length; i++) {
-                DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
+                BSLayer.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
                 int percent = (100 / SessionIIDList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Archiving " + SessionIIDList[i]);
             }
@@ -342,7 +342,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         #region PRINT SESSIONS FROM DATABASE
         private void btnPrintReport_Click(object sender, EventArgs e) {
             if (dgvDatabase.SelectedRows.Count > 0) {
-                Report report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
+                Report report = BSLayer.Instance.GetReport(ReportFormatTypes.ZReport);
 
 
                 if (report.ReportType == ReportFormatTypes.ZReport) {
@@ -389,7 +389,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
 
             for (int i = 0; i < jobList.Count; i++) {
                 CustomReportPrintJob job = jobList[i];
-                DTRMSimpleBusiness.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
+                BSLayer.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
                 int percent = (100 / jobList.Count) * (i + 1);
                 bgWorker.ReportProgress(percent, "Printing Session : " + job.SessionStartDate.ToString());
             }
@@ -416,7 +416,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvSessionAllOrderItems);
                 if (exporter.Generate(true, true)) {
-                    DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Session All Items", "", exporter.GetAsAttachment());
+                    BSLayer.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Session All Items", "", exporter.GetAsAttachment());
                 }
             }
         }
@@ -443,7 +443,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvDatabase);
                 if (exporter.Generate(true, true)) {
-                    DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Database Sessions", "", exporter.GetAsAttachment());
+                    BSLayer.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Database Sessions", "", exporter.GetAsAttachment());
                 }
             }
         }
@@ -472,7 +472,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK) {
                 DataGridViewCsvExporter exporter = new DataGridViewCsvExporter(dgvArchive);
                 if (exporter.Generate(true, true)) {
-                    DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Archived Sessions", "", exporter.GetAsAttachment());
+                    BSLayer.Instance.SendEmailToCustomRecepient(frm.InputValue, "Report Archived Sessions", "", exporter.GetAsAttachment());
                 }
             }
         }
@@ -502,7 +502,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             //for (int i=0; i < dgvOrders.SelectedRows.Count;i++)
             //{
             //    string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-            //    await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.GetOrder(orderIID).Result.Duplicate(rand.Next(300, 1800)));
+            //    await BSLayer.Instance.SaveOrder(BSLayer.Instance.GetOrder(orderIID).Result.Duplicate(rand.Next(300, 1800)));
             //}
             //LoadOrders();
         }
@@ -530,7 +530,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             //    string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
             //    string Payment = dgvOrders.SelectedRows[i].Cells["colPaymentMethod"].Value.ToString();
             //    if (Payment == "1")
-            //        await DTRMSimpleBusiness.Instance.DeleteOrder(orderIID);
+            //        await BSLayer.Instance.DeleteOrder(orderIID);
             //}
             //LoadOrders();
         }
@@ -578,11 +578,11 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         private async void btnAddOrderItem_Click(object sender, EventArgs e) {
             //if (dgvOrders.SelectedRows.Count > 0) {
             //    string orderIID = dgvOrders.SelectedRows[0].Cells["colOrderIID"].Value.ToString();
-            //    frmCategoryItemSelector frm = new frmCategoryItemSelector(DTRMSimpleBusiness.Instance.ActiveMenu.IID);
+            //    frmCategoryItemSelector frm = new frmCategoryItemSelector(BSLayer.Instance.ActiveMenu.IID);
             //    if (frm.ShowDialog() == DialogResult.OK) {
-            //        Order order = await DTRMSimpleBusiness.Instance.GetOrder(orderIID);
+            //        Order order = await BSLayer.Instance.GetOrder(orderIID);
             //        for (int i = 0; i < frm.SelectedEntiyButtonIIDList.Count; i++) {
-            //            DTRMSimpleBusiness.Instance.DirectCreateTopOrderItemForOrder(order, frm.SelectedEntiyButtonIIDList[i] , true);
+            //            BSLayer.Instance.DirectCreateTopOrderItemForOrder(order, frm.SelectedEntiyButtonIIDList[i] , true);
             //        }
             //        LoadOrderItems();
             //    }
@@ -595,7 +595,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
 
             //    for (int i = 0; i < dgvOrderItems.SelectedRows.Count; i++) {
             //        string itemIID = dgvOrderItems.SelectedRows[i].Cells["colItemIID"].Value.ToString();
-            //        DTRMSimpleBusiness.Instance.DirectIncrementOrderItem(itemIID);
+            //        BSLayer.Instance.DirectIncrementOrderItem(itemIID);
             //    }
             //    LoadOrderItems();
             //}
@@ -607,7 +607,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
 
             //    for (int i = 0; i < dgvOrderItems.SelectedRows.Count; i++) {
             //        string itemIID = dgvOrderItems.SelectedRows[i].Cells["colItemIID"].Value.ToString();
-            //        DTRMSimpleBusiness.Instance.DirectDecrementOrderItem(itemIID);
+            //        BSLayer.Instance.DirectDecrementOrderItem(itemIID);
             //    }
             //    LoadOrderItems();
             //}
@@ -619,7 +619,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
 
             //    for (int i = 0; i < dgvOrderItems.SelectedRows.Count; i++) {
             //        string itemIID = dgvOrderItems.SelectedRows[i].Cells["colItemIID"].Value.ToString();
-            //        DTRMSimpleBusiness.Instance.DirectDeleteOrderItem(itemIID);
+            //        BSLayer.Instance.DirectDeleteOrderItem(itemIID);
             //    }
             //    LoadOrderItems();
             //}
@@ -630,7 +630,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                 
                 
         //        string orderIID = dgvOrders.SelectedRows[0].Cells["colOrderIID"].Value.ToString();
-        //        lblOrderTotal.Text = DTRMSimpleBusiness.Instance.GetOrderTotal(orderIID).ToString("f2");
+        //        lblOrderTotal.Text = BSLayer.Instance.GetOrderTotal(orderIID).ToString("f2");
         //        dgvOrderItems.DataSource = GetOrderItemsForOrderCustom(orderIID);
         //    }
         //}
@@ -644,11 +644,11 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
         }
 
         private void btnDelZeros_Click(object sender, EventArgs e) {
-            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
+            DataTable dt = BSLayer.Instance.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 string IID = dt.Rows[i]["IID"].ToString();
-                DTRMSimpleBusiness.Instance.DeleteOrder(IID);
+                BSLayer.Instance.DeleteOrder(IID);
             }
         }
 
@@ -686,9 +686,9 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
             //    if (frm.ShowDialog() == DialogResult.OK) {
             //        for (int i = 0; i < dgvOrders.SelectedRows.Count; i++) {
             //            string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-            //            Order order = await DTRMSimpleBusiness.Instance.GetOrder(orderIID);
+            //            Order order = await BSLayer.Instance.GetOrder(orderIID);
             //            order.Payment = frm.SelectedPaymentMethod;
-            //            DTRMSimpleBusiness.Instance.SaveOrder(order);
+            //            BSLayer.Instance.SaveOrder(order);
             //        }
             //        LoadOrders();
             //    }
@@ -708,7 +708,7 @@ private void btnLoadSessions_Click(object sender, EventArgs e) {
                 //for (int i = 0; i < dgvOrders.SelectedRows.Count; i++)
                 //{
                 //    string orderIID = dgvOrders.SelectedRows[i].Cells["colOrderIID"].Value.ToString();
-                //    DTRMSimpleBusiness.Instance.DeleteOrder(orderIID);
+                //    BSLayer.Instance.DeleteOrder(orderIID);
                 //}
                 //LoadOrders();
             }

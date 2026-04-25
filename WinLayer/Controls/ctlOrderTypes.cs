@@ -1,8 +1,5 @@
-using System;
-using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
-using WinLayer;
 
 namespace WinLayer {
     /// <summary>
@@ -176,47 +173,47 @@ namespace WinLayer {
         #endregion
 
         private void btnInHouse_Click(object sender, System.EventArgs e) {
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sitin) {
+            if ( BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.Sitin) {
                 ctlTables ct = ActivatorUtilities.CreateInstance< ctlTables>(ServiceHelper.Services, new GenericFunctionCallAsync(DetachPanelEvent), null, true, new GenericFunctionCallAsync(CloseOrderItemEntityInteractionEvent));
                 AttachPanelEvent(ct);
             } else
                 CloseFunction();
         }
         private void btnDirectSale_Click(object sender, EventArgs e) {
-            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sale) {
+            //if ( BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.Sale) {
             //    RequestedType = OrderTypes.Sale;
             //    try {
-            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //        if ( BSLayer.Instance.AttachedOrder.TableIID.Length > 0)
+            //             BSLayer.Instance.FreeTheTable( BSLayer.Instance.AttachedOrder.TableIID);
             //    } catch { }
             //    HandlePriceChange();
-            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //     BSLayer.Instance.OnDisplayOrder();
             //} else
             //    CloseFunction();
         }
         private void btnTakeAway_Click(object sender, System.EventArgs e) {
-            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.TakeAway) {
+            //if ( BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.TakeAway) {
             //    RequestedType = OrderTypes.TakeAway;
             //    try {
-            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //        if ( BSLayer.Instance.AttachedOrder.TableIID.Length > 0)
+            //             BSLayer.Instance.FreeTheTable( BSLayer.Instance.AttachedOrder.TableIID);
             //    } catch { }
             //    HandlePriceChange();
-            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //     BSLayer.Instance.OnDisplayOrder();
             //} else
             //    CloseFunction();
         }
 
         private void btnDelivery_Click(object sender, System.EventArgs e) {
-            //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery) {
+            //if ( BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.Delivery) {
             //    RequestedType = OrderTypes.Delivery;
             //    try {
-            //        if ( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID.Length > 0)
-            //             DTRMSimpleBusiness.Instance.FreeTheTable( DTRMSimpleBusiness.Instance.AttachedOrder.TableIID);
+            //        if ( BSLayer.Instance.AttachedOrder.TableIID.Length > 0)
+            //             BSLayer.Instance.FreeTheTable( BSLayer.Instance.AttachedOrder.TableIID);
             //    } catch { }
             //    HandlePriceChange();
             //    EnsureCompulsoryExtrasEvent();
-            //     DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //     BSLayer.Instance.OnDisplayOrder();
             //} else
             //    CloseFunction();
         }
@@ -229,9 +226,9 @@ namespace WinLayer {
             //Close tabpages to ensure the last open top order item having completed effect
             CloseOrderItemEntityInteractionEvent();
             //Do recalculation
-             DTRMSimpleBusiness.Instance.RePriceOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, this.RequestedType);
-             DTRMSimpleBusiness.Instance.ReTaxOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, this.RequestedType);
-             DTRMSimpleBusiness.Instance.AttachedOrder.OrderType = this.RequestedType;
+             BSLayer.Instance.RePriceOrderForOrderType( BSLayer.Instance.AttachedOrder, this.RequestedType);
+             BSLayer.Instance.ReTaxOrderForOrderType( BSLayer.Instance.AttachedOrder, this.RequestedType);
+             BSLayer.Instance.AttachedOrder.OrderType = this.RequestedType;
             CloseFunction();
         }
 

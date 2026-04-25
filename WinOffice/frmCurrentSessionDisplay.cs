@@ -80,13 +80,13 @@ namespace WinOffice {
         }
 
         private DataTable GetOrderItemsForOrderCustom(string OrderIID) {
-            return DTRMSimpleBusiness.Instance.GetDataTable("Select IID,Quantity, OrderItemText,Price, Total from OrderItemView where ParentOrderIID = '" + OrderIID + "' order by DisplayOrder, OrderGroupIID");
+            return BSLayer.Instance.GetDataTable("Select IID,Quantity, OrderItemText,Price, Total from OrderItemView where ParentOrderIID = '" + OrderIID + "' order by DisplayOrder, OrderGroupIID");
         }
 
 
         private async Task UpdateSessionLabels() {
             //Update session values dynamically
-            CurrentSessionData = await repoSession.Get(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID,"Orders, Orders.Items");
+            CurrentSessionData = await repoSession.Get(BSLayer.Instance.shop.CurrentSessionIID,"Orders, Orders.Items");
             int changeCount = 0;
             
             if (CurrentSessionData != null) {
@@ -123,17 +123,17 @@ namespace WinOffice {
         private async void btnPrintReport_Click(object sender, EventArgs e) {
              frmAppPrinterDialog fsp =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
              if (fsp.ShowDialog() == DialogResult.OK) {
-               await DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.YReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
+               await BSLayer.Instance.PrintReport(ReportFormatTypes.YReport, BSLayer.Instance.shop.CurrentSessionIID, fsp.SelectedPrinterIID, true);
              }
         }
 
         private async void btnPrintReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Order order = await BSLayer.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
                 frmAppPrinterDialog frm =  ActivatorUtilities.CreateInstance < frmAppPrinterDialog >(ServiceHelper.Services);
                 if (frm.ShowDialog()== System.Windows.Forms.DialogResult.OK) {
-                    DTRMSimpleBusiness.Instance.PrintReceipt(order, frm.SelectedPrinter, 1);
+                    BSLayer.Instance.PrintReceipt(order, frm.SelectedPrinter, 1);
                 }
             }
         }
@@ -141,8 +141,8 @@ namespace WinOffice {
         private async void btnViewReceipt_Click(object sender, EventArgs e) {
             if (dgvOrders.SelectedRows.Count > 0) {
                 string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
-                Printer printer = await DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter();
+                Order order = await BSLayer.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Printer printer = await BSLayer.Instance.GetDefaultReceiptPrinter();
                 if (printer == null) {
                     MessageBox.Show("No printer attached!!");
                     return;
@@ -152,7 +152,7 @@ namespace WinOffice {
                 Graphics g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                int imgHeight = DTRMSimpleBusiness.Instance.ViewReceipt(g, order, printer, 1);
+                int imgHeight = BSLayer.Instance.ViewReceipt(g, order, printer, 1);
                 Image imgFinal = DRUF.cropImage(img, new Rectangle(0, 0, 300, imgHeight));
 
                 frmViewImage frm = new frmViewImage(imgFinal);

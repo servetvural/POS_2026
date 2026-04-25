@@ -30,7 +30,7 @@ namespace WinOffice
             {
                 dgvOrders.DataSource = null;
                 dgvOrderItems.DataSource = null;
-                dgvDatabase.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, StartDate, EndDate, GrossSessionTotal from SessionSum order by StartDate desc");
+                dgvDatabase.DataSource = BSLayer.Instance.GetDataTable("Select IID, StartDate, EndDate, GrossSessionTotal from SessionSum order by StartDate desc");
             }
         }
         private string GetSelectedSessionIIDListSQL()
@@ -55,10 +55,10 @@ namespace WinOffice
             if (dgvDatabase.SelectedRows.Count > 0)
             {
                 //IID, OrderDate, CalculatedValue
-                dgvOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, OrderDate, CalculatedValue from OrdersView where SessionIID in " + GetSelectedSessionIIDListSQL() + " order by OrderDate asc");
+                dgvOrders.DataSource = BSLayer.Instance.GetDataTable("Select IID, OrderDate, CalculatedValue from OrdersView where SessionIID in " + GetSelectedSessionIIDListSQL() + " order by OrderDate asc");
                 dgvOrders_SelectionChanged(null, null);
 
-                dgvXOrders.DataSource = DTRMSimpleBusiness.Instance.GetDataTable("Select * from XOrdersView where SessionIID  in " + GetSelectedSessionIIDListSQL() + " order by OrderDate asc");
+                dgvXOrders.DataSource = BSLayer.Instance.GetDataTable("Select * from XOrdersView where SessionIID  in " + GetSelectedSessionIIDListSQL() + " order by OrderDate asc");
             } else
             {
                 dgvOrders.DataSource = null;
@@ -126,13 +126,13 @@ namespace WinOffice
 
         private DataTable GetOrderItemsForSelectedOrders(string orderIIDList)
         {
-            return DTRMSimpleBusiness.Instance.GetDataTable("Select Sum(Quantity) as Quantity, OrderItemText, Sum(Quantity * Price) as Total,Price, EntityButtonIID from OrderItem where ParentOrderIID in " +
+            return BSLayer.Instance.GetDataTable("Select Sum(Quantity) as Quantity, OrderItemText, Sum(Quantity * Price) as Total,Price, EntityButtonIID from OrderItem where ParentOrderIID in " +
                     orderIIDList + " group by OrderItemText,Price, EntityButtonIID Order by OrderItemText");
         }
 
         private DataTable GetStockUsageForSelectedOrders(string orderIIDList)
         {
-            return DTRMSimpleBusiness.Instance.GetDataTable("SELECT StockItem.IID as StockItemIID,StockItem.StockName,  SUM(OrderItem.Quantity * EntityButtonStockItemLookUp.Quantity) AS SessionQuantity, StockItem.QuantityType, " +
+            return BSLayer.Instance.GetDataTable("SELECT StockItem.IID as StockItemIID,StockItem.StockName,  SUM(OrderItem.Quantity * EntityButtonStockItemLookUp.Quantity) AS SessionQuantity, StockItem.QuantityType, " +
                 "StockItem.Conversion, SUM(OrderItem.Quantity * EntityButtonStockItemLookUp.Quantity / StockItem.Conversion) AS OrderableFloatQuantity, " +
                 "floor(SUM(OrderItem.Quantity * EntityButtonStockItemLookUp.Quantity / StockItem.Conversion))  as OrderableQuantity, " +
                 "StockItem.OrderType as OrderableType, Supplier.IID as SupplierIID, Supplier.SupplierName " +
@@ -227,7 +227,7 @@ namespace WinOffice
         private void LoadSuppliers()
         {
             cmbSuppliers.ComboBox.DisplayMember = "SupplierName";
-            cmbSuppliers.Items.AddRange(DTRMSimpleBusiness.Instance.GetAllSuppliersAsList().Result.ToArray());
+            cmbSuppliers.Items.AddRange(BSLayer.Instance.GetAllSuppliersAsList().Result.ToArray());
         }
 
         private void btnReloadStockItems_Click(object sender, EventArgs e)
@@ -247,8 +247,8 @@ namespace WinOffice
                 frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
-                            "Stock Usage Report", DTRMSimpleBusiness.Instance.GetColumnPrintRatio(dgvStockItems), true);
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvStockItems, true, true),
+                            "Stock Usage Report", BSLayer.Instance.GetColumnPrintRatio(dgvStockItems), true);
                 }
             }
         }
@@ -260,8 +260,8 @@ namespace WinOffice
                 frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems, true, true),
-                            "Order Item List", DTRMSimpleBusiness.Instance.GetColumnPrintRatio(dgvOrderItems), true);
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgvOrderItems, true, true),
+                            "Order Item List", BSLayer.Instance.GetColumnPrintRatio(dgvOrderItems), true);
                 }
             }
         }

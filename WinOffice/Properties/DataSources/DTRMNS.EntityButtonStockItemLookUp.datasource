@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="EntityButtonStockItemLookUp" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>DTRMNS.EntityButtonStockItemLookUp, DTRMSimpleBusinessLayer, Version=1.0.6250.38783, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>DTRMNS.EntityButtonStockItemLookUp, BSLayerLayer, Version=1.0.6250.38783, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

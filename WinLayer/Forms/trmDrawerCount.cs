@@ -1,7 +1,3 @@
-using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -30,7 +26,7 @@ namespace WinLayer
         }
         private async void FrmDrawerCount_Load(object sender, EventArgs e)
         {
-            session = await repoSession.Get(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
+            session = await repoSession.Get(BSLayer.Instance.shop.CurrentSessionIID);
             if (!OpenAsTool)
                 LoadSessionData();
         }

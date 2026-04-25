@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 
 namespace WinLayer
@@ -31,7 +27,7 @@ namespace WinLayer
             btnCashPrintAndOK.Visible = config.Prep_Can_Hold_Cash_And_Print;
 
             this.Top = 0;
-            this.Height = DTRMSimpleBusiness.Instance.maxHeight;
+            this.Height = BSLayer.Instance.maxHeight;
             //this.Refresh();
             // MessageBox.Show("refreshed @ " + DateTime.Now.ToLongTimeString());
 
@@ -42,11 +38,11 @@ namespace WinLayer
         }
 
         //private void btnPrint_Click(object sender, EventArgs e) {
-        //     DTRMSimpleBusiness.Instance.PrintForKitchenSpecial(korder);
+        //     BSLayer.Instance.PrintForKitchenSpecial(korder);
         //}
 
         //private void btnPrintAsReceipt_Click(object sender, EventArgs e) {
-        //     DTRMSimpleBusiness.Instance.PrintReceipt(korder.OrderIID,  DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
+        //     BSLayer.Instance.PrintReceipt(korder.OrderIID,  BSLayer.Instance.GetDefaultReceiptPrinter(), 1);
         //}
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -62,8 +58,8 @@ namespace WinLayer
             await CompletePrep(PrepDialogReturnTypes.Cash, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.Cash;
-            //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
-            //     DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+            //if ( BSLayer.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
+            //     BSLayer.Instance.OpenCashDrawer(false);
             //this.Close();
         }
 
@@ -72,8 +68,8 @@ namespace WinLayer
             await CompletePrep(PrepDialogReturnTypes.CashAndPrint, true);
             //this.DialogResult = DialogResult.OK;
             //this.prepResult = PrepDialogReturnTypes.CashAndPrint;
-            //if ( DTRMSimpleBusiness.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
-            //     DTRMSimpleBusiness.Instance.OpenCashDrawer(false);
+            //if ( BSLayer.Instance.config.Attached_Cash_Drawer_Type != CashDrawerTypes.None)
+            //     BSLayer.Instance.OpenCashDrawer(false);
             //this.Close();
         }
 
@@ -93,11 +89,11 @@ namespace WinLayer
             foreach (KitchenOrderItem item in korder.Items)
             {
                 if (item.Status == KitchenOrderStatusTypes.Completed)
-                    DTRMSimpleBusiness.Instance.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
+                    BSLayer.Instance.UpdateCompletedQuantityForRelatedKitchenOrderItem(item);
             }
 
             if (blnOpenCashDrawer && config.Attached_Cash_Drawer_Type != POSLayer.Library.CashDrawerTypes.None)
-                await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+                await BSLayer.Instance.OpenCashDrawer();
             this.Close();
         }
 

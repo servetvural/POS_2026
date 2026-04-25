@@ -39,14 +39,14 @@ namespace WinLayer
         {
             //if (rbAll.Checked) {
             //    //if (blnUseSearch)
-            //    //    dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
+            //    //    dgv.DataSource =  BSLayer.Instance.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
             //    //else
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsages(true);
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsages(true);
             //} else {
             //    //if (blnUseSearch)
-            //    //    dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
+            //    //    dgv.DataSource =  BSLayer.Instance.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
             //    //else
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageBySupplier(cmbSuppliers.SelectedValue.ToString(), true);
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsageBySupplier(cmbSuppliers.SelectedValue.ToString(), true);
             //}
 
             //for (int i = 0; i < dgv.Rows.Count; i++) {
@@ -66,7 +66,7 @@ namespace WinLayer
 
         private void LoadSuppliers()
         {
-            cmbSuppliers.DataSource = DTRMSimpleBusiness.Instance.GetAllSuppliersAsList();
+            cmbSuppliers.DataSource = BSLayer.Instance.GetAllSuppliersAsList();
         }
 
 
@@ -95,12 +95,12 @@ namespace WinLayer
                 {
 
                     //if (chkViewDetails.Checked)
-                    //     DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedApplicationPrinter,  DTRMSimpleBusiness.Instance.GetDataTableFromGridVisible(dgv, true, false),
-                    //        "Stock Usage Report",  DTRMSimpleBusiness.Instance.GetColumnPrintRatio(dgv), false);
+                    //     BSLayer.Instance.PrintDataTable(fsp.SelectedApplicationPrinter,  BSLayer.Instance.GetDataTableFromGridVisible(dgv, true, false),
+                    //        "Stock Usage Report",  BSLayer.Instance.GetColumnPrintRatio(dgv), false);
                     //else {
                     int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 17, 8 };
                     List<int> cols = new List<int>(arrcols);
-                    DTRMSimpleBusiness.Instance.PrintDataTable(await DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                    BSLayer.Instance.PrintDataTable(await BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue), DRUF.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
                     //}
                 }
@@ -242,7 +242,7 @@ namespace WinLayer
                     int Conversion = int.Parse(dgv.Rows[i].Cells["colConversion"].Value.ToString());
 
                     int purchasedQuantity = (OrderableQuantity * Conversion * -1);
-                    DTRMSimpleBusiness.Instance.UpdateStockItemUsedQuantity(StockItemIID, purchasedQuantity);
+                    BSLayer.Instance.UpdateStockItemUsedQuantity(StockItemIID, purchasedQuantity);
                 }
 
             }
@@ -256,13 +256,13 @@ namespace WinLayer
 
         private async void btnEmail_Click(object sender, EventArgs e)
         {
-            //if ( DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress != null &&  DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress.Length > 0 &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail != null &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail.Length > 0)
-            //     DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.PurchaseEmail,  DTRMSimpleBusiness.Instance.shop.ShopName + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
+            //if ( BSLayer.Instance.shop.SmtpEmailAddress != null &&  BSLayer.Instance.shop.SmtpEmailAddress.Length > 0 &&  BSLayer.Instance.shop.PurchaseEmail != null &&  BSLayer.Instance.shop.PurchaseEmail.Length > 0)
+            //     BSLayer.Instance.SendEmailToCustomRecepient( BSLayer.Instance.shop.PurchaseEmail,  BSLayer.Instance.shop.ShopName + "  Stock Order List", "Stock Order List Attached.\r\n\r\n" + GenerateCsvFromGrid(),null);
 
 
             ////Now time to remove the ordered items from stockitem table if true
             //if (config.Delete_Stock_Usage)
-            //     DTRMSimpleBusiness.Instance.RemoveOrderedStockUsage(true);
+            //     BSLayer.Instance.RemoveOrderedStockUsage(true);
         }
 
 

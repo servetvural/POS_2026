@@ -1,7 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 
 namespace WinLayer {
@@ -49,9 +46,9 @@ namespace WinLayer {
                         //koi.Modified = ModificationFlag.Completed;
                         //koi.ModifiedQuantity = koi.Quantity;
 
-                        oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
+                        oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                         oi.OrderItemText = koi.ItemText;
-                         DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
+                         BSLayer.Instance.SaveOrderItem(oi);
                     }
                     break;
                 case 6:
@@ -77,9 +74,9 @@ namespace WinLayer {
                                 //koi.Modified = ModificationFlag.Completed;
                                 //koi.ModifiedQuantity = koi.Quantity;
 
-                                oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
+                                oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                                 oi.OrderItemText = koi.ItemText;
-                                 DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
+                                 BSLayer.Instance.SaveOrderItem(oi);
                             }
                         }
                     }
@@ -96,23 +93,23 @@ namespace WinLayer {
                             dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText.Replace("&&","&");
                             dgv.Refresh();
 
-                            //OrderItem oi =  DTRMSimpleBusiness.Instance.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
+                            //OrderItem oi =  BSLayer.Instance.AttachedOrder.items.Find(x => x.EntityButtonIID == koi.EntityButtonIID);
                             //oi.OrderItemText = koi.ItemText;
-                            // DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
+                            // BSLayer.Instance.SaveOrderItem(oi);
                         }
                     }
                     break;
                 case 8:
                     //Cancel
-                    koi.ItemText =  DTRMSimpleBusiness.Instance.GetJustEntityButton(koi.CategoryItemIID).Result.ItemName;
+                    koi.ItemText =  BSLayer.Instance.GetJustEntityButton(koi.CategoryItemIID).Result.ItemName;
                     koi.Modified = ModificationFlag.None;
                     koi.ModifiedQuantity = 0;
                     dgv.Rows[e.RowIndex].Cells["colItemText"].Value = koi.ItemText;
                     dgv.Refresh();
 
-                    oi =  DTRMSimpleBusiness.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
+                    oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                     oi.OrderItemText = koi.ItemText;
-                    await  DTRMSimpleBusiness.Instance.SaveOrderItem(oi);
+                    await  BSLayer.Instance.SaveOrderItem(oi);
                     break;
                 default:
 

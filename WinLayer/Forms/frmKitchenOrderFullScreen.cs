@@ -1,10 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using WinLayer;
 
 namespace WinLayer {
     public partial class frmKitchenOrderFullScreen : Form {

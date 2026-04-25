@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="SessionView" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>DTRMNS.SessionView, DTRMSimpleBusinessLayer, Version=1.0.5551.23425, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>DTRMNS.SessionView, BSLayerLayer, Version=1.0.5551.23425, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

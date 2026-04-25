@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
+﻿
 namespace WinLayer {
     public partial class frmPassword : Form {
         public string Password;

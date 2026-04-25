@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="Bonus" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>DTRMNS.Bonus, DTRMSimpleBusinessLayer, Version=1.0.8397.29083, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>DTRMNS.Bonus, BSLayerLayer, Version=1.0.8397.29083, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

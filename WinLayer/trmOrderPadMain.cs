@@ -151,7 +151,7 @@ namespace WinLayer
         private bool Hold_Order_Display_Summary;
 
 
-        //public trmOrderPadMain(PosConfig configAsService, DTRMSimpleBusiness bslayer, IRepository<TheMenu> _repoMenu,
+        //public trmOrderPadMain(PosConfig configAsService, BSLayer bslayer, IRepository<TheMenu> _repoMenu,
         //    IRepository<Order> _repoOrder, IRepository<Bonus> _repoBonus, IRepository<Distribution> _repoDistribution,
         //    IRepository<Debug> _repoDebug, IRepository<Session> _repoSession)
         //{
@@ -217,7 +217,7 @@ namespace WinLayer
             {
 
             }
-            DTRMSimpleBusiness.Instance.maxHeight = this.Height;
+            BSLayer.Instance.maxHeight = this.Height;
 
             this.DoubleBuffered = true;
 
@@ -251,8 +251,8 @@ namespace WinLayer
         public async Task DoInitialThings()
         {
             //This can be called for every login action
-            mnuOptions.Visible = DTRMSimpleBusiness.Instance.LoggedUser.IsSuperUserOrMore();
-            mnuReprintReport.Visible = mnuReloadMenu.Visible = mnuSupervisorReport.Visible = DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
+            mnuOptions.Visible = BSLayer.Instance.LoggedUser.IsSuperUserOrMore();
+            mnuReprintReport.Visible = mnuReloadMenu.Visible = mnuSupervisorReport.Visible = BSLayer.Instance.LoggedUser.IsManagerOrMore();
 
             if (config.Attached_Cash_Drawer_Type == CashDrawerTypes.None)
                 btnDone.Dock = DockStyle.Fill;
@@ -352,14 +352,14 @@ namespace WinLayer
 
         private async void mnuChangeMenu_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             frmMenuSelector frm = ActivatorUtilities.CreateInstance<frmMenuSelector>(ServiceHelper.Services);
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 config.ActiveMenuIID = frm.SelectedMenuIID;
                 UF.SaveConfig(config);
-                DTRMSimpleBusiness.Instance.ActiveMenu = await DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+                BSLayer.Instance.ActiveMenu = await BSLayer.Instance.GetActiveMenu(true, true);
                 await LoadUserInterface();
             }
         }
@@ -367,7 +367,7 @@ namespace WinLayer
         //private void LoadMenuList() {
         //    mnuChangeMenu.DropDownItems.Clear();
 
-        //    List<FMenu> menuList =  DTRMSimpleBusiness.Instance.GetMenuListDB();
+        //    List<FMenu> menuList =  BSLayer.Instance.GetMenuListDB();
 
         //    foreach (FMenu fm in menuList) {
         //        ToolStripMenuItem btn = new ToolStripMenuItem();
@@ -386,7 +386,7 @@ namespace WinLayer
             config.ActiveMenuIID = menuIID;
 
             UF.SaveConfig(config);
-            DTRMSimpleBusiness.Instance.ActiveMenu = await DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+            BSLayer.Instance.ActiveMenu = await BSLayer.Instance.GetActiveMenu(true, true);
             await LoadUserInterface();
             //RefreshUserInterface();
         }
@@ -431,8 +431,8 @@ namespace WinLayer
             }
 
             //If Bonus Scheme Auto Selected
-            if (DTRMSimpleBusiness.Instance.shop.Bonus != null)
-                mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.shop.Bonus.PlanName + " (or Change)";
+            if (BSLayer.Instance.shop.Bonus != null)
+                mnuSelectBonusPlan.Text = BSLayer.Instance.shop.Bonus.PlanName + " (or Change)";
 
         }
         private async void BonusScheme_Click(object sender, EventArgs e)
@@ -440,8 +440,8 @@ namespace WinLayer
             ToolStripMenuItem btn = (ToolStripMenuItem)sender;
             string bonusIID = btn.Tag.ToString();
 
-            await DTRMSimpleBusiness.Instance.SetBonus(bonusIID);
-            mnuSelectBonusPlan.Text = DTRMSimpleBusiness.Instance.shop.Bonus.PlanName + " (or Change)";
+            await BSLayer.Instance.SetBonus(bonusIID);
+            mnuSelectBonusPlan.Text = BSLayer.Instance.shop.Bonus.PlanName + " (or Change)";
             await pnlBonus.UpdateBonusDisplay();
 
         }
@@ -464,8 +464,8 @@ namespace WinLayer
         {
             if (disposing)
             {
-                // DTRMSimpleBusiness.Instance.CDGoodbye();
-                // DTRMSimpleBusiness.Instance.UnsetDisplayPort();
+                // BSLayer.Instance.CDGoodbye();
+                // BSLayer.Instance.UnsetDisplayPort();
                 //bslayer = null;
 
                 if (components != null)
@@ -2280,7 +2280,7 @@ namespace WinLayer
 
             pnlPendingOrders.Visible = config.Hold_Order_Available;
 
-            btnCashDrawer.Text = DTRMSimpleBusiness.Instance.shop.CashDrawerText;
+            btnCashDrawer.Text = BSLayer.Instance.shop.CashDrawerText;
             if (OUI == null)
                 OUI = new InterfaceHolder("orderpad");
             OUI.Panels.Clear();
@@ -2295,32 +2295,32 @@ namespace WinLayer
             //    //{
             //    //    config.ActiveMenuIID = frm.SelectedMenuIID;
             //    //    UF.SaveConfig(config);
-            //    //     DTRMSimpleBusiness.Instance.ActiveMenu =  DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+            //    //     BSLayer.Instance.ActiveMenu =  BSLayer.Instance.GetActiveMenu(true, true);
             //    //}
             //}
 
-            DTRMSimpleBusiness.Instance.ActiveMenu = await repoMenu.GetByField("IsActive", true, "categories, categories.Distribution, categories.Items, categories.Items.Distribution");
+            BSLayer.Instance.ActiveMenu = await repoMenu.GetByField("IsActive", true, "categories, categories.Distribution, categories.Items, categories.Items.Distribution");
 
-            if (DTRMSimpleBusiness.Instance.ActiveMenu == null)
+            if (BSLayer.Instance.ActiveMenu == null)
             {
                 MessageBox.Show("Active Menu cannot be found, please set it manually from options window");
             } else
             {
-                // DTRMSimpleBusiness.Instance.ActiveMenu =  DTRMSimpleBusiness.Instance.GetActiveMenu(false, false);
-                //if ( DTRMSimpleBusiness.Instance.ActiveMenu == null)
+                // BSLayer.Instance.ActiveMenu =  BSLayer.Instance.GetActiveMenu(false, false);
+                //if ( BSLayer.Instance.ActiveMenu == null)
                 //{
                 //    MessageBox.Show("Please create and assign Default Menu to system.");
                 //    this.Close();
                 //}
 
-                if (!DTRMSimpleBusiness.Instance.ActiveMenu.categories.IsNullOrEmpty())
+                if (!BSLayer.Instance.ActiveMenu.categories.IsNullOrEmpty())
                 {
 
-                    // for (int i = 0; i <  DTRMSimpleBusiness.Instance.ActiveMenu.categories.Count; i++)
+                    // for (int i = 0; i <  BSLayer.Instance.ActiveMenu.categories.Count; i++)
                     int i = 0;
                     pnlOrderPad.Padding = new Padding(3, 0, 0, 0);
 
-                    foreach (Category category in DTRMSimpleBusiness.Instance.ActiveMenu.categories)
+                    foreach (Category category in BSLayer.Instance.ActiveMenu.categories)
                     {
                         UPEntity upe = ActivatorUtilities.CreateInstance<UPEntity>(ServiceHelper.Services, category);
                         // upe.DoneEventHandler = new GenericFunctionCallReturnBool(this.DoneEventHandlerFunction);
@@ -2345,11 +2345,11 @@ namespace WinLayer
                                 btn.Text = upe.category.CategoryName;
                                 break;
                             case ButtonDisplayStyles.Image:
-                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 10, true);
+                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await BSLayer.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 10, true);
                                 btn.Text = "";
                                 break;
                             case ButtonDisplayStyles.ImageAndText:
-                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await DTRMSimpleBusiness.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 20, true);
+                                btn.Image = UFWin.ReSizeImageTo(UFWin.ToImage((await BSLayer.Instance.GetGenericImage(upe.category.IID)).DisplayImage), upe.category.Height, upe.category.Height - 20, true);
                                 btn.Text = upe.category.CategoryName;
                                 break;
                         }
@@ -2428,14 +2428,14 @@ namespace WinLayer
                 for (int i = 0; i < pnlSpecial.UIEButtons.Count; i++)
                 {
                     UPEntityButton upeb = (UPEntityButton)pnlSpecial.UIEButtons[i];
-                    if (PosLibrary.DRNumeric.IsBitSet(upeb.categoryItem.AvailableFor, (int)DTRMSimpleBusiness.Instance.AttachedOrder.OrderType) &&
+                    if (PosLibrary.DRNumeric.IsBitSet(upeb.categoryItem.AvailableFor, (int)BSLayer.Instance.AttachedOrder.OrderType) &&
                         upeb.categoryItem.Compulsary)
                     {
                         bool blnExist = false;
                         //Check if this compulsary item exist in the order
-                        for (int x = 0; x < DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count; x++)
+                        for (int x = 0; x < BSLayer.Instance.AttachedOrder.Items.Count; x++)
                         {
-                            OrderItem oi = (OrderItem)DTRMSimpleBusiness.Instance.AttachedOrder.Items[x];
+                            OrderItem oi = (OrderItem)BSLayer.Instance.AttachedOrder.Items[x];
                             if (oi.CategoryItemIID == upeb.categoryItem.IID)
                             {
                                 blnExist = true;
@@ -2454,36 +2454,36 @@ namespace WinLayer
         {
 
             //Ensure AttachedOrder Username 
-            if (string.IsNullOrEmpty(DTRMSimpleBusiness.Instance.AttachedOrder.UserIID))
-                DTRMSimpleBusiness.Instance.AttachedOrder.UserIID = DTRMSimpleBusiness.Instance.LoggedUser.IID;
+            if (string.IsNullOrEmpty(BSLayer.Instance.AttachedOrder.UserIID))
+                BSLayer.Instance.AttachedOrder.UserIID = BSLayer.Instance.LoggedUser.IID;
 
             //if (config.Customer_Display_Type != CustomerDisplayTypes.NONE)
-            //     DTRMSimpleBusiness.Instance.CDSendMessage("TOTAL" + DRFormat.Space(config.Customer_Display_Text_Length - 9) + "0.00", CDAreas.All);
+            //     BSLayer.Instance.CDSendMessage("TOTAL" + DRFormat.Space(config.Customer_Display_Text_Length - 9) + "0.00", CDAreas.All);
 
 
             //attach order to the screen and display the order
-            //OrderScreen.OrderToDisplay = DTRMSimpleBusiness.Instance.AttachedOrder;
+            //OrderScreen.OrderToDisplay = BSLayer.Instance.AttachedOrder;
             // OrderScreen.bslayer = bslayer;
             await OrderScreen.Display();
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done ||
-                (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale)) // && config.Hold_Orders_New_Items_Add_Seperately))
-                DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2(); // ShortGuid.NewGuid().ToString();
+            if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.Done ||
+                (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale)) // && config.Hold_Orders_New_Items_Add_Seperately))
+                BSLayer.Instance.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2(); // ShortGuid.NewGuid().ToString();
             else
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New && DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
-                    DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2();
+                if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New && BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
+                    BSLayer.Instance.StepableOrderItemGroupIID = POSLayer.Library.ShortGuid.NewDateBasedGuid2();
                 else
-                    DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID;
+                    BSLayer.Instance.StepableOrderItemGroupIID = BSLayer.Instance.AttachedOrder.IID;
             }
 
 
-            DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
+            BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
 
             await DetachPanel();
             await DisplayWorkArea(true);
 
-            await DTRMSimpleBusiness.Instance.OnOrderLoaded();
+            await BSLayer.Instance.OnOrderLoaded();
 
         }
 
@@ -2492,14 +2492,14 @@ namespace WinLayer
             foreach (UPEntity upe in OUI.Panels)
                 upe.Reset();
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
+                BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
 
-                await DTRMSimpleBusiness.Instance.ReturnOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New)
-                    await DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                await BSLayer.Instance.ReturnOrder(BSLayer.Instance.AttachedOrder);
+                if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New)
+                    await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                BSLayer.Instance.AttachedOrder = null;
 
             }
 
@@ -2516,7 +2516,7 @@ namespace WinLayer
             await DisplayWorkArea(false);
             pnlTop.Enabled = true;
 
-            DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID = "";
+            BSLayer.Instance.StepableOrderItemGroupIID = "";
 
             //ShowAutoOrderType
             switch (config.Auto_Order_Type)
@@ -2542,7 +2542,7 @@ namespace WinLayer
 
             ResetScreenLock();
 
-            bool bonusVisible = DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel > AccessLevels.User ? true : IsBonusVisible();
+            bool bonusVisible = BSLayer.Instance.LoggedUser.AccessLevel > AccessLevels.User ? true : IsBonusVisible();
 
             if (config.Display_Session_Bonus && bonusVisible)
             {
@@ -2552,7 +2552,7 @@ namespace WinLayer
 
             pnlBonus.Visible = bonusVisible;
 
-            DTRMSimpleBusiness.Instance.OnOrderUnloaded();
+            BSLayer.Instance.OnOrderUnloaded();
         }
 
         public bool IsBonusVisible()
@@ -2560,14 +2560,14 @@ namespace WinLayer
             //return true;
             try
             {
-                if (DTRMSimpleBusiness.Instance.shop.Bonus == null)
+                if (BSLayer.Instance.shop.Bonus == null)
                 {
                     return false;
                 }
 
-                if (!DTRMSimpleBusiness.Instance.shop.Bonus.WithinRange(DateTime.Now.TimeOfDay))
+                if (!BSLayer.Instance.shop.Bonus.WithinRange(DateTime.Now.TimeOfDay))
                     return false;
-                else if (DTRMSimpleBusiness.Instance.shop.Bonus.WithinInvisibleRange(DateTime.Now.TimeOfDay))
+                else if (BSLayer.Instance.shop.Bonus.WithinInvisibleRange(DateTime.Now.TimeOfDay))
                 {
                     return false;
                 } else
@@ -2591,20 +2591,20 @@ namespace WinLayer
             bool blnOldInHouseOrder = false;
             bool blnOrderHasMultipleOrderGroupIID = false;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                blnNewInHouseOrder = (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New);//  DTRMSimpleBusiness.Instance.OldOpennedOrder == null);
+                blnNewInHouseOrder = (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && BSLayer.Instance.AttachedOrder.Status == StatusFlags.New);//  BSLayer.Instance.OldOpennedOrder == null);
 
-                blnPrintableOldInHouseOrder = (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && DTRMSimpleBusiness.Instance.AttachedOrder.HasItemsForKitchen());  // DTRMSimpleBusiness.Instance.AttachedOrder.Subtract( DTRMSimpleBusiness.Instance.OldOpennedOrder).items.Count > 0);
-                blnPrintableOtherOrderType = DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway;
-                blnOldInHouseOrder = DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done;  //  DTRMSimpleBusiness.Instance.OldOpennedOrder != null;
-                blnOrderHasMultipleOrderGroupIID = DTRMSimpleBusiness.Instance.AttachedOrder.HasMultipleOrderGroupIID();
+                blnPrintableOldInHouseOrder = (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && BSLayer.Instance.AttachedOrder.HasItemsForKitchen());  // BSLayer.Instance.AttachedOrder.Subtract( BSLayer.Instance.OldOpennedOrder).items.Count > 0);
+                blnPrintableOtherOrderType = BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway;
+                blnOldInHouseOrder = BSLayer.Instance.AttachedOrder.Status == StatusFlags.Done;  //  BSLayer.Instance.OldOpennedOrder != null;
+                blnOrderHasMultipleOrderGroupIID = BSLayer.Instance.AttachedOrder.HasMultipleOrderGroupIID();
                 blnHaveItemsToPrint = blnNewInHouseOrder || blnPrintableOldInHouseOrder || blnPrintableOtherOrderType || blnOrderHasMultipleOrderGroupIID;
             }
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
             {
-                // DTRMSimpleBusiness.Instance.OldOpennedOrder = null;
+                // BSLayer.Instance.OldOpennedOrder = null;
                 return true;
             } else
             {
@@ -2614,10 +2614,10 @@ namespace WinLayer
                 //Signals beingModified to false for all orders, that means kitchen order will be free
                 try
                 {
-                    DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
+                    BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
                 } catch (Exception ex)
                 {
-                    await DTRMSimpleBusiness.Instance.SaveDebug("189 : " + ex.Message);
+                    await BSLayer.Instance.SaveDebug("189 : " + ex.Message);
                 }
 
                 if ((blnNewInHouseOrder || blnOldInHouseOrder || blnPrintableOldInHouseOrder || blnOrderHasMultipleOrderGroupIID) && (config.Table_Orders_Display_Kitchen_Orders || config.Table_Orders_Kitchen_Receipt_Count > 0))
@@ -2627,53 +2627,53 @@ namespace WinLayer
 
                     KitchenOrder korder = null;
 
-                    Order order = DTRMSimpleBusiness.Instance.AttachedOrder.GetOrderWithKitchenableItems();
+                    Order order = BSLayer.Instance.AttachedOrder.GetOrderWithKitchenableItems();
                     if (order.Items.Count == 0)
-                        await DTRMSimpleBusiness.Instance.DeleteKitchenOrdersForOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                        await BSLayer.Instance.DeleteKitchenOrdersForOrder(BSLayer.Instance.AttachedOrder.IID);
                     else
                     {
-                        prepResult = await DTRMSimpleBusiness.Instance.CreateKitchenOrderForOrder(order, korder);
+                        prepResult = await BSLayer.Instance.CreateKitchenOrderForOrder(order, korder);
                         if (prepResult == PrepDialogReturnTypes.Cancel)
                             return false;
                     }
 
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && config.Table_Orders_Always_Shrinked)
-                        DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                    if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && config.Table_Orders_Always_Shrinked)
+                        BSLayer.Instance.AttachedOrder.ShrinkOrder();
 
                 }
 
                 if (config.Hold_Order_Print_in_Kitchen && blnHaveItemsToPrint)
                 {
 
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status = NewOrderStatus;
+                    BSLayer.Instance.AttachedOrder.Status = NewOrderStatus;
                     if (blnPrintableOtherOrderType)
                     {
                         return await this.CompleteAttachedOrder(2, true, false, false);
                     }
-                    // DTRMSimpleBusiness.Instance.OldOpennedOrder = null;
+                    // BSLayer.Instance.OldOpennedOrder = null;
                     await UnloadOrder();
                     return true;
 
                 } else
                 {
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+                    if (BSLayer.Instance.AttachedOrder.Items.Count > 0)
                     {
-                        DTRMSimpleBusiness.Instance.AttachedOrder.Status = UF.UpdateStatus(DTRMSimpleBusiness.Instance.AttachedOrder.Status, NewOrderStatus, true);
-                        if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New)
+                        BSLayer.Instance.AttachedOrder.Status = UF.UpdateStatus(BSLayer.Instance.AttachedOrder.Status, NewOrderStatus, true);
+                        if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New)
                         {
-                            await DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                            DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                            await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                            BSLayer.Instance.AttachedOrder = null;
                         } else
                         {
-                            DTRMSimpleBusiness.Instance.AttachedOrder.LockedClientIP = null;
-                            DTRMSimpleBusiness.Instance.AttachedOrder.LockedUntil = DateTime.Now;
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Table.LockedClientIP = null;
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Table.LockedUntil = DateTime.Now;
+                            BSLayer.Instance.AttachedOrder.LockedClientIP = null;
+                            BSLayer.Instance.AttachedOrder.LockedUntil = DateTime.Now;
+                            BSLayer.Instance.AttachedOrder.Table.LockedClientIP = null;
+                            BSLayer.Instance.AttachedOrder.Table.LockedUntil = DateTime.Now;
 
-                            await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                            await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
                         }
                         await UnloadOrder();
-                    } else if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
+                    } else if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
                     {
                         await UnloadOrder();
                     } else
@@ -2700,41 +2700,41 @@ namespace WinLayer
         }
         public bool EnsureCustomer(bool blnShowMessage)
         {
-            if (!DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired)
+            if (!BSLayer.Instance.AttachedOrder.IsCustomerDetailsRequired)
                 return true;
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+            if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
             {
 
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+                if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
                 {
-                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName.Trim()) == "")
+                    if ((BSLayer.Instance.AttachedOrder.Customer.CName.Trim()) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer name is missing !");
                         return false;
                     }
-                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel + DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email) == "")
+                    if ((BSLayer.Instance.AttachedOrder.Customer.Tel + BSLayer.Instance.AttachedOrder.Customer.Email) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have at least one phone number or an email address");
                         return false;
                     }
-                } else if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
+                } else if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
                 {
-                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.CName) == "")
+                    if ((BSLayer.Instance.AttachedOrder.Customer.CName) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Name missing ");
                         return false;
                     }
-                    if ((DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Tel.Trim() + DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Email.Trim()) == "")
+                    if ((BSLayer.Instance.AttachedOrder.Customer.Tel.Trim() + BSLayer.Instance.AttachedOrder.Customer.Email.Trim()) == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have at least one phone number or an email address");
                         return false;
                     }
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Customer.Address.Trim() == "")
+                    if (BSLayer.Instance.AttachedOrder.Customer.Address.Trim() == "")
                     {
                         if (blnShowMessage)
                             MessageBox.Show("Customer must have an address");
@@ -2755,9 +2755,9 @@ namespace WinLayer
             string OrderIID = "";
             string SelectedPrinterIID = "";
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                OrderIID = DTRMSimpleBusiness.Instance.AttachedOrder.IID; //Get a copy of the order IID
+                OrderIID = BSLayer.Instance.AttachedOrder.IID; //Get a copy of the order IID
 
                 if (!EnsureCustomer(false))
                 {
@@ -2774,9 +2774,9 @@ namespace WinLayer
 
                 if (blnArchive)
                 {
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
+                    if (BSLayer.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                     {
-                        switch (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
+                        switch (BSLayer.Instance.AttachedOrder.OrderType)
                         {
                             case OrderTypes.Sale:
                                 if (config.Direct_Sale_Auto_Payment_Mehtod == AutoPaymentMethods.Selective)
@@ -2786,7 +2786,7 @@ namespace WinLayer
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                             case OrderTypes.Sitin:
                                 if (config.Table_Orders_Auto_Payment_Method == AutoPaymentMethods.Selective)
@@ -2796,7 +2796,7 @@ namespace WinLayer
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
 
 
                                 break;
@@ -2808,7 +2808,7 @@ namespace WinLayer
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                             case OrderTypes.Delivery:
                                 if (config.Delivery_Orders_Auto_Payment_Method == AutoPaymentMethods.Selective)
@@ -2818,7 +2818,7 @@ namespace WinLayer
                                         blnPrintLocal, blnEnforceDeliveryArchive));
                                     return false;
                                 } else
-                                    DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                                    BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                                 break;
                         }
                     }
@@ -2828,21 +2828,21 @@ namespace WinLayer
                 if (blnPrintLocal)
                 {
                     //Select Receipt Printer	Delivery Or TakeAwayB printer
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+                    if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
                     {
                         try
                         {
-                            SelectedPrinterIID = DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.TakeAway).Result.IID;
+                            SelectedPrinterIID = BSLayer.Instance.GetPrinterForOrderType(OrderTypes.TakeAway).Result.IID;
                         } catch
                         {
                         }
                     }
 
-                    if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
+                    if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
                     {
                         try
                         {
-                            SelectedPrinterIID = DTRMSimpleBusiness.Instance.GetPrinterForOrderType(OrderTypes.Delivery).Result.IID;
+                            SelectedPrinterIID = BSLayer.Instance.GetPrinterForOrderType(OrderTypes.Delivery).Result.IID;
                         } catch
                         {
                         }
@@ -2850,7 +2850,7 @@ namespace WinLayer
 
                     if (SelectedPrinterIID == null || SelectedPrinterIID == "")
                     {
-                        List<Printer> PrinterList = DTRMSimpleBusiness.Instance.GetReceiptPrinterList().Result;
+                        List<Printer> PrinterList = BSLayer.Instance.GetReceiptPrinterList().Result;
                         if (PrinterList.Count == 0)
                         {
                             MessageBox.Show("There is no receipt printer in the system, please assign a receipt printer");
@@ -2880,24 +2880,24 @@ namespace WinLayer
 
                 if (NumberOfCopy > 0)
                 {
-                    DTRMSimpleBusiness.Instance.AttachedOrder.blnPrinted = DTRMSimpleBusiness.Instance.PrintEntireOrder(DTRMSimpleBusiness.Instance.AttachedOrder, true, true,
+                    BSLayer.Instance.AttachedOrder.blnPrinted = BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, true,
                        NumberOfCopy, SelectedPrinterIID).Result;
                     if (config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(SelectedPrinterIID).Result.NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(BSLayer.Instance.GetPrinterForClient(SelectedPrinterIID).Result.NetworkName);
 
                 }
 
                 if (blnArchive)
                 {
                     if (!config.Table_Orders_Always_Shrinked)
-                        DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                        BSLayer.Instance.AttachedOrder.ShrinkOrder();
 
-                    DTRMSimpleBusiness.Instance.AttachedOrder.LastModified = DateTime.Now;
-                    DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Completed;
+                    BSLayer.Instance.AttachedOrder.LastModified = DateTime.Now;
+                    BSLayer.Instance.AttachedOrder.Status = StatusFlags.Completed;
                 }
                 if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                 {
-                    await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                    await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
                     await OrderScreen.FinaliseSplit();
                 }
 
@@ -2908,23 +2908,23 @@ namespace WinLayer
                 string targetTableIID = "";
 
 
-                if (config.TakeAway_Orders_Display_Kitchen_Orders && DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
-                    await DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                if (config.TakeAway_Orders_Display_Kitchen_Orders && BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+                    await BSLayer.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(BSLayer.Instance.AttachedOrder);
 
-                if (config.Delivery_Orders_Display_Kitchen_Orders && DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
-                    await DTRMSimpleBusiness.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                if (config.Delivery_Orders_Display_Kitchen_Orders && BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery)
+                    await BSLayer.Instance.CreateKitchenOrderForTakeAwayAndDeliveryOrder(BSLayer.Instance.AttachedOrder);
 
 
                 //This is the final place for inhouse order to remove from the system
-                //if ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin) {
-                //     DTRMSimpleBusiness.Instance.DeleteKitchenOrdersForOrder( DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                //if ( BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin) {
+                //     BSLayer.Instance.DeleteKitchenOrdersForOrder( BSLayer.Instance.AttachedOrder.IID);
                 //}
                 await UnloadOrder();
 
 
 
                 //if (blnTableTransferRequired)
-                //    DTRMSimpleBusiness.Instance.MoveTable(sourceTableIID, targetTableIID);
+                //    BSLayer.Instance.MoveTable(sourceTableIID, targetTableIID);
                 //now you can transfer first subtable order to primary table
 
                 ResetScreenLock();
@@ -2939,9 +2939,9 @@ namespace WinLayer
         //THIS IS DONE BUTTON function it is called by a  delegate function
         public async Task<bool> DoneEventHandlerFunction()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+                if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
                     return false;
                 if (await SafelyPackTheOrder(StatusFlags.Done, false))
                 {
@@ -2955,17 +2955,17 @@ namespace WinLayer
         private async Task PrintFinalPayment(PaymentMethods paymentMethod, bool withReceipt)
         {
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                double total = DTRMSimpleBusiness.Instance.AttachedOrder.Total;
+                double total = BSLayer.Instance.AttachedOrder.Total;
                 if (total == 0)
                     return;
-                if (total > 0 && (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Delivery))
-                    await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+                if (total > 0 && (BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.Delivery))
+                    await BSLayer.Instance.OpenCashDrawer();
 
-                DTRMSimpleBusiness.Instance.AttachedOrder.Payment = paymentMethod;
+                BSLayer.Instance.AttachedOrder.Payment = paymentMethod;
 
-                switch (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
+                switch (BSLayer.Instance.AttachedOrder.OrderType)
                 {
                     case OrderTypes.Sale:
                         if (withReceipt)
@@ -2999,7 +2999,7 @@ namespace WinLayer
                         await CompleteAttachedOrder(2, true, true, false);
                         break;
                 }
-                await DTRMSimpleBusiness.Instance.SetKitchenModified();
+                await BSLayer.Instance.SetKitchenModified();
                 tmrHoldingOrders_Tick(null, null);
             }
         }
@@ -3011,15 +3011,15 @@ namespace WinLayer
 
         private async Task btnTableButton_Click(object sender, EventArgs e)
         {
-            Masa table = (sender as TableButton).Table; // await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).Table.IID);
+            Masa table = (sender as TableButton).Table; // await BSLayer.Instance.BarrowTable(((TableButton)sender).Table.IID);
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
             } else
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder = await repoTable.GetTableWithOrderToEditAsync(table.IID, config.Terminal_Name);
-                DTRMSimpleBusiness.Instance.AttachedOrder.SessionIID = DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
+                BSLayer.Instance.AttachedOrder = await repoTable.GetTableWithOrderToEditAsync(table.IID, config.Terminal_Name);
+                BSLayer.Instance.AttachedOrder.SessionIID = BSLayer.Instance.shop.CurrentSessionIID;
                 await LoadAttachedOrder();
             }
         }
@@ -3027,23 +3027,23 @@ namespace WinLayer
         private async Task btnDirectTable_Click(object tableIID, EventArgs e)
         {
 
-            Masa table = await DTRMSimpleBusiness.Instance.BarrowTable(tableIID.ToString());
+            Masa table = await BSLayer.Instance.BarrowTable(tableIID.ToString());
             if (table == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
                 return;
             } else
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                BSLayer.Instance.AttachedOrder = table.AttachedOrder;
                 await LoadAttachedOrder();
             }
         }
 
         public bool EnsureTable()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
+            if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == null || DTRMSimpleBusiness.Instance.AttachedOrder.TableIID == "")
+                if (BSLayer.Instance.AttachedOrder.TableIID == null || BSLayer.Instance.AttachedOrder.TableIID == "")
                     return false;
             }
             return true;
@@ -3077,7 +3077,7 @@ namespace WinLayer
                 pnlHolder.Controls.Clear();
             } catch { }
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 AttachPanel(OUI.SelectedPanel);
         }
         #endregion
@@ -3103,7 +3103,7 @@ namespace WinLayer
 
         private void HandleActionPanelView(ViewTypes view)
         {
-            bool blnHasOrder = (DTRMSimpleBusiness.Instance.AttachedOrder != null);
+            bool blnHasOrder = (BSLayer.Instance.AttachedOrder != null);
 
             int OrderTypeCount = 0;
 
@@ -3124,7 +3124,7 @@ namespace WinLayer
             //DisplayTopBar
             try
             {
-                mnuCustomer.Visible = blnHasOrder && DTRMSimpleBusiness.Instance.AttachedOrder.IsCustomerDetailsRequired;
+                mnuCustomer.Visible = blnHasOrder && BSLayer.Instance.AttachedOrder.IsCustomerDetailsRequired;
             } catch { }
 
             mnuPad.Enabled = config.Pad_Allowed;
@@ -3132,16 +3132,16 @@ namespace WinLayer
             mnuOrders.Visible = false;
             mnuReports.Visible = false;
 
-            mnuPrintForKitchen.Visible = blnHasOrder && (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType != OrderTypes.Sale);
+            mnuPrintForKitchen.Visible = blnHasOrder && (BSLayer.Instance.AttachedOrder.OrderType != OrderTypes.Sale);
             btnPrint.Visible = blnHasOrder && !string.IsNullOrEmpty(config.TerminalReceiptPrinterIID);
 
-            mnuReloadMenu.Visible = !blnHasOrder && DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
+            mnuReloadMenu.Visible = !blnHasOrder && BSLayer.Instance.LoggedUser.IsManagerOrMore();
 
-            mnuPad.Enabled = DTRMSimpleBusiness.Instance.HasPadItems() && config.Pad_Allowed;
+            mnuPad.Enabled = BSLayer.Instance.HasPadItems() && config.Pad_Allowed;
 
             bool blnOrderHasItems = false;
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
-                blnOrderHasItems = DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0;
+            if (BSLayer.Instance.AttachedOrder != null)
+                blnOrderHasItems = BSLayer.Instance.AttachedOrder.Items.Count > 0;
             switch (view)
             {
                 case ViewTypes.UnloadedOrderView:
@@ -3168,9 +3168,9 @@ namespace WinLayer
                     btnPrintCardFinalPayment.Visible = false;
                     btnPrintOnlineFinalPayment.Visible = false;
 
-                    mnuOrders.Visible = config.Order_Reloads_Allowed || (((int)DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
-                    mnuReports.Visible = config.Standard_Users_Can_Produce_Reports || (((int)DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
-                    //cmdLastOrder.Visible = config.Last_Order_Reload_Allowed || (((int) DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
+                    mnuOrders.Visible = config.Order_Reloads_Allowed || (((int)BSLayer.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
+                    mnuReports.Visible = config.Standard_Users_Can_Produce_Reports || (((int)BSLayer.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
+                    //cmdLastOrder.Visible = config.Last_Order_Reload_Allowed || (((int) BSLayer.Instance.LoggedUser.AccessLevel) > (int)AccessLevels.User);
 
                     ArrangeSubTotalPanel(false);
                     break;
@@ -3181,8 +3181,8 @@ namespace WinLayer
                     btnDone.Visible = false;
                     mnuPrintAsInvoice.Visible = false;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = (config.Hold_Order_Available &&
-                        (DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
-                        (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0));
+                        (BSLayer.Instance.AttachedOrder != null) &&
+                        (BSLayer.Instance.AttachedOrder.Items.Count > 0));
 
                     //Second Row
                     mnuDrawerCalculator.Visible = config.Drawer_Calculator_Visible;
@@ -3208,31 +3208,31 @@ namespace WinLayer
                     if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                         btnDone.Visible = false;
 
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Print_Invoice_Button_Visible;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !BSLayer.Instance.AttachedOrder.blnItemsChanged && config.Print_Invoice_Button_Visible;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
                     mnuDrawerCalculator.Visible = config.Drawer_Calculator_Visible;
                     btnCashDrawer.Visible = config.Cash_Drawer_Void_Open_Allowed && (config.Attached_Cash_Drawer_Type != CashDrawerTypes.None);
 
-                    //btnChequePaymentWithReceipt.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Payments_Can_Be_Made_By_Cheque;
+                    //btnChequePaymentWithReceipt.Visible = blnOrderHasItems && ! BSLayer.Instance.AttachedOrder.blnItemsChanged && config.Payments_Can_Be_Made_By_Cheque;
 
                     //Third Row
-                    // btnSubTotal.Visible = blnOrderHasItems && ! DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged && config.Sub_Total_Panel_Visible;
-                    btnPrintCashFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintCardFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintOnlineFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    // btnSubTotal.Visible = blnOrderHasItems && ! BSLayer.Instance.AttachedOrder.blnItemsChanged && config.Sub_Total_Panel_Visible;
+                    btnPrintCashFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCardFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintOnlineFinalPaymentWithReceipt.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
                     //Forth Row
-                    btnPrintCashFinalPayment.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintCardFinalPayment.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
-                    btnPrintOnlineFinalPayment.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCashFinalPayment.Visible = config.Payments_Can_Be_Made_By_Cash && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintCardFinalPayment.Visible = config.Payments_Can_Be_Made_By_Card && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
+                    btnPrintOnlineFinalPayment.Visible = config.Payments_Can_Be_Made_Online && blnOrderHasItems && (!BSLayer.Instance.AttachedOrder.blnItemsChanged || OrderScreen.SplitStatus == SplittingStatus.Splitting);
                     break;
                 #endregion
                 case ViewTypes.TakeAwayOrderView:
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !BSLayer.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3256,7 +3256,7 @@ namespace WinLayer
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !BSLayer.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3282,8 +3282,8 @@ namespace WinLayer
                     //First Row
                     btnDone.Visible = false;
                     mnuPrintAsInvoice.Visible = false;
-                    btnHoldOrder.Visible = btnHoldAndReceipt.Visible = ((DTRMSimpleBusiness.Instance.AttachedOrder != null) &&
-                       (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0) && config.Hold_Order_Available);
+                    btnHoldOrder.Visible = btnHoldAndReceipt.Visible = ((BSLayer.Instance.AttachedOrder != null) &&
+                       (BSLayer.Instance.AttachedOrder.Items.Count > 0) && config.Hold_Order_Available);
 
                     //Second Row
                     mnuDrawerCalculator.Visible = false;
@@ -3331,7 +3331,7 @@ namespace WinLayer
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !BSLayer.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3356,7 +3356,7 @@ namespace WinLayer
                     #region
                     //First Row
                     btnDone.Visible = false;
-                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged;
+                    mnuPrintAsInvoice.Visible = blnOrderHasItems && !BSLayer.Instance.AttachedOrder.blnItemsChanged;
                     btnHoldOrder.Visible = btnHoldAndReceipt.Visible = false;
 
                     //Second Row
@@ -3405,7 +3405,7 @@ namespace WinLayer
             }
 
             //Can not change the order
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived))
+            if (BSLayer.Instance.AttachedOrder != null && (BSLayer.Instance.AttachedOrder.Status == StatusFlags.Completed || BSLayer.Instance.AttachedOrder.Status == StatusFlags.Archived))
             {
                 btnDone.Visible = btnHoldOrder.Visible = btnHoldAndReceipt.Visible =
                    btnPrintCashFinalPayment.Visible = btnPrintCashFinalPaymentWithReceipt.Visible =
@@ -3429,15 +3429,15 @@ namespace WinLayer
 
         private async void cmdDirectSale_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             if (await SafelyPackTheOrder(StatusFlags.Done, true))
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder = new Order(OrderTypes.Sale)
+                BSLayer.Instance.AttachedOrder = new Order(OrderTypes.Sale)
                 {
-                    ServiceChargeRate = DTRMSimpleBusiness.Instance.shop.ServiceChargeRate,
-                    ServiceChargeTaxRate = DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate,
-                    SessionIID = DTRMSimpleBusiness.Instance.shop.CurrentSessionIID
+                    ServiceChargeRate = BSLayer.Instance.shop.ServiceChargeRate,
+                    ServiceChargeTaxRate = BSLayer.Instance.shop.ServiceChargeTaxRate,
+                    SessionIID = BSLayer.Instance.shop.CurrentSessionIID
                 };
 
                 EnsureCompulsoryExtras();
@@ -3445,13 +3445,13 @@ namespace WinLayer
             } else
             {
                 if (config.DebugMode)
-                    await DTRMSimpleBusiness.Instance.SaveDebug("safely pack order on direct sale click failed");
+                    await BSLayer.Instance.SaveDebug("safely pack order on direct sale click failed");
             }
         }
 
         private async void cmdTables_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             if (await SafelyPackTheOrder(StatusFlags.Done, true))
             {
@@ -3463,22 +3463,22 @@ namespace WinLayer
 
         private async void CreateAndLoadInHouseOrder()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             if (await SafelyPackTheOrder(StatusFlags.Done, true))
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Sitin, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                BSLayer.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Sitin, BSLayer.Instance.shop.ServiceChargeRate, BSLayer.Instance.shop.ServiceChargeTaxRate);
                 await LoadAttachedOrder();
             }
         }
 
         private async void cmdTakeAway_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             if (await SafelyPackTheOrder(StatusFlags.Done, true))
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder = new Order(OrderTypes.TakeAway, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                BSLayer.Instance.AttachedOrder = new Order(OrderTypes.TakeAway, BSLayer.Instance.shop.ServiceChargeRate, BSLayer.Instance.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 await LoadAttachedOrder();
             }
@@ -3486,12 +3486,12 @@ namespace WinLayer
 
         private async void cmdDelivery_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             if (await SafelyPackTheOrder(StatusFlags.Done, true))
             {
 
-                DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Delivery, DTRMSimpleBusiness.Instance.shop.ServiceChargeRate, DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate);
+                BSLayer.Instance.AttachedOrder = new POSLayer.Models.Order(OrderTypes.Delivery, BSLayer.Instance.shop.ServiceChargeRate, BSLayer.Instance.shop.ServiceChargeTaxRate);
                 EnsureCompulsoryExtras();
                 await LoadAttachedOrder();
             }
@@ -3502,24 +3502,24 @@ namespace WinLayer
             if (OrderScreen.SplitStatus == SplittingStatus.Splitting)
                 await OrderScreen.AbortSplit();
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
                 await DetachPanel();
             else
             {
-                DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
+                BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
 
 
-                //MessageBox.Show( DTRMSimpleBusiness.Instance.AttachedOrder.Status.ToString());
-                switch (DTRMSimpleBusiness.Instance.AttachedOrder.Status)
+                //MessageBox.Show( BSLayer.Instance.AttachedOrder.Status.ToString());
+                switch (BSLayer.Instance.AttachedOrder.Status)
                 {
                     case StatusFlags.New:
-                        await DTRMSimpleBusiness.Instance.DeleteOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                        BSLayer.Instance.AttachedOrder = null;
                         await UnloadOrder();
                         return;
                     case StatusFlags.Done:
-                        string tableIID = DTRMSimpleBusiness.Instance.AttachedOrder.TableIID;
-                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        string tableIID = BSLayer.Instance.AttachedOrder.TableIID;
+                        BSLayer.Instance.AttachedOrder = null;
                         await UnloadOrder();
                         Masa table = await repoTable.Get(tableIID);
                         if (table != null)
@@ -3531,7 +3531,7 @@ namespace WinLayer
                     case StatusFlags.Holding:
                     case StatusFlags.Completed:
                     case StatusFlags.Archived:
-                        DTRMSimpleBusiness.Instance.AttachedOrder = null;
+                        BSLayer.Instance.AttachedOrder = null;
                         await UnloadOrder();
                         return;
 
@@ -3547,13 +3547,13 @@ namespace WinLayer
         {
             try
             {
-                mnuSum.Visible = config.Display_Session_Total_On_Menu || DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
-                mnuSelectBonusPlan.Visible = config.Display_Session_Bonus || DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore();
-                mnuReprintReport.Visible = (config.Preserve_Previous_Report && DTRMSimpleBusiness.Instance.imgReportSnapShot != null && DTRMSimpleBusiness.Instance.LoggedUser.IsManagerOrMore());
+                mnuSum.Visible = config.Display_Session_Total_On_Menu || BSLayer.Instance.LoggedUser.IsManagerOrMore();
+                mnuSelectBonusPlan.Visible = config.Display_Session_Bonus || BSLayer.Instance.LoggedUser.IsManagerOrMore();
+                mnuReprintReport.Visible = (config.Preserve_Previous_Report && BSLayer.Instance.imgReportSnapShot != null && BSLayer.Instance.LoggedUser.IsManagerOrMore());
 
-                mnuSum.Text = DTRMSimpleBusiness.Instance.GetCurrentSessionXSum().ToString("c2");
+                mnuSum.Text = BSLayer.Instance.GetCurrentSessionXSum().ToString("c2");
 
-                mnuLock.Enabled = (DTRMSimpleBusiness.Instance.AttachedOrder == null);
+                mnuLock.Enabled = (BSLayer.Instance.AttachedOrder == null);
             } catch
             {
                 float blank = 0;
@@ -3563,9 +3563,9 @@ namespace WinLayer
 
         private async void cmdOrders_Click(object sender, EventArgs e)
         {
-            if (config.Order_Reloads_Allowed || (DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User))
+            if (config.Order_Reloads_Allowed || (BSLayer.Instance.LoggedUser.AccessLevel != AccessLevels.User))
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (BSLayer.Instance.AttachedOrder != null)
                 {
                     if (!await this.SafelyPackTheOrder(StatusFlags.Done, true))
                         return;
@@ -3583,7 +3583,7 @@ namespace WinLayer
         private async void cmdReports_Click(object sender, EventArgs e)
         {
 
-            if (!DTRMSimpleBusiness.Instance.HasCurrentSessionCompletedOrders())
+            if (!BSLayer.Instance.HasCurrentSessionCompletedOrders())
             {
                 MessageBox.Show("There is no completed orders for this session!!");
                 return;
@@ -3596,13 +3596,13 @@ namespace WinLayer
                 return;
             }
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
                 MessageBox.Show("System has active order, Please complete the order before report procedure!!");
                 return;
             }
 
-            bool blnHasActiveHoldOrders = DTRMSimpleBusiness.Instance.HasActiveHoldOrders();
+            bool blnHasActiveHoldOrders = BSLayer.Instance.HasActiveHoldOrders();
 
             if (config.No_Hold_Orders_Allowed_During_Report && blnHasActiveHoldOrders)
             {
@@ -3610,7 +3610,7 @@ namespace WinLayer
                 return;
             }
 
-            bool blnHasActiveTableOrders = DTRMSimpleBusiness.Instance.HasActiveTableOrders();
+            bool blnHasActiveTableOrders = BSLayer.Instance.HasActiveTableOrders();
 
             if (config.No_Table_Orders_Allowed_During_Report && blnHasActiveTableOrders)
             {
@@ -3618,7 +3618,7 @@ namespace WinLayer
                 return;
             }
 
-            bool blnZReport = DTRMSimpleBusiness.Instance.WillReportEndUpAs_Z_Report(await DTRMSimpleBusiness.Instance.GetCurrentSession());
+            bool blnZReport = BSLayer.Instance.WillReportEndUpAs_Z_Report(await BSLayer.Instance.GetCurrentSession());
             if (blnZReport && (blnHasActiveHoldOrders || blnHasActiveTableOrders))
             {
                 MessageBox.Show("Printing report will auto produce Z report, YOU MUST CASHOUT ALL ORDERS before proceed!!!!");
@@ -3644,7 +3644,7 @@ namespace WinLayer
                 }
                 if (blnPrint)
                 {
-                    frmPinZWarning frm = new frmPinZWarning(await repoOrder.GetOrdersTotalForPaymentMethod(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
+                    frmPinZWarning frm = new frmPinZWarning(await repoOrder.GetOrdersTotalForPaymentMethod(BSLayer.Instance.shop.CurrentSessionIID, PaymentMethods.Card));
                     if (frm.ShowDialog() == DialogResult.Cancel)
                     {
                         return;
@@ -3653,19 +3653,19 @@ namespace WinLayer
             }
 
 
-            await DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
+            await BSLayer.Instance.CleanKitchenOrdersHasNoParentOrder();
 
 
             //There should be no panel visible specifically OrderList panel
             await DetachPanel();
 
-            Report report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.XReport);
+            Report report = BSLayer.Instance.GetReport(ReportFormatTypes.XReport);
 
             trmSelectPrinter fsp = new trmSelectPrinter();
             if (fsp.ShowDialog() == DialogResult.OK)
             {
 
-                await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+                await BSLayer.Instance.OpenCashDrawer();
 
                 if (report.RequireCashDrawTotal)
                 {
@@ -3678,12 +3678,12 @@ namespace WinLayer
                 }
 
                 //"Courier New"
-                await DTRMSimpleBusiness.Instance.PrintReport(ReportFormatTypes.XReport, DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, fsp.ReturnValue, false);
+                await BSLayer.Instance.PrintReport(ReportFormatTypes.XReport, BSLayer.Instance.shop.CurrentSessionIID, fsp.ReturnValue, false);
 
-                await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+                await BSLayer.Instance.OpenCashDrawer();
             bypass:
                 if (config.Force_Receipt_Printer_To_Cut)
-                    DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
+                    DRShell.SendCutCommandToUSBPrinter(BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
 
             } else
                 return;
@@ -3692,19 +3692,19 @@ namespace WinLayer
         }
         private void cmdLock_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 return;
             Lock();
         }
 
         private void btnReprintReport_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.imgReportSnapShot != null)
+            if (BSLayer.Instance.imgReportSnapShot != null)
             {
                 trmSelectPrinter fsp = new trmSelectPrinter();
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    DTRMSimpleBusiness.Instance.PrintImage(DTRMSimpleBusiness.Instance.imgReportSnapShot, DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
+                    BSLayer.Instance.PrintImage(BSLayer.Instance.imgReportSnapShot, BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue).Result.NetworkName);
                 }
             }
         }
@@ -3719,16 +3719,16 @@ namespace WinLayer
         #region SMILEY MENU
         private async void tsPrintForKitchen_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                await DTRMSimpleBusiness.Instance.PrintForKitchen(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                await BSLayer.Instance.PrintForKitchen(BSLayer.Instance.AttachedOrder.IID);
             }
         }
         private void btnPrintAsInvoice_Click(object sender, System.EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && DTRMSimpleBusiness.Instance.AttachedOrder.Status != StatusFlags.New)
+                if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin && BSLayer.Instance.AttachedOrder.Status != StatusFlags.New)
                     this.CompleteAttachedOrder(1, false, true, false);
                 else
                     return;
@@ -3741,7 +3741,7 @@ namespace WinLayer
 
         private async void cmdPad_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
             {
                 if (config.Order_Pad_Default_Order_Type == OrderTypes.Sitin)
                 {
@@ -3750,7 +3750,7 @@ namespace WinLayer
                     return;
                 } else
                 {
-                    DTRMSimpleBusiness.Instance.AttachedOrder = new POSLayer.Models.Order(config.Order_Pad_Default_Order_Type);
+                    BSLayer.Instance.AttachedOrder = new POSLayer.Models.Order(config.Order_Pad_Default_Order_Type);
                     EnsureCompulsoryExtras();
                     blnPadOpenning = true;
                     await LoadAttachedOrder();
@@ -3774,7 +3774,7 @@ namespace WinLayer
         {
             //ensure order closed  if any open already
             SafelyPackTheOrder(StatusFlags.Done, true);
-            DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+            BSLayer.Instance.GetActiveMenu(true, true);
             RefreshUserInterface();
         }
         #region SERVICE HANDLERS
@@ -3876,9 +3876,9 @@ namespace WinLayer
         #region ACTION PANEL BUTTON HANDLERS
         private async void btnDone_Click(object sender, System.EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
+                if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Delivery || BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.TakeAway)
                     return;
                 else
                 {
@@ -3892,27 +3892,27 @@ namespace WinLayer
         private async void btnFault_Click(object sender, EventArgs e)
         {
             if (config.Cash_Drawer_Void_Open_Allowed)
-                await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+                await BSLayer.Instance.OpenCashDrawer();
         }
 
         private async void btnPrint_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && !string.IsNullOrEmpty(config.TerminalReceiptPrinterIID))
+            if (BSLayer.Instance.AttachedOrder != null && !string.IsNullOrEmpty(config.TerminalReceiptPrinterIID))
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (BSLayer.Instance.AttachedOrder != null)
                 {
-                    await DTRMSimpleBusiness.Instance.PrintEntireOrder(DTRMSimpleBusiness.Instance.AttachedOrder, true, false, 1,
+                    await BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, false, 1,
                         config.TerminalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(
-                             DTRMSimpleBusiness.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
+                             BSLayer.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }
 
         private async void btnHoldOrder_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (BSLayer.Instance.AttachedOrder != null && BSLayer.Instance.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -3925,7 +3925,7 @@ namespace WinLayer
                         //NEW        => Pending , Save , Unload
                         //COMPLETED  => prevent adding items, Dont Respond to hold
                         //PENDING    => Pending, Save, Unload
-                        if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale && (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New || DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Holding))
+                        if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale && (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New || BSLayer.Instance.AttachedOrder.Status == StatusFlags.Holding))
                         {
                             blnAlreadyHolding = (OrderScreen.SplitStatus == SplittingStatus.Splitting);
                             DoHolding(btn.Tag.ToString(), false);
@@ -3939,7 +3939,7 @@ namespace WinLayer
         }
         private async void btnHoldAndReceipt_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (BSLayer.Instance.AttachedOrder != null && BSLayer.Instance.AttachedOrder.Items.Count > 0)
             {
                 if (pnlPendingOrders.Controls.Count < config.Hold_Order_Maximum_Allowed)
                 {
@@ -3956,12 +3956,12 @@ namespace WinLayer
         }
         private async void btnPrintCashFinalPaymentNoReceipt_Click(object sender, System.EventArgs e)
         {
-            // if ( DTRMSimpleBusiness.Instance.AttachedOrder != null) {
+            // if ( BSLayer.Instance.AttachedOrder != null) {
 
-            lblOrderTotal.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblOrderTotal.Text = BSLayer.Instance.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
+            if (BSLayer.Instance.AttachedOrder.MoneyPaid == 0)
             {
                 return;
             }
@@ -3969,10 +3969,10 @@ namespace WinLayer
         }
         private async void btnPrintCashFinalPaymentWithReceipt_Click(object sender, System.EventArgs e)
         {
-            lblOrderTotal.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblOrderTotal.Text = BSLayer.Instance.AttachedOrder.Total.ToString("c");
             ArrangeSubTotalPanel(true);
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid == 0)
+            if (BSLayer.Instance.AttachedOrder.MoneyPaid == 0)
             {
                 return;
             }
@@ -4026,7 +4026,7 @@ namespace WinLayer
         private void btnSubTotalFullAmount_Click(object sender, EventArgs e)
         {
             float m = 0f;
-            lblPayedIn.Text = DTRMSimpleBusiness.Instance.AttachedOrder.Total.ToString("c");
+            lblPayedIn.Text = BSLayer.Instance.AttachedOrder.Total.ToString("c");
             lblMoneyBack.Text = m.ToString();
         }
 
@@ -4047,8 +4047,8 @@ namespace WinLayer
         }
         private void btnHideSubTotal_Click(object sender, System.EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
-                DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = 0f;
+            if (BSLayer.Instance.AttachedOrder != null)
+                BSLayer.Instance.AttachedOrder.MoneyPaid = 0f;
 
             ArrangeSubTotalPanel(false);
         }
@@ -4123,7 +4123,7 @@ namespace WinLayer
             if (float.Parse(this.lblMoneyBack.Text, System.Globalization.NumberStyles.Any) < 0)
                 return false;
 
-            DTRMSimpleBusiness.Instance.AttachedOrder.MoneyPaid = float.Parse(this.lblPayedIn.Text, System.Globalization.NumberStyles.Any);
+            BSLayer.Instance.AttachedOrder.MoneyPaid = float.Parse(this.lblPayedIn.Text, System.Globalization.NumberStyles.Any);
             return true;
         }
         private void ArrangeSubTotalPanel(bool blnShow)
@@ -4159,14 +4159,14 @@ namespace WinLayer
         #region ORDER SCREEN HANDLERS
         private async void OrderScreen_Click(object sender, System.EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.Items.Any(x => x.Selected))
+            if (BSLayer.Instance.AttachedOrder.Items.Any(x => x.Selected))
             {
-                OrderItem oi = DTRMSimpleBusiness.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
+                OrderItem oi = BSLayer.Instance.AttachedOrder.Items.FirstOrDefault(x => x.Selected);
                 if (oi == null)
                     return;
 
                 // Use LINQ to find the Category that contains the specific CategoryItem
-                var category = DTRMSimpleBusiness.Instance.ActiveMenu.categories
+                var category = BSLayer.Instance.ActiveMenu.categories
                     .FirstOrDefault(c => c.Items.Any(ci => ci.IID == oi.CategoryItemIID));
 
                 for (int i = 0; i < OUI.Panels.Count; i++)
@@ -4183,23 +4183,23 @@ namespace WinLayer
         }
         private async Task OrderScreen_DisplayOccured()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
                 HandleActionPanelView(ViewTypes.UnloadedOrderView);
             else
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Holding && config.Hold_Order_Auto_Close)
+                if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.Holding && config.Hold_Order_Auto_Close)
                 {
                     TickCounterForHoldOrderToClose = 0;
                 }
-                HandleActionPanelView(OrderTypeToViewType(DTRMSimpleBusiness.Instance.AttachedOrder.OrderType));
+                HandleActionPanelView(OrderTypeToViewType(BSLayer.Instance.AttachedOrder.OrderType));
 
             }
         }
         #region SPLIT HANDLERS
         private async Task OrderScreen_SplitStarting()
         {
-            OrderTypes currentlySplittingOrderType = DTRMSimpleBusiness.Instance.AttachedOrder.OrderType;
-            DoHolding(DTRMSimpleBusiness.Instance.AttachedOrder.Reference, false);
+            OrderTypes currentlySplittingOrderType = BSLayer.Instance.AttachedOrder.OrderType;
+            DoHolding(BSLayer.Instance.AttachedOrder.Reference, false);
 
             switch (currentlySplittingOrderType)
             {
@@ -4221,7 +4221,7 @@ namespace WinLayer
 
         private async Task OrderScreen_SplitContinuing()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if (BSLayer.Instance.AttachedOrder == null)
                 cmdDirectSale_Click(null, null);
 
             tmrHoldingOrders_Tick(null, null);
@@ -4230,17 +4230,17 @@ namespace WinLayer
 
         private async Task OrderScreen_TopItemDeleted()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
                 EnsureCompulsoryExtras();
         }
         private async Task OrderScreen_ZeroItemsLeft()
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
                 foreach (UPEntity upe in OUI.Panels)
                     upe.Reset();
-                await DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                await DTRMSimpleBusiness.Instance.SetKitchenModified();
+                await BSLayer.Instance.DeleteRelatedKitchenOrderForceFully(BSLayer.Instance.AttachedOrder.IID);
+                await BSLayer.Instance.SetKitchenModified();
                 await UnloadOrder();
             }
         }
@@ -4250,12 +4250,12 @@ namespace WinLayer
         private async void LoadPendingOrders()
         {
             this.SuspendLayout();
-            if (blnLoadingHoldingOrders || DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (blnLoadingHoldingOrders || BSLayer.Instance.AttachedOrder != null)
                 return;
             blnLoadingHoldingOrders = true;
             pnlPendingOrders.Controls.Clear();
 
-            List<Order> pendingOrders = await repoOrder.GetPendingOrdersForSession(DTRMSimpleBusiness.Instance.shop.CurrentSessionIID);
+            List<Order> pendingOrders = await repoOrder.GetPendingOrdersForSession(BSLayer.Instance.shop.CurrentSessionIID);
 
             foreach (var order in pendingOrders)
             {
@@ -4328,7 +4328,7 @@ namespace WinLayer
 
         private async void pendingOrder_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (BSLayer.Instance.AttachedOrder != null && BSLayer.Instance.AttachedOrder.Items.Count > 0)
                 return;
             btnHoldOrder_Click(null, null);
 
@@ -4338,12 +4338,12 @@ namespace WinLayer
             btn.Tag = order;
 
 
-            DTRMSimpleBusiness.Instance.AttachedOrder = order;
+            BSLayer.Instance.AttachedOrder = order;
 
             //12345
             if (config.Hold_Order_Print_in_Kitchen || config.Hold_Order_Display_in_Kitchen)
             {
-                DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
+                BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(true);
             }
 
             LoadAttachedOrder();
@@ -4361,7 +4361,7 @@ namespace WinLayer
         {
             if (TickCounterForHoldOrderToClose > config.Hold_Order_Auto_Close_Seconds)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder?.Status == StatusFlags.Holding)
+                if (BSLayer.Instance.AttachedOrder?.Status == StatusFlags.Holding)
                 {
                     UnloadOrder();
                     TickCounterForHoldOrderToClose = 0;
@@ -4381,7 +4381,7 @@ namespace WinLayer
             {
                 try
                 {
-                    DateTime theNewKitchenModified = DTRMSimpleBusiness.Instance.GetKitchenModified();
+                    DateTime theNewKitchenModified = BSLayer.Instance.GetKitchenModified();
 
                     if (theNewKitchenModified > KitchenModified)
                     {
@@ -4396,25 +4396,25 @@ namespace WinLayer
 
         private async void DoHolding(string ColorName, bool blnPrint)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null && DTRMSimpleBusiness.Instance.AttachedOrder.Items.Count > 0)
+            if (BSLayer.Instance.AttachedOrder != null && BSLayer.Instance.AttachedOrder.Items.Count > 0)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed ||
-                     DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived)
+                if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.Completed ||
+                     BSLayer.Instance.AttachedOrder.Status == StatusFlags.Archived)
                 {
                     if (blnPrint)
-                        DTRMSimpleBusiness.Instance.PrintReceipt(DTRMSimpleBusiness.Instance.AttachedOrder, await DTRMSimpleBusiness.Instance.GetDefaultReceiptPrinter(), 1);
+                        BSLayer.Instance.PrintReceipt(BSLayer.Instance.AttachedOrder, await BSLayer.Instance.GetDefaultReceiptPrinter(), 1);
                    await UnloadOrder();
                     return;
                 }
 
 
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale)
+                if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale)
                 {
                     PrepDialogReturnTypes prepDialogResult = PrepDialogReturnTypes.Hold;
                     try
                     {
 
-                        DTRMSimpleBusiness.Instance.AttachedOrder.Reference = ColorName;
+                        BSLayer.Instance.AttachedOrder.Reference = ColorName;
 
                         //This is where we create kitchen order
                         if ((config.Hold_Order_Display_in_Kitchen || config.Hold_Order_Print_in_Kitchen) && (OrderScreen.SplitStatus != SplittingStatus.Splitting))
@@ -4439,37 +4439,37 @@ namespace WinLayer
                     {
                         case PrepDialogReturnTypes.Hold:
                             //case PrepDialogReturnTypes.HoldNotPaid:
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Holding;
+                            BSLayer.Instance.AttachedOrder.Status = StatusFlags.Holding;
                             break;
                         case PrepDialogReturnTypes.HoldAndPrint:
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Holding;
+                            BSLayer.Instance.AttachedOrder.Status = StatusFlags.Holding;
                             blnPrint = true;
                             break;
                         case PrepDialogReturnTypes.Cash:
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Completed;
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                            BSLayer.Instance.AttachedOrder.Status = StatusFlags.Completed;
+                            BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                             break;
                         case PrepDialogReturnTypes.CashAndPrint:
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Completed;
-                            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
+                            BSLayer.Instance.AttachedOrder.Status = StatusFlags.Completed;
+                            BSLayer.Instance.AttachedOrder.Payment = PaymentMethods.Cash;
                             blnPrint = true;
                             break;
                     }
 
                 }
 
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.HasMultipleOrderGroupIID())
-                    DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                if (BSLayer.Instance.AttachedOrder.HasMultipleOrderGroupIID())
+                    BSLayer.Instance.AttachedOrder.ShrinkOrder();
 
-                if (DTRMSimpleBusiness.Instance.AttachedOrder.SessionIID == null)
+                if (BSLayer.Instance.AttachedOrder.SessionIID == null)
                 {
-                    DTRMSimpleBusiness.Instance.AttachedOrder.SessionIID = DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
+                    BSLayer.Instance.AttachedOrder.SessionIID = BSLayer.Instance.shop.CurrentSessionIID;
                 }
-                await repoOrder.SaveTree(DTRMSimpleBusiness.Instance.AttachedOrder);
+                await repoOrder.SaveTree(BSLayer.Instance.AttachedOrder);
 
                 if (blnPrint)
                 {
-                    // DTRMSimpleBusiness.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
+                    // BSLayer.Instance.SetKitchenOrderModifiedStateForAttachedOrder(false);
                     this.CompleteAttachedOrder(1, false, true, false);
                 } else
                 {
@@ -4490,19 +4490,19 @@ namespace WinLayer
         {
             PrepDialogReturnTypes prepResult = PrepDialogReturnTypes.Hold;
 
-            Order order = DTRMSimpleBusiness.Instance.AttachedOrder.GetOrderWithKitchenableItems();
+            Order order = BSLayer.Instance.AttachedOrder.GetOrderWithKitchenableItems();
             if (order.Items.Count == 0)
-                DTRMSimpleBusiness.Instance.DeleteKitchenOrdersForOrder(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
+                BSLayer.Instance.DeleteKitchenOrdersForOrder(BSLayer.Instance.AttachedOrder.IID);
             else
             {
                 KitchenOrder korder = null;
-                prepResult = await DTRMSimpleBusiness.Instance.CreateKitchenOrderForOrder(order, korder);
+                prepResult = await BSLayer.Instance.CreateKitchenOrderForOrder(order, korder);
                 if (prepResult == PrepDialogReturnTypes.Cancel)
                     return PrepDialogReturnTypes.Cancel;
             }
 
-            if (DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale)
-                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+            if (BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale)
+                BSLayer.Instance.AttachedOrder.ShrinkOrder();
 
             return prepResult;
         }
@@ -4520,7 +4520,7 @@ namespace WinLayer
             //trmSelectPrinter fsp = new trmSelectPrinter(bslayer);
             //if (fsp.ShowDialog() == DialogResult.OK)
             //{
-            //     DTRMSimpleBusiness.Instance.PrintStockUsage(await  DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue));
+            //     BSLayer.Instance.PrintStockUsage(await  BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue));
             //}
         }
 
@@ -4548,7 +4548,7 @@ namespace WinLayer
             }
             if (config.Screen_Lock_Method != ScreenLockTypes.None)
             {
-                if (DTRMSimpleBusiness.Instance.AttachedOrder == null)
+                if (BSLayer.Instance.AttachedOrder == null)
                     screenLockCounter++;
                 else
                     screenLockCounter = 0;
@@ -4617,10 +4617,10 @@ namespace WinLayer
 
         private async void btnResetKitchenOrders_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                await DTRMSimpleBusiness.Instance.DeleteRelatedKitchenOrderForceFully(DTRMSimpleBusiness.Instance.AttachedOrder.IID);
-                await DTRMSimpleBusiness.Instance.SetKitchenModified();
+                await BSLayer.Instance.DeleteRelatedKitchenOrderForceFully(BSLayer.Instance.AttachedOrder.IID);
+                await BSLayer.Instance.SetKitchenModified();
             }
         }
 
@@ -4634,7 +4634,7 @@ namespace WinLayer
             //if (mnuSupplierPurchaseList.DropDownItems.Count > 0)
             //{
             //    //Load suppliers
-            //    List<string> theList =  DTRMSimpleBusiness.Instance.GetSupplierIIDListWhichHasOrderableStockItems();
+            //    List<string> theList =  BSLayer.Instance.GetSupplierIIDListWhichHasOrderableStockItems();
 
 
             //    foreach (ToolStripMenuItem item in mnuSupplierPurchaseList.DropDownItems)
@@ -4651,7 +4651,7 @@ namespace WinLayer
         private async Task LoadSupplierList()
         {
             mnuSupplierPurchaseList.DropDownItems.Clear();
-            List<Supplier> suppliers = await DTRMSimpleBusiness.Instance.GetAllSuppliersAsList();
+            List<Supplier> suppliers = await BSLayer.Instance.GetAllSuppliersAsList();
             foreach (var supp in suppliers)
             {
                 ToolStripMenuItem btn = new ToolStripMenuItem();
@@ -4671,7 +4671,7 @@ namespace WinLayer
             //{
             //    ToolStripMenuItem btn = ((ToolStripMenuItem)sender);
             //    string supplierIID = btn.Tag.ToString();
-            //     DTRMSimpleBusiness.Instance.PrintStockUsage(await  DTRMSimpleBusiness.Instance.GetPrinterForClient(fsp.ReturnValue), await  DTRMSimpleBusiness.Instance.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
+            //     BSLayer.Instance.PrintStockUsage(await  BSLayer.Instance.GetPrinterForClient(fsp.ReturnValue), await  BSLayer.Instance.GetStockItemUsageBySupplier(supplierIID, true), btn.Text);
             //}
 
         }
@@ -4774,9 +4774,9 @@ namespace WinLayer
 
         private async void mnuShrinkOrderDisplay_Click(object sender, EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+            if (BSLayer.Instance.AttachedOrder != null)
             {
-                DTRMSimpleBusiness.Instance.AttachedOrder.ShrinkOrder();
+                BSLayer.Instance.AttachedOrder.ShrinkOrder();
                 await OrderScreen.Display();
             }
             //config.Table_Orders_Always_Shrinked = !config.Table_Orders_Always_Shrinked;

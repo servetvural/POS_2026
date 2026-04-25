@@ -73,7 +73,7 @@ namespace WinLayer
             this.printLogo = printLogo;
             CreateGenerator(printer, linespace);
         }
-        //public ReportGenerator(DTRMSimpleBusiness bslayer, string printerNetworkName, int linespace) {
+        //public ReportGenerator(BSLayer bslayer, string printerNetworkName, int linespace) {
         //    CreateGenerator(bslayer, printerNetworkName, linespace);
         //}
         public ReportGenerator(Printer printer)
@@ -145,7 +145,7 @@ namespace WinLayer
         private async Task<bool> SetXReportValueToSession()
         {
 
-            switch (DTRMSimpleBusiness.Instance.GetAvailableXReportSlot(session))
+            switch (BSLayer.Instance.GetAvailableXReportSlot(session))
             {
                 case 1:
                     session.X1Total = session.Total;
@@ -172,7 +172,7 @@ namespace WinLayer
         public async Task<bool> PrintLateSessionReport(string SessionIID, ReportFormatTypes reportFormat)
         {
             session = await repoSession.Get(SessionIID);
-            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+            report = BSLayer.Instance.GetReport(reportFormat);
             blnLateReport = true;
 
             try
@@ -200,7 +200,7 @@ namespace WinLayer
         public async Task<bool> PrintLateSessionReport(string SessionDirectory, string SessionIID, ReportFormatTypes reportFormat)
         {
             session = await repoSession.Get(SessionIID);
-            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+            report = BSLayer.Instance.GetReport(reportFormat);
             blnSpecialSessionDirectory = true;
             this.SessionDirectory = SessionDirectory;
             blnLateReport = true;
@@ -239,8 +239,8 @@ namespace WinLayer
         {
 
             session = await repoSession.Get(SessionIID);
-            bool blnCurrentSession = session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
-            report = DTRMSimpleBusiness.Instance.GetReport(reportFormat);
+            bool blnCurrentSession = session.IID == BSLayer.Instance.shop.CurrentSessionIID;
+            report = BSLayer.Instance.GetReport(reportFormat);
         ZForcedLabel:
 
             if (report == null)
@@ -257,7 +257,7 @@ namespace WinLayer
 
                     if (report.ReportType == ReportFormatTypes.ZReport && blnCurrentSession)
                     {
-                        await DTRMSimpleBusiness.Instance.GetXOrdersBackForSession(session.IID);
+                        await BSLayer.Instance.GetXOrdersBackForSession(session.IID);
 
                         session.X1Total = 0;
                         session.X2Total = 0;
@@ -268,31 +268,31 @@ namespace WinLayer
                         //This is exactly the point where the current active real session to be archived for the first time
                         //if (config.Record_Stock_Usage) {
                         //    //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
-                        //    // DTRMSimpleBusiness.Instance.TransferStockItemUsageNow();
+                        //    // BSLayer.Instance.TransferStockItemUsageNow();
 
                         //    //Print the updated stockusage report up to end of tonight
                         //    //if (config.Print_Stock_Usage_Report)
-                        //    //     DTRMSimpleBusiness.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
+                        //    //     BSLayer.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
 
 
                         //    //Email the updated stockusage to required people (same as print)
                         //    //if (config.Email_Stock_Usage_Report) {
 
-                        //    //    if ( DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress != null &&  DTRMSimpleBusiness.Instance.shop.SmtpEmailAddress.Length > 0 &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail != null &&  DTRMSimpleBusiness.Instance.shop.PurchaseEmail.Length > 0)
-                        //    //         DTRMSimpleBusiness.Instance.SendEmailToCustomRecepient( DTRMSimpleBusiness.Instance.shop.PurchaseEmail,  DTRMSimpleBusiness.Instance.shop.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" +  DTRMSimpleBusiness.Instance.GetOrderableStockItemUsageAsCsvText(), null);
+                        //    //    if ( BSLayer.Instance.shop.SmtpEmailAddress != null &&  BSLayer.Instance.shop.SmtpEmailAddress.Length > 0 &&  BSLayer.Instance.shop.PurchaseEmail != null &&  BSLayer.Instance.shop.PurchaseEmail.Length > 0)
+                        //    //         BSLayer.Instance.SendEmailToCustomRecepient( BSLayer.Instance.shop.PurchaseEmail,  BSLayer.Instance.shop.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" +  BSLayer.Instance.GetOrderableStockItemUsageAsCsvText(), null);
                         //    //}
 
                         //    //Now time to remove the ordered items from stockitem table if true
                         //    //if (config.Delete_Stock_Usage)
-                        //    //     DTRMSimpleBusiness.Instance.RemoveOrderedStockUsage(true);
+                        //    //     BSLayer.Instance.RemoveOrderedStockUsage(true);
 
                         //}
 
 
                         //Now prepare current session to be archive
-                        if (session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID)
+                        if (session.IID == BSLayer.Instance.shop.CurrentSessionIID)
                         {
-                            await DTRMSimpleBusiness.Instance.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
+                            await BSLayer.Instance.RemoveZeroOrdersOfCurrentSessionAndCreateNewSession();
                         }
                     }
 
@@ -309,7 +309,7 @@ namespace WinLayer
                         switch (report.ReportType)
                         {
                             case ReportFormatTypes.XReport:
-                                await DTRMSimpleBusiness.Instance.PreserveSessionOrdesToX(session.IID);
+                                await BSLayer.Instance.PreserveSessionOrdesToX(session.IID);
                                 break;
                             case ReportFormatTypes.ZReport:
                                 break;
@@ -321,10 +321,10 @@ namespace WinLayer
                         {
                             session = await repoSession.Get(session.IID);
 
-                            if (DTRMSimpleBusiness.Instance.Is_Z_ReportTimeNow(session))
+                            if (BSLayer.Instance.Is_Z_ReportTimeNow(session))
                             {
                                 //now prepare for forced Z report
-                                report = DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
+                                report = BSLayer.Instance.GetReport(ReportFormatTypes.ZReport);
                                 if (report != null)
                                 {
                                     startY = 10;
@@ -358,7 +358,7 @@ namespace WinLayer
                 return;
 
             //Draw in to printer
-            DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReportHeader);
+            DrawCompanyHeader(BSLayer.Instance.shop.ReportHeader);
 
             DrawSessionHeader();
 
@@ -390,7 +390,7 @@ namespace WinLayer
                 g = Graphics.FromImage(img);
                 g.Clear(Color.White);
 
-                DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReportHeader);
+                DrawCompanyHeader(BSLayer.Instance.shop.ReportHeader);
 
                 DrawSessionHeader();
 
@@ -419,15 +419,15 @@ namespace WinLayer
             //Now Archive Session if required
             if (session != null && report.ReportType == ReportFormatTypes.ZReport && config.Z_Archive_Always)
             {
-                if (session.IID != DTRMSimpleBusiness.Instance.GetLatestSession().Result.IID)
+                if (session.IID != BSLayer.Instance.GetLatestSession().Result.IID)
                 {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
-                        await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(SessionDirectory, session.IID, true);
+                        await BSLayer.Instance.ArchiveSessionToDirectory(SessionDirectory, session.IID, true);
                     else
-                        await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(session.IID);
+                        await BSLayer.Instance.ArchiveSessionToDirectory(session.IID);
                 }
 
-                DTRMSimpleBusiness.Instance.CleanKitchenOrdersHasNoParentOrder();
+                BSLayer.Instance.CleanKitchenOrdersHasNoParentOrder();
             }
 
 
@@ -469,7 +469,7 @@ namespace WinLayer
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            DrawCompanyHeader(DTRMSimpleBusiness.Instance.shop.ReceiptHeader);
+            DrawCompanyHeader(BSLayer.Instance.shop.ReceiptHeader);
 
             DrawReceipt();
             Reset();
@@ -503,7 +503,7 @@ namespace WinLayer
                     DrawText("Postcode : " + order.Customer.Postcode);
                     break;
                 case OrderTypes.Sitin:
-                    DrawText("Waiter: " + DTRMSimpleBusiness.Instance.LoggedUser.UserName);
+                    DrawText("Waiter: " + BSLayer.Instance.LoggedUser.UserName);
                     break;
                 case OrderTypes.Sale:
 
@@ -536,7 +536,7 @@ namespace WinLayer
 
 
             // Order order =await repoOrder.Get(order.IID);
-            //OrdersView ordView = new OrdersView( DTRMSimpleBusiness.Instance.GetDataTable("Select * from OrdersView where IID = '" + order.IID + "'"));
+            //OrdersView ordView = new OrdersView( BSLayer.Instance.GetDataTable("Select * from OrdersView where IID = '" + order.IID + "'"));
 
 
 
@@ -544,15 +544,15 @@ namespace WinLayer
             // DrawBiggerText("Total : ".PadRight(17) + String.Format("{0,8:C}", ordView.CalculatedValue));
 
 
-            //double ServiceCharge = ordView.   GetServiceCharge( DTRMSimpleBusiness.Instance.luv.ServiceChargeType,  DTRMSimpleBusiness.Instance.luv.ServiceChargeRate);
+            //double ServiceCharge = ordView.   GetServiceCharge( BSLayer.Instance.luv.ServiceChargeType,  BSLayer.Instance.luv.ServiceChargeRate);
             //if (ServiceCharge < 0)
             //    ServiceCharge = 0;
 
             //double ServiceChargeTax = 0;
-            //if ( DTRMSimpleBusiness.Instance.luv.ServiceChargeTaxRate != 0 && ServiceCharge != 0) 
-            //    ServiceChargeTax = ServiceCharge *  DTRMSimpleBusiness.Instance.luv.ServiceChargeTaxRate / 100;
+            //if ( BSLayer.Instance.luv.ServiceChargeTaxRate != 0 && ServiceCharge != 0) 
+            //    ServiceChargeTax = ServiceCharge *  BSLayer.Instance.luv.ServiceChargeTaxRate / 100;
 
-            if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
+            if (BSLayer.Instance.shop.ServiceChargeRate > 0)
             {
                 DrawText("Total : ".PadRight(20) + String.Format("{0,8:C}", order.Total - order.ServiceCharge));
                 DrawText("Service Inc.Tax : ".PadRight(20) + String.Format("{0,8:C}", order.ServiceCharge));
@@ -579,8 +579,8 @@ namespace WinLayer
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
                 //Show Service Charge Tax Total
-                if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
-                     DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
+                if (BSLayer.Instance.shop.ServiceChargeRate > 0)
+                     DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", BSLayer.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
 
 
                 if (config.Receipts_Print_Tax_Total)
@@ -594,10 +594,10 @@ namespace WinLayer
 
 
              DrawLine();
-            //Luv luv =  DTRMSimpleBusiness.Instance.GetLuv();
+            //Luv luv =  BSLayer.Instance.GetLuv();
             //DrawText(centeredString(luv.ReceiptFooter));
 
-            string[] footer = DTRMSimpleBusiness.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] footer = BSLayer.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < footer.Length; i++)
             {
                  DrawText(centeredString(footer[i]));
@@ -881,7 +881,7 @@ namespace WinLayer
             if (korder == null)
                 return;
 
-            //Order order =  DTRMSimpleBusiness.Instance.GetOrder(korder.OrderIID);
+            //Order order =  BSLayer.Instance.GetOrder(korder.OrderIID);
 
             DrawText(centeredString("ORDER" + " " + korder.OrderNo + " " + korder.OrderType.ToString()));
             DrawDoubleLine();
@@ -903,7 +903,7 @@ namespace WinLayer
 
 
 
-            List<Distribution> theList = await DTRMSimpleBusiness.Instance.GetDistributionListForPrinter(aPrinter.IID);
+            List<Distribution> theList = await BSLayer.Instance.GetDistributionListForPrinter(aPrinter.IID);
 
             foreach (KitchenOrderItem item in korder.Items)
             {
@@ -913,7 +913,7 @@ namespace WinLayer
                     {
                         DrawText(string.Format("{0,-3:N0}".PadRight(4) + "{1,-32}", item.Quantity, item.ItemText));
                         if (blnKitchenOrderWithDetail)
-                            DrawDetailText(await DTRMSimpleBusiness.Instance.GetCategoryItemStockItemText(item.CategoryItemIID));
+                            DrawDetailText(await BSLayer.Instance.GetCategoryItemStockItemText(item.CategoryItemIID));
                     }
                 }
             }
@@ -1024,7 +1024,7 @@ namespace WinLayer
             DrawText(centeredString(DateTime.Now.ToString("dd/MMM/yyyy HH:mm")));
             DrawDoubleLine();
 
-            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select IID, EntityName from Entity where ParentMenuIID = '" + catalogIID + "'  order by DisplayOrder");
+            DataTable dt = BSLayer.Instance.GetDataTable("Select IID, EntityName from Entity where ParentMenuIID = '" + catalogIID + "'  order by DisplayOrder");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 //Write Entity Header
@@ -1037,7 +1037,7 @@ namespace WinLayer
                 DrawLine();
 
                 //Write Entity Button Distributions
-                DataTable dteb = DTRMSimpleBusiness.Instance.GetDataTable("Select EntityButtonName,DirectSalePrice,InHousePrice, TakeAwayPrice, DeliveryPrice from EntityButton where ParentEntityIID = '" + EntityIID + "'  order by DisplayOrder asc");
+                DataTable dteb = BSLayer.Instance.GetDataTable("Select EntityButtonName,DirectSalePrice,InHousePrice, TakeAwayPrice, DeliveryPrice from EntityButton where ParentEntityIID = '" + EntityIID + "'  order by DisplayOrder asc");
                 for (int x = 0; x < dteb.Rows.Count; x++)
                 {
                     string EntityButtonName = dteb.Rows[x]["EntityButtonName"].ToString().Trim();
@@ -1071,7 +1071,7 @@ namespace WinLayer
             float mainNetTaxValue = 0;
             float mainTotalNoTax = 0;
 
-            DataTable dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from TaxSummary where SessionIID = '" + session.IID + "' Order by TaxPercent, Payment asc");
+            DataTable dt = BSLayer.Instance.GetDataTable("Select * from TaxSummary where SessionIID = '" + session.IID + "' Order by TaxPercent, Payment asc");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 float TaxPercent = float.Parse(dt.Rows[i]["TaxPercent"].ToString());
@@ -1089,9 +1089,9 @@ namespace WinLayer
                        TaxPercent, TotalNoTax, NetTaxValue, GrossTotal));
             }
 
-            if (DTRMSimpleBusiness.Instance.shop.ServiceChargeRate > 0)
+            if (BSLayer.Instance.shop.ServiceChargeRate > 0)
             {
-                dt = DTRMSimpleBusiness.Instance.GetDataTable("Select * from ServiceChargeSummary where SessionIID ='" + session.IID + "' order by Payment asc");
+                dt = BSLayer.Instance.GetDataTable("Select * from ServiceChargeSummary where SessionIID ='" + session.IID + "' order by Payment asc");
                 float ServiceChargeTotal = 0;
                 float ServiceChargeTaxTotal = 0;
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -1100,7 +1100,7 @@ namespace WinLayer
                     ServiceChargeTotal = float.Parse(dt.Rows[i]["ServiceChargeTotal"].ToString());
                     ServiceChargeTaxTotal = float.Parse(dt.Rows[i]["ServiceChargeTaxTotal"].ToString());
                     DrawText(String.Format("Srv{0,-2:N0}" + pmethod.ToString().PadRight(5) + "{1,10:N2}" + "{2,12:N2}" + "{3,12:N2}",
-                             DTRMSimpleBusiness.Instance.shop.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
+                             BSLayer.Instance.shop.ServiceChargeTaxRate, ServiceChargeTotal - ServiceChargeTaxTotal, ServiceChargeTaxTotal, ServiceChargeTotal));
 
                     mainGrossTotal += ServiceChargeTotal;
                     mainNetTaxValue += ServiceChargeTaxTotal;
@@ -1175,7 +1175,7 @@ namespace WinLayer
         public void DrawLine()
         {
             //DrawText(new string('-',numberOfCharacters));
-            //DrawText(new string('-',  DTRMSimpleBusiness.Instance.config.Custom_Report_Width));
+            //DrawText(new string('-',  BSLayer.Instance.config.Custom_Report_Width));
             startY += 5;
             g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
             startY += 5;
@@ -1184,7 +1184,7 @@ namespace WinLayer
         public void DrawDoubleLine()
         {
             // DrawText(new string('=', numberOfCharacters));
-            // DrawText(new string('=',  DTRMSimpleBusiness.Instance.config.Custom_Report_Width));
+            // DrawText(new string('=',  BSLayer.Instance.config.Custom_Report_Width));
             startY += 5;
             g.DrawLine(Pens.Black, new Point(startX, startY), new Point(startX + reportwidthcm, startY));
             startY += 2;
@@ -1219,12 +1219,12 @@ namespace WinLayer
 
         private void DrawCompanyHeader(string CustomHeader)
         {
-            //DTRMLicence licence =  DTRMSimpleBusiness.Instance.GetLicence();
+            //DTRMLicence licence =  BSLayer.Instance.GetLicence();
 
 
             try
             {
-                //Image image = Image.FromFile( DTRMSimpleBusiness.Instance.config.ReportLogo);
+                //Image image = Image.FromFile( BSLayer.Instance.config.ReportLogo);
 
                 if (EnsureLogo1())
                 {
@@ -1264,17 +1264,17 @@ namespace WinLayer
                 DrawText(centeredString(header[i]));
             }
 
-            string[] address = DTRMSimpleBusiness.Instance.shop.Address.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] address = BSLayer.Instance.shop.Address.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < address.Length; i++)
             {
                 DrawText(centeredString(address[i]));
             }
 
-            //DrawText(centeredString( DTRMSimpleBusiness.Instance.luv.ShopAddress));
+            //DrawText(centeredString( BSLayer.Instance.luv.ShopAddress));
 
 
-            DrawText(centeredString(DTRMSimpleBusiness.Instance.shop.Tel));
-            DrawText(centeredString(DTRMSimpleBusiness.Instance.shop.TaxNumber));
+            DrawText(centeredString(BSLayer.Instance.shop.Tel));
+            DrawText(centeredString(BSLayer.Instance.shop.TaxNumber));
 
         }
 
@@ -1348,7 +1348,7 @@ namespace WinLayer
             DrawText("Session Start: " + session.StartDate.ToString("dd/MMM/yy HH:mm"));
             if (report != null && report.ReportType == ReportFormatTypes.ZReport)
             {
-                if (session.IID == DTRMSimpleBusiness.Instance.shop.CurrentSessionIID)
+                if (session.IID == BSLayer.Instance.shop.CurrentSessionIID)
                 {
                     //Current Session
                     DrawText("Session End  : " + DateTime.Now.ToString("dd/MMM/yy HH:mm"));
@@ -1371,7 +1371,7 @@ namespace WinLayer
 
 
 
-            DataTable dt = DTRMSimpleBusiness.Instance.GetReportPaymentTypeTotals(session.IID);
+            DataTable dt = BSLayer.Instance.GetReportPaymentTypeTotals(session.IID);
 
             for (int i = 0; i < dt.Rows.Count; i++)
             {
@@ -1442,7 +1442,7 @@ namespace WinLayer
         {
             DrawText(centeredString(payment.ToString().ToUpper() + " ORDER LIST"));
             DrawDoubleLine();
-            //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select OrderDate, CalculatedValue from OrdersView where SessionIID = '" + session.IID + 
+            //DataTable dt =  BSLayer.Instance.GetDataTable("Select OrderDate, CalculatedValue from OrdersView where SessionIID = '" + session.IID + 
             //    "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment + " order by OrderDate");
 
             List<Order> orderList = await repoOrder.GetListByField("SessionIID", session.IID, "Items", "OrderDate");
@@ -1473,7 +1473,7 @@ namespace WinLayer
         //public void PrintOrderItems() {
         //    DrawText("           ORDER ITEMS          ");
         //    DrawDoubleLine();
-        //    DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select Quantity, OrderItemText, (Quantity*Price) as Total from OrderItem where SessionIID = '" + SessionIID + "' order by OrderDate");
+        //    DataTable dt =  BSLayer.Instance.GetDataTable("Select Quantity, OrderItemText, (Quantity*Price) as Total from OrderItem where SessionIID = '" + SessionIID + "' order by OrderDate");
         //    for (int i = 0; i < dt.Rows.Count; i++) {
         //        DateTime orderDate = DateTime.Parse(dt.Rows[i]["OrderDate"].ToString());
         //        float OrderTotal = float.Parse(dt.Rows[i]["CalculatedValue"].ToString());
@@ -1488,8 +1488,8 @@ namespace WinLayer
             DrawText(centeredString("CATEGORY TOTALS"));
             DrawDoubleLine();
 
-            //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-            //  DataTable dt =  DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
+            //DataTable dt =  BSLayer.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
+            //  DataTable dt =  BSLayer.Instance.GetReportEntityTotals(session.IID);
 
             List<Category> categories = await repoOrder.GetCategoryTotalsForSession(session.IID);
 
@@ -1515,8 +1515,8 @@ namespace WinLayer
             DrawText(centeredString("DETAILED CATEGORY TOTALS"));
             DrawDoubleLine();
 
-            //DataTable dt =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-            DataTable dt = DTRMSimpleBusiness.Instance.GetReportEntityTotals(session.IID);
+            //DataTable dt =  BSLayer.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
+            DataTable dt = BSLayer.Instance.GetReportEntityTotals(session.IID);
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 //Write Entity Header
@@ -1529,9 +1529,9 @@ namespace WinLayer
                 DrawLine();
 
                 //Write Entity Button Distributions
-                //DataTable dteb =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from ReportEntityEBTotals where EntityIID = '" + EntityIID + "' and SessionIID = '" + session.SessionIID + "' order by ItemText asc");
+                //DataTable dteb =  BSLayer.Instance.GetDataTable("Select * from ReportEntityEBTotals where EntityIID = '" + EntityIID + "' and SessionIID = '" + session.SessionIID + "' order by ItemText asc");
 
-                DataTable dteb = DTRMSimpleBusiness.Instance.GetReportEntityEBTotals(session.IID, EntityIID);
+                DataTable dteb = BSLayer.Instance.GetReportEntityEBTotals(session.IID, EntityIID);
                 for (int x = 0; x < dteb.Rows.Count; x++)
                 {
                     string ItemText = dteb.Rows[x]["ItemText"].ToString().Trim();

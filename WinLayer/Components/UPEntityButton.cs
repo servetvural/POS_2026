@@ -77,20 +77,20 @@ namespace WinLayer {
                         this.Text = categoryItem.ItemName;
                         break;
                     case ButtonDisplayStyles.Image:
-                        gim = await  DTRMSimpleBusiness.Instance.GetGenericImage(categoryItem.IID);
+                        gim = await  BSLayer.Instance.GetGenericImage(categoryItem.IID);
                         if (gim != null)
                             this.Image = UFWin.ReSizeImageTo(UFWin.ToImage(gim.DisplayImage), categoryItem.Height, categoryItem.Height - 10, true);
                         this.Text = "";
                         break;
                     case ButtonDisplayStyles.ImageAndText:
-                        gim = await  DTRMSimpleBusiness.Instance.GetGenericImage(categoryItem.IID);
+                        gim = await  BSLayer.Instance.GetGenericImage(categoryItem.IID);
                         this.Image = UFWin.ReSizeImageTo(UFWin.ToImage(gim.DisplayImage), categoryItem.Height, categoryItem.Height - 20, true);
                         this.Text = categoryItem.ItemName;
                         break;
                 }
 
                 //if (categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.Image || categoryItem.ButtonDisplayStyle == ButtonDisplayStyles.ImageAndText) {
-                //    this.Image = UFWin.ByteArrayToImage((await  DTRMSimpleBusiness.Instance.GetGenericImage(categoryItem.IID))?.DisplayImage); //   Image.FromFile(entitybutton.ImageFileName);
+                //    this.Image = UFWin.ByteArrayToImage((await  BSLayer.Instance.GetGenericImage(categoryItem.IID))?.DisplayImage); //   Image.FromFile(entitybutton.ImageFileName);
                 //    this.ImageAlign = ContentAlignment.TopCenter;
                 //    this.TextAlign = ContentAlignment.BottomCenter;
                 //}
@@ -109,68 +109,68 @@ namespace WinLayer {
             if (geb.categoryItem.ButtonType == CategoryItemTypes.SpaceButton)
                 return;
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder == null)
+            if ( BSLayer.Instance.AttachedOrder == null)
             {
                 if (config.DebugMode)
-                   await  DTRMSimpleBusiness.Instance.SaveDebug("EB Handle  DTRMSimpleBusiness.Instance.AttachedOrder is null");
+                   await  BSLayer.Instance.SaveDebug("EB Handle  BSLayer.Instance.AttachedOrder is null");
                 return;
             }
 
-            if ( DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Completed ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Archived)
+            if ( BSLayer.Instance.AttachedOrder.Status == StatusFlags.Completed ||  BSLayer.Instance.AttachedOrder.Status == StatusFlags.Archived)
             {
                 if (config.DebugMode)
-                   await  DTRMSimpleBusiness.Instance.SaveDebug("EB Handle order status completed or archived");
+                   await  BSLayer.Instance.SaveDebug("EB Handle order status completed or archived");
                 return;
             }
 
             //CHECK if EB is applicable to CurrentOrderType
-            if (!IsEBApplicableToOrderType(DTRMSimpleBusiness.Instance, geb))
+            if (!IsEBApplicableToOrderType(BSLayer.Instance, geb))
             {
                 if (config.DebugMode)
-                  await   DTRMSimpleBusiness.Instance.SaveDebug("EB Handle 125");
+                  await   BSLayer.Instance.SaveDebug("EB Handle 125");
                 return;
             }
 
             //HANDLE Extra, Disco , ManagerDisco BUTTON
-            if (HandleExtraDiscoManagerItems(DTRMSimpleBusiness.Instance, geb))
+            if (HandleExtraDiscoManagerItems(BSLayer.Instance, geb))
             {
                 if (config.DebugMode)
-                   await  DTRMSimpleBusiness.Instance.SaveDebug("EB Handle 126");
+                   await  BSLayer.Instance.SaveDebug("EB Handle 126");
                 goto bypass;
             }
 
             OrderItem oiNew = new OrderItem();
             oiNew.Quantity = 1;
-            oiNew.Price = GetEBRelatedPrice(DTRMSimpleBusiness.Instance, geb);
+            oiNew.Price = GetEBRelatedPrice(BSLayer.Instance, geb);
             oiNew.CategoryItemIID = geb.IID;
             oiNew.OrderItemText = geb.PrintLabel;
             oiNew.DistributionIID = geb.categoryItem.DistributionIID; //geb.ParentUIE.entity.DistributionIID;
             oiNew.ItemType = OrderItemTypes.NormalOrderItem;
             oiNew.DOrder = geb.categoryItem.DOrder;
             oiNew.CategoryDisplayOrder = geb.ParentUIE.category.DOrder;
-            oiNew.TaxPercent =  DTRMSimpleBusiness.Instance.GetEBTaxPercent(geb.categoryItem);
+            oiNew.TaxPercent =  BSLayer.Instance.GetEBTaxPercent(geb.categoryItem);
 
 
             //UnParented Item - No SizeBar  (Simple or Complex)  Exp= GB or Chicken Wings
-            oiNew.OrderIID =  DTRMSimpleBusiness.Instance.AttachedOrder.IID;
+            oiNew.OrderIID =  BSLayer.Instance.AttachedOrder.IID;
 
             //This is true if OrderItemStepable conditions are meet.
-            bool blnDisplaySeperately = ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sitin &&
-                                          DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.Done ||  DTRMSimpleBusiness.Instance.AttachedOrder.Status == StatusFlags.New) ||
-                                        ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType == OrderTypes.Sale);// &&
-                                                                                                   // DTRMSimpleBusiness.Instance.config.Hold_Orders_New_Items_Add_Seperately); // &&  DTRMSimpleBusiness.Instance.config.Table_Order_Items_Stepable;
+            bool blnDisplaySeperately = ( BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sitin &&
+                                          BSLayer.Instance.AttachedOrder.Status == StatusFlags.Done ||  BSLayer.Instance.AttachedOrder.Status == StatusFlags.New) ||
+                                        ( BSLayer.Instance.AttachedOrder.OrderType == OrderTypes.Sale);// &&
+                                                                                                   // BSLayer.Instance.config.Hold_Orders_New_Items_Add_Seperately); // &&  BSLayer.Instance.config.Table_Order_Items_Stepable;
             if (blnDisplaySeperately)
-                oiNew.OrderGroupIID =  DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID;
+                oiNew.OrderGroupIID =  BSLayer.Instance.StepableOrderItemGroupIID;
             else
-                oiNew.OrderGroupIID =  DTRMSimpleBusiness.Instance.AttachedOrder.IID;
+                oiNew.OrderGroupIID =  BSLayer.Instance.AttachedOrder.IID;
 
             //--if Item has no subitems  Exp = GB			[Find Existing and increment]
-            OrderItem incItem =  DTRMSimpleBusiness.Instance.AttachedOrder.GetIncrementableItem(geb.IID, geb.categoryItem.DistributionIID,  DTRMSimpleBusiness.Instance.StepableOrderItemGroupIID);
+            OrderItem incItem =  BSLayer.Instance.AttachedOrder.GetIncrementableItem(geb.IID, geb.categoryItem.DistributionIID,  BSLayer.Instance.StepableOrderItemGroupIID);
 
             if (incItem == null)
             {
                 if (oiNew.Quantity >= 0)
-                     DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem(oiNew); //202#
+                     BSLayer.Instance.AttachedOrder.AddOrderItem(oiNew); //202#
             } else
             {
                 if (oiNew.Quantity < 0)
@@ -179,19 +179,19 @@ namespace WinLayer {
                 {
                     incItem.Quantity++;
                 }
-                 DTRMSimpleBusiness.Instance.AttachedOrder.blnItemsChanged = true;
+                 BSLayer.Instance.AttachedOrder.blnItemsChanged = true;
             }
         bypass:
             //DISPLAY order
-             DTRMSimpleBusiness.Instance.OnDisplayOrder();
+             BSLayer.Instance.OnDisplayOrder();
         }
 
-        private double GetEBRelatedPrice(DTRMSimpleBusiness bslayer, UPEntityButton geb)
+        private double GetEBRelatedPrice(BSLayer bslayer, UPEntityButton geb)
         {
-            return geb.categoryItem.GetPrice( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType);
+            return geb.categoryItem.GetPrice( BSLayer.Instance.AttachedOrder.OrderType);
         }
 
-        private bool HandleExtraDiscoManagerItems(DTRMSimpleBusiness bslayer, UPEntityButton geb)
+        private bool HandleExtraDiscoManagerItems(BSLayer bslayer, UPEntityButton geb)
         {
             if (geb.ButtonType == CategoryItemTypes.AmountAddition || geb.ButtonType == CategoryItemTypes.AmountDeduction ||
                geb.ButtonType == CategoryItemTypes.PercentAddition || geb.ButtonType == CategoryItemTypes.PercentDeduction ||
@@ -212,10 +212,10 @@ namespace WinLayer {
                         exprice = GetEBRelatedPrice(bslayer, geb);
                         break;
                     case CategoryItemTypes.PercentAddition:
-                        exprice =  DTRMSimpleBusiness.Instance.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100);
+                        exprice =  BSLayer.Instance.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100);
                         break;
                     case CategoryItemTypes.PercentDeduction:
-                        exprice = -1 * ( DTRMSimpleBusiness.Instance.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100));
+                        exprice = -1 * ( BSLayer.Instance.AttachedOrder.Total * (GetEBRelatedPrice(bslayer, geb) / 100));
                         break;
                     case CategoryItemTypes.CustomAddition:
                         fgv = new TrmGetValue(NumberModes.FloatMode);
@@ -233,21 +233,21 @@ namespace WinLayer {
                         break;
                 }
 
-                 DTRMSimpleBusiness.Instance.AttachedOrder.AddOrderItem(POSLayer.Library.ShortGuid.NewDateBasedGuid2(), 1,
+                 BSLayer.Instance.AttachedOrder.AddOrderItem(POSLayer.Library.ShortGuid.NewDateBasedGuid2(), 1,
                    exprice, geb.IID, geb.PrintLabel, geb.ParentUIE.category.DistributionIID,
                     UF.EBTypeToOrderItemType(geb.ButtonType), geb.categoryItem.DOrder, 
-                   geb.ParentUIE.category.DOrder,  DTRMSimpleBusiness.Instance.GetEBTaxPercent(geb.categoryItem));
+                   geb.ParentUIE.category.DOrder,  BSLayer.Instance.GetEBTaxPercent(geb.categoryItem));
 
                 return true;
             } else
                 return false;
         }
 
-        private bool IsEBApplicableToOrderType(DTRMSimpleBusiness bslayer, UPEntityButton geb)
+        private bool IsEBApplicableToOrderType(BSLayer bslayer, UPEntityButton geb)
         {
             if (geb.categoryItem.AvailableFor != (int)AvailabilityTypes.All)
             {
-                switch ( DTRMSimpleBusiness.Instance.AttachedOrder.OrderType)
+                switch ( BSLayer.Instance.AttachedOrder.OrderType)
                 {
                     case OrderTypes.Sale:
                         if (!PosLibrary.DRNumeric.IsBitSet(geb.categoryItem.AvailableFor, (int)AvailabilityTypes.Direct))

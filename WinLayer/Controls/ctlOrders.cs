@@ -1,15 +1,9 @@
-using System;
 using System.ComponentModel;
-using System.Windows.Forms;
 using System.Data;
-using System.Collections.Generic;
 using POSLayer.Library;
 using POSLayer.Models;
-using System.Threading.Tasks;
-using WinLayer;
 using POSLayer.Views;
 using POSLayer.Repository.IRepository;
-using System.Linq;
 
 namespace WinLayer
 {
@@ -410,10 +404,10 @@ namespace WinLayer
 
         private async void frmOrders_Load(object sender, System.EventArgs e)
         {
-            if (DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.User && DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel != AccessLevels.Manager)
+            if (BSLayer.Instance.LoggedUser.AccessLevel != AccessLevels.User && BSLayer.Instance.LoggedUser.AccessLevel != AccessLevels.Manager)
                 btnDeleteOrder.Visible = true;
-            lblTotal.Visible = !(DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
-            btnUnsetPaymentMethod.Visible = !(DTRMSimpleBusiness.Instance.LoggedUser.AccessLevel == AccessLevels.User);
+            lblTotal.Visible = !(BSLayer.Instance.LoggedUser.AccessLevel == AccessLevels.User && !config.Standard_Users_Can_See_Session_Totals);
+            btnUnsetPaymentMethod.Visible = !(BSLayer.Instance.LoggedUser.AccessLevel == AccessLevels.User);
             await LoadOrders(true);
         }
 
@@ -421,9 +415,9 @@ namespace WinLayer
         {
             try
             {
-                List<Order> orders = await repoOrder.GetListByField("SessionIID", DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
+                List<Order> orders = await repoOrder.GetListByField("SessionIID", BSLayer.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
 
-                //DataTable dt =  DTRMSimpleBusiness.Instance.GetAllOrdersForSessionDateOrderly( DTRMSimpleBusiness.Instance.shop.CurrentSessionIID, OrderByTypes.Descending);
+                //DataTable dt =  BSLayer.Instance.GetAllOrdersForSessionDateOrderly( BSLayer.Instance.shop.CurrentSessionIID, OrderByTypes.Descending);
 
 
                 //dt.Columns.Add("OrderItemsDetailed");
@@ -441,19 +435,19 @@ namespace WinLayer
                 //rowheights = new List<int>();
                 //for (int i = 0; i < maxdetailed; i++)
                 //{
-                //    Order order = await  DTRMSimpleBusiness.Instance.GetOrder(dt.Rows[i]["IID"].ToString());
+                //    Order order = await  BSLayer.Instance.GetOrder(dt.Rows[i]["IID"].ToString());
                 //    dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
                 //    rowheights.Add(order.Items.Count * 15 + 7);
                 //}
                 dgv.DataSource = orders;
 
 
-                // string currentSessionIID =  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID;
-                double cashTotal = orders.Where(x => x.Payment == PaymentMethods.Cash).Sum(x => x.Total); //   DTRMSimpleBusiness.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
-                double cardTotal = orders.Where(x => x.Payment == PaymentMethods.Card).Sum(x => x.Total); //  DTRMSimpleBusiness.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
-                double unpaidTotal = orders.Sum(x => x.Balance); //  DTRMSimpleBusiness.Instance.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
+                // string currentSessionIID =  BSLayer.Instance.shop.CurrentSessionIID;
+                double cashTotal = orders.Where(x => x.Payment == PaymentMethods.Cash).Sum(x => x.Total); //   BSLayer.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
+                double cardTotal = orders.Where(x => x.Payment == PaymentMethods.Card).Sum(x => x.Total); //  BSLayer.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
+                double unpaidTotal = orders.Sum(x => x.Balance); //  BSLayer.Instance.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
 
-                //lblTotal.Text = "Session Total : " +  DTRMSimpleBusiness.Instance.GetCurrentSessionXSum().ToString("c") +
+                //lblTotal.Text = "Session Total : " +  BSLayer.Instance.GetCurrentSessionXSum().ToString("c") +
                 //    "  Cash= " + cashTotal.ToString("c") +
                 //    " ,Card= " + cardTotal.ToString("c") +
                 //    " ,Unpaid= " + unpaidTotal.ToString("c");
@@ -490,7 +484,7 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                // SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = dgv.SelectedRows[0].DataBoundItem as Order; // await DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
+                Order order = dgv.SelectedRows[0].DataBoundItem as Order; // await BSLayer.Instance.GetOrder(SelectedIID);
                 //if (order.OrderType == OrderTypes.Sitin)
                 //{
                 //    if (order.Status == StatusFlags.Completed)
@@ -501,15 +495,15 @@ namespace WinLayer
                 //        //    TableCovers = order.Covers
                 //        //};
                 //        //order.TableIID = table.IID;
-                //        //await repoOrder.Save(order); // DTRMSimpleBusiness.Instance.SaveOrder(order);
+                //        //await repoOrder.Save(order); // BSLayer.Instance.SaveOrder(order);
                 //        //table.LockedClientIP = config.Terminal_Name;
                 //        //table.AttachOrder(order);
 
-                //        //await repoTable.Save(table); // DTRMSimpleBusiness.Instance.SaveTable(table);
-                //        //await DTRMSimpleBusiness.Instance.BarrowTable(table.IID);
+                //        //await repoTable.Save(table); // BSLayer.Instance.SaveTable(table);
+                //        //await BSLayer.Instance.BarrowTable(table.IID);
                 //    } else
                 //    {
-                //        table = await DTRMSimpleBusiness.Instance.BarrowTable(order.TableIID);
+                //        table = await BSLayer.Instance.BarrowTable(order.TableIID);
                 //    }
                 //    if (table == null)
                 //    {
@@ -517,14 +511,14 @@ namespace WinLayer
                 //        return;
                 //    } else
                 //    {
-                //        DTRMSimpleBusiness.Instance.AttachedOrder = table.AttachedOrder;
+                //        BSLayer.Instance.AttachedOrder = table.AttachedOrder;
                 //      await LoadAttachedOrderEvent();
                 //       await DetachPanelEvent();
                 //    }
                 //} else
                 //{
                     order = await repoOrder.GetOrderToEditAsync(order.IID, config.Terminal_Name);
-                    DTRMSimpleBusiness.Instance.AttachedOrder = order;
+                    BSLayer.Instance.AttachedOrder = order;
                    await LoadAttachedOrderEvent();
                    await DetachPanelEvent();
 
@@ -537,7 +531,7 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                    await DTRMSimpleBusiness.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
+                    await BSLayer.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
                 await LoadOrders(true);
             }
         }
@@ -557,13 +551,13 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
+                Order order = await BSLayer.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
                 if (order != null)
                 {
                     order.Payment = PaymentMethods.NotPaid;
                     order.PaymentFlag = "";
-                    await DTRMSimpleBusiness.Instance.SaveOrder(order);
+                    await BSLayer.Instance.SaveOrder(order);
                     await LoadOrders(true);
                 }
             }
@@ -583,15 +577,15 @@ namespace WinLayer
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                Order order = await DTRMSimpleBusiness.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
-                Printer printer = await DTRMSimpleBusiness.Instance.GetPrinterForOrderType(order.OrderType);
+                Order order = await BSLayer.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                Printer printer = await BSLayer.Instance.GetPrinterForOrderType(order.OrderType);
                 if (printer != null)
-                    DTRMSimpleBusiness.Instance.PrintReceipt(order, printer, 1);
+                    BSLayer.Instance.PrintReceipt(order, printer, 1);
                 else
                 {
                     trmPrinterSelector trm = new trmPrinterSelector(PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
-                        DTRMSimpleBusiness.Instance.PrintReceipt(order, trm.SelectedPrinter, 1);
+                        BSLayer.Instance.PrintReceipt(order, trm.SelectedPrinter, 1);
 
                 }
 
@@ -622,19 +616,19 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await DTRMSimpleBusiness.Instance.GetOrder(SelectedIID);
+                Order order = await BSLayer.Instance.GetOrder(SelectedIID);
                 if (order.OrderType == OrderTypes.Sitin)
                 {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");
                     return;
                 }
-                DTRMSimpleBusiness.Instance.AttachedOrder = await DTRMSimpleBusiness.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
+                BSLayer.Instance.AttachedOrder = await BSLayer.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
 
-                if (DTRMSimpleBusiness.Instance.AttachedOrder != null)
+                if (BSLayer.Instance.AttachedOrder != null)
                 {
-                    if (((int)DTRMSimpleBusiness.Instance.AttachedOrder.Status) < ((int)StatusFlags.Archived))
+                    if (((int)BSLayer.Instance.AttachedOrder.Status) < ((int)StatusFlags.Archived))
                     {
-                        if (DTRMSimpleBusiness.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
+                        if (BSLayer.Instance.AttachedOrder.Payment == PaymentMethods.NotPaid)
                         {
                             PassControlEvent(new ctlPayment(new GenericFunctionCallAsync(DetachPanelEvent),
                                 new RemoteCompleteAttachedOrderAsync(CompleteAttachedOrderEvent),
@@ -642,8 +636,8 @@ namespace WinLayer
 
                             return;
                         }
-                        DTRMSimpleBusiness.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.Completed;
-                        await DTRMSimpleBusiness.Instance.SaveOrder(DTRMSimpleBusiness.Instance.AttachedOrder);
+                        BSLayer.Instance.AttachedOrder.Status = POSLayer.Library.StatusFlags.Completed;
+                        await BSLayer.Instance.SaveOrder(BSLayer.Instance.AttachedOrder);
                         await UnloadOrderEvent();
                         PassControlEvent(this);
                         await LoadOrders(true);

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using Microsoft.Extensions.DependencyInjection;
-
+﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;

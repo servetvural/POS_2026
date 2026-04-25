@@ -291,7 +291,7 @@ namespace WinOffice {
             }
 
             //remove this line 24 / 3 / 2024
-            DTRMSimpleBusiness.Instance.SetSuitableBonus();
+            BSLayer.Instance.SetSuitableBonus();
         }
     }
 }

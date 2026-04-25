@@ -178,7 +178,7 @@ namespace WinLayer
 
         private void btnOnline_Click(object sender, System.EventArgs e)
         {
-            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
+            BSLayer.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Online;
             CompleteAttachedOrder(NumberOfCopy, blnArchive, blnPrintLocal, blnEnforceDeliveryArchive);
             CloseFunction();
         }
@@ -189,7 +189,7 @@ namespace WinLayer
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 //PrintFinalPayment(PaymentMethods.Card, true);
-                 DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
+                 BSLayer.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Card;
                 CompleteAttachedOrder(1, true, true, true);
                 CloseFunction();
             }
@@ -197,7 +197,7 @@ namespace WinLayer
 
         private void btnCash_Click(object sender, System.EventArgs e)
         {
-            DTRMSimpleBusiness.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
+            BSLayer.Instance.AttachedOrder.Payment = POSLayer.Library.PaymentMethods.Cash;
             CompleteAttachedOrder(1, blnArchive, true, blnEnforceDeliveryArchive);
             CloseFunction();
         }

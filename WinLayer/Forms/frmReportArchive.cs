@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
-
 using PosLibrary;
 using PosLibrary.Forms;
 
@@ -39,7 +34,7 @@ namespace WinLayer.Forms
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else
             {
-                dgvArchive.DataSource =  DTRMSimpleBusiness.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
+                dgvArchive.DataSource =  BSLayer.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
             }
         }
 
@@ -47,7 +42,7 @@ namespace WinLayer.Forms
         {
             if (dgvDatabase.SelectedRows.Count > 0)
             {
-                Report report =  DTRMSimpleBusiness.Instance.GetReport(ReportFormatTypes.ZReport);
+                Report report =  BSLayer.Instance.GetReport(ReportFormatTypes.ZReport);
 
 
                 if (report.ReportType == ReportFormatTypes.ZReport)
@@ -100,7 +95,7 @@ namespace WinLayer.Forms
             for (int i = 0; i < jobList.Count; i++)
             {
                 CustomReportPrintJob job = jobList[i];
-                await DTRMSimpleBusiness.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
+                await BSLayer.Instance.PrintReport(job.ReportType, job.SessionIID, job.PrinterIID, job.LatePrinting);
                 int percent = (100 / jobList.Count) * (i + 1);
                 bgWorker.ReportProgress(percent, "Printing Session : " + job.SessionStartDate.ToString());
             }                 
@@ -124,9 +119,9 @@ namespace WinLayer.Forms
                 try
                 {
                     string sessionTableName = "Sessions";
-                    dgvDatabase.DataSource =  DTRMSimpleBusiness.Instance.GetDataTable("Select * from " + sessionTableName + " where IID <> '" +  DTRMSimpleBusiness.Instance.shop.CurrentSessionIID + "' order by StartDate desc");
+                    dgvDatabase.DataSource =  BSLayer.Instance.GetDataTable("Select * from " + sessionTableName + " where IID <> '" +  BSLayer.Instance.shop.CurrentSessionIID + "' order by StartDate desc");
 
-                   // lblAllSessionTotal.Text = float.Parse( DTRMSimpleBusiness.Instance.GetDataTable("Select SUM(GrossSessionTotal) AS Total from " + sessionTableName + "  where IID <> '" +  DTRMSimpleBusiness.Instance.GetCurrentSessionIID() + "'").Rows[0]["Total"].ToString()).ToString("N2");
+                   // lblAllSessionTotal.Text = float.Parse( BSLayer.Instance.GetDataTable("Select SUM(GrossSessionTotal) AS Total from " + sessionTableName + "  where IID <> '" +  BSLayer.Instance.GetCurrentSessionIID() + "'").Rows[0]["Total"].ToString()).ToString("N2");
                 } catch { }
             }
         }
@@ -169,8 +164,8 @@ namespace WinLayer.Forms
             SessionDataShort[] sessionList = (SessionDataShort[])args;
             for (int i = 0; i < sessionList.Length; i++)
             {
-               await  DTRMSimpleBusiness.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
-                // DTRMSimpleBusiness.Instance.ReloadSessionFromFile(fileList[i]);
+               await  BSLayer.Instance.ReloadSessionFromDirectory(sessionList[i].StartDate, sessionList[i].EndDate);
+                // BSLayer.Instance.ReloadSessionFromFile(fileList[i]);
                 int percent = (100 / sessionList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Loading " + sessionList[i].StartDate.ToString() + " To " + sessionList[i].EndDate.ToString());
             }
@@ -213,7 +208,7 @@ namespace WinLayer.Forms
 
             for (int i = 0; i < SessionIIDList.Length; i++)
             {
-               await DTRMSimpleBusiness.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
+               await BSLayer.Instance.ArchiveSessionToDirectory(directoryPath, SessionIIDList[i], true);
                 int percent = (100 / SessionIIDList.Length) * (i + 1);
                 bgWorker.ReportProgress(percent, "Archiving " + SessionIIDList[i]);
             }

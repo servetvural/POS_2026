@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using PosLibrary;
-using WinLayer;
 
 namespace WinLayer
 {
@@ -250,7 +243,7 @@ namespace WinLayer
                 if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string filename = dlg.FileName.EndsWith(".csv") ? dlg.FileName : dlg.FileName + ".csv";
-                    if (DataGridViewCsvExporter.Export(filename, DTRMSimpleBusiness.Instance.GenerateCsvTextFromDataTable(dt)))
+                    if (DataGridViewCsvExporter.Export(filename, BSLayer.Instance.GenerateCsvTextFromDataTable(dt)))
                     {
                         if (MessageBox.Show("Do you want to open the file?", "Export Completed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(filename);
@@ -271,11 +264,11 @@ namespace WinLayer
                     // Filter using 'LIKE' for partial matches (search as you type)
                     _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%'", txtSearch.Text.Trim());
 
-                //  dgv.DataSource =  DTRMSimpleBusiness.Instance.SearchStockItems(txtSearch.Text.Trim());
+                //  dgv.DataSource =  BSLayer.Instance.SearchStockItems(txtSearch.Text.Trim());
                 else
                 {
                     _stockItemSource.Filter = string.Format("StockName LIKE '%{0}%' and SupplierIID = '{1}", txtSearch.Text.Trim(), cmbSuppliers.SelectedItem);
-                    // dgv.DataSource =  DTRMSimpleBusiness.Instance.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
+                    // dgv.DataSource =  BSLayer.Instance.SearchStockItems(txtSearch.Text.Trim(), cmbSuppliers.SelectedValue.ToString());
 
                 }
                 txtSearch.Text = "";
@@ -331,7 +324,7 @@ namespace WinLayer
             {
 
                 // string StockItemIID = dgv.SelectedRows[0].Cells[0].Value.ToString();
-                // dgvUsage.DataSource =  DTRMSimpleBusiness.Instance.GetEntityButtonStockItemRecipeFromStockItem(selectedStockItem.IID);
+                // dgvUsage.DataSource =  BSLayer.Instance.GetEntityButtonStockItemRecipeFromStockItem(selectedStockItem.IID);
 
                 _usageSource.DataSource = await repoStockItemUsage.GetListByField("StockItemIID", selectedStockItem.IID, "CategoryItem,StockItem");
                 dgvUsage.DataSource = _usageSource;
@@ -349,7 +342,7 @@ namespace WinLayer
             //    string EntityButtonIID = dgvUsage.SelectedRows[0].Cells["colEntityButtonIID"].Value.ToString();
             //    string StockItemIID = dgvUsage.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
 
-            //    frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer,  DTRMSimpleBusiness.Instance.GetEntityButtonStockItemLookUp(EntityButtonIID, StockItemIID));
+            //    frmEntityButtonStockItemLookUp frm = new frmEntityButtonStockItemLookUp(bslayer,  BSLayer.Instance.GetEntityButtonStockItemLookUp(EntityButtonIID, StockItemIID));
             //    if (frm.ShowDialog() == DialogResult.OK)
             //        LoadUsage();
             //}
@@ -386,7 +379,7 @@ namespace WinLayer
                         cols = new List<int>(arrcols);
                     }
 
-                    DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
+                    BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, true),
                        "Stock Items Report " + DateTime.Now.ToString("dd MM yyyy HH:mm"), cols, true);
                 }
             }

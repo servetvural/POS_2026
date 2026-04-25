@@ -252,7 +252,7 @@ namespace WinLayer {
                     report.Add("drawline");
                 }
 
-                 DTRMSimpleBusiness.Instance.PrintKassaReport(report, fsp.SelectedPrinter, 1);
+                 BSLayer.Instance.PrintKassaReport(report, fsp.SelectedPrinter, 1);
             }
         }
         private void cmdClose_Click(object sender, EventArgs e) {

@@ -13,7 +13,7 @@ using PosLibrary;
 
 namespace WinLayer
 {
-    public class DTRMSimpleBusiness
+    public class BSLayer
     {
         private PosConfig config { get; set; }
         public Shop shop { get; set; }
@@ -69,11 +69,11 @@ namespace WinLayer
         }
 
         // 1. Private static field to hold the single instance
-        //private static readonly Lazy<DTRMSimpleBusiness> _instance =
-        //    new Lazy<DTRMSimpleBusiness>(() => new DTRMSimpleBusiness());
+        //private static readonly Lazy<BSLayer> _instance =
+        //    new Lazy<BSLayer>(() => new BSLayer());
 
-        private static readonly Lazy<DTRMSimpleBusiness> _instance =
-        new Lazy<DTRMSimpleBusiness>(() => {
+        private static readonly Lazy<BSLayer> _instance =
+        new Lazy<BSLayer>(() => {
             // 1. Check if the ServiceHelper is actually ready
             if (ServiceHelper.Services == null)
             {
@@ -81,15 +81,15 @@ namespace WinLayer
                 return null;
             }
 
-            return new DTRMSimpleBusiness();
+            return new BSLayer();
         });
 
 
         // 2. Public static property to access the instance
-        public static DTRMSimpleBusiness Instance => _instance.Value;
+        public static BSLayer Instance => _instance.Value;
 
         // 3. PRIVATE constructor prevents 'new Bslayer()' elsewhere
-        private DTRMSimpleBusiness()
+        private BSLayer()
         {
             config = ServiceHelper.GetService<PosConfig>();
             repoShop = ServiceHelper.GetRepository<Shop>();
@@ -162,7 +162,7 @@ namespace WinLayer
         IRepository<StockItemUsage> repoStockItemUsage;
         IRepository<GenericImage> repoImage;
 
-        //private DTRMSimpleBusiness(PosConfig configAsService, IRepository<Shop> _repoShop,
+        //private BSLayer(PosConfig configAsService, IRepository<Shop> _repoShop,
         //    IRepository<Session> _repoSession,
         //    IRepository<Employee> _repoEmployee,
         //    IRepository<TheMenu> _repoMenu,

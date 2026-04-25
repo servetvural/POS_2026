@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿using System.Data;
 using POSLayer.Models;
 
 namespace WinLayer{
@@ -32,7 +26,7 @@ namespace WinLayer{
         private void LoadSalons() {
             pnlGroups.Controls.Clear();
 
-            DataTable dt = DTRMSimpleBusiness.Instance.GetAllTableGroups();
+            DataTable dt = BSLayer.Instance.GetAllTableGroups();
             for (int i = 0; i < dt.Rows.Count; i++) {
                 RadioButton btn = new RadioButton();
                 btn.Appearance = Appearance.Button;
@@ -77,7 +71,7 @@ namespace WinLayer{
         }
 
         private async void LoadTables() {
-            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableList(SelectedGroup);
+            List<Masa> tablelist = await BSLayer.Instance.GetTableList(SelectedGroup);
 
             pnlTables.Controls.Clear();
 
@@ -94,18 +88,18 @@ namespace WinLayer{
                 btn.Table = table;
                 btn.Font = new Font("Arial", 12, FontStyle.Bold);
                 if (locker.Length > 0) {
-                    btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                    btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
+                    btn.BackColor = Color.DarkBlue; // BSLayer.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                    btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Busy_Text_Color;
                 }
                 else {
                     if (table.HasActiveOrder) {
-                        btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
+                        btn.BackColor = Color.DarkRed; //  BSLayer.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Full_Text_Color;
                     }
                     else {
                         btn.BackColor = Color.DarkGreen;
-                        //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
+                        //  BSLayer.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Free_Text_Color;
                     }
                 }
                 btn.Location = new Point(table.XLocation, table.YLocation);

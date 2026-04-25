@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-
 using PosLibrary;
 
 namespace WinLayer
@@ -42,7 +35,7 @@ namespace WinLayer
 
         private void LoadTables()
         {
-            tablelist = DTRMSimpleBusiness.Instance.GetTableAndSubTables(rootTableIID).Result;
+            tablelist = BSLayer.Instance.GetTableAndSubTables(rootTableIID).Result;
 
             pnlTables.Controls.Clear();
 
@@ -62,21 +55,21 @@ namespace WinLayer
                 btn.Font = new Font("Arial", 12, FontStyle.Bold);
                 if (locker.Length > 0)
                 {
-                    btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                    btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
+                    btn.BackColor = Color.DarkBlue; // BSLayer.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                    btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Busy_Text_Color;
                     busyTableCounter++;
                 } else
                 {
                     if (table.HasActiveOrder)
                     {
-                        btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
+                        btn.BackColor = Color.DarkRed; //  BSLayer.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Full_Text_Color;
                         busyTableCounter++;
                     } else
                     {
                         btn.BackColor = Color.DarkGreen;
-                        //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
+                        //  BSLayer.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Free_Text_Color;
                     }
                 }
                 btn.Location = new Point(table.XLocation, table.YLocation);
@@ -113,20 +106,20 @@ namespace WinLayer
             {
                 if (string.IsNullOrEmpty(config.TerminalReceiptPrinterIID))
                 {
-                    await DTRMSimpleBusiness.Instance.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1, config.TerminalReceiptPrinterIID);
+                    await BSLayer.Instance.PrintEntireOrder(tablelist[i].AttachedOrder, true, false, 1, config.TerminalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter(DTRMSimpleBusiness.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(BSLayer.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }
 
         private async void btnJoinAllTables_Click(object sender, EventArgs e)
         {
-            Masa primaryTable = await DTRMSimpleBusiness.Instance.BarrowTable(rootTableIID);
+            Masa primaryTable = await BSLayer.Instance.BarrowTable(rootTableIID);
             for (int i = 0; i < tablelist.Count; i++)
             {
                 if (tablelist[i].IID != rootTableIID)
-                    DTRMSimpleBusiness.Instance.MergeTable(tablelist[i].IID, rootTableIID);
+                    BSLayer.Instance.MergeTable(tablelist[i].IID, rootTableIID);
             }
             Close();
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-
+﻿
 namespace WinLayer {
     public partial class frmIntegerInput : Form {
         public int val;

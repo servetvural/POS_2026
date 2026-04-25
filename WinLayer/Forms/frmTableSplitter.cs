@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 
 namespace WinLayer
@@ -44,14 +37,14 @@ namespace WinLayer
             {
                 if (SourceTable.AttachedOrder != null && SourceTable.AttachedOrder.Status < StatusFlags.Done)
                     SourceTable.AttachedOrder.Status = StatusFlags.Done;
-                DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
+                BSLayer.Instance.ReturnTable(SourceTable);
             }
 
             if (TargetTable != null)
             {
                 if (TargetTable.AttachedOrder != null && TargetTable.AttachedOrder.Status < StatusFlags.Done)
                     TargetTable.AttachedOrder.Status = StatusFlags.Done;
-                DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
+                BSLayer.Instance.ReturnTable(TargetTable);
             }
 
             this.DialogResult = DialogResult.Cancel;
@@ -64,7 +57,7 @@ namespace WinLayer
 
         private async Task LoadSourcePanel()
         {
-            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableAndSubTables(rootTable.IID);
+            List<Masa> tablelist = await BSLayer.Instance.GetTableAndSubTables(rootTable.IID);
 
             pnlSourceTables.Controls.Clear();
 
@@ -93,19 +86,19 @@ namespace WinLayer
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
-                        btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
+                        btn.BackColor = Color.DarkBlue; // BSLayer.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
                         if (table.HasActiveOrder)
                         {
-                            btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
-                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
+                            btn.BackColor = Color.DarkRed; //  BSLayer.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                            btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Full_Text_Color;
                         } else
                         {
                             btn.BackColor = Color.DarkGreen;
-                            //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
+                            //  BSLayer.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                            btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
@@ -125,10 +118,10 @@ namespace WinLayer
 
         private async void btnSourceTableButton_Click(object sender, EventArgs e)
         {
-            //SourceTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton)sender).IID);
+            //SourceTable =  BSLayer.Instance.GetTable(((TableButton)sender).IID);
 
 
-            SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).Table.IID);
+            SourceTable = await BSLayer.Instance.BarrowTable(((TableButton)sender).Table.IID);
             if (SourceTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -160,12 +153,12 @@ namespace WinLayer
             //if (odSourceTable.OrderToDisplay != null)
             //{
             //    odSourceTable.OrderToDisplay.LockedClientIP = "";
-            //    await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //    await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
             //}
             //odSourceTable.OrderToDisplay = null;
             //odSourceTable.Display();
             //lblSourceTableName.Text = "";
-            //DTRMSimpleBusiness.Instance.ReturnTable(SourceTable);
+            //BSLayer.Instance.ReturnTable(SourceTable);
             //SourceTable = null;
         }
 
@@ -176,7 +169,7 @@ namespace WinLayer
             {
                 if (SourceTable != null)
                     UnloadSourceTable();
-                SourceTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
+                SourceTable = await BSLayer.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
                 if (SourceTable == null)
                 {
                     MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -204,7 +197,7 @@ namespace WinLayer
             {
                 if (TargetTable != null)
                     UnloadTargetTable();
-                TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
+                TargetTable = await BSLayer.Instance.BarrowTable(frm.SelectedTableButton.Table.IID);
 
                 if (TargetTable == null)
                 {
@@ -229,7 +222,7 @@ namespace WinLayer
 
         private async Task LoadTargetPanel()
         {
-            List<Masa> tablelist = await DTRMSimpleBusiness.Instance.GetTableAndSubTables(rootTable.IID);
+            List<Masa> tablelist = await BSLayer.Instance.GetTableAndSubTables(rootTable.IID);
 
             pnlTargetTables.Controls.Clear();
 
@@ -258,19 +251,19 @@ namespace WinLayer
                     btn.Font = new Font("Arial", 12, FontStyle.Bold);
                     if (locker.Length > 0)
                     {
-                        btn.BackColor = Color.DarkBlue; // DTRMSimpleBusiness.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
-                        btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Busy_Text_Color;
+                        btn.BackColor = Color.DarkBlue; // BSLayer.Instance.config.Table_Busy_Back_Color;  // Color.DarkBlue;
+                        btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Busy_Text_Color;
                     } else
                     {
                         if (table.HasActiveOrder)
                         {
-                            btn.BackColor = Color.DarkRed; //  DTRMSimpleBusiness.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
-                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Full_Text_Color;
+                            btn.BackColor = Color.DarkRed; //  BSLayer.Instance.config.Table_Full_Back_Color; //  Color.DarkRed;
+                            btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Full_Text_Color;
                         } else
                         {
                             btn.BackColor = Color.DarkGreen;
-                            //  DTRMSimpleBusiness.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
-                            btn.ForeColor = Color.White; //  DTRMSimpleBusiness.Instance.config.Table_Free_Text_Color;
+                            //  BSLayer.Instance.config.Table_Free_Back_Color; // SystemColors.ControlDarkDark;
+                            btn.ForeColor = Color.White; //  BSLayer.Instance.config.Table_Free_Text_Color;
                         }
                     }
                     //btn.Location = new Point(table.XLocation, table.YLocation);
@@ -290,9 +283,9 @@ namespace WinLayer
 
         private async void btnTargetTableButton_Click(object sender, EventArgs e)
         {
-            //TargetTable =  DTRMSimpleBusiness.Instance.GetTable(((TableButton) sender).IID);
+            //TargetTable =  BSLayer.Instance.GetTable(((TableButton) sender).IID);
 
-            TargetTable = await DTRMSimpleBusiness.Instance.BarrowTable(((TableButton)sender).Table.IID);
+            TargetTable = await BSLayer.Instance.BarrowTable(((TableButton)sender).Table.IID);
             if (TargetTable == null)
             {
                 MessageBox.Show("Table Currently Busy, cannot be allocated");
@@ -325,13 +318,13 @@ namespace WinLayer
             //if (odTargetTable.OrderToDisplay != null)
             //{
             //    odTargetTable.OrderToDisplay.LockedClientIP = "";
-            //    await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //    await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
             //}
 
             //odTargetTable.OrderToDisplay = null;
             //odTargetTable.Display();
             //lblTargetTableName.Text = "";
-            //await DTRMSimpleBusiness.Instance.ReturnTable(TargetTable);
+            //await BSLayer.Instance.ReturnTable(TargetTable);
             //TargetTable = null;
         }
 
@@ -339,12 +332,12 @@ namespace WinLayer
         {
             //if (SourceTable != null)
             //{
-            //    Table mainTable = await  DTRMSimpleBusiness.Instance.GetParentTable(SourceTable.IID);
+            //    Table mainTable = await  BSLayer.Instance.GetParentTable(SourceTable.IID);
             //    TargetTable = mainTable.CreateSubTable();
-            //    TargetTable.TableName = await  DTRMSimpleBusiness.Instance.GenerateSubTableName(mainTable);
-            //     DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
+            //    TargetTable.TableName = await  BSLayer.Instance.GenerateSubTableName(mainTable);
+            //     BSLayer.Instance.SaveTable(TargetTable);
             //    //This is required to ensure new order attach to TargetTable
-            //    TargetTable = await  DTRMSimpleBusiness.Instance.BarrowTable(TargetTable.IID);
+            //    TargetTable = await  BSLayer.Instance.BarrowTable(TargetTable.IID);
             //    LoadTargetTable();
             //    await LoadSourcePanel();
             //    await LoadTargetPanel();
@@ -378,11 +371,11 @@ namespace WinLayer
             //        //Drop 1 from ordertosplit and save
             //        if (!odSourceTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
             //            odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -437,11 +430,11 @@ namespace WinLayer
             //            }
             //        } catch { }
 
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -474,11 +467,11 @@ namespace WinLayer
             //        odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
             //        //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
             //        //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odTargetTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -510,11 +503,11 @@ namespace WinLayer
             //        //Drop 1 from ordertosplit and save
             //        if (!odTargetTable.OrderToDisplay.Items.Where(x => x.IID == IID).FirstOrDefault().Decrement())
             //            odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -575,11 +568,11 @@ namespace WinLayer
             //        } catch { }
 
 
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -612,11 +605,11 @@ namespace WinLayer
             //        odTargetTable.OrderToDisplay.DeleteOrderItem(IID);
             //        //if (!odSourceTable.OrderToDisplay.GetOrderItem(IID).Decrement((int)oiNew.Quantity))
             //        //    odSourceTable.OrderToDisplay.DeleteOrderItem(IID);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odTargetTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odTargetTable.OrderToDisplay);
 
             //        //Add new item to ordertodisplay and save
             //        odSourceTable.OrderToDisplay.AddIncrementOrderItem(oiNew);
-            //        await DTRMSimpleBusiness.Instance.SaveOrder(odSourceTable.OrderToDisplay);
+            //        await BSLayer.Instance.SaveOrder(odSourceTable.OrderToDisplay);
 
             //        odSourceTable.Display();
             //        odTargetTable.Display();
@@ -635,7 +628,7 @@ namespace WinLayer
             //        TargetTable.TableName = frm.input;
             //        if (TargetTable.AttachedOrder != null)
             //            TargetTable.AttachedOrder.Table?.TableName = TargetTable.TableName;
-            //        await DTRMSimpleBusiness.Instance.SaveTable(TargetTable);
+            //        await BSLayer.Instance.SaveTable(TargetTable);
 
             //        LoadTargetTable();
             //        await LoadTargetPanel();

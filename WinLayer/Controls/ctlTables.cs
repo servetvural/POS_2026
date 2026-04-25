@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Data;
-using System.Windows.Forms;
-using PosLibrary;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
-using System.Threading.Tasks;
 using POSLayer.Repository.IRepository;
-using System.Linq;
-
 
 namespace WinLayer
 {
@@ -156,7 +146,7 @@ namespace WinLayer
                             return;
                         }
                     }
-                   // await DTRMSimpleBusiness.Instance.MoveTable(SourceTable.IID, ((TableButton)sender).IID);
+                   // await BSLayer.Instance.MoveTable(SourceTable.IID, ((TableButton)sender).IID);
                 }
             }
 
@@ -167,16 +157,16 @@ namespace WinLayer
             //        TableButton tableButton = (TableButton)sender;
             //        bool blnPrinted = false;
 
-            //        Masa table = await DTRMSimpleBusiness.Instance.BarrowTable(tableButton.IID);
+            //        Masa table = await BSLayer.Instance.BarrowTable(tableButton.IID);
             //        if (table.AttachedOrder != null)
             //        {
-            //            blnPrinted = await DTRMSimpleBusiness.Instance.PrintEntireOrder(table.AttachedOrder, true, false, 1,
+            //            blnPrinted = await BSLayer.Instance.PrintEntireOrder(table.AttachedOrder, true, false, 1,
             //                config.DTClientLocalReceiptPrinterIID);
             //        }
 
             //        if (blnPrinted && config.Force_Receipt_Printer_To_Cut)
             //            DRShell.SendCutCommandToUSBPrinter(
-            //                 DTRMSimpleBusiness.Instance.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
+            //                 BSLayer.Instance.GetPrinterForClient(config.DTClientLocalReceiptPrinterIID).Result.NetworkName);
             //    }
             //}
 
@@ -188,16 +178,16 @@ namespace WinLayer
             //    else
             //    {
             //        //Delete the incoming new order with the newly allocated table
-            //        await DTRMSimpleBusiness.Instance.DeleteOrderOnly(table.AttachedOrder);
+            //        await BSLayer.Instance.DeleteOrderOnly(table.AttachedOrder);
             //        //Dispatch this order to this table
-            //        table.AttachedOrder = DTRMSimpleBusiness.Instance.AttachedOrder;
-            //        await DTRMSimpleBusiness.Instance.SaveTable(table);
+            //        table.AttachedOrder = BSLayer.Instance.AttachedOrder;
+            //        await BSLayer.Instance.SaveTable(table);
             //        //Dispatch newly allocated table to this order
-            //        DTRMSimpleBusiness.Instance.AttachedOrder.TableIID = table.IID;
-            //        DTRMSimpleBusiness.Instance.AttachedOrder.Status = StatusFlags.Done;
-            //        DTRMSimpleBusiness.Instance.AttachedOrder.Title = "T " + table.TableName + " C " + table.TableCovers.ToString();
+            //        BSLayer.Instance.AttachedOrder.TableIID = table.IID;
+            //        BSLayer.Instance.AttachedOrder.Status = StatusFlags.Done;
+            //        BSLayer.Instance.AttachedOrder.Title = "T " + table.TableName + " C " + table.TableCovers.ToString();
             //        HandlePriceChange(OrderTypes.Sitin);
-            //        DTRMSimpleBusiness.Instance.OnDisplayOrder();
+            //        BSLayer.Instance.OnDisplayOrder();
             //    }
             //    return;
             //}
@@ -225,11 +215,11 @@ namespace WinLayer
             //    } else
             //    {
             //        //Now properly barrowtable for system lock, so no one can do any operation on it
-            //        STable = await DTRMSimpleBusiness.Instance.BarrowTable(SourceTable.IID);
+            //        STable = await BSLayer.Instance.BarrowTable(SourceTable.IID);
             //        frmTableSplitter frm = new frmTableSplitter(STable);
             //        frm.ShowDialog();
 
-            //        DTRMSimpleBusiness.Instance.ReturnTable(STable);
+            //        BSLayer.Instance.ReturnTable(STable);
             //    }
             //    chkSplitTable.Checked = false;
             //    LoadTables();
@@ -243,16 +233,16 @@ namespace WinLayer
 
         private void HandlePriceChange(POSLayer.Library.OrderTypes RequestedType)
         {
-            //switch (DTRMSimpleBusiness.MessageBoxDT("Do you want all item prices to be changed ?", "CHANGE PRICES", DialogTypes.YesNoCancel)) {
+            //switch (BSLayer.MessageBoxDT("Do you want all item prices to be changed ?", "CHANGE PRICES", DialogTypes.YesNoCancel)) {
             //   case DialogResult.Yes:
             //Close tabpages to ensure the last open top order item having completed effect
             //MainForm.CloseOrderItemEntityInteraction();
             CloseOrderItemEntityInteractionEvent();
 
             //Do recalculation
-             DTRMSimpleBusiness.Instance.RePriceOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, RequestedType);
-             DTRMSimpleBusiness.Instance.ReTaxOrderForOrderType( DTRMSimpleBusiness.Instance.AttachedOrder, RequestedType);
-             DTRMSimpleBusiness.Instance.AttachedOrder.OrderType = RequestedType;
+             BSLayer.Instance.RePriceOrderForOrderType( BSLayer.Instance.AttachedOrder, RequestedType);
+             BSLayer.Instance.ReTaxOrderForOrderType( BSLayer.Instance.AttachedOrder, RequestedType);
+             BSLayer.Instance.AttachedOrder.OrderType = RequestedType;
             CloseFunction();
 
         }
@@ -271,11 +261,11 @@ namespace WinLayer
             //switch (whattodo)
             //{
             //    case DialogResult.Yes:
-            //        Masa table = await  DTRMSimpleBusiness.Instance.GetTable(TableIID);
+            //        Masa table = await  BSLayer.Instance.GetTable(TableIID);
             //        if (table != null)
             //        {
             //            table.LockedClientIP = "";
-            //             DTRMSimpleBusiness.Instance.SaveTable(table);
+            //             BSLayer.Instance.SaveTable(table);
             //        }
             //        this.LoadTables();
             //        break;

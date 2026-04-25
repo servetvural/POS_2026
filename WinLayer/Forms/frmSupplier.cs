@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Models;
+﻿using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
 namespace WinLayer

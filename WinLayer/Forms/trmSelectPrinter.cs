@@ -1,6 +1,3 @@
-using System.Windows.Forms;
-using System.Collections.Generic;
-
 using POSLayer.Models;
 
 namespace WinLayer {
@@ -129,7 +126,7 @@ namespace WinLayer {
 		#endregion
 
         private async void LoadPrinters() {
-            List<Printer> PrinterList = await DTRMSimpleBusiness.Instance.GetReceiptPrinterList();
+            List<Printer> PrinterList = await BSLayer.Instance.GetReceiptPrinterList();
 
             ListViewItem lvi;
             Printer printer;

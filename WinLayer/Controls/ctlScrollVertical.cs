@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace WinLayer {
     public partial class ctlScrollVertical : UserControl {

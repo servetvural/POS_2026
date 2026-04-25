@@ -1,16 +1,11 @@
-using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using POSLayer.Context;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 using PosLibrary;
 using PosLibrary.DBSpace;
-using WinLayer;
 
 namespace WinLayer
 {
@@ -624,7 +619,7 @@ namespace WinLayer
 
         private void frmConfig_Load(object sender, System.EventArgs e)
         {
-            //if (DTRMSimpleBusiness.Instance == null || DTRMSimpleBusiness.Instance.OfficeConnectionStatus == ConnectionStatus.Disconnected)
+            //if (BSLayer.Instance == null || BSLayer.Instance.OfficeConnectionStatus == ConnectionStatus.Disconnected)
             //{
 
             //}
@@ -648,7 +643,7 @@ namespace WinLayer
 
             pGridConfig.SelectedObject = config;
 
-            if (blnDatabaseConnected && DTRMSimpleBusiness.Instance.LoggedUser != null)
+            if (blnDatabaseConnected && BSLayer.Instance.LoggedUser != null)
             {
                 await LoadShops();
                 
@@ -721,7 +716,7 @@ namespace WinLayer
                 config.ActiveMenuIID = cmbMenu.SelectedValue.ToString();
                 UF.SaveConfig(config);
                 await LoadMenuList();
-                await DTRMSimpleBusiness.Instance.GetActiveMenu(true, true);
+                await BSLayer.Instance.GetActiveMenu(true, true);
             }
         }
 
@@ -733,7 +728,7 @@ namespace WinLayer
             {
                 try
                 {
-                    cmbMenuTaxRates.DataSource = await DTRMSimpleBusiness.Instance.GetAllTaxRates();
+                    cmbMenuTaxRates.DataSource = await BSLayer.Instance.GetAllTaxRates();
                     //cmbMenuTaxRates.DisplayMember = "TaxPercent";
                     //cmbMenuTaxRates.ValueMember = "TaxPercent";
                 } catch
@@ -780,7 +775,7 @@ namespace WinLayer
                 //Shop shop = ((ShopWrapper)pGridShop.SelectedObject).;
                 shop.CashDrawerText = (shop.CashDrawerText.Length > 5 ? shop.CashDrawerText.Substring(0, 5) : shop.CashDrawerText);
                 repoShop.Save(shop);
-                DTRMSimpleBusiness.Instance.shop = shop;
+                BSLayer.Instance.shop = shop;
             }
         }
 
@@ -818,7 +813,7 @@ namespace WinLayer
                     MessageBox.Show("Configuration file saved");
                     if (!blnEmpty)
                     {
-                        if (blnDatabaseConnected && DTRMSimpleBusiness.Instance.LoggedUser != null)
+                        if (blnDatabaseConnected && BSLayer.Instance.LoggedUser != null)
                         {
                             SaveShop();
                         }
@@ -844,7 +839,7 @@ namespace WinLayer
                     TrmGetValue frm = new TrmGetValue(NumberModes.FloatMode);
                     if (frm.ShowDialog() == DialogResult.OK)
                     {
-                        DTRMSimpleBusiness.Instance.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
+                        BSLayer.Instance.SetTaxRate(SelectedTaxRate, frm.ReturnValue);
                         LoadTaxRates();
                     }
                 }
@@ -925,7 +920,7 @@ namespace WinLayer
 
         private async void btnTestCashDrawer_Click(object sender, EventArgs e)
         {
-            await DTRMSimpleBusiness.Instance.OpenCashDrawer();
+            await BSLayer.Instance.OpenCashDrawer();
         }
 
 

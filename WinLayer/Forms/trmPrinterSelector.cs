@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using POSLayer.Library;
+﻿using POSLayer.Library;
 using POSLayer.Models;
 
 namespace WinLayer {
@@ -20,12 +16,12 @@ namespace WinLayer {
       }
 
       private void LoadPrinters() {
-         dgv.DataSource = DTRMSimpleBusiness.Instance.GetPrintersByPrinterType(PrinterType);
+         dgv.DataSource = BSLayer.Instance.GetPrintersByPrinterType(PrinterType);
       }
 
       private async void dgv_CellClick(object sender, DataGridViewCellEventArgs e)
       {
-         SelectedPrinter = await DTRMSimpleBusiness.Instance.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
+         SelectedPrinter = await BSLayer.Instance.GetPrinterForClient(dgv.Rows[e.RowIndex].Cells[0].Value.ToString());
          this.DialogResult = DialogResult.OK;
          this.Close();
       }

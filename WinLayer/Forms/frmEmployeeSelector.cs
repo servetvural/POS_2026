@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Forms;
-using POSLayer.Models;
+﻿using POSLayer.Models;
 using POSLayer.Repository.IRepository;
-using WinLayer;
 
 namespace WinLayer.Forms {
     public partial class frmEmployeeSelector : Form {

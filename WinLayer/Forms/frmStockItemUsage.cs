@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿using System.Data;
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 using POSLayer.Models;
-
 using PosLibrary;
 
 namespace WinLayer
@@ -35,14 +28,14 @@ namespace WinLayer
         {
             //if (rbAll.Checked) {
             //    if (blnUseSearch)
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsageWithSearch(chkOrderableOnly.Checked, txtSearch.Text.Trim());
             //    else
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsages(chkOrderableOnly.Checked);
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsages(chkOrderableOnly.Checked);
             //} else {
             //    if (blnUseSearch)
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsageBySupplierWithSearch(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked, txtSearch.Text.Trim());
             //    else
-            //        dgv.DataSource =  DTRMSimpleBusiness.Instance.GetStockItemUsageBySupplier(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked);
+            //        dgv.DataSource =  BSLayer.Instance.GetStockItemUsageBySupplier(cmbSuppliers.SelectedValue.ToString(), chkOrderableOnly.Checked);
             //}
 
             //PopulateUsage();
@@ -61,7 +54,7 @@ namespace WinLayer
 
         private void LoadSuppliers()
         {
-            cmbSuppliers.DataSource = DTRMSimpleBusiness.Instance.GetAllSuppliersAsList();
+            cmbSuppliers.DataSource = BSLayer.Instance.GetAllSuppliersAsList();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)
@@ -71,15 +64,15 @@ namespace WinLayer
                 frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (fsp.ShowDialog() == DialogResult.OK)
                 {
-                    //  DTRMSimpleBusiness.Instance.PrintStockUsage(fsp.SelectedPrinterIID,  DTRMSimpleBusiness.Instance.GetDataTableFromGridVisible(dgv, true));
+                    //  BSLayer.Instance.PrintStockUsage(fsp.SelectedPrinterIID,  BSLayer.Instance.GetDataTableFromGridVisible(dgv, true));
                     if (chkViewDetails.Checked)
-                        DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
-                            "Stock Usage Report", DTRMSimpleBusiness.Instance.GetColumnPrintRatio(dgv), false);
+                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                            "Stock Usage Report", BSLayer.Instance.GetColumnPrintRatio(dgv), false);
                     else
                     {
                         int[] arrcols = new int[] { 3, 6, config.GetFontMaximumCharacter(config.ReportFontSize) - 21, 8 };
                         List<int> cols = new List<int>(arrcols);
-                        DTRMSimpleBusiness.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
+                        BSLayer.Instance.PrintDataTable(fsp.SelectedPrinter, DRUF.GetDataTableFromGridVisible(dgv, true, false),
                            "Stock Usage Report", cols, false);
                     }
 
@@ -91,10 +84,10 @@ namespace WinLayer
 
 
             //    if (rbSingle.Checked)
-            //     DTRMSimpleBusiness.Instance.PrintStockUsage( DTRMSimpleBusiness.Instance.GetDataTableFromGridVisible(dgv,true),
-            //         DTRMSimpleBusiness.Instance.GetSupplier(cmbSuppliers.SelectedValue.ToString()).SupplierName);
+            //     BSLayer.Instance.PrintStockUsage( BSLayer.Instance.GetDataTableFromGridVisible(dgv,true),
+            //         BSLayer.Instance.GetSupplier(cmbSuppliers.SelectedValue.ToString()).SupplierName);
             //else 
-            //     DTRMSimpleBusiness.Instance.PrintStockUsage( DTRMSimpleBusiness.Instance.GetDataTableFromGridVisible(dgv, true), null);
+            //     BSLayer.Instance.PrintStockUsage( BSLayer.Instance.GetDataTableFromGridVisible(dgv, true), null);
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
@@ -133,7 +126,7 @@ namespace WinLayer
 
         private void btnIncrementUsage_Click(object sender, EventArgs e)
         {
-            // DTRMSimpleBusiness.Instance.TransferStockItemUsageNow( DTRMSimpleBusiness.Instance.config.Stock_Usage_Incremental);
+            // BSLayer.Instance.TransferStockItemUsageNow( BSLayer.Instance.config.Stock_Usage_Incremental);
             //LoadUsage();
         }
 
@@ -154,7 +147,7 @@ namespace WinLayer
                 if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string filename = dlg.FileName.EndsWith(".csv") ? dlg.FileName : dlg.FileName + ".csv";
-                    if (DataGridViewCsvExporter.Export(filename, DTRMSimpleBusiness.Instance.GenerateCsvTextFromDataTable(dt)))
+                    if (DataGridViewCsvExporter.Export(filename, BSLayer.Instance.GenerateCsvTextFromDataTable(dt)))
                     {
                         if (MessageBox.Show("Do you want to open the file?", "Export Completed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
                             System.Diagnostics.Process.Start(filename);
@@ -170,7 +163,7 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 string StockItemIID = dgv.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
-                frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, await DTRMSimpleBusiness.Instance.GetStockItem(StockItemIID));
+                frmStockItem frm = ActivatorUtilities.CreateInstance<frmStockItem>(ServiceHelper.Services, await BSLayer.Instance.GetStockItem(StockItemIID));
                 if (frm.ShowDialog() == DialogResult.OK)
                     LoadUsage();
             }
@@ -186,7 +179,7 @@ namespace WinLayer
         {
             //if (dgv.SelectedRows.Count > 0) {
             //    string StockItemIID = dgv.SelectedRows[0].Cells["colStockItemIID"].Value.ToString();
-            //    StockItemUsage stockitemusage =await  DTRMSimpleBusiness.Instance.GetSingleStockItemUsageAsObject(StockItemIID);
+            //    StockItemUsage stockitemusage =await  BSLayer.Instance.GetSingleStockItemUsageAsObject(StockItemIID);
             //    if (stockitemusage != null) {
             //        frmPurchase frm = new frmPurchase(bslayer, stockitemusage);
             //        if (frm.ShowDialog() == DialogResult.OK) {
@@ -223,11 +216,11 @@ namespace WinLayer
             if (item != null)
             {
                 if (item.blnConverted)
-                    // DTRMSimpleBusiness.Instance.BifileStockItem(item.IID, item.Quantity);
-                    DTRMSimpleBusiness.Instance.UpdateStockItemUsedQuantity(item.IID, item.Quantity * -1);
+                    // BSLayer.Instance.BifileStockItem(item.IID, item.Quantity);
+                    BSLayer.Instance.UpdateStockItemUsedQuantity(item.IID, item.Quantity * -1);
                 else
-                    DTRMSimpleBusiness.Instance.BifileStockItem(item.IID, item.Quantity * -1);
-                //if ( DTRMSimpleBusiness.Instance.UpdateStockItemUsedQuantity(item.IID,item.Quantity * -1)) 
+                    BSLayer.Instance.BifileStockItem(item.IID, item.Quantity * -1);
+                //if ( BSLayer.Instance.UpdateStockItemUsedQuantity(item.IID,item.Quantity * -1)) 
                 LoadUsage();
                 btnUndo.Enabled = undoList.Count > 0;
             }
@@ -284,7 +277,7 @@ namespace WinLayer
             {
                 int Qty = int.Parse(dgv.Rows[i].Cells["colOrderableQuantity"].Value.ToString());
                 string StockItemIID = dgv.Rows[i].Cells["colStockItemIID"].Value.ToString();
-                if (await DTRMSimpleBusiness.Instance.BifileStockItem(StockItemIID, Qty))
+                if (await BSLayer.Instance.BifileStockItem(StockItemIID, Qty))
                 {
                     undoList.Push(new UndoItem()
                     {

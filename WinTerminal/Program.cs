@@ -54,7 +54,7 @@ namespace DTRMClientNS
 
                   // 3. Register Forms (Forms must be in DI to receive injections)
                   services.AddTransient<FrmLock>();
-                  services.AddSingleton<DTRMSimpleBusiness>();
+                  services.AddSingleton<BSLayer>();
 
                   // 2. Build the provider
                   ServiceProvider = services.BuildServiceProvider();

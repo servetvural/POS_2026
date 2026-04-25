@@ -1,9 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
+﻿using System.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
-
 using POSLayer.Library;
 using POSLayer.Models;
 
@@ -39,7 +35,7 @@ namespace WinLayer {
         }
 
         private void btnFullScreen_Click(object sender, EventArgs e) {
-            if (ServiceHelper.Services != null && DTRMSimpleBusiness.Instance != null && korderitem != null) {
+            if (ServiceHelper.Services != null && BSLayer.Instance != null && korderitem != null) {
                 frmKitchenOrderFullScreen frm = ActivatorUtilities.CreateInstance < frmKitchenOrderFullScreen>(ServiceHelper.Services, korderitem);
                 frm.Show();
             }
