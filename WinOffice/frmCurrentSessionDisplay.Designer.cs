@@ -34,11 +34,13 @@ namespace WinOffice {
         {
             components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCurrentSessionDisplay));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCurrentSessionDisplay));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             label5 = new System.Windows.Forms.Label();
             label4 = new System.Windows.Forms.Label();
             lblUnpaidTotal = new System.Windows.Forms.Label();
@@ -53,8 +55,14 @@ namespace WinOffice {
             lblGrossTotal = new System.Windows.Forms.Label();
             lblSessionStartDateTime = new System.Windows.Forms.Label();
             dgvOrders = new System.Windows.Forms.DataGridView();
+            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             orderBindingSource = new System.Windows.Forms.BindingSource(components);
             dgvOrderItems = new System.Windows.Forms.DataGridView();
+            quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            OrderItemText = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             orderItemBindingSource = new System.Windows.Forms.BindingSource(components);
             label2 = new System.Windows.Forms.Label();
             label3 = new System.Windows.Forms.Label();
@@ -74,24 +82,45 @@ namespace WinOffice {
             cmdNotifyWithSound = new System.Windows.Forms.ToolStripButton();
             cmdPrintReport = new System.Windows.Forms.ToolStripButton();
             cmdViewReceipt = new System.Windows.Forms.ToolStripButton();
-            pnlOrderItems = new System.Windows.Forms.Panel();
-            pnlOrders = new System.Windows.Forms.Panel();
-            expander2 = new WinLayer.Expander();
             expander1 = new WinLayer.Expander();
-            orderDateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            totalDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            quantityDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            OrderItemText = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            priceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            totalDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            splitContainer1 = new System.Windows.Forms.SplitContainer();
+            splitContainer2 = new System.Windows.Forms.SplitContainer();
+            splitContainer3 = new System.Windows.Forms.SplitContainer();
+            dgvStockUsage = new System.Windows.Forms.DataGridView();
+            Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            QuantityType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            stockItemNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            recipeUsageBindingSource = new System.Windows.Forms.BindingSource(components);
+            label7 = new System.Windows.Forms.Label();
+            dgvOrderItemSummary = new System.Windows.Forms.DataGridView();
+            orderItemSummaryBindingSource = new System.Windows.Forms.BindingSource(components);
+            label8 = new System.Windows.Forms.Label();
+            quantityDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderItemTextDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            priceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            totalDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
             ((System.ComponentModel.ISupportInitialize)orderBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvOrderItems).BeginInit();
             ((System.ComponentModel.ISupportInitialize)orderItemBindingSource).BeginInit();
             pnlInformation.SuspendLayout();
             barMain.SuspendLayout();
-            pnlOrderItems.SuspendLayout();
-            pnlOrders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
+            splitContainer2.Panel2.SuspendLayout();
+            splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).BeginInit();
+            splitContainer3.Panel1.SuspendLayout();
+            splitContainer3.Panel2.SuspendLayout();
+            splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvStockUsage).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)recipeUsageBindingSource).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOrderItemSummary).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)orderItemSummaryBindingSource).BeginInit();
             SuspendLayout();
             // 
             // label5
@@ -292,9 +321,27 @@ namespace WinOffice {
             dgvOrders.ReadOnly = true;
             dgvOrders.RowHeadersWidth = 25;
             dgvOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvOrders.Size = new System.Drawing.Size(621, 214);
+            dgvOrders.Size = new System.Drawing.Size(529, 338);
             dgvOrders.TabIndex = 71;
             dgvOrders.SelectionChanged += dgvOrders_SelectionChanged;
+            // 
+            // orderDateDataGridViewTextBoxColumn
+            // 
+            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
+            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
+            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
+            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
+            orderDateDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // totalDataGridViewTextBoxColumn1
+            // 
+            totalDataGridViewTextBoxColumn1.DataPropertyName = "Total";
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle1.Format = "c2";
+            totalDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle1;
+            totalDataGridViewTextBoxColumn1.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn1.Name = "totalDataGridViewTextBoxColumn1";
+            totalDataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // orderBindingSource
             // 
@@ -326,8 +373,44 @@ namespace WinOffice {
             dgvOrderItems.ReadOnly = true;
             dgvOrderItems.RowHeadersWidth = 25;
             dgvOrderItems.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvOrderItems.Size = new System.Drawing.Size(621, 439);
+            dgvOrderItems.Size = new System.Drawing.Size(529, 319);
             dgvOrderItems.TabIndex = 0;
+            // 
+            // quantityDataGridViewTextBoxColumn
+            // 
+            quantityDataGridViewTextBoxColumn.DataPropertyName = "Quantity";
+            quantityDataGridViewTextBoxColumn.HeaderText = "Quantity";
+            quantityDataGridViewTextBoxColumn.Name = "quantityDataGridViewTextBoxColumn";
+            quantityDataGridViewTextBoxColumn.ReadOnly = true;
+            quantityDataGridViewTextBoxColumn.Width = 80;
+            // 
+            // OrderItemText
+            // 
+            OrderItemText.DataPropertyName = "OrderItemText";
+            OrderItemText.HeaderText = "Order Item";
+            OrderItemText.Name = "OrderItemText";
+            OrderItemText.ReadOnly = true;
+            OrderItemText.Width = 200;
+            // 
+            // priceDataGridViewTextBoxColumn
+            // 
+            priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle3.Format = "c2";
+            priceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            priceDataGridViewTextBoxColumn.HeaderText = "Price";
+            priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
+            priceDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // totalDataGridViewTextBoxColumn
+            // 
+            totalDataGridViewTextBoxColumn.DataPropertyName = "Total";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle4.Format = "c2";
+            totalDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            totalDataGridViewTextBoxColumn.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn.Name = "totalDataGridViewTextBoxColumn";
+            totalDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // orderItemBindingSource
             // 
@@ -342,7 +425,7 @@ namespace WinOffice {
             label2.Location = new System.Drawing.Point(0, 0);
             label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(621, 29);
+            label2.Size = new System.Drawing.Size(529, 29);
             label2.TabIndex = 72;
             label2.Text = "ORDERS";
             label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -355,7 +438,7 @@ namespace WinOffice {
             label3.Location = new System.Drawing.Point(0, 0);
             label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new System.Drawing.Size(621, 29);
+            label3.Size = new System.Drawing.Size(529, 29);
             label3.TabIndex = 73;
             label3.Text = "ORDER ITEMS";
             label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -409,7 +492,7 @@ namespace WinOffice {
             barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdInterval, pBar2, cmdGetSales, cmdNotifyWithSound, cmdPrintReport, cmdViewReceipt });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
-            barMain.Size = new System.Drawing.Size(1004, 62);
+            barMain.Size = new System.Drawing.Size(1455, 62);
             barMain.TabIndex = 74;
             barMain.Text = "toolStrip1";
             // 
@@ -515,56 +598,6 @@ namespace WinOffice {
             cmdViewReceipt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             cmdViewReceipt.Click += btnViewReceipt_Click;
             // 
-            // pnlOrderItems
-            // 
-            pnlOrderItems.Controls.Add(dgvOrderItems);
-            pnlOrderItems.Controls.Add(label3);
-            pnlOrderItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            pnlOrderItems.Location = new System.Drawing.Point(383, 329);
-            pnlOrderItems.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            pnlOrderItems.MinimumSize = new System.Drawing.Size(0, 231);
-            pnlOrderItems.Name = "pnlOrderItems";
-            pnlOrderItems.Size = new System.Drawing.Size(621, 468);
-            pnlOrderItems.TabIndex = 75;
-            // 
-            // pnlOrders
-            // 
-            pnlOrders.Controls.Add(dgvOrders);
-            pnlOrders.Controls.Add(label2);
-            pnlOrders.Dock = System.Windows.Forms.DockStyle.Top;
-            pnlOrders.Location = new System.Drawing.Point(383, 62);
-            pnlOrders.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            pnlOrders.MinimumSize = new System.Drawing.Size(0, 231);
-            pnlOrders.Name = "pnlOrders";
-            pnlOrders.Size = new System.Drawing.Size(621, 243);
-            pnlOrders.TabIndex = 76;
-            // 
-            // expander2
-            // 
-            expander2.BackColor = System.Drawing.Color.Salmon;
-            expander2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            expander2.Caption = "";
-            expander2.CaptionAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            expander2.CaptionFont = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
-            expander2.CaptionForeColor = System.Drawing.Color.White;
-            expander2.CaptionOrientation = System.Windows.Forms.Orientation.Horizontal;
-            expander2.ColourFixed = System.Drawing.Color.Salmon;
-            expander2.ColourUnFixed = System.Drawing.SystemColors.ActiveCaption;
-            expander2.Dock = System.Windows.Forms.DockStyle.Top;
-            expander2.ExpandableControl = pnlOrders;
-            expander2.ExpandButtonBackColor = System.Drawing.Color.Transparent;
-            expander2.Expanded = true;
-            expander2.Fixed = true;
-            expander2.Location = new System.Drawing.Point(383, 305);
-            expander2.LockButtonDock = System.Windows.Forms.DockStyle.Left;
-            expander2.LockButtonSize = new System.Drawing.Size(37, 22);
-            expander2.LockButtonVisible = true;
-            expander2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            expander2.MinimumSize = new System.Drawing.Size(6, 5);
-            expander2.Name = "expander2";
-            expander2.Size = new System.Drawing.Size(621, 24);
-            expander2.TabIndex = 78;
-            // 
             // expander1
             // 
             expander1.BackColor = System.Drawing.SystemColors.ActiveCaption;
@@ -591,68 +624,209 @@ namespace WinOffice {
             expander1.Size = new System.Drawing.Size(25, 735);
             expander1.TabIndex = 77;
             // 
-            // orderDateDataGridViewTextBoxColumn
+            // splitContainer1
             // 
-            orderDateDataGridViewTextBoxColumn.DataPropertyName = "OrderDate";
-            orderDateDataGridViewTextBoxColumn.HeaderText = "OrderDate";
-            orderDateDataGridViewTextBoxColumn.Name = "orderDateDataGridViewTextBoxColumn";
-            orderDateDataGridViewTextBoxColumn.ReadOnly = true;
-            orderDateDataGridViewTextBoxColumn.Width = 200;
+            splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer1.Location = new System.Drawing.Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // totalDataGridViewTextBoxColumn1
+            // splitContainer1.Panel1
             // 
-            totalDataGridViewTextBoxColumn1.DataPropertyName = "Total";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle1.Format = "c2";
-            totalDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle1;
-            totalDataGridViewTextBoxColumn1.HeaderText = "Total";
-            totalDataGridViewTextBoxColumn1.Name = "totalDataGridViewTextBoxColumn1";
-            totalDataGridViewTextBoxColumn1.ReadOnly = true;
+            splitContainer1.Panel1.Controls.Add(dgvOrders);
+            splitContainer1.Panel1.Controls.Add(label2);
             // 
-            // quantityDataGridViewTextBoxColumn
+            // splitContainer1.Panel2
             // 
-            quantityDataGridViewTextBoxColumn.DataPropertyName = "Quantity";
-            quantityDataGridViewTextBoxColumn.HeaderText = "Quantity";
-            quantityDataGridViewTextBoxColumn.Name = "quantityDataGridViewTextBoxColumn";
-            quantityDataGridViewTextBoxColumn.ReadOnly = true;
-            quantityDataGridViewTextBoxColumn.Width = 80;
+            splitContainer1.Panel2.Controls.Add(dgvOrderItems);
+            splitContainer1.Panel2.Controls.Add(label3);
+            splitContainer1.Size = new System.Drawing.Size(529, 735);
+            splitContainer1.SplitterDistance = 367;
+            splitContainer1.SplitterWidth = 20;
+            splitContainer1.TabIndex = 79;
             // 
-            // OrderItemText
+            // splitContainer2
             // 
-            OrderItemText.DataPropertyName = "OrderItemText";
-            OrderItemText.HeaderText = "Order Item";
-            OrderItemText.Name = "OrderItemText";
-            OrderItemText.ReadOnly = true;
-            OrderItemText.Width = 300;
+            splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer2.Location = new System.Drawing.Point(383, 62);
+            splitContainer2.Name = "splitContainer2";
             // 
-            // priceDataGridViewTextBoxColumn
+            // splitContainer2.Panel1
             // 
-            priceDataGridViewTextBoxColumn.DataPropertyName = "Price";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle3.Format = "c2";
-            priceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
-            priceDataGridViewTextBoxColumn.HeaderText = "Price";
-            priceDataGridViewTextBoxColumn.Name = "priceDataGridViewTextBoxColumn";
-            priceDataGridViewTextBoxColumn.ReadOnly = true;
+            splitContainer2.Panel1.Controls.Add(splitContainer1);
             // 
-            // totalDataGridViewTextBoxColumn
+            // splitContainer2.Panel2
             // 
-            totalDataGridViewTextBoxColumn.DataPropertyName = "Total";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle4.Format = "c2";
-            totalDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
-            totalDataGridViewTextBoxColumn.HeaderText = "Total";
-            totalDataGridViewTextBoxColumn.Name = "totalDataGridViewTextBoxColumn";
-            totalDataGridViewTextBoxColumn.ReadOnly = true;
+            splitContainer2.Panel2.Controls.Add(splitContainer3);
+            splitContainer2.Size = new System.Drawing.Size(1072, 735);
+            splitContainer2.SplitterDistance = 529;
+            splitContainer2.SplitterWidth = 20;
+            splitContainer2.TabIndex = 80;
+            // 
+            // splitContainer3
+            // 
+            splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            splitContainer3.Location = new System.Drawing.Point(0, 0);
+            splitContainer3.Name = "splitContainer3";
+            splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            splitContainer3.Panel1.Controls.Add(dgvStockUsage);
+            splitContainer3.Panel1.Controls.Add(label7);
+            // 
+            // splitContainer3.Panel2
+            // 
+            splitContainer3.Panel2.Controls.Add(dgvOrderItemSummary);
+            splitContainer3.Panel2.Controls.Add(label8);
+            splitContainer3.Size = new System.Drawing.Size(523, 735);
+            splitContainer3.SplitterDistance = 367;
+            splitContainer3.SplitterWidth = 20;
+            splitContainer3.TabIndex = 75;
+            // 
+            // dgvStockUsage
+            // 
+            dgvStockUsage.AllowUserToAddRows = false;
+            dgvStockUsage.AllowUserToDeleteRows = false;
+            dgvStockUsage.AutoGenerateColumns = false;
+            dgvStockUsage.BackgroundColor = System.Drawing.Color.White;
+            dgvStockUsage.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvStockUsage.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { Quantity, QuantityType, stockItemNameDataGridViewTextBoxColumn });
+            dgvStockUsage.DataSource = recipeUsageBindingSource;
+            dgvStockUsage.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvStockUsage.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgvStockUsage.Location = new System.Drawing.Point(0, 29);
+            dgvStockUsage.MultiSelect = false;
+            dgvStockUsage.Name = "dgvStockUsage";
+            dgvStockUsage.ReadOnly = true;
+            dgvStockUsage.RowHeadersWidth = 25;
+            dgvStockUsage.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvStockUsage.Size = new System.Drawing.Size(523, 338);
+            dgvStockUsage.TabIndex = 74;
+            dgvStockUsage.CellContentClick += dgvStockUsage_CellContentClick;
+            // 
+            // Quantity
+            // 
+            Quantity.DataPropertyName = "Quantity";
+            Quantity.HeaderText = "Quantity";
+            Quantity.Name = "Quantity";
+            Quantity.ReadOnly = true;
+            Quantity.Width = 70;
+            // 
+            // QuantityType
+            // 
+            QuantityType.DataPropertyName = "QuantityType";
+            QuantityType.HeaderText = "Measure";
+            QuantityType.Name = "QuantityType";
+            QuantityType.ReadOnly = true;
+            // 
+            // stockItemNameDataGridViewTextBoxColumn
+            // 
+            stockItemNameDataGridViewTextBoxColumn.DataPropertyName = "StockItemName";
+            stockItemNameDataGridViewTextBoxColumn.HeaderText = "Stock Item";
+            stockItemNameDataGridViewTextBoxColumn.Name = "stockItemNameDataGridViewTextBoxColumn";
+            stockItemNameDataGridViewTextBoxColumn.ReadOnly = true;
+            stockItemNameDataGridViewTextBoxColumn.Width = 300;
+            // 
+            // recipeUsageBindingSource
+            // 
+            recipeUsageBindingSource.DataSource = typeof(RecipeUsage);
+            // 
+            // label7
+            // 
+            label7.BackColor = System.Drawing.Color.White;
+            label7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            label7.Dock = System.Windows.Forms.DockStyle.Top;
+            label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            label7.Location = new System.Drawing.Point(0, 0);
+            label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label7.Name = "label7";
+            label7.Size = new System.Drawing.Size(523, 29);
+            label7.TabIndex = 73;
+            label7.Text = "STOCK USAGE";
+            label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // dgvOrderItemSummary
+            // 
+            dgvOrderItemSummary.AllowUserToAddRows = false;
+            dgvOrderItemSummary.AllowUserToDeleteRows = false;
+            dgvOrderItemSummary.AutoGenerateColumns = false;
+            dgvOrderItemSummary.BackgroundColor = System.Drawing.Color.White;
+            dgvOrderItemSummary.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvOrderItemSummary.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { quantityDataGridViewTextBoxColumn1, orderItemTextDataGridViewTextBoxColumn, priceDataGridViewTextBoxColumn1, totalDataGridViewTextBoxColumn2 });
+            dgvOrderItemSummary.DataSource = orderItemSummaryBindingSource;
+            dgvOrderItemSummary.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvOrderItemSummary.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
+            dgvOrderItemSummary.Location = new System.Drawing.Point(0, 29);
+            dgvOrderItemSummary.MultiSelect = false;
+            dgvOrderItemSummary.Name = "dgvOrderItemSummary";
+            dgvOrderItemSummary.ReadOnly = true;
+            dgvOrderItemSummary.RowHeadersWidth = 25;
+            dgvOrderItemSummary.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvOrderItemSummary.Size = new System.Drawing.Size(523, 319);
+            dgvOrderItemSummary.TabIndex = 75;
+            // 
+            // orderItemSummaryBindingSource
+            // 
+            orderItemSummaryBindingSource.DataSource = typeof(OrderItemSummary);
+            // 
+            // label8
+            // 
+            label8.BackColor = System.Drawing.Color.White;
+            label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            label8.Dock = System.Windows.Forms.DockStyle.Top;
+            label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            label8.Location = new System.Drawing.Point(0, 0);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(523, 29);
+            label8.TabIndex = 74;
+            label8.Text = "ORDER ITEM SUMMARY";
+            label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // quantityDataGridViewTextBoxColumn1
+            // 
+            quantityDataGridViewTextBoxColumn1.DataPropertyName = "Quantity";
+            quantityDataGridViewTextBoxColumn1.HeaderText = "Quantity";
+            quantityDataGridViewTextBoxColumn1.Name = "quantityDataGridViewTextBoxColumn1";
+            quantityDataGridViewTextBoxColumn1.ReadOnly = true;
+            quantityDataGridViewTextBoxColumn1.Width = 70;
+            // 
+            // orderItemTextDataGridViewTextBoxColumn
+            // 
+            orderItemTextDataGridViewTextBoxColumn.DataPropertyName = "OrderItemText";
+            orderItemTextDataGridViewTextBoxColumn.HeaderText = "OrderItemText";
+            orderItemTextDataGridViewTextBoxColumn.Name = "orderItemTextDataGridViewTextBoxColumn";
+            orderItemTextDataGridViewTextBoxColumn.ReadOnly = true;
+            orderItemTextDataGridViewTextBoxColumn.Width = 200;
+            // 
+            // priceDataGridViewTextBoxColumn1
+            // 
+            priceDataGridViewTextBoxColumn1.DataPropertyName = "Price";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Format = "N2";
+            priceDataGridViewTextBoxColumn1.DefaultCellStyle = dataGridViewCellStyle6;
+            priceDataGridViewTextBoxColumn1.HeaderText = "Price";
+            priceDataGridViewTextBoxColumn1.Name = "priceDataGridViewTextBoxColumn1";
+            priceDataGridViewTextBoxColumn1.ReadOnly = true;
+            priceDataGridViewTextBoxColumn1.Width = 80;
+            // 
+            // totalDataGridViewTextBoxColumn2
+            // 
+            totalDataGridViewTextBoxColumn2.DataPropertyName = "Total";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle7.Format = "N2";
+            totalDataGridViewTextBoxColumn2.DefaultCellStyle = dataGridViewCellStyle7;
+            totalDataGridViewTextBoxColumn2.HeaderText = "Total";
+            totalDataGridViewTextBoxColumn2.Name = "totalDataGridViewTextBoxColumn2";
+            totalDataGridViewTextBoxColumn2.ReadOnly = true;
             // 
             // frmCurrentSessionDisplay
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(1004, 797);
-            Controls.Add(pnlOrderItems);
-            Controls.Add(expander2);
-            Controls.Add(pnlOrders);
+            ClientSize = new System.Drawing.Size(1455, 797);
+            Controls.Add(splitContainer2);
             Controls.Add(expander1);
             Controls.Add(pnlInformation);
             Controls.Add(barMain);
@@ -669,8 +843,22 @@ namespace WinOffice {
             pnlInformation.PerformLayout();
             barMain.ResumeLayout(false);
             barMain.PerformLayout();
-            pnlOrderItems.ResumeLayout(false);
-            pnlOrders.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+            splitContainer2.ResumeLayout(false);
+            splitContainer3.Panel1.ResumeLayout(false);
+            splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer3).EndInit();
+            splitContainer3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvStockUsage).EndInit();
+            ((System.ComponentModel.ISupportInitialize)recipeUsageBindingSource).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOrderItemSummary).EndInit();
+            ((System.ComponentModel.ISupportInitialize)orderItemSummaryBindingSource).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -711,17 +899,31 @@ namespace WinOffice {
         private System.Windows.Forms.ToolStripButton cmdNotifyWithSound;
         private System.Windows.Forms.ToolStripButton cmdPrintReport;
         private System.Windows.Forms.ToolStripButton cmdViewReceipt;
-        private System.Windows.Forms.Panel pnlOrderItems;
-        private System.Windows.Forms.Panel pnlOrders;
         private WinLayer.Expander expander1;
-        private WinLayer.Expander expander2;
         private System.Windows.Forms.BindingSource orderBindingSource;
         private System.Windows.Forms.BindingSource orderItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderDateDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.DataGridView dgvStockUsage;
+        private System.Windows.Forms.BindingSource recipeUsageBindingSource;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.SplitContainer splitContainer3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn usageDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridView dgvOrderItemSummary;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn QuantityType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn stockItemNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn quantityDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn OrderItemText;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource orderItemSummaryBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantityDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn orderItemTextDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn2;
     }
 }

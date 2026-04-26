@@ -1,4 +1,5 @@
 ﻿
+using System.ComponentModel.Design;
 using System.Data;
 using System.Reflection;
 
@@ -30,6 +31,15 @@ public static class Extensions
             dataTable.Rows.Add(values);
         }
         return dataTable;
+    }
+
+    // Returns a List of the actual enum constants
+    public static List<T> ToList<T>(bool NameOrderly = false) where T : Enum
+    {
+        if (NameOrderly)
+            return Enum.GetValues(typeof(T)).Cast<T>().OrderBy(x => x.ToString()).ToList();
+        else
+            return Enum.GetValues(typeof(T)).Cast<T>().ToList();
     }
 
 }

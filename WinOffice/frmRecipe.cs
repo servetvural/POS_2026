@@ -1,9 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
-namespace WinLayer
+using WinLayer;
+
+namespace WinOffice
 {
     public partial class frmRecipe : Form
     {

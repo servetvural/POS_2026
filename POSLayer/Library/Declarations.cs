@@ -100,7 +100,7 @@ public enum LanguageTypes { English, Türkçe }
 public enum ButtonShapeTypes { Rectangle, Circle }
 public enum KitchenOrderStatusTypes { Waiting, PartialyCompleted, Completed, All }
 public enum PrepDialogReturnTypes { Cancel, Hold, HoldAndPrint, Cash, CashAndPrint }
-public enum QuantityTypes { None, Piece, Kilo, Gram, Litre, ml, Pack, Box, Bottle, Crate, Slice, Dash, Pinch, Bar_Spoon, Leaf, Wheel, Handful, Quarter, Drops, Halves, Barista_Scoop, Splash, Sprinkle, Sachet, Can }
+public enum QuantityTypes { None, Piece, Kilo, Gram, Litre, ml, Pack, Box, Bottle, Crate, Slice, Dash, Pinch, Bar_Spoon, Leaf, Wheel, Handful, Quarter, Drops, Halves, Barista_Scoop, Splash, Sprinkle, Sachet, Can,Bag }
 public enum KitchenDisplayTypes { None, Single_Display, Double_Display, Triple_Display }
 public enum OrientationTypes { Landscape, Portrait }
 public enum PrintableInterfaceTypes { None_Printable, One_By_One_Printable, All_in_One_Printable, Both_Printable }

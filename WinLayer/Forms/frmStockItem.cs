@@ -34,24 +34,24 @@ namespace WinLayer
             this.stockItem = stockItem;
         }
 
-        private void frmStockItem_Load(object sender, EventArgs e)
+        private async void frmStockItem_Load(object sender, EventArgs e)
         {
-            LoadSuppliers();
-            LoadStockItem();
+            await LoadSuppliers();
+           await  LoadStockItem();
 
         }
-        private async void LoadSuppliers()
+        private async Task LoadSuppliers()
         {
             _supplierSource.DataSource = (await repoSupplier.GetAllAsync()).ToBindingList();
             cmbSupplier.DataSource = _supplierSource;
 
-            cmbOrderType.DataSource = Enum.GetValues(typeof(QuantityTypes));
-            cmbQuantityType.DataSource = Enum.GetValues(typeof(QuantityTypes));
+            cmbOrderType.DataSource = Extensions.ToList<QuantityTypes>(true); 
+            cmbQuantityType.DataSource = Extensions.ToList<QuantityTypes>(true); // Enum.GetValues(typeof(QuantityTypes));
         }
-        private async void LoadStockItem()
+        private async Task LoadStockItem()
         {
             txtStockName.Text = stockItem.StockName;
-            cmbQuantityType.SelectedItem = stockItem.QuantityType;
+            cmbQuantityType.SelectedItem = stockItem.QuantityType;                    
             cmbOrderType.SelectedItem = stockItem.OrderType;
             txtConversion.Value = stockItem.Conversion;
             txtUsedQuantity.Text = stockItem.UsedQuantity.ToString();

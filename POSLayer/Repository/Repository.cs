@@ -933,6 +933,72 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
+    public async Task<List<RecipeUsage>> GetSessionRecipeUsage(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            //var oitems = _db.OrderItems.Where(oi => oi.Order.SessionIID == sessionIID).Include(oi => oi.CategoryItem).ThenInclude(c => c.recipes);
+           // var ritems = oitems.SelectMany(oi => oi.CategoryItem.recipes.Where(ci => ci.StockItemIID != null)).Include(s => s.StockItem);
+
+
+
+            List<RecipeUsage> recipeSummary = await _db.OrderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID)
+                // 1. Use the (collection, result) overload of SelectMany
+                .SelectMany(
+                    oi => oi.CategoryItem.recipes.Where(ri => ri.StockItemIID != null),
+                    (oi, ri) => new {
+                        RecipeIID = ri.IID,
+                        StockItemIID = ri.StockItemIID,
+                        StockItemName = ri.StockItem.StockName,
+                        QuantityType = ri.QuantityType,
+                        // Both 'oi' and 'ri' are accessible here for translation
+                        CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity
+                    }
+                )
+                // 2. Group the flat results
+                .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType })
+                .Select(g => new RecipeUsage
+                {
+                    IID = g.Key.RecipeIID,
+                    StockItemIID = g.Key.StockItemIID,
+                    StockItemName = g.Key.StockItemName,
+                    Quantity = (double)g.Sum(x => x.CalculatedUsage),
+                    QuantityType =   g.Key.QuantityType
+                })
+                .ToListAsync();
+
+            return recipeSummary;
+
+        } catch (Exception ex)
+        {
+            return new List<RecipeUsage>();
+        }
+    }
+
+    public async  Task<List<OrderItemSummary>> GetSessionOrderItemSummary(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var summary = await _db.OrderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID)
+                .GroupBy(oi => new { oi.CategoryItemIID, oi.CategoryItem.ItemName, oi.Price  })
+                .Select(g => new OrderItemSummary
+                {                              
+                    OrderItemText = g.Key.ItemName,
+                    Quantity = g.Sum(oi => oi.Quantity),
+                    Price = g.Key.Price,
+                    Total = g.Sum(oi => oi.Quantity * oi.Price)
+                })
+                .ToListAsync();
+            return summary;
+        } catch (Exception ex)
+        {
+            return new List<OrderItemSummary>();
+        }   
+    }
 
     //public async Task<Order> BarrowOrder(string OrderIID, string ClientIP)
     //{

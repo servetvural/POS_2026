@@ -30,6 +30,7 @@ namespace WinOffice {
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             popCategoryItem = new System.Windows.Forms.ContextMenuStrip(components);
             popEBAddNew = new System.Windows.Forms.ToolStripMenuItem();
             popEBEdit = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,10 +53,9 @@ namespace WinOffice {
             popSetAllBackColourToTransparent = new System.Windows.Forms.ToolStripMenuItem();
             popSetAllDistributionTo = new System.Windows.Forms.ToolStripMenuItem();
             dgvRecipe = new System.Windows.Forms.DataGridView();
-            dataGridViewTextBoxColumn32 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            dataGridViewTextBoxColumn28 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn29 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn28 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            dataGridViewTextBoxColumn24 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn30 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn34 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             _recipeItemBindingSource = new System.Windows.Forms.BindingSource(components);
@@ -297,7 +297,7 @@ namespace WinOffice {
             dgvRecipe.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             dgvRecipe.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dgvRecipe.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRecipe.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn32, dataGridViewTextBoxColumn24, dataGridViewTextBoxColumn28, dataGridViewTextBoxColumn29, dataGridViewTextBoxColumn30, dataGridViewTextBoxColumn34 });
+            dgvRecipe.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { dataGridViewTextBoxColumn29, dataGridViewTextBoxColumn28, dataGridViewTextBoxColumn24, dataGridViewTextBoxColumn30, dataGridViewTextBoxColumn34 });
             dgvRecipe.DataSource = _recipeItemBindingSource;
             dgvRecipe.Dock = System.Windows.Forms.DockStyle.Fill;
             dgvRecipe.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
@@ -308,38 +308,34 @@ namespace WinOffice {
             dgvRecipe.RowHeadersWidth = 25;
             dgvRecipe.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             dgvRecipe.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvRecipe.Size = new System.Drawing.Size(828, 124);
+            dgvRecipe.Size = new System.Drawing.Size(828, 162);
             dgvRecipe.TabIndex = 11;
             dgvRecipe.CellDoubleClick += dgvRecipeItems_CellDoubleClick;
             dgvRecipe.SelectionChanged += dgvRecipe_SelectionChanged;
             // 
-            // dataGridViewTextBoxColumn32
+            // dataGridViewTextBoxColumn29
             // 
-            dataGridViewTextBoxColumn32.DataPropertyName = "RecipeText";
-            dataGridViewTextBoxColumn32.HeaderText = "RecipeText";
-            dataGridViewTextBoxColumn32.Name = "dataGridViewTextBoxColumn32";
-            dataGridViewTextBoxColumn32.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn24
-            // 
-            dataGridViewTextBoxColumn24.DataPropertyName = "StockItemName";
-            dataGridViewTextBoxColumn24.HeaderText = "StockItemName";
-            dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
-            dataGridViewTextBoxColumn24.ReadOnly = true;
+            dataGridViewTextBoxColumn29.DataPropertyName = "Quantity";
+            dataGridViewCellStyle1.Format = "0.##";
+            dataGridViewTextBoxColumn29.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewTextBoxColumn29.HeaderText = "Quantity";
+            dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
+            dataGridViewTextBoxColumn29.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn28
             // 
             dataGridViewTextBoxColumn28.DataPropertyName = "QuantityType";
-            dataGridViewTextBoxColumn28.HeaderText = "QuantityType";
+            dataGridViewTextBoxColumn28.HeaderText = "Measure";
             dataGridViewTextBoxColumn28.Name = "dataGridViewTextBoxColumn28";
             dataGridViewTextBoxColumn28.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn29
+            // dataGridViewTextBoxColumn24
             // 
-            dataGridViewTextBoxColumn29.DataPropertyName = "Quantity";
-            dataGridViewTextBoxColumn29.HeaderText = "Quantity";
-            dataGridViewTextBoxColumn29.Name = "dataGridViewTextBoxColumn29";
-            dataGridViewTextBoxColumn29.ReadOnly = true;
+            dataGridViewTextBoxColumn24.DataPropertyName = "StockItemName";
+            dataGridViewTextBoxColumn24.HeaderText = "Item";
+            dataGridViewTextBoxColumn24.Name = "dataGridViewTextBoxColumn24";
+            dataGridViewTextBoxColumn24.ReadOnly = true;
+            dataGridViewTextBoxColumn24.Width = 200;
             // 
             // dataGridViewTextBoxColumn30
             // 
@@ -347,13 +343,15 @@ namespace WinOffice {
             dataGridViewTextBoxColumn30.HeaderText = "Comment";
             dataGridViewTextBoxColumn30.Name = "dataGridViewTextBoxColumn30";
             dataGridViewTextBoxColumn30.ReadOnly = true;
+            dataGridViewTextBoxColumn30.Width = 200;
             // 
             // dataGridViewTextBoxColumn34
             // 
             dataGridViewTextBoxColumn34.DataPropertyName = "DOrder";
-            dataGridViewTextBoxColumn34.HeaderText = "DOrder";
+            dataGridViewTextBoxColumn34.HeaderText = "Order";
             dataGridViewTextBoxColumn34.Name = "dataGridViewTextBoxColumn34";
             dataGridViewTextBoxColumn34.ReadOnly = true;
+            dataGridViewTextBoxColumn34.Width = 50;
             // 
             // _recipeItemBindingSource
             // 
@@ -367,7 +365,7 @@ namespace WinOffice {
             pnlEBPicture.Location = new System.Drawing.Point(0, 54);
             pnlEBPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pnlEBPicture.Name = "pnlEBPicture";
-            pnlEBPicture.Size = new System.Drawing.Size(163, 124);
+            pnlEBPicture.Size = new System.Drawing.Size(163, 162);
             pnlEBPicture.TabIndex = 10;
             // 
             // pboxEBPicture
@@ -378,7 +376,7 @@ namespace WinOffice {
             pboxEBPicture.Location = new System.Drawing.Point(0, 0);
             pboxEBPicture.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             pboxEBPicture.Name = "pboxEBPicture";
-            pboxEBPicture.Size = new System.Drawing.Size(163, 124);
+            pboxEBPicture.Size = new System.Drawing.Size(163, 162);
             pboxEBPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             pboxEBPicture.TabIndex = 10;
             pboxEBPicture.TabStop = false;
@@ -522,7 +520,7 @@ namespace WinOffice {
             dgvCategoryItem.RowTemplate.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(192, 192, 255);
             dgvCategoryItem.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             dgvCategoryItem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            dgvCategoryItem.Size = new System.Drawing.Size(991, 239);
+            dgvCategoryItem.Size = new System.Drawing.Size(991, 298);
             dgvCategoryItem.TabIndex = 0;
             dgvCategoryItem.CellDoubleClick += dgvCategoryItem_CellDoubleClick;
             dgvCategoryItem.SelectionChanged += dgvCategoryItem_SelectionChanged;
@@ -1003,8 +1001,8 @@ namespace WinOffice {
             splitContainer1.Panel2.Controls.Add(dgvRecipe);
             splitContainer1.Panel2.Controls.Add(pnlEBPicture);
             splitContainer1.Panel2.Controls.Add(barStockUsage);
-            splitContainer1.Size = new System.Drawing.Size(991, 515);
-            splitContainer1.SplitterDistance = 317;
+            splitContainer1.Size = new System.Drawing.Size(991, 612);
+            splitContainer1.SplitterDistance = 376;
             splitContainer1.SplitterWidth = 20;
             splitContainer1.TabIndex = 3;
             // 
@@ -1034,7 +1032,7 @@ namespace WinOffice {
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(991, 515);
+            ClientSize = new System.Drawing.Size(991, 612);
             Controls.Add(splitContainer1);
             KeyPreview = true;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -1195,12 +1193,6 @@ namespace WinOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private System.Windows.Forms.BindingSource _categoryItemSourceDesign;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn32;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn24;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn28;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn29;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn30;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn34;
         private System.Windows.Forms.BindingSource _recipeItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
@@ -1222,6 +1214,11 @@ namespace WinOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn29;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn28;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn24;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn30;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn34;
     }
 }
 

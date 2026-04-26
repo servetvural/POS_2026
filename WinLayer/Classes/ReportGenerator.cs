@@ -266,27 +266,28 @@ namespace WinLayer
 
 
                         //This is exactly the point where the current active real session to be archived for the first time
-                        //if (config.Record_Stock_Usage) {
-                        //    //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
-                        //    // BSLayer.Instance.TransferStockItemUsageNow();
+                        if (config.Record_Stock_Usage)
+                        {
+                            //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
+                            // BSLayer.Instance.TransferStockItemUsageNow();
 
-                        //    //Print the updated stockusage report up to end of tonight
-                        //    //if (config.Print_Stock_Usage_Report)
-                        //    //     BSLayer.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
+                            //Print the updated stockusage report up to end of tonight
+                            //if (config.Print_Stock_Usage_Report)
+                            //     BSLayer.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
 
 
-                        //    //Email the updated stockusage to required people (same as print)
-                        //    //if (config.Email_Stock_Usage_Report) {
+                            //Email the updated stockusage to required people (same as print)
+                            //if (config.Email_Stock_Usage_Report) {
 
-                        //    //    if ( BSLayer.Instance.shop.SmtpEmailAddress != null &&  BSLayer.Instance.shop.SmtpEmailAddress.Length > 0 &&  BSLayer.Instance.shop.PurchaseEmail != null &&  BSLayer.Instance.shop.PurchaseEmail.Length > 0)
-                        //    //         BSLayer.Instance.SendEmailToCustomRecepient( BSLayer.Instance.shop.PurchaseEmail,  BSLayer.Instance.shop.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" +  BSLayer.Instance.GetOrderableStockItemUsageAsCsvText(), null);
-                        //    //}
+                            //    if ( BSLayer.Instance.shop.SmtpEmailAddress != null &&  BSLayer.Instance.shop.SmtpEmailAddress.Length > 0 &&  BSLayer.Instance.shop.PurchaseEmail != null &&  BSLayer.Instance.shop.PurchaseEmail.Length > 0)
+                            //         BSLayer.Instance.SendEmailToCustomRecepient( BSLayer.Instance.shop.PurchaseEmail,  BSLayer.Instance.shop.ShopName + "  Stock Order List", "Stock Order List.\r\n\r\n" +  BSLayer.Instance.GetOrderableStockItemUsageAsCsvText(), null);
+                            //}
 
-                        //    //Now time to remove the ordered items from stockitem table if true
-                        //    //if (config.Delete_Stock_Usage)
-                        //    //     BSLayer.Instance.RemoveOrderedStockUsage(true);
+                            //Now time to remove the ordered items from stockitem table if true
+                            //if (config.Delete_Stock_Usage)
+                            //     BSLayer.Instance.RemoveOrderedStockUsage(true);
 
-                        //}
+                        }
 
 
                         //Now prepare current session to be archive
