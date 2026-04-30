@@ -3,14 +3,14 @@ using System.ComponentModel;
 
 namespace WinLayer {
     public class InterfaceHolder : System.Windows.Forms.Control {
-        public List<UPEntity> Panels;
+        public List<UPCategory> Panels;
         private int _SelectedIndex;
         public InterfaceHolder() {
-            Panels = new List<UPEntity>();
+            Panels = new List<UPCategory>();
             SelectedIndex = -1;            
         }
         public InterfaceHolder(string name) {
-            Panels = new List<UPEntity>();
+            Panels = new List<UPCategory>();
             SelectedIndex = -1;
             Name = name;
         }
@@ -24,7 +24,7 @@ namespace WinLayer {
             }
             set { _SelectedIndex = value; }
         }
-        public UPEntity SelectedPanel { get { return Panels[SelectedIndex]; } }
+        public UPCategory SelectedPanel { get { return Panels[SelectedIndex]; } }
 
         private void InitializeComponent() {
             this.SuspendLayout();

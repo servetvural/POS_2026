@@ -26,14 +26,12 @@ namespace DTRMClientNS
 
         private void FrmLock_Load(object sender, EventArgs e)
         {
-            Process[] pList = Process.GetProcessesByName("DTRMClient");
+            Process[] pList = Process.GetProcessesByName("PosTerminal");
             if (pList.GetLength(0) > 1)
             {
                 for (int i = 0; i < pList.Length; i++)
                     pList[i].Kill();
             }
-
-            ResetProgress();
 
             if (config.IsValid())
             {
@@ -88,33 +86,9 @@ namespace DTRMClientNS
         }
         private void BtnClear_Click(object sender, System.EventArgs e)
         {
-            DisplayMessage("LOGIN YOUR KEY", 3);
             txtUserPassword.Clear();
             ResetLogonButton();
-            pBar.Value = 0;
-            pBar.Maximum = 1;
         }
-
-        public void ShowProgress(int step)
-        {
-            if (step <= 0)
-                pBar.Value = 0;
-            else
-            {
-                if ((pBar.Value + step) > pBar.Maximum)
-                    pBar.Maximum = pBar.Value + step + (int)((step + pBar.Value) * 0.2);
-                pBar.Value = pBar.Value + step;
-            }
-        }
-
-        private void DisplayMessage(string str, int progress)
-        {
-            if (progress > 0)
-                ShowProgress(progress);
-            lblNotify.Text = str;
-            lblNotify.Refresh();
-        }
-
 
         private async void BtnLogon_Click(object sender, System.EventArgs e)
         {
@@ -122,8 +96,6 @@ namespace DTRMClientNS
 
             if (txtUserPassword.Text.Length == 0)
                 return;
-
-            pBar.Value = 0;
 
             User user = await repoUser.GetByField("UserPassword", txtUserPassword.Text);
             if (user == null)
@@ -146,11 +118,6 @@ namespace DTRMClientNS
         }
         #endregion
 
-        public void ResetProgress()
-        {
-            pBar.Value = 0;
-            tmrSaat.Enabled = true;
-        }
         private void ResetLogonButton()
         {
             btnLogon.Text = "LOGON";
@@ -167,12 +134,6 @@ namespace DTRMClientNS
         {
             lblSaat.Text = DateTime.Now.ToLongTimeString();
         }
-
-        private void FrmLock_Shown(object sender, EventArgs e)
-        {
-            ResetProgress();
-        }
-
         private void LogoBox_DoubleClick(object sender, EventArgs e)
         {
             this.TopMost = false;

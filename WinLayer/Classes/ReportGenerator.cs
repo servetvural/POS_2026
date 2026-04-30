@@ -46,7 +46,7 @@ namespace WinLayer
 
         public Image Logo1;
 
-        private IEnumerable<StockItemUsage> stockUsages;
+        private List<RecipeUsage> stockUsages;
         private string StockSupplierName;
 
         private Printer aPrinter;
@@ -268,12 +268,15 @@ namespace WinLayer
                         //This is exactly the point where the current active real session to be archived for the first time
                         if (config.Record_Stock_Usage)
                         {
+                            List<RecipeUsage> usages = await repoSession.GetSessionRecipeUsage(session.IID);
+                             
                             //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
-                            // BSLayer.Instance.TransferStockItemUsageNow();
+                            await repoSession.ApplyRecipeUsageToStock(usages);
 
                             //Print the updated stockusage report up to end of tonight
-                            //if (config.Print_Stock_Usage_Report)
-                            //     BSLayer.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
+                            if (config.Print_Stock_Usage_Report)
+                                //   // BSLayer.Instance.PrintStockUsage(aPrinter); // pSettings.PrinterName);
+                                PrintStockUsage(usages, null);
 
 
                             //Email the updated stockusage to required people (same as print)
@@ -754,7 +757,7 @@ namespace WinLayer
         #endregion
 
         #region STOCK uSAGE
-        public bool PrintStockUsage(IEnumerable<StockItemUsage> usages, string StockSupplierName)
+        public bool PrintStockUsage(List<RecipeUsage> usages, string StockSupplierName)
         {
             try
             {
@@ -801,36 +804,20 @@ namespace WinLayer
             foreach (var item in stockUsages)
             {
                 if (blnSupplier)
-                    DrawText(string.Format("{0,2:N0} {1,-5} {2,-21}",
-                                        item.OrderableQuantity,
-                                        SubStr(item.StockItem.OrderType.ToString(), 5),
-                                        SubStr(item.StockItem.StockName, 27)));
+                    DrawText(string.Format("{0,2:N2} {1,-5} {2,-21}",
+                                        item.Quantity,
+                                        SubStr(item.QuantityType.ToString(), 5),
+                                        SubStr(item.StockItemName, 27)));
 
                 else
-                    DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
-                           item.OrderableQuantity,
-                           SubStr(item.StockItem.OrderType.ToString(), 5),
-                           SubStr(item.StockItem.StockName, 22),
-                           SubStr(item.StockItem.SupplierName, 6)));
+                    DrawText(string.Format("{0,2:N2} {1,-5} {2,-20} {3,-6}",
+                           item.Quantity,
+                           SubStr(item.QuantityType.ToString(), 5),
+                           SubStr(item.StockItemName, 22),
+                           SubStr(item.SupplierPrefix, 6)));         //SubStr(item.StockSupplierName, 6)));
 
             }
-            //for (int i = 0; i < dtStockUsage.Rows.Count; i++) {
-            //    StockItemUsage item = new StockItemUsage(dtStockUsage.Rows[i]);
-            //    if (blnSupplier)
-            //        DrawText(string.Format("{0,2:N0} {1,-5} {2,-21}",
-            //                            item.OrderableQuantity,
-            //                            SubStr(item.OrderableType.ToString(), 5),
-            //                            SubStr(item.StockName, 27)));
 
-            //    else
-            //        DrawText(string.Format("{0,2:N0} {1,-5} {2,-20} {3,-6}",
-            //               item.OrderableQuantity,
-            //               SubStr(item.OrderableType.ToString(), 5),
-            //               SubStr(item.StockName, 22),
-            //               SubStr(item.SupplierName, 6)));
-
-            //}
-            //if (dtStockUsage == null || dtStockUsage.Rows.Count == 0)
             if (stockUsages.IsNullOrEmpty())
                 DrawText("No Stock Usage");
             NewLine();

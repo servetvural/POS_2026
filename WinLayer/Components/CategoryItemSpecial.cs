@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 namespace WinLayer {
-    public class EntityButtonSpecial : System.Windows.Forms.Button {
+    public class CategoryItemSpecial : System.Windows.Forms.Button {
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string PrintableTypeIID { get; set; }
@@ -10,11 +10,11 @@ namespace WinLayer {
         public string EntityName { get; set; }
         //public string EntityButtonName { get; set; }
 
-        public EntityButtonSpecial() {
+        public CategoryItemSpecial() {
             PrintableTypeIID = "";
             EntityName = "";
         }
-        public EntityButtonSpecial(string EntityName, string PrintableTypeIID) {
+        public CategoryItemSpecial(string EntityName, string PrintableTypeIID) {
             this.EntityName = EntityName;
             this.PrintableTypeIID = PrintableTypeIID;
         }

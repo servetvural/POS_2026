@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Components\EntityButtonSpecial.cs">
+    <Compile Update="Components\CategoryItemSpecial.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Components\InterfaceHolder.cs">
@@ -46,10 +46,10 @@
     <Compile Update="Components\TableButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Components\UPEntity.cs">
+    <Compile Update="Components\UPCategory.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="Components\UPEntityButton.cs">
+    <Compile Update="Components\UPCategoryItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Controls\ctlAlphaNumeric.cs">

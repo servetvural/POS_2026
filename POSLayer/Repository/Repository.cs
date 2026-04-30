@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Xml.Linq;
@@ -933,39 +934,140 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
+
+    public async Task<bool> ApplyRecipeUsageToStock(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<RecipeUsage> recipeUsages = await GetSessionRecipeUsage(sessionIID);
+            return await ApplyRecipeUsageToStock(recipeUsages);
+
+        } catch (Exception ex)
+        {
+            return false;
+        }
+        
+    }
+    public async Task<bool> ApplyRecipeUsageToStock(List<RecipeUsage> recipeUsages)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<StockItem> stockItems = await _db.StockItems.Where(si => recipeUsages.Select(ru => ru.StockItemIID).Contains(si.IID)).ToListAsync();
+
+            foreach (var usage in recipeUsages)
+            {
+                StockItem item = stockItems.Where(x => x.IID == usage.StockItemIID).FirstOrDefault();
+                item.UsedQuantity += usage.Quantity;
+                _db.Entry(item).State = EntityState.Modified;
+
+            }
+                       
+            return recipeUsages.Count == await _db.SaveChangesAsync();
+
+        } catch (Exception ex)
+        {
+            return false;
+        }
+
+    }
+
     public async Task<List<RecipeUsage>> GetSessionRecipeUsage(string sessionIID)
     {
         using var _db = GetDBContext();
         try
         {
             //var oitems = _db.OrderItems.Where(oi => oi.Order.SessionIID == sessionIID).Include(oi => oi.CategoryItem).ThenInclude(c => c.recipes);
-           // var ritems = oitems.SelectMany(oi => oi.CategoryItem.recipes.Where(ci => ci.StockItemIID != null)).Include(s => s.StockItem);
+            // var ritems = oitems.SelectMany(oi => oi.CategoryItem.recipes.Where(ci => ci.StockItemIID != null)).Include(s => s.StockItem);
+
+            List<RecipeUsage> items = await GetSessionRecipeUsageForOrderItems(sessionIID);
+            List<RecipeUsage> xitems = await GetSessionRecipeUsageForXOrderItems(sessionIID);
+
+            var mergedList = items.Concat(xitems)
+                .GroupBy(i => new { i.IID, i.StockItemIID,i.StockItemName, i.QuantityType, i.SupplierPrefix })
+                .Select(g => new RecipeUsage
+                {
+                    IID = g.Key.IID,
+                    StockItemIID = g.Key.StockItemIID,
+                    StockItemName = g.Key.StockItemName,
+                    Quantity = (double)g.Sum(i => i.Quantity) ,
+                    QuantityType = g.Key.QuantityType    ,
+                    SupplierPrefix = g.Key.SupplierPrefix
+
+                })
+                .ToList();
 
 
+            return mergedList;
+
+            //List<RecipeUsage> recipeSummary = await _db.OrderItems
+            //    .Where(oi => oi.Order.SessionIID == sessionIID)
+            //    // 1. Use the (collection, result) overload of SelectMany
+            //    .SelectMany(
+            //        oi => oi.CategoryItem.recipes.Where(ri => ri.StockItemIID != null),
+            //        (oi, ri) => new
+            //        {
+            //            RecipeIID = ri.IID,
+            //            StockItemIID = ri.StockItemIID,
+            //            StockItemName = ri.StockItem.StockName,
+            //            QuantityType = ri.QuantityType,
+            //            // Both 'oi' and 'ri' are accessible here for translation
+            //            CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity
+            //        }
+            //    )
+            //    // 2. Group the flat results
+            //    .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType })
+            //    .Select(g => new RecipeUsage
+            //    {
+            //        IID = g.Key.RecipeIID,
+            //        StockItemIID = g.Key.StockItemIID,
+            //        StockItemName = g.Key.StockItemName,
+            //        Quantity = (double)g.Sum(x => x.CalculatedUsage),
+            //        QuantityType = g.Key.QuantityType
+            //    })
+            //    .ToListAsync();
+
+            //return recipeSummary;
+
+        } catch (Exception ex)
+        {
+            return new List<RecipeUsage>();
+        }
+    }
+
+    public async Task<List<RecipeUsage>> GetSessionRecipeUsageForOrderItems(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
 
             List<RecipeUsage> recipeSummary = await _db.OrderItems
                 .Where(oi => oi.Order.SessionIID == sessionIID)
                 // 1. Use the (collection, result) overload of SelectMany
                 .SelectMany(
                     oi => oi.CategoryItem.recipes.Where(ri => ri.StockItemIID != null),
-                    (oi, ri) => new {
+                    (oi, ri) => new
+                    {
                         RecipeIID = ri.IID,
                         StockItemIID = ri.StockItemIID,
                         StockItemName = ri.StockItem.StockName,
                         QuantityType = ri.QuantityType,
                         // Both 'oi' and 'ri' are accessible here for translation
-                        CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity
+                        CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity ,
+                        SupplierPrefix = ri.StockItem.Supplier.Prefix
                     }
                 )
                 // 2. Group the flat results
-                .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType })
+                .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType, r.SupplierPrefix })
                 .Select(g => new RecipeUsage
-                {
+                {                                 
                     IID = g.Key.RecipeIID,
                     StockItemIID = g.Key.StockItemIID,
                     StockItemName = g.Key.StockItemName,
                     Quantity = (double)g.Sum(x => x.CalculatedUsage),
-                    QuantityType =   g.Key.QuantityType
+                    QuantityType = g.Key.QuantityType ,
+                    SupplierPrefix = g.Key.SupplierPrefix
                 })
                 .ToListAsync();
 
@@ -977,16 +1079,58 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
-    public async  Task<List<OrderItemSummary>> GetSessionOrderItemSummary(string sessionIID)
+    public async Task<List<RecipeUsage>> GetSessionRecipeUsageForXOrderItems(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            List<RecipeUsage> recipeSummary = await _db.XorderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID)
+                // 1. Use the (collection, result) overload of SelectMany
+                .SelectMany(
+                    oi => oi.CategoryItem.recipes.Where(ri => ri.StockItemIID != null),
+                    (oi, ri) => new
+                    {
+                        RecipeIID = ri.IID,
+                        StockItemIID = ri.StockItemIID,
+                        StockItemName = ri.StockItem.StockName,
+                        QuantityType = ri.QuantityType,
+                        // Both 'oi' and 'ri' are accessible here for translation
+                        CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity  ,
+                        SupplierPrefix = ri.StockItem.Supplier.Prefix
+                    }
+                )
+                // 2. Group the flat results
+                .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType, r.SupplierPrefix })
+                .Select(g => new RecipeUsage
+                {
+                    IID = g.Key.RecipeIID,
+                    StockItemIID = g.Key.StockItemIID,
+                    StockItemName = g.Key.StockItemName,
+                    Quantity = (double)g.Sum(x => x.CalculatedUsage),
+                    QuantityType = g.Key.QuantityType,
+                    SupplierPrefix = g.Key.SupplierPrefix
+                })
+                .ToListAsync();
+
+            return recipeSummary;
+
+        } catch (Exception ex)
+        {
+            return new List<RecipeUsage>();
+        }
+    }
+
+    public async Task<List<OrderItemSummary>> GetSessionOrderItemSummary(string sessionIID)
     {
         using var _db = GetDBContext();
         try
         {
             var summary = await _db.OrderItems
                 .Where(oi => oi.Order.SessionIID == sessionIID)
-                .GroupBy(oi => new { oi.CategoryItemIID, oi.CategoryItem.ItemName, oi.Price  })
+                .GroupBy(oi => new { oi.CategoryItemIID, oi.CategoryItem.ItemName, oi.Price })
                 .Select(g => new OrderItemSummary
-                {                              
+                {
                     OrderItemText = g.Key.ItemName,
                     Quantity = g.Sum(oi => oi.Quantity),
                     Price = g.Key.Price,
@@ -997,7 +1141,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         } catch (Exception ex)
         {
             return new List<OrderItemSummary>();
-        }   
+        }
     }
 
     //public async Task<Order> BarrowOrder(string OrderIID, string ClientIP)
@@ -1118,7 +1262,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return await _db.Tables.Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
-            ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ToListAsync();
+            (x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ToListAsync();
 
         } catch (Exception ex)
         {
@@ -1133,7 +1277,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             return await _db.Tables.Where(x => x.SalonIID == salonIID).Include(x => x.orders.Where(x => x.OrderType == OrderTypes.Sitin &&
-            ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ThenInclude(o => o.Items).ToListAsync();
+            (x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).ThenInclude(o => o.Items).ToListAsync();
 
         } catch (Exception ex)
         {
@@ -1156,8 +1300,8 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         using var _db = GetDBContext();
         try
         {
-            return  await _db.Tables.Where(x => x.IID == tableIID).Include(x => x.orders.Where(x => x.TableIID == tableIID && x.OrderType == OrderTypes.Sitin &&
-            (x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).FirstOrDefaultAsync();             
+            return await _db.Tables.Where(x => x.IID == tableIID).Include(x => x.orders.Where(x => x.TableIID == tableIID && x.OrderType == OrderTypes.Sitin &&
+            (x.Status == StatusFlags.New || x.Status == StatusFlags.Done))).FirstOrDefaultAsync();
 
         } catch (Exception ex)
         {
@@ -1204,7 +1348,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
             order.LockedUntil = DateTime.UtcNow.AddMinutes(5);
 
             //dont lock the table if it's a completed sitin order,
-            if (order.OrderType == OrderTypes.Sitin && !isCompletedSitinOrder && order.Table != null )
+            if (order.OrderType == OrderTypes.Sitin && !isCompletedSitinOrder && order.Table != null)
             {
                 order.Table.LockedClientIP = terminalName;
                 order.Table.LockedUntil = order.LockedUntil;
@@ -1230,7 +1374,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         try
         {
             var order = await _db.Orders.Where(x => x.TableIID == tableIID &&
-                ( x.Status == StatusFlags.New || x.Status == StatusFlags.Done)).Include("Table").Include("Items").FirstOrDefaultAsync();
+                (x.Status == StatusFlags.New || x.Status == StatusFlags.Done)).Include("Table").Include("Items").FirstOrDefaultAsync();
 
             if (order == null)
             {
@@ -1280,7 +1424,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
     }
 
 
-   
+
 
 
     public async Task<GenericImage> GetImageAsync(string EntityIID)

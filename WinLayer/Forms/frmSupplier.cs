@@ -26,6 +26,7 @@ namespace WinLayer
         private void LoadSupplier()
         {
             txtSupplierName.Text = supplier.SupplierName;
+            txtPrefix.Text = supplier.Prefix;
             txtTel.Text = supplier.Tel;
             txtAddress.Text = supplier.Address;
             txtEmail1.Text = supplier.Email1;
@@ -44,6 +45,7 @@ namespace WinLayer
             if (txtSupplierName.Text.Length > 0)
             {
                 supplier.SupplierName = txtSupplierName.Text;
+                supplier.Prefix = txtPrefix.Text;
                 supplier.Tel = txtTel.Text;
                 supplier.Address = txtAddress.Text;
                 supplier.Email1 = txtEmail1.Text;

@@ -10,13 +10,13 @@ namespace WinLayer {
     /// <summary>
     /// Summary description for EntityTemplateItem.
     /// </summary>
-    public class UPEntityButton : Button {
+    public class UPCategoryItem : Button {
         PosConfig config;
         public string IID;
         public CategoryItem categoryItem;
         public string PrintLabel;
         public CategoryItemTypes ButtonType;
-        public UPEntity ParentUIE;
+        public UPCategory ParentUIE;
         public float Price = 0f;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace WinLayer {
         /// <param name="Parent"></param>
         /// <param name="entitybutton"></param>
         /// <param name="EditorButton"></param>
-        public UPEntityButton(UPEntity ParentUPEntity, CategoryItem categoryItem) {
+        public UPCategoryItem(UPCategory ParentUPEntity, CategoryItem categoryItem) {
 
             config = ServiceHelper.GetService<PosConfig>();
             //new button type construction
@@ -105,7 +105,7 @@ namespace WinLayer {
         #region EVENT HANDLER
         private async void UIEBEventHandler(object sender, System.EventArgs e) {
 
-            UPEntityButton geb = this;
+            UPCategoryItem geb = this;
             if (geb.categoryItem.ButtonType == CategoryItemTypes.SpaceButton)
                 return;
 
@@ -186,12 +186,12 @@ namespace WinLayer {
              BSLayer.Instance.OnDisplayOrder();
         }
 
-        private double GetEBRelatedPrice(BSLayer bslayer, UPEntityButton geb)
+        private double GetEBRelatedPrice(BSLayer bslayer, UPCategoryItem geb)
         {
             return geb.categoryItem.GetPrice( BSLayer.Instance.AttachedOrder.OrderType);
         }
 
-        private bool HandleExtraDiscoManagerItems(BSLayer bslayer, UPEntityButton geb)
+        private bool HandleExtraDiscoManagerItems(BSLayer bslayer, UPCategoryItem geb)
         {
             if (geb.ButtonType == CategoryItemTypes.AmountAddition || geb.ButtonType == CategoryItemTypes.AmountDeduction ||
                geb.ButtonType == CategoryItemTypes.PercentAddition || geb.ButtonType == CategoryItemTypes.PercentDeduction ||
@@ -243,7 +243,7 @@ namespace WinLayer {
                 return false;
         }
 
-        private bool IsEBApplicableToOrderType(BSLayer bslayer, UPEntityButton geb)
+        private bool IsEBApplicableToOrderType(BSLayer bslayer, UPCategoryItem geb)
         {
             if (geb.categoryItem.AvailableFor != (int)AvailabilityTypes.All)
             {

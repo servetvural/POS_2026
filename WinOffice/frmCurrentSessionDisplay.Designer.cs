@@ -82,6 +82,7 @@ namespace WinOffice {
             cmdNotifyWithSound = new System.Windows.Forms.ToolStripButton();
             cmdPrintReport = new System.Windows.Forms.ToolStripButton();
             cmdViewReceipt = new System.Windows.Forms.ToolStripButton();
+            btnTest = new System.Windows.Forms.ToolStripButton();
             expander1 = new WinLayer.Expander();
             splitContainer1 = new System.Windows.Forms.SplitContainer();
             splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -93,12 +94,13 @@ namespace WinOffice {
             recipeUsageBindingSource = new System.Windows.Forms.BindingSource(components);
             label7 = new System.Windows.Forms.Label();
             dgvOrderItemSummary = new System.Windows.Forms.DataGridView();
-            orderItemSummaryBindingSource = new System.Windows.Forms.BindingSource(components);
-            label8 = new System.Windows.Forms.Label();
             quantityDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             orderItemTextDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             priceDataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             totalDataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            orderItemSummaryBindingSource = new System.Windows.Forms.BindingSource(components);
+            label8 = new System.Windows.Forms.Label();
+            btnPrintUsage = new System.Windows.Forms.ToolStripButton();
             ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
             ((System.ComponentModel.ISupportInitialize)orderBindingSource).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvOrderItems).BeginInit();
@@ -489,7 +491,7 @@ namespace WinOffice {
             // 
             // barMain
             // 
-            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdInterval, pBar2, cmdGetSales, cmdNotifyWithSound, cmdPrintReport, cmdViewReceipt });
+            barMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { cmdInterval, pBar2, cmdGetSales, cmdNotifyWithSound, cmdPrintReport, cmdViewReceipt, btnTest, btnPrintUsage });
             barMain.Location = new System.Drawing.Point(0, 0);
             barMain.Name = "barMain";
             barMain.Size = new System.Drawing.Size(1455, 62);
@@ -597,6 +599,16 @@ namespace WinOffice {
             cmdViewReceipt.Text = "View Receipt";
             cmdViewReceipt.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             cmdViewReceipt.Click += btnViewReceipt_Click;
+            // 
+            // btnTest
+            // 
+            btnTest.Image = (System.Drawing.Image)resources.GetObject("btnTest.Image");
+            btnTest.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnTest.Name = "btnTest";
+            btnTest.Size = new System.Drawing.Size(109, 59);
+            btnTest.Text = "Apply Stock Usage";
+            btnTest.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnTest.Click += btnTest_Click;
             // 
             // expander1
             // 
@@ -766,24 +778,6 @@ namespace WinOffice {
             dgvOrderItemSummary.Size = new System.Drawing.Size(523, 319);
             dgvOrderItemSummary.TabIndex = 75;
             // 
-            // orderItemSummaryBindingSource
-            // 
-            orderItemSummaryBindingSource.DataSource = typeof(OrderItemSummary);
-            // 
-            // label8
-            // 
-            label8.BackColor = System.Drawing.Color.White;
-            label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            label8.Dock = System.Windows.Forms.DockStyle.Top;
-            label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
-            label8.Location = new System.Drawing.Point(0, 0);
-            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            label8.Name = "label8";
-            label8.Size = new System.Drawing.Size(523, 29);
-            label8.TabIndex = 74;
-            label8.Text = "ORDER ITEM SUMMARY";
-            label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // quantityDataGridViewTextBoxColumn1
             // 
             quantityDataGridViewTextBoxColumn1.DataPropertyName = "Quantity";
@@ -820,6 +814,34 @@ namespace WinOffice {
             totalDataGridViewTextBoxColumn2.HeaderText = "Total";
             totalDataGridViewTextBoxColumn2.Name = "totalDataGridViewTextBoxColumn2";
             totalDataGridViewTextBoxColumn2.ReadOnly = true;
+            // 
+            // orderItemSummaryBindingSource
+            // 
+            orderItemSummaryBindingSource.DataSource = typeof(OrderItemSummary);
+            // 
+            // label8
+            // 
+            label8.BackColor = System.Drawing.Color.White;
+            label8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            label8.Dock = System.Windows.Forms.DockStyle.Top;
+            label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold);
+            label8.Location = new System.Drawing.Point(0, 0);
+            label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new System.Drawing.Size(523, 29);
+            label8.TabIndex = 74;
+            label8.Text = "ORDER ITEM SUMMARY";
+            label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnPrintUsage
+            // 
+            btnPrintUsage.Image = (System.Drawing.Image)resources.GetObject("btnPrintUsage.Image");
+            btnPrintUsage.ImageTransparentColor = System.Drawing.Color.Magenta;
+            btnPrintUsage.Name = "btnPrintUsage";
+            btnPrintUsage.Size = new System.Drawing.Size(71, 59);
+            btnPrintUsage.Text = "Print Usage";
+            btnPrintUsage.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            btnPrintUsage.Click += btnPrintUsage_Click;
             // 
             // frmCurrentSessionDisplay
             // 
@@ -925,5 +947,7 @@ namespace WinOffice {
         private System.Windows.Forms.DataGridViewTextBoxColumn orderItemTextDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn priceDataGridViewTextBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn totalDataGridViewTextBoxColumn2;
+        private System.Windows.Forms.ToolStripButton btnTest;
+        private System.Windows.Forms.ToolStripButton btnPrintUsage;
     }
 }

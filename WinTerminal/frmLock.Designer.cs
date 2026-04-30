@@ -34,9 +34,7 @@
             panel1 = new System.Windows.Forms.Panel();
             btn8 = new System.Windows.Forms.Button();
             btnClear = new System.Windows.Forms.Button();
-            lblNotify = new System.Windows.Forms.Label();
             btn2 = new System.Windows.Forms.Button();
-            pBar = new System.Windows.Forms.ProgressBar();
             btn3 = new System.Windows.Forms.Button();
             btn6 = new System.Windows.Forms.Button();
             btn7 = new System.Windows.Forms.Button();
@@ -117,7 +115,7 @@
             // 
             lblSaat.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold);
             lblSaat.ForeColor = System.Drawing.Color.White;
-            lblSaat.Location = new System.Drawing.Point(222, 686);
+            lblSaat.Location = new System.Drawing.Point(222, 644);
             lblSaat.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblSaat.Name = "lblSaat";
             lblSaat.Size = new System.Drawing.Size(422, 42);
@@ -129,9 +127,7 @@
             // 
             panel1.Controls.Add(btn8);
             panel1.Controls.Add(btnClear);
-            panel1.Controls.Add(lblNotify);
             panel1.Controls.Add(btn2);
-            panel1.Controls.Add(pBar);
             panel1.Controls.Add(btn3);
             panel1.Controls.Add(btn6);
             panel1.Controls.Add(btn7);
@@ -143,7 +139,7 @@
             panel1.Location = new System.Drawing.Point(222, 109);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(422, 572);
+            panel1.Size = new System.Drawing.Size(422, 522);
             panel1.TabIndex = 0;
             // 
             // btn8
@@ -183,16 +179,6 @@
             btnClear.UseVisualStyleBackColor = false;
             btnClear.Click += BtnClear_Click;
             // 
-            // lblNotify
-            // 
-            lblNotify.ForeColor = System.Drawing.Color.White;
-            lblNotify.Location = new System.Drawing.Point(19, 525);
-            lblNotify.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblNotify.Name = "lblNotify";
-            lblNotify.Size = new System.Drawing.Size(386, 20);
-            lblNotify.TabIndex = 93;
-            lblNotify.Text = "LOGIN  YOUR  KEY";
-            // 
             // btn2
             // 
             btn2.AutoEllipsis = true;
@@ -210,17 +196,6 @@
             btn2.Text = "2";
             btn2.UseVisualStyleBackColor = false;
             btn2.Click += KeyHandle;
-            // 
-            // pBar
-            // 
-            pBar.Location = new System.Drawing.Point(20, 548);
-            pBar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            pBar.MarqueeAnimationSpeed = 30;
-            pBar.Maximum = 10;
-            pBar.Name = "pBar";
-            pBar.Size = new System.Drawing.Size(383, 14);
-            pBar.TabIndex = 92;
-            pBar.Text = "progressBarX1";
             // 
             // btn3
             // 
@@ -406,7 +381,6 @@
             Name = "FrmLock";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             Load += FrmLock_Load;
-            Shown += FrmLock_Shown;
             pnlAlign.ResumeLayout(false);
             pnlAlign.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)LogoBox).EndInit();
@@ -425,9 +399,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btn8;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.Label lblNotify;
         private System.Windows.Forms.Button btn2;
-        private System.Windows.Forms.ProgressBar pBar;
         private System.Windows.Forms.Button btn3;
         private System.Windows.Forms.Button btn6;
         private System.Windows.Forms.Button btn7;

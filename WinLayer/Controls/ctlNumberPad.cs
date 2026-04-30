@@ -833,7 +833,7 @@ namespace WinLayer {
             foreach (var entitybutton in entityButtons)
             {
                 Category parentEntity = entities.Where(x => x.IID == entitybutton.CategoryIID).FirstOrDefault();
-                EntityButtonSpecial btn = new EntityButtonSpecial();
+                CategoryItemSpecial btn = new CategoryItemSpecial();
 
                 btn.BackColor = Color.FromArgb(entitybutton.BgColor);
 
@@ -851,7 +851,7 @@ namespace WinLayer {
         }
         
         void btnEntityButton_Click(object sender, EventArgs e) {
-            EntityButtonSpecial btn = (EntityButtonSpecial)sender;
+            CategoryItemSpecial btn = (CategoryItemSpecial)sender;
             CategoryItem entitybutton = (CategoryItem)btn.Tag;
             try {              
 

@@ -235,5 +235,21 @@ namespace WinOffice {
         {
 
         }
+
+        private async void btnTest_Click(object sender, EventArgs e)
+        {
+            await repoSession.ApplyRecipeUsageToStock(BSLayer.Instance.shop.CurrentSessionIID);
+        }
+
+        private async void btnPrintUsage_Click(object sender, EventArgs e)
+        {
+            frmAppPrinterDialog fsp = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
+            if (fsp.ShowDialog() == DialogResult.OK)
+            {
+                ReportGenerator generator = new ReportGenerator(fsp.SelectedPrinter); // await GetPrinterForClient(PrinterIID), 2, printLogo);
+                generator.PrintStockUsage(await repoSession.GetSessionRecipeUsage(BSLayer.Instance.shop.CurrentSessionIID), null);
+               
+            }
+        }
     }
 }

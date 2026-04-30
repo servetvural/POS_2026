@@ -11,26 +11,26 @@ namespace WinLayer {
     /// <summary>
     /// Summary description for UPEntity.
     /// </summary>
-    public partial class UPEntity : TableLayoutPanel {
+    public partial class UPCategory : TableLayoutPanel {
         private PosConfig config;
 
         public string IID;
         public Category category;
-        public UPEntityButton SelectedButton;
+        public UPCategoryItem SelectedButton;
         public int ButtonHeight;
         public int ButtonWidth;        
-        public List<UPEntityButton> UIEButtons;
+        public List<UPCategoryItem> UIEButtons;
         public string OrderGroupIID = "";
             
         public FlowLayoutPanel UIEButtonsPanel;
         public GenericFunctionCallReturnBool DoneEventHandler;
 
         #region "CONSTRUCTORS"
-        public UPEntity() {
+        public UPCategory() {
 
         }
        
-        public UPEntity(Category category) {
+        public UPCategory(Category category) {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
             this.category = category;
@@ -41,7 +41,7 @@ namespace WinLayer {
             UIEButtonsPanel.AutoScroll = config.Entity_Buttons_Scrollable;
             Controls.Add(UIEButtonsPanel, 0, 1);
 
-            UIEButtons = new List<UPEntityButton>();
+            UIEButtons = new List<UPCategoryItem>();
             
             ButtonHeight = category.Height;
             ButtonWidth = category.Width;
@@ -61,7 +61,7 @@ namespace WinLayer {
             if (category.Items.Count > 0) {
                 //for (int i = 1; i <= category.Items.Count; i++) {
                 foreach (var item in category.Items) {
-                    UPEntityButton eb = ActivatorUtilities.CreateInstance< UPEntityButton>(ServiceHelper.Services, this, item);
+                    UPCategoryItem eb = ActivatorUtilities.CreateInstance< UPCategoryItem>(ServiceHelper.Services, this, item);
                     if (eb.categoryItem.Compulsary || eb.categoryItem.PadFlag == PadFlags.PadOnly)
                         eb.Visible = false;
                     if (DRNumeric.IsBitSet(eb.categoryItem.AvailableFor, (int)AvailabilityTypes.NoSale))

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Data;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Views;
@@ -21,7 +22,6 @@ namespace WinLayer
         private Button btnDeleteOrder;
         private Button btnUnsetPaymentMethod;
         private DataGridView dgv;
-        private BindingSource ordersViewDataConnector;
         private Label lblTotal;
         private Button btnPrintReceipt;
         private System.ComponentModel.IContainer components;
@@ -42,8 +42,8 @@ namespace WinLayer
         private DataGridViewTextBoxColumn StatusName;
         private DataGridViewTextBoxColumn OrderTypeName;
         private DataGridViewTextBoxColumn PaymentMethodName;
+        private DataGridViewTextBoxColumn Total;
 
-        //private UtilityLibrary UF;
         private List<int> rowheights;
         public ctlOrders(PosConfig configAsService, IRepository<Order> _repoOrder)
         {
@@ -94,12 +94,13 @@ namespace WinLayer
         private void InitializeComponent()
         {
             components = new Container();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             btnChangePaymentMethod = new Button();
             btnViewCustomerOrTable = new Button();
@@ -108,25 +109,24 @@ namespace WinLayer
             btnUnsetPaymentMethod = new Button();
             btnDeleteOrder = new Button();
             dgv = new DataGridView();
+            orderBindingSource = new BindingSource(components);
+            lblTotal = new Label();
+            panel2 = new Panel();
+            vScroll = new VScrollBar();
             colOrderDate = new DataGridViewTextBoxColumn();
             colOrderItemsDetailed = new DataGridViewTextBoxColumn();
             StatusName = new DataGridViewTextBoxColumn();
             OrderTypeName = new DataGridViewTextBoxColumn();
             PaymentMethodName = new DataGridViewTextBoxColumn();
-            orderBindingSource = new BindingSource(components);
-            ordersViewDataConnector = new BindingSource(components);
-            lblTotal = new Label();
-            panel2 = new Panel();
-            vScroll = new VScrollBar();
+            Total = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((ISupportInitialize)dgv).BeginInit();
             ((ISupportInitialize)orderBindingSource).BeginInit();
-            ((ISupportInitialize)ordersViewDataConnector).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.BackColor = System.Drawing.Color.Black;
+            panel1.BackColor = Color.Black;
             panel1.Controls.Add(btnChangePaymentMethod);
             panel1.Controls.Add(btnViewCustomerOrTable);
             panel1.Controls.Add(btnLoadOrder);
@@ -134,25 +134,25 @@ namespace WinLayer
             panel1.Controls.Add(btnUnsetPaymentMethod);
             panel1.Controls.Add(btnDeleteOrder);
             panel1.Dock = DockStyle.Top;
-            panel1.Location = new System.Drawing.Point(0, 0);
+            panel1.Location = new Point(0, 0);
             panel1.Margin = new Padding(5);
             panel1.Name = "panel1";
             panel1.Padding = new Padding(5);
-            panel1.Size = new System.Drawing.Size(947, 60);
+            panel1.Size = new Size(947, 60);
             panel1.TabIndex = 2;
             // 
             // btnChangePaymentMethod
             // 
             btnChangePaymentMethod.AutoEllipsis = true;
-            btnChangePaymentMethod.BackColor = System.Drawing.Color.FromArgb(0, 192, 0);
+            btnChangePaymentMethod.BackColor = Color.FromArgb(0, 192, 0);
             btnChangePaymentMethod.BackgroundImageLayout = ImageLayout.Stretch;
             btnChangePaymentMethod.FlatAppearance.BorderSize = 0;
             btnChangePaymentMethod.FlatStyle = FlatStyle.Flat;
-            btnChangePaymentMethod.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            btnChangePaymentMethod.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
-            btnChangePaymentMethod.Location = new System.Drawing.Point(324, 4);
+            btnChangePaymentMethod.Font = new Font("Arial", 16F, FontStyle.Bold);
+            btnChangePaymentMethod.ForeColor = Color.FromArgb(0, 0, 0);
+            btnChangePaymentMethod.Location = new Point(324, 4);
             btnChangePaymentMethod.Name = "btnChangePaymentMethod";
-            btnChangePaymentMethod.Size = new System.Drawing.Size(100, 50);
+            btnChangePaymentMethod.Size = new Size(100, 50);
             btnChangePaymentMethod.TabIndex = 21;
             btnChangePaymentMethod.Text = "PAY";
             btnChangePaymentMethod.UseVisualStyleBackColor = false;
@@ -161,33 +161,32 @@ namespace WinLayer
             // btnViewCustomerOrTable
             // 
             btnViewCustomerOrTable.AutoEllipsis = true;
-            btnViewCustomerOrTable.BackColor = System.Drawing.Color.FromArgb(255, 224, 192);
+            btnViewCustomerOrTable.BackColor = Color.FromArgb(255, 224, 192);
             btnViewCustomerOrTable.BackgroundImageLayout = ImageLayout.Stretch;
             btnViewCustomerOrTable.FlatAppearance.BorderSize = 0;
             btnViewCustomerOrTable.FlatStyle = FlatStyle.Flat;
-            btnViewCustomerOrTable.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnViewCustomerOrTable.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
-            btnViewCustomerOrTable.Location = new System.Drawing.Point(104, 4);
+            btnViewCustomerOrTable.Font = new Font("Arial", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnViewCustomerOrTable.ForeColor = Color.FromArgb(0, 0, 0);
+            btnViewCustomerOrTable.Location = new Point(104, 4);
             btnViewCustomerOrTable.Name = "btnViewCustomerOrTable";
-            btnViewCustomerOrTable.Size = new System.Drawing.Size(58, 50);
+            btnViewCustomerOrTable.Size = new Size(58, 50);
             btnViewCustomerOrTable.TabIndex = 20;
             btnViewCustomerOrTable.Text = "CUST / TABLE";
             btnViewCustomerOrTable.UseVisualStyleBackColor = false;
-            btnViewCustomerOrTable.Click += btnViewCustomerOrTable_Click;
             // 
             // btnLoadOrder
             // 
             btnLoadOrder.AutoEllipsis = true;
-            btnLoadOrder.BackColor = System.Drawing.Color.FromArgb(0, 192, 0);
+            btnLoadOrder.BackColor = Color.FromArgb(0, 192, 0);
             btnLoadOrder.BackgroundImageLayout = ImageLayout.Stretch;
             btnLoadOrder.FlatAppearance.BorderSize = 0;
             btnLoadOrder.FlatStyle = FlatStyle.Flat;
-            btnLoadOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            btnLoadOrder.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
-            btnLoadOrder.Location = new System.Drawing.Point(574, 4);
+            btnLoadOrder.Font = new Font("Arial", 16F, FontStyle.Bold);
+            btnLoadOrder.ForeColor = Color.FromArgb(0, 0, 0);
+            btnLoadOrder.Location = new Point(574, 4);
             btnLoadOrder.Margin = new Padding(0);
             btnLoadOrder.Name = "btnLoadOrder";
-            btnLoadOrder.Size = new System.Drawing.Size(100, 50);
+            btnLoadOrder.Size = new Size(100, 50);
             btnLoadOrder.TabIndex = 10;
             btnLoadOrder.TabStop = false;
             btnLoadOrder.Text = "LOAD";
@@ -197,35 +196,35 @@ namespace WinLayer
             // btnPrintReceipt
             // 
             btnPrintReceipt.AutoEllipsis = true;
-            btnPrintReceipt.BackColor = System.Drawing.Color.Fuchsia;
+            btnPrintReceipt.BackColor = Color.Fuchsia;
             btnPrintReceipt.BackgroundImage = Properties.Resources.Print32;
             btnPrintReceipt.BackgroundImageLayout = ImageLayout.None;
             btnPrintReceipt.FlatAppearance.BorderSize = 0;
             btnPrintReceipt.FlatStyle = FlatStyle.Flat;
-            btnPrintReceipt.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
-            btnPrintReceipt.ForeColor = System.Drawing.Color.White;
-            btnPrintReceipt.Location = new System.Drawing.Point(447, 4);
+            btnPrintReceipt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnPrintReceipt.ForeColor = Color.White;
+            btnPrintReceipt.Location = new Point(447, 4);
             btnPrintReceipt.Name = "btnPrintReceipt";
             btnPrintReceipt.RightToLeft = RightToLeft.Yes;
-            btnPrintReceipt.Size = new System.Drawing.Size(100, 50);
+            btnPrintReceipt.Size = new Size(100, 50);
             btnPrintReceipt.TabIndex = 19;
             btnPrintReceipt.Text = " PRINT RECEIPT";
-            btnPrintReceipt.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btnPrintReceipt.TextAlign = ContentAlignment.MiddleRight;
             btnPrintReceipt.UseVisualStyleBackColor = false;
             btnPrintReceipt.Click += btnPrintReceipt_Click;
             // 
             // btnUnsetPaymentMethod
             // 
             btnUnsetPaymentMethod.AutoEllipsis = true;
-            btnUnsetPaymentMethod.BackColor = System.Drawing.Color.Red;
+            btnUnsetPaymentMethod.BackColor = Color.Red;
             btnUnsetPaymentMethod.BackgroundImageLayout = ImageLayout.Stretch;
             btnUnsetPaymentMethod.FlatAppearance.BorderSize = 0;
             btnUnsetPaymentMethod.FlatStyle = FlatStyle.Flat;
-            btnUnsetPaymentMethod.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold);
-            btnUnsetPaymentMethod.ForeColor = System.Drawing.Color.White;
-            btnUnsetPaymentMethod.Location = new System.Drawing.Point(186, 4);
+            btnUnsetPaymentMethod.Font = new Font("Arial", 14F, FontStyle.Bold);
+            btnUnsetPaymentMethod.ForeColor = Color.White;
+            btnUnsetPaymentMethod.Location = new Point(186, 4);
             btnUnsetPaymentMethod.Name = "btnUnsetPaymentMethod";
-            btnUnsetPaymentMethod.Size = new System.Drawing.Size(113, 50);
+            btnUnsetPaymentMethod.Size = new Size(113, 50);
             btnUnsetPaymentMethod.TabIndex = 17;
             btnUnsetPaymentMethod.Text = "NOT PAID";
             btnUnsetPaymentMethod.UseVisualStyleBackColor = false;
@@ -234,16 +233,16 @@ namespace WinLayer
             // btnDeleteOrder
             // 
             btnDeleteOrder.AutoEllipsis = true;
-            btnDeleteOrder.BackColor = System.Drawing.Color.FromArgb(128, 128, 255);
+            btnDeleteOrder.BackColor = Color.FromArgb(128, 128, 255);
             btnDeleteOrder.BackgroundImageLayout = ImageLayout.Stretch;
             btnDeleteOrder.FlatAppearance.BorderSize = 0;
             btnDeleteOrder.FlatStyle = FlatStyle.Flat;
-            btnDeleteOrder.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
-            btnDeleteOrder.ForeColor = System.Drawing.Color.FromArgb(0, 0, 0);
-            btnDeleteOrder.Location = new System.Drawing.Point(6, 4);
+            btnDeleteOrder.Font = new Font("Arial", 16F, FontStyle.Bold);
+            btnDeleteOrder.ForeColor = Color.FromArgb(0, 0, 0);
+            btnDeleteOrder.Location = new Point(6, 4);
             btnDeleteOrder.Margin = new Padding(0);
             btnDeleteOrder.Name = "btnDeleteOrder";
-            btnDeleteOrder.Size = new System.Drawing.Size(75, 50);
+            btnDeleteOrder.Size = new Size(75, 50);
             btnDeleteOrder.TabIndex = 13;
             btnDeleteOrder.TabStop = false;
             btnDeleteOrder.Text = "VOID";
@@ -257,130 +256,137 @@ namespace WinLayer
             dgv.AllowUserToDeleteRows = false;
             dgv.AllowUserToResizeRows = false;
             dgv.AutoGenerateColumns = false;
-            dgv.BackgroundColor = System.Drawing.Color.Black;
-            dgv.Columns.AddRange(new DataGridViewColumn[] { colOrderDate, colOrderItemsDetailed, StatusName, OrderTypeName, PaymentMethodName });
+            dgv.BackgroundColor = Color.Black;
+            dgv.Columns.AddRange(new DataGridViewColumn[] { colOrderDate, colOrderItemsDetailed, StatusName, OrderTypeName, PaymentMethodName, Total });
             dgv.DataSource = orderBindingSource;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
-            dgv.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = SystemColors.Window;
+            dataGridViewCellStyle7.Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.GradientActiveCaption;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.False;
+            dgv.DefaultCellStyle = dataGridViewCellStyle7;
             dgv.Dock = DockStyle.Fill;
-            dgv.GridColor = System.Drawing.Color.FromArgb(208, 215, 229);
-            dgv.Location = new System.Drawing.Point(0, 87);
+            dgv.GridColor = Color.FromArgb(208, 215, 229);
+            dgv.Location = new Point(0, 87);
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 20;
             dgv.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            dgv.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dgv.RowTemplate.DefaultCellStyle.Font = new Font("Microsoft Sans Serif", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dgv.RowTemplate.Height = 50;
             dgv.RowTemplate.Resizable = DataGridViewTriState.True;
             dgv.ScrollBars = ScrollBars.None;
             dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgv.Size = new System.Drawing.Size(864, 518);
+            dgv.Size = new Size(864, 518);
             dgv.TabIndex = 4;
             dgv.CellMouseDoubleClick += dgv_CellMouseDoubleClick;
-            dgv.Scroll += dgv_Scroll;
+            // 
+            // orderBindingSource
+            // 
+            orderBindingSource.DataSource = typeof(Order);
+            // 
+            // lblTotal
+            // 
+            lblTotal.BackColor = Color.Black;
+            lblTotal.Dock = DockStyle.Top;
+            lblTotal.Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblTotal.ForeColor = Color.White;
+            lblTotal.Location = new Point(0, 60);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(947, 27);
+            lblTotal.TabIndex = 9;
+            lblTotal.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // panel2
+            // 
+            panel2.BackColor = Color.Black;
+            panel2.Dock = DockStyle.Bottom;
+            panel2.Location = new Point(0, 605);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(947, 20);
+            panel2.TabIndex = 12;
+            // 
+            // vScroll
+            // 
+            vScroll.Dock = DockStyle.Right;
+            vScroll.Location = new Point(864, 87);
+            vScroll.Name = "vScroll";
+            vScroll.Size = new Size(83, 518);
+            vScroll.TabIndex = 13;
+            vScroll.Visible = false;
             // 
             // colOrderDate
             // 
             colOrderDate.DataPropertyName = "OrderDate";
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dataGridViewCellStyle1.Format = "dd MMM yy HH:mm";
             colOrderDate.DefaultCellStyle = dataGridViewCellStyle1;
             colOrderDate.HeaderText = "Date / Time";
             colOrderDate.Name = "colOrderDate";
             colOrderDate.ReadOnly = true;
             colOrderDate.Resizable = DataGridViewTriState.True;
-            colOrderDate.Width = 150;
+            colOrderDate.Width = 120;
             // 
             // colOrderItemsDetailed
             // 
             colOrderItemsDetailed.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colOrderItemsDetailed.DataPropertyName = "AllOrderItemsTextWithPrice";
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.Font = new Font("Courier New", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
             colOrderItemsDetailed.DefaultCellStyle = dataGridViewCellStyle2;
             colOrderItemsDetailed.HeaderText = "Order Items";
             colOrderItemsDetailed.Name = "colOrderItemsDetailed";
             colOrderItemsDetailed.ReadOnly = true;
-            colOrderItemsDetailed.Width = 300;
+            colOrderItemsDetailed.Width = 200;
             // 
             // StatusName
             // 
             StatusName.DataPropertyName = "Status";
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             StatusName.DefaultCellStyle = dataGridViewCellStyle3;
             StatusName.HeaderText = "Status";
             StatusName.Name = "StatusName";
             StatusName.ReadOnly = true;
-            StatusName.Width = 120;
             // 
             // OrderTypeName
             // 
             OrderTypeName.DataPropertyName = "OrderType";
             dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             OrderTypeName.DefaultCellStyle = dataGridViewCellStyle4;
-            OrderTypeName.HeaderText = "Order Type";
+            OrderTypeName.HeaderText = "Type";
             OrderTypeName.Name = "OrderTypeName";
             OrderTypeName.ReadOnly = true;
-            OrderTypeName.Width = 120;
+            OrderTypeName.Width = 70;
             // 
             // PaymentMethodName
             // 
             PaymentMethodName.DataPropertyName = "Payment";
             dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.TopLeft;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PaymentMethodName.DefaultCellStyle = dataGridViewCellStyle5;
             PaymentMethodName.HeaderText = "Payment";
             PaymentMethodName.Name = "PaymentMethodName";
             PaymentMethodName.ReadOnly = true;
+            PaymentMethodName.Width = 80;
             // 
-            // orderBindingSource
+            // Total
             // 
-            orderBindingSource.DataSource = typeof(Order);
-            // 
-            // ordersViewDataConnector
-            // 
-            ordersViewDataConnector.DataSource = typeof(OrdersView);
-            // 
-            // lblTotal
-            // 
-            lblTotal.BackColor = System.Drawing.Color.Black;
-            lblTotal.Dock = DockStyle.Top;
-            lblTotal.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, 0);
-            lblTotal.ForeColor = System.Drawing.Color.White;
-            lblTotal.Location = new System.Drawing.Point(0, 60);
-            lblTotal.Name = "lblTotal";
-            lblTotal.Size = new System.Drawing.Size(947, 27);
-            lblTotal.TabIndex = 9;
-            lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // panel2
-            // 
-            panel2.BackColor = System.Drawing.Color.Black;
-            panel2.Dock = DockStyle.Bottom;
-            panel2.Location = new System.Drawing.Point(0, 605);
-            panel2.Name = "panel2";
-            panel2.Size = new System.Drawing.Size(947, 20);
-            panel2.TabIndex = 12;
-            // 
-            // vScroll
-            // 
-            vScroll.Dock = DockStyle.Right;
-            vScroll.Location = new System.Drawing.Point(864, 87);
-            vScroll.Name = "vScroll";
-            vScroll.Size = new System.Drawing.Size(83, 518);
-            vScroll.TabIndex = 13;
-            vScroll.Scroll += vScroll_Scroll;
+            Total.DataPropertyName = "Total";
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle6.Font = new Font("Microsoft Sans Serif", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.Format = "N2";
+            Total.DefaultCellStyle = dataGridViewCellStyle6;
+            Total.HeaderText = "Total";
+            Total.Name = "Total";
+            Total.ReadOnly = true;
+            Total.Width = 70;
             // 
             // ctlOrders
             // 
@@ -389,14 +395,13 @@ namespace WinLayer
             Controls.Add(lblTotal);
             Controls.Add(panel1);
             Controls.Add(panel2);
-            Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            Font = new Font("Arial", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "ctlOrders";
-            Size = new System.Drawing.Size(947, 625);
+            Size = new Size(947, 625);
             Load += frmOrders_Load;
             panel1.ResumeLayout(false);
             ((ISupportInitialize)dgv).EndInit();
             ((ISupportInitialize)orderBindingSource).EndInit();
-            ((ISupportInitialize)ordersViewDataConnector).EndInit();
             ResumeLayout(false);
 
         }
@@ -416,56 +421,23 @@ namespace WinLayer
             try
             {
                 List<Order> orders = await repoOrder.GetListByField("SessionIID", BSLayer.Instance.shop.CurrentSessionIID, "Items", "OrderDate");
-
-                //DataTable dt =  BSLayer.Instance.GetAllOrdersForSessionDateOrderly( BSLayer.Instance.shop.CurrentSessionIID, OrderByTypes.Descending);
-
-
-                //dt.Columns.Add("OrderItemsDetailed");
-                //dt.Columns.Add("StatusName");
-                //dt.Columns.Add("OrderTypeName");
-                //dt.Columns.Add("PaymentMethodName");
-                //for (int i = 0; i < dt.Rows.Count; i++)
-                //{
-                //    dt.Rows[i]["StatusName"] = ((StatusFlags)int.Parse(dt.Rows[i]["Status"].ToString())).ToString();
-                //    dt.Rows[i]["OrderTypeName"] = ((OrderTypes)int.Parse(dt.Rows[i]["OrderType"].ToString())).ToString();
-                //    dt.Rows[i]["PaymentMethodName"] = ((PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString())).ToString();
-                //}
-
-                //int maxdetailed = orders.Count > config.Order_List_Detailed_Orders_Max_Counter ? config.Order_List_Detailed_Orders_Max_Counter : orders.Count;
-                //rowheights = new List<int>();
-                //for (int i = 0; i < maxdetailed; i++)
-                //{
-                //    Order order = await  BSLayer.Instance.GetOrder(dt.Rows[i]["IID"].ToString());
-                //    dt.Rows[i]["OrderItemsDetailed"] = order.GetAllOrderItemsText();
-                //    rowheights.Add(order.Items.Count * 15 + 7);
-                //}
                 dgv.DataSource = orders;
 
-
-                // string currentSessionIID =  BSLayer.Instance.shop.CurrentSessionIID;
-                double cashTotal = orders.Where(x => x.Payment == PaymentMethods.Cash).Sum(x => x.Total); //   BSLayer.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Cash);
-                double cardTotal = orders.Where(x => x.Payment == PaymentMethods.Card).Sum(x => x.Total); //  BSLayer.Instance.GetSessionPaymentSum(currentSessionIID, PaymentMethods.Card);
-                double unpaidTotal = orders.Sum(x => x.Balance); //  BSLayer.Instance.GetSessionOrderSum(currentSessionIID) - cashTotal - cardTotal;
-
-                //lblTotal.Text = "Session Total : " +  BSLayer.Instance.GetCurrentSessionXSum().ToString("c") +
-                //    "  Cash= " + cashTotal.ToString("c") +
-                //    " ,Card= " + cardTotal.ToString("c") +
-                //    " ,Unpaid= " + unpaidTotal.ToString("c");
+                double cashTotal = orders.Where(x => x.Payment == PaymentMethods.Cash).Sum(x => x.Total);
+                double cardTotal = orders.Where(x => x.Payment == PaymentMethods.Card).Sum(x => x.Total);
+                double unpaidTotal = orders.Sum(x => x.Balance);
 
                 lblTotal.Text = "Session Total : " + orders.Sum(x => x.Total).ToString("c") +
                     "  Cash= " + cashTotal.ToString("c") +
                     " ,Card= " + cardTotal.ToString("c") +
                     " ,Unpaid= " + unpaidTotal.ToString("c");
 
-
                 vScroll.Maximum = dgv.RowCount;
-
             } catch (Exception ex)
             {
                 string str = ex.Message;
             }
         }
-
 
         private void btnClose_Click(object sender, System.EventArgs e)
         {
@@ -479,50 +451,13 @@ namespace WinLayer
 
         private async void LoadSelectedOrder()
         {
-          //  string SelectedIID = "";
-           // Masa table = null;
             if (dgv.SelectedRows.Count > 0)
             {
-               // SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = dgv.SelectedRows[0].DataBoundItem as Order; // await BSLayer.Instance.GetOrder(SelectedIID);
-                //if (order.OrderType == OrderTypes.Sitin)
-                //{
-                //    if (order.Status == StatusFlags.Completed)
-                //    {
-                //        //table = new Masa()
-                //        //{
-                //        //    TableName = "Temp" + order.IID,
-                //        //    TableCovers = order.Covers
-                //        //};
-                //        //order.TableIID = table.IID;
-                //        //await repoOrder.Save(order); // BSLayer.Instance.SaveOrder(order);
-                //        //table.LockedClientIP = config.Terminal_Name;
-                //        //table.AttachOrder(order);
-
-                //        //await repoTable.Save(table); // BSLayer.Instance.SaveTable(table);
-                //        //await BSLayer.Instance.BarrowTable(table.IID);
-                //    } else
-                //    {
-                //        table = await BSLayer.Instance.BarrowTable(order.TableIID);
-                //    }
-                //    if (table == null)
-                //    {
-                //        MessageBox.Show("Order cannot be openned");
-                //        return;
-                //    } else
-                //    {
-                //        BSLayer.Instance.AttachedOrder = table.AttachedOrder;
-                //      await LoadAttachedOrderEvent();
-                //       await DetachPanelEvent();
-                //    }
-                //} else
-                //{
-                    order = await repoOrder.GetOrderToEditAsync(order.IID, config.Terminal_Name);
-                    BSLayer.Instance.AttachedOrder = order;
-                   await LoadAttachedOrderEvent();
-                   await DetachPanelEvent();
-
-                //}
+                Order order = dgv.SelectedRows[0].DataBoundItem as Order;
+                order = await repoOrder.GetOrderToEditAsync(order.IID, config.Terminal_Name);
+                BSLayer.Instance.AttachedOrder = order;
+                await LoadAttachedOrderEvent();
+                await DetachPanelEvent();
             }
         }
 
@@ -531,34 +466,36 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 for (int i = 0; i < dgv.SelectedRows.Count; i++)
-                    await BSLayer.Instance.DeleteOrder(dgv.SelectedRows[i].Cells["IID"].Value.ToString());
+                {
+                    Order order = dgv.SelectedRows[i].DataBoundItem as Order;
+                    if (order != null)
+                        await repoOrder.Delete(order.IID);
+                }
                 await LoadOrders(true);
             }
         }
-
-
 
         private void lvOrders_DoubleClick(object sender, System.EventArgs e)
         {
             LoadSelectedOrder();
         }
 
-
-
         private async void btnUnsetPaymentMethod_Click(object sender, EventArgs e)
         {
             string SelectedIID = "";
             if (dgv.SelectedRows.Count > 0)
             {
-                SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await BSLayer.Instance.BarrowOrder(SelectedIID, config.Terminal_Name);
-
+                Order order = dgv.SelectedRows[0].DataBoundItem as Order;
                 if (order != null)
                 {
-                    order.Payment = PaymentMethods.NotPaid;
-                    order.PaymentFlag = "";
-                    await BSLayer.Instance.SaveOrder(order);
-                    await LoadOrders(true);
+                    order = await repoOrder.GetOrderToEditAsync(order.IID, config.Terminal_Name);
+                    if (order != null)
+                    {
+                        order.Payment = PaymentMethods.NotPaid;
+                        order.PaymentFlag = "";
+                        await repoOrder.Save(order);
+                        await LoadOrders(true);
+                    }
                 }
             }
         }
@@ -577,7 +514,7 @@ namespace WinLayer
         {
             if (dgv.SelectedRows.Count > 0)
             {
-                Order order = await BSLayer.Instance.GetOrder(dgv.SelectedRows[0].Cells["IID"].Value.ToString());
+                Order order = dgv.SelectedRows[0].DataBoundItem as Order;
                 Printer printer = await BSLayer.Instance.GetPrinterForOrderType(order.OrderType);
                 if (printer != null)
                     BSLayer.Instance.PrintReceipt(order, printer, 1);
@@ -586,28 +523,8 @@ namespace WinLayer
                     trmPrinterSelector trm = new trmPrinterSelector(PrinterTypes.Receipt);
                     if (trm.ShowDialog() == DialogResult.OK)
                         BSLayer.Instance.PrintReceipt(order, trm.SelectedPrinter, 1);
-
                 }
-
             }
-        }
-
-
-
-        private void btnViewCustomerOrTable_Click(object sender, EventArgs e)
-        {
-            dgv.Columns["CustomerDetails"].Visible = !dgv.Columns["CustomerDetails"].Visible;
-        }
-
-        private void vScroll_Scroll(object sender, ScrollEventArgs e)
-        {
-            if (e.NewValue >= 0)
-                dgv.FirstDisplayedScrollingRowIndex = e.NewValue;
-        }
-
-        private void dgv_Scroll(object sender, ScrollEventArgs e)
-        {
-            vScroll.Value = e.NewValue;
         }
 
         private async void btnChangePaymentMethod_Click(object sender, EventArgs e)
@@ -645,7 +562,5 @@ namespace WinLayer
                 }
             }
         }
-
-        
     }
 }

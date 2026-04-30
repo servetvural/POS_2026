@@ -64,7 +64,11 @@ public interface IRepository<T> where T : BaseClass
     //Task<List<StockItemView>> GetStockItesWithSupplier(string SupplierIID = null);
     #endregion
 
+    Task<bool> ApplyRecipeUsageToStock(string sessionIID);
+    Task<bool> ApplyRecipeUsageToStock(List<RecipeUsage> recipeUsages);
     Task<List<RecipeUsage>> GetSessionRecipeUsage(string sessionIID);
+     Task<List<RecipeUsage>> GetSessionRecipeUsageForOrderItems(string sessionIID);
+    Task<List<RecipeUsage>> GetSessionRecipeUsageForXOrderItems(string sessionIID);
     Task<List<OrderItemSummary>> GetSessionOrderItemSummary(string sessionIID);
 
     Task<List<Masa>> GetAllTablesWithActiveOrders();

@@ -1,6 +1,6 @@
 ﻿namespace WinLayer
 {
-    partial class UPEntity
+    partial class UPCategory
     {
         /// <summary>
         /// Required designer variable.

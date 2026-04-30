@@ -65,7 +65,7 @@ namespace WinLayer
         private Panel pnlDisplay;
         private Form Locker;
         private Button btnCashDrawer;
-        private UPEntity pnlSpecial;
+        private UPCategory pnlSpecial;
 
         private FlowLayoutPanel pnlTop;
         private Button cmdCancel;
@@ -1720,9 +1720,9 @@ namespace WinLayer
             pnlTop.ForeColor = Color.Black;
             pnlTop.Location = new Point(0, 0);
             pnlTop.Margin = new Padding(0);
-            pnlTop.MinimumSize = new Size(0, 83);
+            pnlTop.MinimumSize = new Size(0, 75);
             pnlTop.Name = "pnlTop";
-            pnlTop.Size = new Size(699, 157);
+            pnlTop.Size = new Size(699, 75);
             pnlTop.TabIndex = 44;
             // 
             // cmdDirectSale
@@ -1738,9 +1738,9 @@ namespace WinLayer
             cmdDirectSale.Location = new Point(6, 3);
             cmdDirectSale.Margin = new Padding(6, 3, 1, 1);
             cmdDirectSale.Name = "cmdDirectSale";
-            cmdDirectSale.Size = new Size(107, 75);
+            cmdDirectSale.Size = new Size(90, 70);
             cmdDirectSale.TabIndex = 20;
-            cmdDirectSale.Text = "Direct Sale";
+            cmdDirectSale.Text = "SALE";
             cmdDirectSale.UseVisualStyleBackColor = false;
             cmdDirectSale.Click += cmdDirectSale_Click;
             // 
@@ -1754,12 +1754,12 @@ namespace WinLayer
             cmdTables.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             cmdTables.ForeColor = Color.FromArgb(0, 0, 0);
             cmdTables.ImeMode = ImeMode.NoControl;
-            cmdTables.Location = new Point(115, 3);
+            cmdTables.Location = new Point(98, 3);
             cmdTables.Margin = new Padding(1, 3, 1, 1);
             cmdTables.Name = "cmdTables";
-            cmdTables.Size = new Size(105, 75);
+            cmdTables.Size = new Size(90, 70);
             cmdTables.TabIndex = 19;
-            cmdTables.Text = "Tables";
+            cmdTables.Text = "TABLES";
             cmdTables.UseVisualStyleBackColor = false;
             cmdTables.Click += cmdTables_Click;
             // 
@@ -1773,12 +1773,12 @@ namespace WinLayer
             cmdTakeAway.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             cmdTakeAway.ForeColor = Color.FromArgb(0, 0, 0);
             cmdTakeAway.ImeMode = ImeMode.NoControl;
-            cmdTakeAway.Location = new Point(222, 3);
+            cmdTakeAway.Location = new Point(190, 3);
             cmdTakeAway.Margin = new Padding(1, 3, 1, 1);
             cmdTakeAway.Name = "cmdTakeAway";
-            cmdTakeAway.Size = new Size(105, 75);
+            cmdTakeAway.Size = new Size(90, 70);
             cmdTakeAway.TabIndex = 18;
-            cmdTakeAway.Text = "Take Away B";
+            cmdTakeAway.Text = "Take Away";
             cmdTakeAway.UseVisualStyleBackColor = false;
             cmdTakeAway.Click += cmdTakeAway_Click;
             // 
@@ -1792,10 +1792,10 @@ namespace WinLayer
             cmdDelivery.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             cmdDelivery.ForeColor = Color.FromArgb(0, 0, 0);
             cmdDelivery.ImeMode = ImeMode.NoControl;
-            cmdDelivery.Location = new Point(329, 3);
+            cmdDelivery.Location = new Point(282, 3);
             cmdDelivery.Margin = new Padding(1, 3, 1, 1);
             cmdDelivery.Name = "cmdDelivery";
-            cmdDelivery.Size = new Size(105, 75);
+            cmdDelivery.Size = new Size(90, 70);
             cmdDelivery.TabIndex = 17;
             cmdDelivery.Text = "Delivery";
             cmdDelivery.UseVisualStyleBackColor = false;
@@ -1806,10 +1806,10 @@ namespace WinLayer
             mnuFunctions.BackColor = Color.Black;
             mnuFunctions.Dock = DockStyle.None;
             mnuFunctions.Items.AddRange(new ToolStripItem[] { mnuTools });
-            mnuFunctions.Location = new Point(435, 0);
+            mnuFunctions.Location = new Point(373, 0);
             mnuFunctions.Name = "mnuFunctions";
             mnuFunctions.Padding = new Padding(7, 2, 0, 2);
-            mnuFunctions.Size = new Size(211, 68);
+            mnuFunctions.Size = new Size(91, 74);
             mnuFunctions.TabIndex = 31;
             mnuFunctions.Text = "menuStrip1";
             // 
@@ -1822,7 +1822,7 @@ namespace WinLayer
             mnuTools.Font = new Font("Segoe UI", 14F);
             mnuTools.ImageScaling = ToolStripItemImageScaling.None;
             mnuTools.Name = "mnuTools";
-            mnuTools.Size = new Size(82, 64);
+            mnuTools.Size = new Size(82, 70);
             // 
             // mnuOrders
             // 
@@ -2052,16 +2052,17 @@ namespace WinLayer
             // 
             cmdCancel.BackColor = Color.Black;
             cmdCancel.BackgroundImage = Properties.Resources.Delete;
-            cmdCancel.BackgroundImageLayout = ImageLayout.Stretch;
+            cmdCancel.BackgroundImageLayout = ImageLayout.Center;
             cmdCancel.FlatAppearance.BorderColor = Color.White;
             cmdCancel.FlatAppearance.BorderSize = 0;
+            cmdCancel.FlatStyle = FlatStyle.Flat;
             cmdCancel.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
-            cmdCancel.ForeColor = Color.White;
+            cmdCancel.ForeColor = Color.Black;
             cmdCancel.ImeMode = ImeMode.NoControl;
-            cmdCancel.Location = new Point(1, 82);
+            cmdCancel.Location = new Point(465, 3);
             cmdCancel.Margin = new Padding(1, 3, 1, 1);
             cmdCancel.Name = "cmdCancel";
-            cmdCancel.Size = new Size(111, 74);
+            cmdCancel.Size = new Size(100, 70);
             cmdCancel.TabIndex = 16;
             cmdCancel.TextAlign = ContentAlignment.MiddleRight;
             cmdCancel.UseVisualStyleBackColor = false;
@@ -2078,10 +2079,10 @@ namespace WinLayer
             btnExpandShrinkHoldButtonDetails.Font = new Font("Segoe UI", 15.75F, FontStyle.Bold);
             btnExpandShrinkHoldButtonDetails.ForeColor = Color.White;
             btnExpandShrinkHoldButtonDetails.ImeMode = ImeMode.NoControl;
-            btnExpandShrinkHoldButtonDetails.Location = new Point(114, 82);
+            btnExpandShrinkHoldButtonDetails.Location = new Point(567, 3);
             btnExpandShrinkHoldButtonDetails.Margin = new Padding(1, 3, 1, 1);
             btnExpandShrinkHoldButtonDetails.Name = "btnExpandShrinkHoldButtonDetails";
-            btnExpandShrinkHoldButtonDetails.Size = new Size(89, 74);
+            btnExpandShrinkHoldButtonDetails.Size = new Size(90, 70);
             btnExpandShrinkHoldButtonDetails.TabIndex = 33;
             btnExpandShrinkHoldButtonDetails.TextAlign = ContentAlignment.MiddleRight;
             btnExpandShrinkHoldButtonDetails.UseVisualStyleBackColor = false;
@@ -2092,7 +2093,7 @@ namespace WinLayer
             pnlOrderPad.AutoSize = true;
             pnlOrderPad.BackColor = Color.Transparent;
             pnlOrderPad.Dock = DockStyle.Top;
-            pnlOrderPad.Location = new Point(0, 226);
+            pnlOrderPad.Location = new Point(0, 144);
             pnlOrderPad.Margin = new Padding(4, 3, 4, 3);
             pnlOrderPad.Name = "pnlOrderPad";
             pnlOrderPad.Padding = new Padding(9, 0, 0, 0);
@@ -2106,7 +2107,7 @@ namespace WinLayer
             pnlPendingOrders.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             pnlPendingOrders.BackColor = Color.Black;
             pnlPendingOrders.Dock = DockStyle.Top;
-            pnlPendingOrders.Location = new Point(0, 157);
+            pnlPendingOrders.Location = new Point(0, 75);
             pnlPendingOrders.Margin = new Padding(4, 3, 4, 3);
             pnlPendingOrders.MinimumSize = new Size(0, 69);
             pnlPendingOrders.Name = "pnlPendingOrders";
@@ -2123,10 +2124,10 @@ namespace WinLayer
             pnlHolder.BackColor = Color.Transparent;
             pnlHolder.BackgroundImageLayout = ImageLayout.Zoom;
             pnlHolder.Dock = DockStyle.Fill;
-            pnlHolder.Location = new Point(0, 226);
+            pnlHolder.Location = new Point(0, 144);
             pnlHolder.Margin = new Padding(4, 3, 4, 3);
             pnlHolder.Name = "pnlHolder";
-            pnlHolder.Size = new Size(699, 672);
+            pnlHolder.Size = new Size(699, 754);
             pnlHolder.TabIndex = 48;
             // 
             // tmrScreenSaverTrigger
@@ -2322,7 +2323,7 @@ namespace WinLayer
 
                     foreach (Category category in BSLayer.Instance.ActiveMenu.categories)
                     {
-                        UPEntity upe = ActivatorUtilities.CreateInstance<UPEntity>(ServiceHelper.Services, category);
+                        UPCategory upe = ActivatorUtilities.CreateInstance<UPCategory>(ServiceHelper.Services, category);
                         // upe.DoneEventHandler = new GenericFunctionCallReturnBool(this.DoneEventHandlerFunction);
                         upe.Name = "upentity";
                         OUI.Panels.Add(upe);
@@ -2427,7 +2428,7 @@ namespace WinLayer
             {
                 for (int i = 0; i < pnlSpecial.UIEButtons.Count; i++)
                 {
-                    UPEntityButton upeb = (UPEntityButton)pnlSpecial.UIEButtons[i];
+                    UPCategoryItem upeb = (UPCategoryItem)pnlSpecial.UIEButtons[i];
                     if (DRNumeric.IsBitSet(upeb.categoryItem.AvailableFor, (int)BSLayer.Instance.AttachedOrder.OrderType) &&
                         upeb.categoryItem.Compulsary)
                     {
@@ -2489,7 +2490,7 @@ namespace WinLayer
 
         public async Task UnloadOrder()
         {
-            foreach (UPEntity upe in OUI.Panels)
+            foreach (UPCategory upe in OUI.Panels)
                 upe.Reset();
 
             if (BSLayer.Instance.AttachedOrder != null)
@@ -3901,11 +3902,9 @@ namespace WinLayer
             {
                 if (BSLayer.Instance.AttachedOrder != null)
                 {
-                    await BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, false, 1,
-                        config.TerminalReceiptPrinterIID);
+                    await BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, false, 1,config.TerminalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
-                        DRShell.SendCutCommandToUSBPrinter(
-                             BSLayer.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
+                        DRShell.SendCutCommandToUSBPrinter(BSLayer.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
                 }
             }
         }
@@ -4171,7 +4170,7 @@ namespace WinLayer
 
                 for (int i = 0; i < OUI.Panels.Count; i++)
                 {
-                    UPEntity ui = OUI.Panels[i];
+                    UPCategory ui = OUI.Panels[i];
                     if (ui.IID == category.IID)
                     {
                         OUI.SelectedIndex = i;
@@ -4237,7 +4236,7 @@ namespace WinLayer
         {
             if (BSLayer.Instance.AttachedOrder != null)
             {
-                foreach (UPEntity upe in OUI.Panels)
+                foreach (UPCategory upe in OUI.Panels)
                     upe.Reset();
                 await BSLayer.Instance.DeleteRelatedKitchenOrderForceFully(BSLayer.Instance.AttachedOrder.IID);
                 await BSLayer.Instance.SetKitchenModified();

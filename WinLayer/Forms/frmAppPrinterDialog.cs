@@ -6,6 +6,7 @@ namespace WinLayer {
     public partial class frmAppPrinterDialog : Form {
         PosConfig config;
         IRepository<Printer> repoPrinter;
+
         public string SelectedPrinterIID="";
         public Printer SelectedPrinter;
         public string SelectedPrinterNetworkName="";
