@@ -1,4 +1,7 @@
-﻿using POSLayer.Library;
+﻿using System.Security.Cryptography;
+
+using POSLayer.Library;
+using POSLayer.Migrations;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
 
@@ -8,7 +11,8 @@ namespace WinLayer {
         PosConfig config;
         IRepository<Debug> repoDebug;
         IRepository<Order> repoOrder;
-        IRepository<GenericImage> repoImage;
+        IRepository<GenericImage> repoImage;   
+        IRepository<KitchenOrder> repoKitchenOrder;
 
         public KitchenOrder korder;
         public bool blnWaiting;
@@ -34,21 +38,22 @@ namespace WinLayer {
         }
 
 
-        public ctlKitchenOrder(PosConfig configAsService,IRepository<Order> _repoOrder, IRepository<Debug> _repoDebug,
-            IRepository<GenericImage> _repoImage) {
+        public ctlKitchenOrder() {
             InitializeComponent();
-            config = configAsService;
-            repoDebug = _repoDebug;
-            repoOrder = _repoOrder;
-            repoImage = _repoImage;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoDebug = ServiceHelper.GetRepository<Debug>();
+            repoOrder = ServiceHelper.GetRepository<Order>();
+            repoImage = ServiceHelper.GetRepository<GenericImage>();
+            repoKitchenOrder = ServiceHelper.GetRepository<KitchenOrder>();
         }
-        public ctlKitchenOrder(PosConfig configAsService, IRepository<Order> _repoOrder, 
-            IRepository<Debug> _repoDebug, KitchenOrder korder, 
-            Distribution _distribution, bool blnWaiting,bool blnDisplayDetails) {
+        public ctlKitchenOrder(KitchenOrder korder, Distribution _distribution, bool blnWaiting,bool blnDisplayDetails) {
             InitializeComponent();
-            config = configAsService;
-            repoDebug = _repoDebug;
-            repoOrder = _repoOrder;
+            config = ServiceHelper.GetService<PosConfig>();
+            repoDebug = ServiceHelper.GetRepository<Debug>();
+            repoOrder = ServiceHelper.GetRepository<Order>();
+            repoImage = ServiceHelper.GetRepository<GenericImage>();
+            repoKitchenOrder = ServiceHelper.GetRepository<KitchenOrder>();
+             
 
             this.korder = korder;
             this.Name = korder.IID;
@@ -250,10 +255,10 @@ namespace WinLayer {
             }
         }
 
-        private void BtnDone_Click(object sender, EventArgs e) {
+        private async void BtnDone_Click(object sender, EventArgs e) {
 
             if (blnWaiting) {
-                korder.BeingModified =  BSLayer.Instance.IsKitchenOrderBeingModified(korder.IID);
+                korder.BeingModified = await  BSLayer.Instance.IsKitchenOrderBeingModified(korder.IID);
                 if (!korder.BeingModified) {
                     MarkOrderItemsAsCompletedAsRequestedQuantity();
                     OrderCompleteRequested(korder);
@@ -272,12 +277,12 @@ namespace WinLayer {
                  BSLayer.Instance.OnImmediateDebugOccured("MarkOrderItemsAsCompletedAsRequestedQuantity Starting @ " + DateTime.Now.ToLongTimeString());
 
             korder.CompletedDateTime = DateTime.Now; // DateTime.Parse( BSLayer.Instance.GetDataTable("Select getdate()").Rows[0][0].ToString());
-            Order relatedOrder = await  BSLayer.Instance.GetOrder(korder.OrderIID);
+            Order relatedOrder = await repoOrder.Get(korder.OrderIID);
             if (relatedOrder == null) {
                 foreach (KitchenOrderItem item in korder.Items) {
                     item.Status = KitchenOrderStatusTypes.Completed;
                 }
-                 BSLayer.Instance.SaveKitchenOrder(korder);
+                await repoKitchenOrder.Save(korder);
 
             } else {
                 foreach (KitchenOrderItem item in korder.Items) {
@@ -294,7 +299,7 @@ namespace WinLayer {
                 if (config.DebugMode) 
                      BSLayer.Instance.OnImmediateDebugOccured("Saved Order Done @ " + DateTime.Now.ToLongTimeString());
 
-                 BSLayer.Instance.SaveKitchenOrder(korder);
+                await repoKitchenOrder.Save(korder);
                 if (config.DebugMode)
                      BSLayer.Instance.OnImmediateDebugOccured("Saved Kitchen Order Done @ " + DateTime.Now.ToLongTimeString());
                 

@@ -3,9 +3,12 @@ using System.Drawing.Printing;
 using System.Globalization;
 using System.IO.Ports;
 using System.Net.Mail;
+using System.Security.Cryptography;
 using System.Xml;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -162,52 +165,7 @@ namespace WinLayer
         IRepository<StockItemUsage> repoStockItemUsage;
         IRepository<GenericImage> repoImage;
 
-        //private BSLayer(PosConfig configAsService, IRepository<Shop> _repoShop,
-        //    IRepository<Session> _repoSession,
-        //    IRepository<Employee> _repoEmployee,
-        //    IRepository<TheMenu> _repoMenu,
-        //    IRepository<User> _repoUser, IRepository<Debug> _repoDebug,
-        //    IRepository<Category> _repoCategory, IRepository<CategoryItem> _repoCategoryItem, IRepository<RecipeItem> _repoRecipeItem,
-        //    IRepository<Distribution> _repoDistribution, IRepository<Printer> _repoPrinter, IRepository<DistributionPrinter> _repoDistributionPrinter,
-        //    IRepository<Order> _repoOrder, IRepository<OrderItem> _repoOrderItem,
-        //    IRepository<Customer> _repoCustomer, IRepository<Bonus> _repoBonus,
-        //    IRepository<KitchenOrder> _repoKitchenOrder, IRepository<KitchenOrderItem> _repoKitchenOrderItem,
-        //    IRepository<Masa> _repoTable,
-        //    IRepository<XOrder> _repoXOrder, IRepository<XOrderItem> _repoXOrderItem,
-        //    IRepository<Supplier> _repoSupplier, 
-        //    IRepository<StockItem> _repoStockItem, IRepository<StockItemUsage> _repoStockItemUsage,
-        //    IRepository<GenericImage> _repoImage)
-        //{
-        //    config = configAsService;
-        //    repoShop = _repoShop;
-        //    repoSession = _repoSession;
-        //    repoEmployee = _repoEmployee;
-        //    repoMenu = _repoMenu;
-        //    repoUser = _repoUser;
-        //    repoDebug = _repoDebug;
-        //    repoCategory = _repoCategory;
-        //    repoCategoryItem = _repoCategoryItem;
-        //    repoRecipeItem = _repoRecipeItem;
-        //    repoDistribution = _repoDistribution;
-        //    repoPrinter = _repoPrinter;
-        //    repoDistributionPrinter = _repoDistributionPrinter;
-        //    repoOrder = _repoOrder;
-        //    repoOrderItem = _repoOrderItem;
-        //    repoCustomer = _repoCustomer;
-        //    repoBonus = _repoBonus;
-        //    repoKitchenOrder = _repoKitchenOrder;
-        //    repoKitchenOrderItem = _repoKitchenOrderItem;
-        //    repoTable = _repoTable;
-        //    repoXOrder = _repoXOrder;
-        //    repoXOrderItem = _repoXOrderItem;
-        //    repoSupplier = _repoSupplier;
-        //    repoStockItem = _repoStockItem;
-        //    repoStockItemUsage = _repoStockItemUsage;
-
-        //    repoImage = _repoImage;
-
-        //    shop = repoShop.GetFirst().Result;
-        //}
+      
 
 
         /// <summary>
@@ -377,16 +335,6 @@ namespace WinLayer
             return menu?.IID ?? "";
         }
 
-        //public async Task<double> GetOrdersTotalForPaymentMethod(string sessionIID, PaymentMethods payment)
-        //{
-        // //   List<OrdersView> orders = await repoOrder.GetOrdersView();
-
-        //    //DataTable dt = GetDataTable("Select isnull(sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + sessionIID + "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment);
-        //    //return float.Parse(dt.Rows[0]["Total"].ToString());
-
-        //    return repoSession .Where(x => x.SessionIID == sessionIID && (x.Status == StatusFlags.Completed || x.Status == StatusFlags.Archived) && x.Payment == payment).Sum(x => x.CalculatedValue);
-        //}
-
         public async Task<List<Debug>> GetDebugList()
         {
             return await repoDebug.GetAllAsync();
@@ -468,15 +416,6 @@ namespace WinLayer
 
         #region "TABLE FUNCTIONS"
 
-        public DataTable GetAllTableGroups()
-        {
-            return GetDataTable("GetTableGroups");
-        }
-
-        public async Task<List<Masa>> GetTableList(string GroupIID)
-        {
-            return await repoTable.GetListByField("GroupIID", GroupIID);
-        }
         public async Task<List<Masa>> GetTableAndSubTables(string TableIID)
         {
             return await repoTable.GetDBContext().Tables.Where(x => x.IID == TableIID).ToListAsync();
@@ -584,7 +523,7 @@ namespace WinLayer
                     table.TableCovers = 1;
                     await repoTable.Save(table);
 
-                    await DeleteOrderOnly(table.AttachedOrder);
+                    await repoOrder.Delete(table.AttachedOrder.IID);
                 }
             }
         }
@@ -627,7 +566,7 @@ namespace WinLayer
                     table.TableCovers = 1;
                     await repoTable.Save(table);
 
-                    await DeleteOrderOnly(order);
+                    await repoOrder.Delete(order.IID);
                 }
             }
         }
@@ -778,69 +717,7 @@ namespace WinLayer
         #endregion
 
         #region "ORDER FUNCTIONS"
-        public async Task<List<XOrder>> GetXOrderList()
-        {
-            return await repoXOrder.GetListByField("SessionIID", shop.CurrentSessionIID, OrderByField: "OrderDate");
-            //List<Order> xOrderList = new List<Order>();
-            //DataTable dt = GetDataTable("SELECT * from XOrders where SessionIID = '" + shop.CurrentSessionIID + "' order by OrderDate");
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    xOrderList.Add(GetXOrder(dt.Rows[i]["IID"].ToString()));
-            //return xOrderList;
-        }
-        public async Task<XOrder> GetXOrder(string IID)
-        {
-            return await repoXOrder.Get(IID, "Items");
-            //DataTable dt = GetDataTable("SELECT * from XOrders where IID = '" + IID + "'");
-            //if (dt.Rows.Count > 0)
-            //{
-            //    //create order
-            //    Order xorder = new Order(dt);
-            //    //add order items
-            //    DataTable dtItems = GetDataTable("GetAllXOrderItems", xorder.IID);
-
-            //    for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
-            //        xorder.items.Add(new OrderItem(dtItems.Rows[i]));
-            //    return xorder;
-            //} else
-            //    return null;
-        }
-
-        public async Task<List<Order>> GetOrderList()
-        {
-            return await repoOrder.GetListByField("SessionIID", shop.CurrentSessionIID, includeItems: "items", "OrderDate");
-            //List<Order> OrderList = new List<Order>();
-            //DataTable dt = GetDataTable("GetSessionOrders", shop.CurrentSessionIID);
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    OrderList.Add(GetOrder(dt.Rows[i]["IID"].ToString()));
-            //return OrderList;
-        }
-
-        public DataTable GetSessionOrdersByStatus(StatusFlags InclusiveStatus)
-        {
-            return GetDataTable("GetSessionOrdersByStatus '" + shop.CurrentSessionIID + "'," +
-                                (int)InclusiveStatus);
-        }
-
-        public async Task<Order> GetOrder(string IID)
-        {
-            return await repoOrder.Get(IID);
-            //DataTable dt = GetDataTable("GetOrder", IID);
-            //if (dt.Rows.Count > 0)
-            //{
-            //    //create order
-            //    Order order = new Order(dt);
-            //    //add order items
-            //    DataTable dtItems = this.GetAllOrderItems(order.IID);
-
-            //    for (int i = dtItems.Rows.Count - 1; i >= 0; i--)
-            //        order.items.Add(this.GetOrderItem(dtItems.Rows[i]["IID"].ToString()));
-            //    return order;
-            //} else
-            //    return null;
-        }
-
-
-
+       
         public async Task<bool> SaveOrder(Order order)
         {
             CultureInfo ci = GetDBCulture();
@@ -861,78 +738,12 @@ namespace WinLayer
 
         }
 
-        public async Task<bool> DeleteOrder(string OrderIID)
-        {
-            return await repoOrder.Delete(OrderIID) > 0;
-            // return RunQuery("DeleteOrder", OrderIID);
-        }
-
-        //This only deletes the order , most likely called from a function which checked the inhouse, 
-        //TakeAwayB, delivery possibilities
-        //and deleted the table already if any or freed it.
-        public async Task DeleteOrderOnly(Order order)
-        {
-            await repoOrder.Delete(order.IID);
-            //if (order != null)
-            //{
-            //    RunQuery("DeleteOrderItemsForOrder", order.IID);
-            //    RunQuery("DeleteOrder", order.IID);
-            //}
-        }
-
         public bool ConfirmForSupervision()
         {
             using (trmSupervisorLogin frm = ActivatorUtilities.CreateInstance<trmSupervisorLogin>(ServiceHelper.Services))
             {
                 return (frm.ShowDialog() == DialogResult.OK);
             }
-        }
-
-        //public async Task<OrderItem> GetOrderItem(string IID)
-        //{
-        //    return await repoOrderItem.Get(IID);
-        //    //DataTable dt = GetDataTable("GetOrderItem", IID);
-        //    //if (dt == null)
-        //    //    return null;
-
-        //    //return new OrderItem(dt.Rows[0]);
-        //}
-        public async Task SaveOrderItem(OrderItem oi)
-        {
-            await repoOrderItem.Save(oi);
-        }
-
-        public async Task SaveLogItem(LogItem log)
-        {
-            try
-            {
-                CultureInfo ci = GetDBCulture();
-                string sql = "SaveLogItem '" + log.IID + "','" + log.OrderItemText + "'," + log.Quantity + ",'" +
-                                log.Price.ToString(ci) + "','" + log.Reason.Replace("'", "''") + "'," +
-                                DRDateTime.DatetimeToMSSql(log.EventDateTime) + ",'" +
-                                log.ComputerName + "','" + log.OrderContent.Replace("'", "''") + "','" + log.Reference + "'";
-
-                await RunQuery(sql);
-            } catch (Exception ex)
-            {
-                string str = ex.Message;
-            }
-        }
-       
-
-        public async Task DeleteLogItems(List<string> IIDList)
-        {
-            foreach (var IID in IIDList)
-            {
-                await RunQuery("Delete From LogItems Where IID ='" + IID + "'");
-            }
-        }
-        public async Task DeleteAllLogItems()
-        {
-            try
-            {
-                await RunQuery("Delete From LogItems");
-            } catch { }
         }
 
         public async Task ReturnOrder(Order order)
@@ -947,13 +758,13 @@ namespace WinLayer
                     order.TableIID = null;
                     await SaveOrder(order);
                 } else
-                    await DeleteOrder(order.IID);
+                    await repoOrder.Delete(order.IID);
             }
         }
 
         public async Task<Order> BarrowOrder(string OrderIID, string ClientIP)
         {
-            Order order = await GetOrder(OrderIID);
+            Order order = await repoOrder.Get(OrderIID);
             if (order.IsBusy(ClientIP))
                 return null;
             else
@@ -962,18 +773,6 @@ namespace WinLayer
                 await SaveOrder(order);
                 return order;
             }
-        }
-
-
-
-        public async Task<List<Order>> GetOrderListForSession(string SessionIID)
-        {
-            return await repoOrder.GetDBContext().Orders.Where(x => x.SessionIID == SessionIID).Include("items").ToListAsync();
-            //List<Order> OrderList = new List<Order>();
-            //DataTable dt = GetDataTable("GetSessionOrders", SessionIID);
-            //for (int i = 0; i < dt.Rows.Count; i++)
-            //    OrderList.Add(await GetOrder(dt.Rows[i]["IID"].ToString()));
-            //return OrderList;
         }
 
         #endregion
@@ -1178,10 +977,9 @@ namespace WinLayer
         /// </summary>
         /// <param name="orderIID"></param>
         /// <returns></returns>
-        public bool HasAnyKitchenOrderInDatabase(string orderIID)
+        public async Task<bool> HasAnyKitchenOrderInDatabase(string orderIID)
         {
-            DataTable dt = GetDataTable("Select count(IID) as howmany from KitchenOrders where OrderIID ='" + orderIID + "'");
-            return int.Parse(dt.Rows[0]["howmany"].ToString()) > 0;
+            return (await repoKitchenOrder.GetListByField("OrderIID", orderIID)).HasAny();
         }
 
         /// <summary>
@@ -1228,7 +1026,7 @@ namespace WinLayer
                 //    korder.SetStatusCustom(KitchenOrderStatusTypes.WaitingToBePaid);
 
                 //check if order has any old kitchen order
-                bool blnHasOldKitchenOrder = HasAnyKitchenOrderInDatabase(order.IID);
+                bool blnHasOldKitchenOrder = await HasAnyKitchenOrderInDatabase(order.IID);
 
                 //check if any non completed items 
                 bool blnHasNonCompleteItems = HasAnyNonCompleteItems(korder);
@@ -1248,12 +1046,12 @@ namespace WinLayer
                 } else
                 {
                     if (blnHasNonCompleteItems)
-                        blnSaved = SaveKitchenOrder(korder);
+                        blnSaved = await repoKitchenOrder.Save(korder) != null;
                 }
 
                 if (blnSaved)
                 {
-                    korder.OrderNo = GetKitchenOrderNumber(korder.IID);
+                    korder.OrderNo = (await repoKitchenOrder.Get(korder.IID))?.OrderNo ?? 0;
 
                     if (korder.Items.Count > 0)
                     {
@@ -1274,31 +1072,18 @@ namespace WinLayer
                 }
 
                 //this is where you print kitchen order
-                OnKitchenRequestOccured(await GetKitchenOrder(korder.IID));
+                OnKitchenRequestOccured(await repoKitchenOrder.Get(korder.IID, "Items"));
             }
             return prepDialogResult;
         }
 
-        public int GetKitchenOrderNumber(string IID)
-        {
-            try
-            {
-                return int.Parse(GetDataTable("Select OrderNo from KitchenOrders where IID = '" + IID + "'").Rows[0]["OrderNo"].ToString());
-            } catch
-            {
-                return 0;
-            }
-        }
-
-
-        public bool UpdateCompletedQuantityForRelatedKitchenOrderItem(KitchenOrderItem koi)
+        public async Task<bool> UpdateCompletedQuantityForRelatedKitchenOrderItem(KitchenOrderItem koi)
         {
             try
             {
                 OrderItem oi = AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                 oi.CompletedQuantity += koi.Quantity;
-                //oi.OrderItemText = koi.ItemText;
-                SaveOrderItem(oi);
+                await repoOrderItem.Save(oi);
                 return true;
             } catch
             {
@@ -1307,20 +1092,12 @@ namespace WinLayer
         }
         public async Task<KitchenOrder> GetKitchenOrderForOrder(string orderIID)
         {
-            return await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == orderIID).Include("items").FirstOrDefaultAsync();
-            //DataTable dt = GetDataTable("Select IID from KitchenOrders where OrderIID ='" + orderIID + "'");
-            //if (dt.Rows.Count > 0)
-            //{
-            //    string IID = dt.Rows[0]["IID"].ToString();
-            //    return GetKitchenOrder(IID);
-            //} else
-            //    return null;
+            return await repoKitchenOrder.GetByField("OrderIID", orderIID,"Items");
         }
 
         public async Task DeleteKitchenOrdersForOrder(string orderIID)
         {
-            await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == orderIID).ExecuteDeleteAsync();
-            //RunQuery("DeleteKitchenOrdersForOrder", orderIID);
+            await repoKitchenOrder.DeleteByField("OrderIID", orderIID);
         }
         public async Task<bool> ModifyOldKitchenOrder(KitchenOrder newKOrder)
         {
@@ -1333,10 +1110,10 @@ namespace WinLayer
                     item.KitchenOrderIID = oldKitchenOrder.IID;
                 }
                 oldKitchenOrder.Items.AddRange(newKOrder.Items);
-                RunQuery("Delete from KitchenOrderItem where KitchenOrderIID = '" + oldKitchenOrder.IID + "'");
+                await repoKitchenOrderItem.DeleteByField("KitchenOrderIID", oldKitchenOrder.IID);
                 oldKitchenOrder.CreatedDateTime = DateTime.Now;
                 oldKitchenOrder.Reference = newKOrder.Reference;
-                return SaveKitchenOrder(oldKitchenOrder);
+                return await repoKitchenOrder.Save(oldKitchenOrder) != null;
             } else
                 return false;
         }
@@ -1349,7 +1126,7 @@ namespace WinLayer
                 KitchenOrder korder = ConvertOrderToKitchenOrder(order);
                 korder.OrderType = order.OrderType;
                 korder.Reference = order.OrderType.ToString() + "  " + order.Customer.CName;
-                SaveKitchenOrder(korder);
+                await repoKitchenOrder.Save(korder);
                 OnKitchenRequestOccured(await GetKitchenOrder(korder.IID));
             }
             return true;
@@ -1446,19 +1223,7 @@ namespace WinLayer
         #endregion
 
         #region "REPORT FUNCTIONS"
-        public DataTable GetReportEntityEBTotals(string SessionIID, string EntityIID)
-        {
-            return GetDataTable("GetReportEntityEBTotals '" + SessionIID + "','" + EntityIID + "'");
-        }
-
-        public DataTable GetReportEntityTotals(string SessionIID)
-        {
-            return GetDataTable("GetReportEntityTotals '" + SessionIID + "'");
-        }
-        public DataTable GetReportPaymentTypeTotals(string SessionIID)
-        {
-            return GetDataTable("GetReportPaymentTypeTotals '" + SessionIID + "'");
-        }
+     
 
         public async Task<bool> PrintReport(ReportFormatTypes reportFormat, string SessionIID, string PrinterIID, bool LatePrinting)
         {
@@ -1497,11 +1262,11 @@ namespace WinLayer
 
                 //if (await RunQuery($"UPDATE  Orders SET Status = 4 WHERE SessionIID = '{SessionToArchive.IID}' And Status = 3"))
                 //{
-                    if (await repoSession.Save(SessionToArchive) != null)                { 
+                    if (await repoSession.Save(SessionToArchive) != null)                {
 
 
                     //Handle start new session things
-                    Session session = await GetLatestSession();
+                    Session session = await repoSession.GetLatestSession();
                     if (session == null)
                     {
                         await StartNewSession();
@@ -1553,10 +1318,7 @@ namespace WinLayer
 
         #region "SESSION FUNCTIONS"
 
-        public DataTable GetSessionList()
-        {
-            return GetDataTable("GetSessionList");
-        }
+      
 
         //public async Task<Session> GetSessionDataDynamic(string SessionIID)
         //{
@@ -1649,17 +1411,19 @@ namespace WinLayer
             else
                 return false;
         }
-        public async Task<bool> RefreshDatabase()
-        {
-            try
-            {
-                string logfileName = GetDataTable("Select name from sys.database_files where type_desc = 'LOG'").Rows[0]["name"].ToString();
-                return await RunQuery("CHECKPOINT;DBCC SHRINKFILE (N'" + logfileName + "', 1, TRUNCATEONLY);EXEC sp_cycle_errorlog;");
-            } catch
-            {
-                return false;
-            }
-        }
+        //public async Task<bool> RefreshDatabase()
+        //{
+        //    try
+        //    {
+        //        string logfileName = GetDataTable("Select name from sys.database_files where type_desc = 'LOG'").Rows[0]["name"].ToString();
+        //        return await RunQuery("CHECKPOINT;DBCC SHRINKFILE (N'" + logfileName + "', 1, TRUNCATEONLY);EXEC sp_cycle_errorlog;");
+        //    } catch
+        //    {
+        //        return false;
+        //    }
+        //}
+
+    
         public async Task<bool> ArchiveSessionToDirectory(string SessionIID)
         {
             try
@@ -1767,92 +1531,96 @@ namespace WinLayer
         }
 
 
+        //public DataTable GetAllOrdersForSessionDateOrderly(string SessionIID, OrderByTypes orderDirection)
+        //{
+        //    string orderdir = "Asc";
+        //    switch (orderDirection)
+        //    {
+        //        case OrderByTypes.Ascending:
+        //        case OrderByTypes.None:
+        //            break;
+        //        case OrderByTypes.Descending:
+        //            orderdir = "Desc";
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //    return GetDataTable("SELECT * from OrdersView where SessionIID = '" + SessionIID + "'  Order by OrderDate " + orderdir);
 
-        public async Task<Session> GetLatestSession()
-        {
-            Session latestSession = await repoSession.GetDBContext().Database.SqlQuery<Session>($"select * from sessions where startdate in ( SELECT  Max(sessions.StartDate) AS Startdate FROM sessions)").FirstOrDefaultAsync();
-            return await repoSession.Get(latestSession.IID);
-
-            //DataTable dt = GetDataTable("GetLatestSession");
-            //if (dt.Rows.Count > 0)
-            //{
-            //    string LatestSessionIID = dt.Rows[0]["IID"].ToString();
-
-            //    return GetSessionDataDynamic(LatestSessionIID);
-            //} else
-            //    return null;
-        }
-        public DataTable GetAllOrdersForSessionDateOrderly(string SessionIID, OrderByTypes orderDirection)
-        {
-            string orderdir = "Asc";
-            switch (orderDirection)
-            {
-                case OrderByTypes.Ascending:
-                case OrderByTypes.None:
-                    break;
-                case OrderByTypes.Descending:
-                    orderdir = "Desc";
-                    break;
-                default:
-                    break;
-            }
-            return GetDataTable("SELECT * from OrdersView where SessionIID = '" + SessionIID + "'  Order by OrderDate " + orderdir);
-
-        }
+        //}
 
 
         /// <summary>
         /// Returns DataTable of SessionDataShort
         /// </summary>
         /// <returns></returns>
-        public DataTable GetArchivedSessionDataTable(string sessionDirectory)
+        public List<Session> GetArchivedSessions(string sessionDirectory)
         {
-            DataTable dt = GetSessionList();
-            dt.Clear();
+            List<Session> sessions = new List<Session>();
+            List<string> failedToLoad = new List<string>();
 
-            CultureInfo culture = new CultureInfo("en-GB");
+            //DataTable dt = GetSessionList();
+            //dt.Clear();
+
+            //CultureInfo culture = new CultureInfo("en-GB");
 
             string[] files = Directory.GetFiles(sessionDirectory);
 
-            for (int i = 0; i < files.Length; i++)
+            foreach (var filename in files)
             {
-                DataRow dr = dt.NewRow();
-                XmlTextReader myReader = new XmlTextReader(files[i]);
-
-                bool blnContinue = true;
-                while (myReader.Read() && blnContinue)
+               // string SessionFileName = DRFile.GenerateFileName(startDate, endDate, "xml");
+                Session session = (Session)DRFile.XmlDeSerialize(filename, typeof(Session), false);
+                if (session == null)
                 {
-                    if (myReader.NodeType == XmlNodeType.Element && myReader.LocalName.Equals("sessionData"))
-                    {
-                        while (myReader.Read())
-                        {
-                            if (myReader.LocalName.Equals("SessionIID"))
-                                dr["IID"] = myReader.ReadString();
-                            else if (myReader.LocalName.Equals("SessionStartDateTime"))
-                                dr["StartDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("SessionEndDateTime"))
-                                dr["EndDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("GrossSessionTotal"))
-                                dr["GrossSessionTotal"] = double.Parse(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X1Total"))
-                                dr["X1Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X2Total"))
-                                dr["X2Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("X3Total"))
-                                dr["X3Total"] = Convert.ToSingle(myReader.ReadString(), culture);
-                            else if (myReader.LocalName.Equals("Orders"))
-                            {
-                                blnContinue = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                myReader.Close();
-                dt.Rows.Add(dr);
-
+                     failedToLoad.Add(filename);
+                }   else
+                {
+                    sessions.Add(session);
+                }                                 
             }
-            return dt;
+            return sessions;
+
+
+
+            //for (int i = 0; i < files.Length; i++)
+            //{
+            //    DataRow dr = dt.NewRow();
+            //    XmlTextReader myReader = new XmlTextReader(files[i]);
+
+            //    bool blnContinue = true;
+            //    while (myReader.Read() && blnContinue)
+            //    {
+            //        if (myReader.NodeType == XmlNodeType.Element && myReader.LocalName.Equals("sessionData"))
+            //        {
+            //            while (myReader.Read())
+            //            {
+            //                if (myReader.LocalName.Equals("SessionIID"))
+            //                    dr["IID"] = myReader.ReadString();
+            //                else if (myReader.LocalName.Equals("SessionStartDateTime"))
+            //                    dr["StartDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("SessionEndDateTime"))
+            //                    dr["EndDate"] = Convert.ToDateTime(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("GrossSessionTotal"))
+            //                    dr["GrossSessionTotal"] = double.Parse(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("X1Total"))
+            //                    dr["X1Total"] = Convert.ToSingle(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("X2Total"))
+            //                    dr["X2Total"] = Convert.ToSingle(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("X3Total"))
+            //                    dr["X3Total"] = Convert.ToSingle(myReader.ReadString(), culture);
+            //                else if (myReader.LocalName.Equals("Orders"))
+            //                {
+            //                    blnContinue = false;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    myReader.Close();
+            //    dt.Rows.Add(dr);
+
+            //}
+            //return dt;
 
         }
 
@@ -2038,27 +1806,8 @@ namespace WinLayer
                 return false;
             }
         }
-        public double GetCurrentSessionXSum()
-        {
-            DataTable dt = GetDataTable("Select isnull(Sum(CalculatedValue),0) as Total from OrdersView where SessionIID = '" + shop.CurrentSessionIID + "'");
-            return double.Parse(dt.Rows[0]["Total"].ToString());
-        }
+       
 
-        public double GetSessionOrderSum(string SessionIID)
-        {
-            DataTable dt =
-                GetDataTable("Select Sum(CalculatedValue) as Total from OrdersView where SessionIID = '" + SessionIID +
-                                "'");
-            return double.Parse(dt.Rows[0]["Total"].ToString());
-        }
-
-        public double GetSessionPaymentSum(string SessionIID, PaymentMethods paymentMethod)
-        {
-            DataTable dt =
-                GetDataTable("Select Sum(CalculatedValue) as Total from OrdersView where SessionIID = '" + SessionIID +
-                                "' and Payment = " + (int)paymentMethod);
-            return double.Parse(dt.Rows[0]["Total"].ToString());
-        }
         public void PrintImage(Bitmap b, string printerNetworkName)
         {
             using (PrintDocument pd = new PrintDocument())
@@ -2080,59 +1829,12 @@ namespace WinLayer
 
         #region KITCHEN ORDERS
 
-        public bool SaveKitchenOrder(KitchenOrder order)
-        {
-            return repoKitchenOrder.Save(order) != null;
-
-            //if (RunQuery("SaveKitchenOrder '" + order.IID + "','" + order.Reference + "'," +
-            //    DRDateTime.DatetimeToMSSql(order.CreatedDateTime) + ",'" + order.OrderIID + "'," +
-            //    DRDateTime.DatetimeToMSSql(order.CompletedDateTime) + "," + (int)order.GetStatus() + "," + BoolToInt(order.BeingModified) + "," + (int)order.OrderType))
-            //{
-            //    bool test = true;
-            //    for (int i = 0; i < order.items.Count; i++)
-            //    {
-            //        KitchenOrderItem koi = order.items[i];
-            //        test = test && RunQuery("SaveKitchenOrderItem '" + koi.IID + "'," + koi.Quantity + ",'" +
-            //            koi.ItemText + "','" + koi.KitchenOrderIID + "','" + koi.DistributionIID + "','" +
-            //            koi.EntityButtonIID + "'," + (int)koi.Status);
-            //        if (!test)
-            //            return false;
-            //    }
-            //    return test;
-            //} else
-            //    return false;
-        }
-        public async Task<bool> DeleteKitchenOrder(string IID, bool blnForce)
-        {
-            if (blnForce)
-            {
-                await RunQuery("Delete from KitchenOrderItem where KitchenOrderIID ='" + IID + "'");
-                await RunQuery("Delete from KitchenOrders where IID = '" + IID + "'");
-            } else
-                await RunQuery("DeleteKitchenOrder '" + IID + "'");
-            return !IsKitchenOrderExist(IID);
-
-        }
-        public async Task DeleteRelatedKitchenOrderForceFully(string RealOrderIID)
-        {
-            DataTable dt = GetDataTable("Select * from KitchenOrders where OrderIID = '" + RealOrderIID + "'");
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                    await DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), true);
-            }
-        }
-
-        public bool IsKitchenOrderExist(string IID)
-        {
-            return GetDataTable("Select IID from KitchenOrders where IID = '" + IID + "'").Rows.Count > 0;
-        }
-
-        public bool IsKitchenOrderBeingModified(string IID)
+        public async Task<bool> IsKitchenOrderBeingModified(string IID)
         {
             try
             {
-                return int.Parse(GetDataTable("Select BeingModified from KitchenOrders where IID = '" + IID + "'").Rows[0]["BeingModified"].ToString()) == 1;
+                KitchenOrder korder = await repoKitchenOrder.Get(IID);
+                return korder.BeingModified;                                                                                                                      
             } catch
             {
                 return false;
@@ -2279,55 +1981,16 @@ namespace WinLayer
                 {
                     await repoKitchenOrder.GetDBContext().KitchenOrders.Where(x => x.OrderIID == AttachedOrder.IID).ForEachAsync(x => x.BeingModified = blnBeingModified);
                     //RunQuery("Update KitchenOrders set BeingModified = " + BoolToInt(blnBeingModified) + " where OrderIID ='" + AttachedOrder.IID + "'");
-                    await SetKitchenModified();
+                    await repoSession.SetKitchenModified();
                 }
             } catch (Exception ex)
             {
                await  SaveDebug("157 : " + ex.Message);
             }
         }
-        public async Task<bool> ShrinkKitchenOrderList()
-        {
-            DataTable dt = GetDataTable("Select IID from KitchenOrders where Status = " + (int)KitchenOrderStatusTypes.Completed);
-            if (dt.Rows.Count <= config.Kitchen_Max_Completed_Order_Count)
-                return false;
 
-            int topCount = dt.Rows.Count - config.Kitchen_Max_Completed_Order_Count;
-            dt = GetDataTable("Select Top " + topCount + " IID from KitchenOrders where Status = " +
-                (int)KitchenOrderStatusTypes.Completed + " order by CompletedDateTime asc");
-            for (int i = 0; i < dt.Rows.Count; i++)
-                await DeleteKitchenOrder(dt.Rows[i]["IID"].ToString(), false);
 
-            return true;
-        }
-
-        public DateTime GetKitchenModified()
-        {
-            try
-            {
-                return shop.KitchenModified;
-            } catch { }
-            return DateTime.Now;
-        }
-        public async Task<bool> SetKitchenModified()
-        {
-           return await  repoKitchenOrder.GetDBContext().Database.ExecuteSqlRawAsync("update Shops set KitchenModified = GETDATE()") > 0;
-            //return RunQuery("update Luv set KitchenModified = GETDATE()");
-          //  return await RunQuery("UpdateKitchenModified");
-        }
-
-        public async Task<bool> CleanKitchenOrdersHasNoParentOrder()
-        {
-            return await RunQuery("CleanKitchenOrdersHasNoParentOrder");
-        }
         #endregion
-
-
-
-        public async Task<List<Supplier>> GetAllSuppliersAsList()
-        {
-            return await repoSupplier.GetAllAsync();
-        }
 
 
         #region STOCK ITEM
@@ -2560,11 +2223,11 @@ namespace WinLayer
 
                 //Load Orders
                 if (options.includeOrders)
-                    backup.orderList = await GetOrderList();
+                    backup.orderList = await repoOrder.GetListByField("SessionIID", shop.CurrentSessionIID, includeItems: "items", "OrderDate");
 
                 //Load XOrders
                 if (options.includeXOrders)
-                    backup.xorderList = await GetXOrderList();
+                    backup.xorderList = await repoXOrder.GetListByField("SessionIID", shop.CurrentSessionIID, OrderByField: "OrderDate");
 
                 //Load Kitchen Orders
                 if (options.includeKitchenOrders)

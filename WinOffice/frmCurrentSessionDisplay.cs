@@ -154,8 +154,7 @@ namespace WinOffice {
         {
             if (dgvOrders.SelectedRows.Count > 0)
             {
-                string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = await BSLayer.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Order order = dgvOrders.SelectedRows[0].DataBoundItem as Order;
                 frmAppPrinterDialog frm = ActivatorUtilities.CreateInstance<frmAppPrinterDialog>(ServiceHelper.Services);
                 if (frm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -168,8 +167,7 @@ namespace WinOffice {
         {
             if (dgvOrders.SelectedRows.Count > 0)
             {
-                string OrderIID = dgvOrders.SelectedRows[0].Cells[0].Value.ToString();
-                Order order = await BSLayer.Instance.GetOrder(dgvOrders.SelectedRows[0].Cells[0].Value.ToString());
+                Order order = dgvOrders.SelectedRows[0].DataBoundItem as Order;
                 Printer printer = await BSLayer.Instance.GetDefaultReceiptPrinter();
                 if (printer == null)
                 {

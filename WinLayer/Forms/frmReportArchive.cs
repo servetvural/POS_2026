@@ -35,7 +35,7 @@ namespace WinLayer.Forms
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else
             {
-                dgvArchive.DataSource =  BSLayer.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + UF.SessionDirName);
+                dgvArchive.DataSource =  BSLayer.Instance.GetArchivedSessions(DRFile.GetApplicationPath() + UF.SessionDirName);
             }
         }
 

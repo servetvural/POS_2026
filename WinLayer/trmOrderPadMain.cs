@@ -27,6 +27,8 @@ namespace WinLayer
         IRepository<Category> repoCategory;
         IRepository<CategoryItem> repoCategoryItem;
         IRepository<Masa> repoTable;
+        IRepository<KitchenOrder> repoKitchenOrder;
+        IRepository<Supplier> repoSupplier;
 
 
         private Button btnDone;
@@ -192,6 +194,9 @@ namespace WinLayer
             repoCategory = _repoCategory;
             repoCategoryItem = _repoCategoryItem;
             repoTable = _repoTable;
+
+            repoKitchenOrder = ServiceHelper.GetRepository<KitchenOrder>();
+            repoSupplier = ServiceHelper.GetRepository<Supplier>();
 
             InitializeComponent();
 
@@ -2499,7 +2504,7 @@ namespace WinLayer
 
                 await BSLayer.Instance.ReturnOrder(BSLayer.Instance.AttachedOrder);
                 if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New)
-                    await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                    await repoOrder.Delete(BSLayer.Instance.AttachedOrder.IID);
                 BSLayer.Instance.AttachedOrder = null;
 
             }
@@ -2662,7 +2667,7 @@ namespace WinLayer
                         BSLayer.Instance.AttachedOrder.Status = UF.UpdateStatus(BSLayer.Instance.AttachedOrder.Status, NewOrderStatus, true);
                         if (BSLayer.Instance.AttachedOrder.Status == StatusFlags.New)
                         {
-                            await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                            await repoOrder.Delete(BSLayer.Instance.AttachedOrder.IID);
                             BSLayer.Instance.AttachedOrder = null;
                         } else
                         {
@@ -3000,7 +3005,7 @@ namespace WinLayer
                         await CompleteAttachedOrder(2, true, true, false);
                         break;
                 }
-                await BSLayer.Instance.SetKitchenModified();
+                await repoSession.SetKitchenModified();
                 tmrHoldingOrders_Tick(null, null);
             }
         }
@@ -3514,7 +3519,7 @@ namespace WinLayer
                 switch (BSLayer.Instance.AttachedOrder.Status)
                 {
                     case StatusFlags.New:
-                        await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                        await repoOrder.Delete(BSLayer.Instance.AttachedOrder.IID);
                         BSLayer.Instance.AttachedOrder = null;
                         await UnloadOrder();
                         return;
@@ -3544,7 +3549,7 @@ namespace WinLayer
 
         #region TOP FUNCTION BUTTON HANDLERS
         #region OWL MENU
-        private void btnOwl_PopupOpen(object sender, EventArgs e)
+        private async void btnOwl_PopupOpen(object sender, EventArgs e)
         {
             try
             {
@@ -3552,7 +3557,7 @@ namespace WinLayer
                 mnuSelectBonusPlan.Visible = config.Display_Session_Bonus || BSLayer.Instance.LoggedUser.IsManagerOrMore();
                 mnuReprintReport.Visible = (config.Preserve_Previous_Report && BSLayer.Instance.imgReportSnapShot != null && BSLayer.Instance.LoggedUser.IsManagerOrMore());
 
-                mnuSum.Text = BSLayer.Instance.GetCurrentSessionXSum().ToString("c2");
+                mnuSum.Text = (await repoSession.GetSessionOrderTotal(BSLayer.Instance.shop.CurrentSessionIID)).ToString("c2");
 
                 mnuLock.Enabled = (BSLayer.Instance.AttachedOrder == null);
             } catch
@@ -3654,7 +3659,7 @@ namespace WinLayer
             }
 
 
-            await BSLayer.Instance.CleanKitchenOrdersHasNoParentOrder();
+            await repoSession.CleanupKitchenData();
 
 
             //There should be no panel visible specifically OrderList panel
@@ -3902,7 +3907,7 @@ namespace WinLayer
             {
                 if (BSLayer.Instance.AttachedOrder != null)
                 {
-                    await BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, false, 1,config.TerminalReceiptPrinterIID);
+                    await BSLayer.Instance.PrintEntireOrder(BSLayer.Instance.AttachedOrder, true, false, 1, config.TerminalReceiptPrinterIID);
                     if (config.Force_Receipt_Printer_To_Cut)
                         DRShell.SendCutCommandToUSBPrinter(BSLayer.Instance.GetPrinterForClient(config.TerminalReceiptPrinterIID).Result.NetworkName);
                 }
@@ -4238,8 +4243,8 @@ namespace WinLayer
             {
                 foreach (UPCategory upe in OUI.Panels)
                     upe.Reset();
-                await BSLayer.Instance.DeleteRelatedKitchenOrderForceFully(BSLayer.Instance.AttachedOrder.IID);
-                await BSLayer.Instance.SetKitchenModified();
+                await repoKitchenOrder.DeleteByField("OrderIID",BSLayer.Instance.AttachedOrder.IID);
+                await repoSession.SetKitchenModified();
                 await UnloadOrder();
             }
         }
@@ -4380,7 +4385,7 @@ namespace WinLayer
             {
                 try
                 {
-                    DateTime theNewKitchenModified = BSLayer.Instance.GetKitchenModified();
+                    DateTime theNewKitchenModified = BSLayer.Instance.shop.KitchenModified;
 
                     if (theNewKitchenModified > KitchenModified)
                     {
@@ -4402,7 +4407,7 @@ namespace WinLayer
                 {
                     if (blnPrint)
                         BSLayer.Instance.PrintReceipt(BSLayer.Instance.AttachedOrder, await BSLayer.Instance.GetDefaultReceiptPrinter(), 1);
-                   await UnloadOrder();
+                    await UnloadOrder();
                     return;
                 }
 
@@ -4618,8 +4623,8 @@ namespace WinLayer
         {
             if (BSLayer.Instance.AttachedOrder != null)
             {
-                await BSLayer.Instance.DeleteRelatedKitchenOrderForceFully(BSLayer.Instance.AttachedOrder.IID);
-                await BSLayer.Instance.SetKitchenModified();
+                await repoKitchenOrder.DeleteByField("OrderIID",BSLayer.Instance.AttachedOrder.IID);
+                await repoSession.SetKitchenModified();
             }
         }
 
@@ -4650,7 +4655,7 @@ namespace WinLayer
         private async Task LoadSupplierList()
         {
             mnuSupplierPurchaseList.DropDownItems.Clear();
-            List<Supplier> suppliers = await BSLayer.Instance.GetAllSuppliersAsList();
+            List<Supplier> suppliers = await repoSupplier.GetAllAsync();
             foreach (var supp in suppliers)
             {
                 ToolStripMenuItem btn = new ToolStripMenuItem();

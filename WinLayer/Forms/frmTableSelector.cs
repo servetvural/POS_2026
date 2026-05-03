@@ -1,13 +1,20 @@
 ﻿using System.Data;
+
+using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace WinLayer{
     public partial class frmTableSelector : Form{
+        IRepository<Salon> repoSalon;
+        IRepository<Masa> repoTable;
         public TableButton SelectedTableButton;
-        private string SelectedGroup;
-
+        private Salon selectedSalon;
         public frmTableSelector() {
             InitializeComponent();
+
+            repoSalon = ServiceHelper.GetService<IRepository<Salon>>();
+            repoTable = ServiceHelper.GetService<IRepository<Masa>>();
         }
 
 
@@ -23,11 +30,12 @@ namespace WinLayer{
             Close();
         }
 
-        private void LoadSalons() {
+        private async void LoadSalons() {
             pnlGroups.Controls.Clear();
 
-            DataTable dt = BSLayer.Instance.GetAllTableGroups();
-            for (int i = 0; i < dt.Rows.Count; i++) {
+            List<Salon> salons = await repoSalon.GetAllAsync();
+            foreach (var salon in salons)
+            {                                              
                 RadioButton btn = new RadioButton();
                 btn.Appearance = Appearance.Button;
                 btn.CheckedChanged += new EventHandler(SalonButton_CheckedChanged);
@@ -38,8 +46,8 @@ namespace WinLayer{
                 btn.AutoSize = true;
                 btn.Font = new Font("Arial", 9, FontStyle.Bold);
                 btn.ForeColor = Color.Black;
-                btn.Text = dt.Rows[i]["GroupName"].ToString();
-                btn.Tag = dt.Rows[i]["IID"].ToString();
+                btn.Text = salon.SalonName;
+                btn.Tag = salon;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatAppearance.BorderColor = Color.Red;
@@ -63,7 +71,7 @@ namespace WinLayer{
             RadioButton rb = (RadioButton) sender;
             if (rb.Checked) {
                 rb.FlatAppearance.BorderSize = 1;
-                SelectedGroup = rb.Tag.ToString();
+                selectedSalon = (Salon)rb.Tag;
                 LoadTables();
             }
             else
@@ -71,14 +79,16 @@ namespace WinLayer{
         }
 
         private async void LoadTables() {
-            List<Masa> tablelist = await BSLayer.Instance.GetTableList(SelectedGroup);
+            if (selectedSalon == null)
+                return;
 
             pnlTables.Controls.Clear();
 
-            Masa table;
+            List<Masa> tablelist = await repoTable.GetListByField("SalonIID", selectedSalon.IID);
+
             string locker = "";
-            for (int i = 0; i < tablelist.Count; i++) {
-                table = tablelist[i];
+            foreach (Masa table in tablelist)
+            {
 
                 if (table.LockedClientIP != null && table.LockedClientIP != "")
                     locker = table.LockedClientIP;

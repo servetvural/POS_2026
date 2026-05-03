@@ -2,12 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace WinLayer
 {
     public partial class frmStockItemUsage : Form
     {
         PosConfig config;
+        IRepository<Supplier> repoSupplier;
 
         private Stack<UndoItem> undoList;
         private bool blnUseSearch;
@@ -16,6 +18,7 @@ namespace WinLayer
         {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
+            repoSupplier = ServiceHelper.GetRepository<Supplier>();
             this.undoList = new Stack<UndoItem>();
         }
         private void frmStockItemUsage_Load(object sender, EventArgs e)
@@ -51,9 +54,9 @@ namespace WinLayer
             }
         }
 
-        private void LoadSuppliers()
+        private async void LoadSuppliers()
         {
-            cmbSuppliers.DataSource = BSLayer.Instance.GetAllSuppliersAsList();
+            cmbSuppliers.DataSource = await repoSupplier.GetAllAsync();
         }
 
         private void btnPrint_Click(object sender, EventArgs e)

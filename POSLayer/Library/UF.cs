@@ -423,6 +423,40 @@ public static class UF
         return result;
     }
 
+    public static string CustomAlign(this string str, int maxChars, PrintAligns align)
+    {
+        // Handle null input
+        str ??= string.Empty;
+
+        if (str.Length >= maxChars)
+        {
+            return str.Substring(0, maxChars);
+        }
+
+        int totalPadding = maxChars - str.Length;
+
+        switch (align)
+        {
+            case PrintAligns.Near:
+                return str.PadRight(maxChars, ' ');
+
+            case PrintAligns.Far:
+                return str.PadLeft(maxChars, ' ');
+
+            case PrintAligns.Center:
+                int leftPadding = totalPadding / 2;
+                // PadLeft adds spaces to reach a total length of (original + leftPadding)
+                // Then PadRight fills the rest up to maxChars
+                return str.PadLeft(str.Length + leftPadding, ' ')
+                          .PadRight(maxChars, ' ');
+
+            default:
+                return str;
+        }
+    }
+
+    
+
 
 
     public static string secondsToMinutes(double totalseconds)
@@ -452,6 +486,14 @@ public static class UF
     {
         return source == null || !source.Any();
     }
+    /// <summary>
+    /// Checks if a collection contains any elements.
+    /// </summary>
+    public static bool HasAny<T>(this IEnumerable<T>? source)
+    {
+        return source != null || source.Any();
+    }
+
     //var bindingList = new BindingList<POSLayer.Models.TheMenu>(await bslayer.GetMenuList());
     public static BindingList<T> ToBindingList<T>(this IList<T>? source) {
         return new BindingList<T>(source);

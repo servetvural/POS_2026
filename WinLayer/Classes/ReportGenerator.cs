@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
+
 using POSLayer.Library;
 using POSLayer.Models;
 using POSLayer.Repository.IRepository;
@@ -57,7 +58,7 @@ namespace WinLayer
 
         public ReportGenerator(Graphics g, Printer printer, int linespace, GenericImage printLogo)
         {
-            this.g = g;                                                     
+            this.g = g;
             config = ServiceHelper.GetService<PosConfig>();
             repoSession = ServiceHelper.GetService<IRepository<Session>>();
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
@@ -82,7 +83,7 @@ namespace WinLayer
                 return;
             CreateGenerator(printer, 2);
         }
-        public void CreateGenerator(Printer printer,  int linespace)
+        public void CreateGenerator(Printer printer, int linespace)
         {
             if (printer == null)
                 return;
@@ -91,7 +92,7 @@ namespace WinLayer
             repoSession = ServiceHelper.GetService<IRepository<Session>>();
             repoOrder = ServiceHelper.GetService<IRepository<Order>>();
 
-          
+
             //order =  await repoOrder.Get(orderIID, "Items");
 
             float fontSize = config.ReportFontSize;
@@ -269,7 +270,7 @@ namespace WinLayer
                         if (config.Record_Stock_Usage)
                         {
                             List<RecipeUsage> usages = await repoSession.GetSessionRecipeUsage(session.IID);
-                             
+
                             //This ensures x1+x2 total usage recorded in stockitem table, if incremental it is merged with up to yesterday's usage
                             await repoSession.ApplyRecipeUsageToStock(usages);
 
@@ -370,7 +371,7 @@ namespace WinLayer
                 DrawReportCategoryTotals();
 
             if (report.PrintCategoryDetailedReport)
-                DrawReportCategoricEntityButtonTotals();
+                DrawReportCategoryItemTotals();
 
             if (report.PrintCashOrderList)
                 DrawReportOrders(PaymentMethods.Cash);
@@ -402,7 +403,7 @@ namespace WinLayer
                     DrawReportCategoryTotals();
 
                 if (report.PrintCategoryDetailedReport)
-                    DrawReportCategoricEntityButtonTotals();
+                    DrawReportCategoryItemTotals();
 
                 if (report.PrintCashOrderList)
                     DrawReportOrders(PaymentMethods.Cash);
@@ -423,7 +424,8 @@ namespace WinLayer
             //Now Archive Session if required
             if (session != null && report.ReportType == ReportFormatTypes.ZReport && config.Z_Archive_Always)
             {
-                if (session.IID != BSLayer.Instance.GetLatestSession().Result.IID)
+                Session latestSession = await repoSession.GetLatestSession();
+                if (session.IID != latestSession.IID)
                 {
                     if (blnSpecialSessionDirectory && !string.IsNullOrEmpty(SessionDirectory))
                         await BSLayer.Instance.ArchiveSessionToDirectory(SessionDirectory, session.IID, true);
@@ -431,7 +433,7 @@ namespace WinLayer
                         await BSLayer.Instance.ArchiveSessionToDirectory(session.IID);
                 }
 
-                BSLayer.Instance.CleanKitchenOrdersHasNoParentOrder();
+                await repoSession.CleanupKitchenData();
             }
 
 
@@ -480,7 +482,7 @@ namespace WinLayer
         }
         private void DrawReceipt()
         {
-            
+
 
             DrawDoubleLine();
             DrawText(centeredString("RECEIPT" +
@@ -579,35 +581,35 @@ namespace WinLayer
             {
                 foreach (KeyValuePair<double, double> kvp in taxlist)
                 {
-                     DrawText(("Tax " + String.Format("{0,2:N0} %", kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
+                    DrawText(("Tax " + String.Format("{0,2:N0} %", kvp.Key)).PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                     //DrawText("Tax " + kvp.Key + " %".PadRight(35) + String.Format("{0,8:C}", kvp.Value));
                 }
                 //Show Service Charge Tax Total
                 if (BSLayer.Instance.shop.ServiceChargeRate > 0)
-                     DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", BSLayer.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
+                    DrawText(("Service Charge Tax " + String.Format("{0,2:N0} %", BSLayer.Instance.shop.ServiceChargeTaxRate)).PadRight(35) + String.Format("{0,8:C}", order.ServiceChargeTax));
 
 
                 if (config.Receipts_Print_Tax_Total)
-                     DrawText("Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.ItemTotalVat + order.ServiceChargeTax));
+                    DrawText("Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.ItemTotalVat + order.ServiceChargeTax));
                 if (config.Receipts_Print_Ex_Tax_Total)
-                     DrawText("Ex.Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.Total - order.ItemTotalVat - order.ServiceChargeTax));
+                    DrawText("Ex.Tax Total : ".PadRight(35) + String.Format("{0,8:C}", order.Total - order.ItemTotalVat - order.ServiceChargeTax));
 
             }
 
-             DrawText("Payment Method : " + order.Payment);
+            DrawText("Payment Method : " + order.Payment);
 
 
-             DrawLine();
+            DrawLine();
             //Luv luv =  BSLayer.Instance.GetLuv();
             //DrawText(centeredString(luv.ReceiptFooter));
 
             string[] footer = BSLayer.Instance.shop.ReceiptFooter.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < footer.Length; i++)
             {
-                 DrawText(centeredString(footer[i]));
+                DrawText(centeredString(footer[i]));
             }
 
-             DrawDoubleLine();
+            DrawDoubleLine();
 
         }
         #endregion
@@ -1097,10 +1099,10 @@ namespace WinLayer
 
             }
 
-             DrawLine();
+            DrawLine();
             //DrawText(String.Format("".PadRight(4+quarterspace) + "{0,8:N2}" + "".PadRight(2+quarterspace) + "{1,8:N2}" + "".PadRight(2+quarterspace*2) + "{2,8:N2}", mainGrossTotal, mainNetTaxValue, mainTotalNoTax));
-             DrawText(String.Format("{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax, mainNetTaxValue, mainGrossTotal));
-             NewLine();
+            DrawText(String.Format("{0,20:N2}" + "{1,12:N2}" + "{2,12:N2}", mainTotalNoTax, mainNetTaxValue, mainGrossTotal));
+            NewLine();
 
         }
 
@@ -1192,7 +1194,7 @@ namespace WinLayer
             if (Logo1 != null)
                 return true;
 
-        
+
             if (printLogo == null)
                 return false;
 
@@ -1349,7 +1351,7 @@ namespace WinLayer
             DrawDoubleLine();
         }
 
-        private void DrawPaymentSummary()
+        private async Task DrawPaymentSummary()
         {
             DrawText(centeredString("PAYMENT SUMMARY"));
             DrawDoubleLine();
@@ -1357,36 +1359,27 @@ namespace WinLayer
 
             string spacer = "";
 
+            List<PaymentMethodTotal> methodTotals = await repoSession.GetSessionPaymentTotals(session.IID);
 
-
-            DataTable dt = BSLayer.Instance.GetReportPaymentTypeTotals(session.IID);
-
-            for (int i = 0; i < dt.Rows.Count; i++)
+            foreach (PaymentMethodTotal item in methodTotals)
             {
-
-                PaymentMethods paymentType = (PaymentMethods)int.Parse(dt.Rows[i]["Payment"].ToString());
-                float paymentTotal = float.Parse(dt.Rows[i]["Total"].ToString());
-
-                switch (paymentType)
+                switch (item.method)
                 {
                     case PaymentMethods.Cash:
-                        DrawText("Cash Total : " + spacer.PadRight(max_numberOfCharacters - 22) + String.Format("{0,8:N2}", paymentTotal));
+                        DrawText("Cash Total : " + spacer.PadRight(max_numberOfCharacters - 22) + String.Format("{0,8:N2}", item.TotalValue));
                         break;
                     case PaymentMethods.Card:
-                        DrawText("Card Total : " + spacer.PadRight(max_numberOfCharacters - 22) + String.Format("{0,8:N2}", paymentTotal));
+                        DrawText("Card Total : " + spacer.PadRight(max_numberOfCharacters - 22) + String.Format("{0,8:N2}", item.TotalValue));
                         break;
                     case PaymentMethods.Online:
-                        DrawText("Online Total : " + spacer.PadRight(max_numberOfCharacters - 24) + String.Format("{0,8:N2}", paymentTotal));
+                        DrawText("Online Total : " + spacer.PadRight(max_numberOfCharacters - 24) + String.Format("{0,8:N2}", item.TotalValue));
                         break;
 
                 }
-
-
             }
-            //if (report.ReportType == ReportFormatTypes.ZReport) {
             DrawLine();
             DrawText("Payment  Total : ".PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", session.GrossSessionTotal));
-            //}
+
             DrawDoubleLine();
             NewLine();
 
@@ -1430,25 +1423,12 @@ namespace WinLayer
         {
             DrawText(centeredString(payment.ToString().ToUpper() + " ORDER LIST"));
             DrawDoubleLine();
-            //DataTable dt =  BSLayer.Instance.GetDataTable("Select OrderDate, CalculatedValue from OrdersView where SessionIID = '" + session.IID + 
-            //    "'  and (OrdersView.Status = 3 or OrdersView.Status = 4) and Payment = " + (int)payment + " order by OrderDate");
 
             List<Order> orderList = await repoOrder.GetListByField("SessionIID", session.IID, "Items", "OrderDate");
             orderList = orderList.Where(x => x.Payment == payment && (x.Status == StatusFlags.Completed || x.Status == StatusFlags.Archived)).OrderBy(x => x.OrderDate).ToList();
 
-            // float OrderListTotal = 0;
-
-            //for (int i = 0; i < dt.Rows.Count; i++) {
-            //    DateTime orderDate = DateTime.Parse(dt.Rows[i]["OrderDate"].ToString());
-            //    float OrderTotal = float.Parse(dt.Rows[i]["CalculatedValue"].ToString());
-            //    OrderListTotal += OrderTotal;
-            //    DrawText(orderDate.ToString("HH:mm:ss").PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", OrderTotal));
-            //}
             foreach (var order in orderList)
             {
-                //DateTime orderDate = DateTime.Parse(dt.Rows[i]["OrderDate"].ToString());
-                //float OrderTotal = float.Parse(dt.Rows[i]["CalculatedValue"].ToString());
-                //OrderListTotal += OrderTotal;
                 DrawText(order.OrderDate.ToString("HH:mm:ss").PadRight(max_numberOfCharacters - 9) + String.Format("{0,8:N2}", order.Total));
             }
 
@@ -1457,78 +1437,38 @@ namespace WinLayer
             NewLine();
         }
 
-
-        //public void PrintOrderItems() {
-        //    DrawText("           ORDER ITEMS          ");
-        //    DrawDoubleLine();
-        //    DataTable dt =  BSLayer.Instance.GetDataTable("Select Quantity, OrderItemText, (Quantity*Price) as Total from OrderItem where SessionIID = '" + SessionIID + "' order by OrderDate");
-        //    for (int i = 0; i < dt.Rows.Count; i++) {
-        //        DateTime orderDate = DateTime.Parse(dt.Rows[i]["OrderDate"].ToString());
-        //        float OrderTotal = float.Parse(dt.Rows[i]["CalculatedValue"].ToString());
-        //        DrawText(orderDate.ToString("HH:mm:ss").PadRight(24) + String.Format("{0,8:N2}", OrderTotal));
-        //    }
-        //    NewLine();
-        //}
-
         private async Task DrawReportCategoryTotals()
         {
 
             DrawText(centeredString("CATEGORY TOTALS"));
             DrawDoubleLine();
 
-            //DataTable dt =  BSLayer.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-            //  DataTable dt =  BSLayer.Instance.GetReportEntityTotals(session.IID);
-
             List<Category> categories = await repoOrder.GetCategoryTotalsForSession(session.IID);
-
-            //for (int i = 0; i < dt.Rows.Count; i++) {
-            //    string EntityName = dt.Rows[i]["EntityName"].ToString().Trim();
-            //    EntityName = EntityName.Length > max_numberOfCharacters-9 ? EntityName.Substring(0, max_numberOfCharacters-9) : EntityName;
-            //    float entityTotal = float.Parse(dt.Rows[i]["EntityTotal"].ToString());
-
-            //    DrawText(EntityName.PadRight(max_numberOfCharacters-9) + string.Format("{0,8:N2}", entityTotal));
-            //}
             foreach (var category in categories)
             {
-                string CategoryName = category.CategoryName.Length > max_numberOfCharacters - 9 ? category.CategoryName.Substring(0, max_numberOfCharacters - 9) : category.CategoryName;
-                //float entityTotal = float.Parse(dt.Rows[i]["EntityTotal"].ToString());
-
-                DrawText(CategoryName.PadRight(max_numberOfCharacters - 9) + string.Format("{0,8:N2}", category.CategoryTotal));
+                string catName = category.CategoryName.CustomAlign(max_numberOfCharacters - 9, PrintAligns.Near);
+                DrawText(catName + string.Format("{0,8:N2}", category.CategoryTotal));
             }
             NewLine();
         }
 
-        private void DrawReportCategoricEntityButtonTotals()
+        private async Task DrawReportCategoryItemTotals()
         {
             DrawText(centeredString("DETAILED CATEGORY TOTALS"));
             DrawDoubleLine();
 
-            //DataTable dt =  BSLayer.Instance.GetDataTable("Select * from ReportEntityTotals where SessionIID = '" + session.SessionIID + "'  order by displayorder");
-            DataTable dt = BSLayer.Instance.GetReportEntityTotals(session.IID);
-            for (int i = 0; i < dt.Rows.Count; i++)
+            List<CategoryTotal> categoryTotals = await repoSession.GetSessionCategoryTotals(session.IID);
+            foreach (CategoryTotal category in categoryTotals)
             {
-                //Write Entity Header
-                string EntityIID = dt.Rows[i]["EntityIID"].ToString();
-                string EntityName = dt.Rows[i]["EntityName"].ToString().TrimStart();
-                EntityName = EntityName.Length > max_numberOfCharacters - 9 ? EntityName.Substring(0, max_numberOfCharacters - 9) : EntityName;
-                float entityTotal = float.Parse(dt.Rows[i]["EntityTotal"].ToString());
-
-                DrawText(EntityName.PadRight(max_numberOfCharacters - 9) + string.Format("{0,8:N2}", entityTotal));
+                string catName = category.CategoryName.CustomAlign(max_numberOfCharacters - 9, PrintAligns.Near);
+                DrawText(catName + string.Format("{0,8:N2}", category.TotalValue));
                 DrawLine();
 
-                //Write Entity Button Distributions
-                //DataTable dteb =  BSLayer.Instance.GetDataTable("Select * from ReportEntityEBTotals where EntityIID = '" + EntityIID + "' and SessionIID = '" + session.SessionIID + "' order by ItemText asc");
-
-                DataTable dteb = BSLayer.Instance.GetReportEntityEBTotals(session.IID, EntityIID);
-                for (int x = 0; x < dteb.Rows.Count; x++)
-                {
-                    string ItemText = dteb.Rows[x]["ItemText"].ToString().Trim();
-                    ItemText = ItemText.Length > max_numberOfCharacters - 13 ? ItemText.Substring(0, max_numberOfCharacters - 13) : ItemText;
-                    float ebTotal = float.Parse(dteb.Rows[x]["total"].ToString());
-                    int quantity = int.Parse(dteb.Rows[x]["SumOfQuantity"].ToString());
-
-                    DrawText(string.Format("{0,3:n0}", quantity).PadRight(4) +
-                        ItemText.PadRight(max_numberOfCharacters - 13) + String.Format("{0,8:N2}", ebTotal));
+                List<CategoryItemTotal> itemTotals = await repoSession.GetSessionCategoryItemTotals(session.IID, category.CategoryIID);
+                foreach (var item in itemTotals)
+                {      
+                    DrawText(string.Format("{0,3:n0}", item.TotalQuantity).PadRight(4) +
+                        item.CategoryItemName.PadRight(max_numberOfCharacters - 13) + String.Format("{0,8:N2}", item.TotalValue));
                 }
                 NewLine();
             }

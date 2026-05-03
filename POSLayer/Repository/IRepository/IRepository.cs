@@ -53,6 +53,15 @@ public interface IRepository<T> where T : BaseClass
     Task<List<double>> GetAllTaxRatesForMenu(string MenuIID);
 
 
+    #region DATABASE FUNCTIONS
+    Task<bool> RefreshDatabase();
+    Task<Session> GetLatestSession();
+    Task CleanupKitchenData();
+    Task<bool> SetKitchenModified();
+
+    #endregion
+
+
     #region MENU FUNCTIONS
     Task<bool> SetMenuIsActive(string IID);
 
@@ -63,6 +72,11 @@ public interface IRepository<T> where T : BaseClass
     #region STOCK ITEM FUNCTIONS
     //Task<List<StockItemView>> GetStockItesWithSupplier(string SupplierIID = null);
     #endregion
+
+    Task<List<CategoryTotal>> GetSessionCategoryTotals(string sessionIID);
+    Task<List<CategoryItemTotal>> GetSessionCategoryItemTotals(string sessionIID);
+    Task<List<CategoryItemTotal>> GetSessionCategoryItemTotals(string sessionIID, string categoryIID);
+    Task<List<PaymentMethodTotal>> GetSessionPaymentTotals(string sessionIID);
 
     Task<bool> ApplyRecipeUsageToStock(string sessionIID);
     Task<bool> ApplyRecipeUsageToStock(List<RecipeUsage> recipeUsages);

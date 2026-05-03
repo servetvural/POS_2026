@@ -4,12 +4,12 @@ using System.ComponentModel;
 using POSLayer.Models;
 using POSLayer.Library;
 using Microsoft.Extensions.DependencyInjection;
+using POSLayer.Repository.IRepository;
 
 namespace WinLayer {
     public partial class ctlKitchenDisplay : UserControl {
         PosConfig config;
-        public BSLayer bslayer;
-
+        IRepository<KitchenOrder> repoKitchenOrder;
 
         private bool blnLoadingKitchenOrders;
         private bool blnLoadingCompletedOrders;
@@ -52,6 +52,7 @@ namespace WinLayer {
         public ctlKitchenDisplay() {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
+            repoKitchenOrder = ServiceHelper.GetRepository<KitchenOrder>();
             //terminalDistributionList = new List<Distribution>();
         }
 
@@ -59,7 +60,7 @@ namespace WinLayer {
 
         }
         public async void Initiate( Distribution _distribution, bool CloseVisible) {
-            KitchenModified =  BSLayer.Instance.GetKitchenModified();
+            KitchenModified =  BSLayer.Instance.shop.KitchenModified;
 
             distribution = _distribution; // AddRange(globalTypeIIDList.Split(new char[',']));
              BSLayer.Instance.KitchenRequestOccured += Bslayer_KitchenRequestOccured;
@@ -68,7 +69,7 @@ namespace WinLayer {
             btnClose.Visible = CloseVisible;
             tmrMain.Enabled = true;
             lblClock.Text = DateTime.Now.ToLongTimeString();
-            await  BSLayer.Instance.CleanKitchenOrdersHasNoParentOrder();
+            await repoKitchenOrder.CleanupKitchenData();
         }
 
         private void Bslayer_KitchenRequestOccured(KitchenOrder order) {
@@ -77,7 +78,7 @@ namespace WinLayer {
         }
 
         private double AddKitchenOrder(KitchenOrder korder, bool blnWaiting) {
-            if (bslayer == null)
+            if (BSLayer.Instance == null)
                 return -1;
 
             if (korder == null)
@@ -102,10 +103,9 @@ namespace WinLayer {
 
         private async void Ctl_OrderDeleteRequested(string IID){
             try {
-                if (await  BSLayer.Instance.DeleteKitchenOrder(IID, false)) {
+                if (await repoKitchenOrder.Delete(IID) > 0) {
                     pnlCompletedOrders.Controls.RemoveByKey(IID);
                     OrderDeleted(IID);
-
                 }
 
                 UpdateResponseTime();
@@ -141,7 +141,7 @@ namespace WinLayer {
 
 
         public async void LoadWaitingKitchenOrders() {
-            if (bslayer == null || distribution == null)
+            if (BSLayer.Instance == null || distribution == null)
                 return;
 
             if (blnLoadingKitchenOrders)
@@ -190,7 +190,7 @@ namespace WinLayer {
 
 
         public async void LoadCompletedOrders() {
-            if (bslayer == null || distribution == null)
+            if (BSLayer.Instance == null || distribution == null)
                 return;
 
             if (blnLoadingCompletedOrders)
@@ -264,7 +264,7 @@ namespace WinLayer {
             if (blnLoadingCompletedOrders || blnLoadingKitchenOrders)
                 return;
             else {
-                DateTime theNewKitchenModified =  BSLayer.Instance.GetKitchenModified();
+                DateTime theNewKitchenModified =  BSLayer.Instance.shop.KitchenModified;
 
                 if (theNewKitchenModified > KitchenModified) {
                     KitchenModified = theNewKitchenModified;
@@ -295,8 +295,8 @@ namespace WinLayer {
             LoadAll();
         }
 
-        private void btnShrink_Click(object sender, EventArgs e) {
-             BSLayer.Instance.ShrinkKitchenOrderList();
+        private async void btnShrink_Click(object sender, EventArgs e) {
+             await ShrinkKitchenOrderList();
             LoadCompletedOrders();
         }
         private void btnClose_Click(object sender, EventArgs e) {
@@ -310,5 +310,19 @@ namespace WinLayer {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool ChangeDistributionVisible { get { return btnStationSelector.Visible; } set { btnStationSelector.Visible = value; } }
 
+
+        public async Task<bool> ShrinkKitchenOrderList()
+        {
+            List<KitchenOrder> korderList = await repoKitchenOrder.GetListByField("Status", ((int)KitchenOrderStatusTypes.Completed).ToString());
+            if (korderList.Count <= config.Kitchen_Max_Completed_Order_Count)
+                return false;
+
+            foreach (var korder in korderList.Skip(config.Kitchen_Max_Completed_Order_Count).ToList())
+            {
+                if (korder.Status == KitchenOrderStatusTypes.Completed)
+                    await repoKitchenOrder.Delete(korder);
+            }
+            return true;
+        }
     }
 }

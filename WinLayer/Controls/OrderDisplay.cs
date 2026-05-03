@@ -11,7 +11,9 @@ namespace WinLayer
     public class OrderDisplay : System.Windows.Forms.UserControl
     {
         PosConfig config;
+        IRepository<Order> repoOrder;
         IRepository<OrderItem> repoOrderItem;
+        IRepository<LogItem> repoLogItem;
 
         private System.Windows.Forms.ColumnHeader IID;
         private System.Windows.Forms.ColumnHeader cOrderItemText;
@@ -109,7 +111,9 @@ namespace WinLayer
         {
             InitializeComponent();
             config = ServiceHelper.GetService<PosConfig>();
-            repoOrderItem = ServiceHelper.GetService<IRepository<OrderItem>>();
+            repoOrder = ServiceHelper.GetRepository<Order>();
+            repoOrderItem = ServiceHelper.GetRepository<OrderItem>();
+            repoLogItem = ServiceHelper.GetRepository<LogItem>();
         }
 
         public void AttachBusinessLayer()
@@ -592,7 +596,7 @@ namespace WinLayer
             if (BSLayer.Instance.AttachedOrder == null && OrderToSplit != null && OrderToSplit.Items.Count == 0)
             {
                 //Now Ordertosplit must be deleted
-                await BSLayer.Instance.DeleteOrder(OrderToSplit.IID);
+                await repoOrder.Delete(OrderToSplit.IID);
                 OrderToSplit = null;
                 SplitStatus = SplittingStatus.Normal;
                 btnSplit.Visible = false;
@@ -872,7 +876,8 @@ namespace WinLayer
             {
                 try
                 {
-                    await BSLayer.Instance.SaveLogItem(new LogItem()
+                    
+                    await repoLogItem.Save(new LogItem()
                     {
                         OrderItemText = oi.OrderItemText,
                         Quantity = oi.Quantity,
@@ -931,7 +936,7 @@ namespace WinLayer
                         {
                             if (oi != null)
                             {
-                                await BSLayer.Instance.SaveLogItem(new LogItem()
+                                await repoLogItem.Save(new LogItem()
                                 {
                                     OrderItemText = oi.OrderItemText,
                                     Quantity = 1,
@@ -1049,7 +1054,7 @@ namespace WinLayer
                 } else
                 {
                     //this is where you just waist the ordertodisplay 
-                    await BSLayer.Instance.DeleteOrder(BSLayer.Instance.AttachedOrder.IID);
+                    await repoOrder.Delete(BSLayer.Instance.AttachedOrder.IID);
                     BSLayer.Instance.AttachedOrder = null;
                 }
             }

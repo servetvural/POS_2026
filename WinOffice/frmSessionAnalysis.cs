@@ -6,11 +6,13 @@ using POSLayer.Library;
 using POSLayer.Models;
 using Microsoft.Extensions.DependencyInjection;
 using WinLayer.Library;
+using POSLayer.Repository.IRepository;
 
 namespace WinOffice
 {
     public partial class frmSessionAnalysis : Form
     {
+        IRepository<Supplier> repoSupplier = ServiceHelper.GetRepository<Supplier>();
         public frmSessionAnalysis()
         {
             InitializeComponent();
@@ -224,10 +226,10 @@ namespace WinOffice
             lblOrderItemTotal.Text = "Item Total : " + total.ToString("n2");
         }
 
-        private void LoadSuppliers()
+        private async void LoadSuppliers()
         {
             cmbSuppliers.ComboBox.DisplayMember = "SupplierName";
-            cmbSuppliers.Items.AddRange(BSLayer.Instance.GetAllSuppliersAsList().Result.ToArray());
+            cmbSuppliers.Items.AddRange( (await repoSupplier.GetAllAsync()).ToArray());
         }
 
         private void btnReloadStockItems_Click(object sender, EventArgs e)

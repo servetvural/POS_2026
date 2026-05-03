@@ -1,10 +1,11 @@
 using System.ComponentModel;
 using System.Data;
+using System.Security.Cryptography;
 
 using POSLayer.Library;
 using POSLayer.Models;
-using POSLayer.Views;
 using POSLayer.Repository.IRepository;
+using POSLayer.Views;
 
 namespace WinLayer
 {
@@ -533,7 +534,7 @@ namespace WinLayer
             if (dgv.SelectedRows.Count > 0)
             {
                 SelectedIID = dgv.SelectedRows[0].Cells["IID"].Value.ToString();
-                Order order = await BSLayer.Instance.GetOrder(SelectedIID);
+                Order order = await repoOrder.Get(SelectedIID);
                 if (order.OrderType == OrderTypes.Sitin)
                 {
                     MessageBox.Show("IN HOUSE orders must be loaded in to the system to complete.");

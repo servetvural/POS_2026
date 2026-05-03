@@ -852,6 +852,84 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         }
     }
 
+    #region DATABASE FUNCTIONS
+    public async Task<bool> RefreshDatabase()
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            // 1. Get the Log File Name using a simple query
+            // We use ExecuteSqlRaw or FromSqlRaw to get the name
+            var logfileName = await _db.Database
+                .SqlQueryRaw<string>("SELECT name FROM sys.database_files WHERE type_desc = 'LOG'")
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(logfileName))
+                return false;
+
+            // 2. Execute the maintenance commands
+            // We use ExecuteSqlRawAsync for commands that don't return data (void)
+            await _db.Database.ExecuteSqlRawAsync($@"
+            CHECKPOINT;
+            DBCC SHRINKFILE (N'{logfileName}', 1, TRUNCATEONLY);
+            EXEC sp_cycle_errorlog;");
+
+            return true;
+        } catch (Exception ex)
+        {
+            // Log the exception (ex) here if needed
+            return false;
+        }
+    }
+
+    public async Task<Session> GetLatestSession()
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            return await _db.Database.SqlQuery<Session>($"select * from sessions where startdate in ( SELECT  Max(sessions.StartDate) AS Startdate FROM sessions)").FirstOrDefaultAsync();
+
+        } catch (Exception ex)
+        {                                               
+            return null;
+        }
+    }
+
+    public async Task CleanupKitchenData()
+    {
+        using var _db = GetDBContext();
+
+        // 1. Identify valid Order IDs
+        var validOrderIIDs = _db.Orders.Select(o => o.IID);
+
+        // 2. Delete Items linked to missing Orders
+        await _db.KitchenOrderItems
+            .Where(koi => !validOrderIIDs.Contains(koi.KitchenOrder.OrderIID))
+            .ExecuteDeleteAsync();
+
+        // 3. Delete Items with no KitchenOrder parent (true orphans)
+        await _db.KitchenOrderItems
+            .Where(koi => koi.KitchenOrderIID == null ||
+                          !_db.KitchenOrders.Any(ko => ko.IID == koi.KitchenOrderIID))
+            .ExecuteDeleteAsync();
+
+        // 4. Delete KitchenOrders linked to missing Orders
+        await _db.KitchenOrders
+            .Where(ko => !validOrderIIDs.Contains(ko.OrderIID))
+            .ExecuteDeleteAsync();
+
+        // 5. Replace 'UpdatekitchenModified' logic:
+        // Update the KitchenModified flag in the Shop table to force a sync/refresh
+        await _db.Shops
+            .ExecuteUpdateAsync(s => s.SetProperty(shop => shop.KitchenModified, DateTime.Now));
+    }
+    public async Task<bool> SetKitchenModified()
+    {
+        using var _db = GetDBContext();
+        return await _db.Shops.ExecuteUpdateAsync(s => s.SetProperty(shop => shop.KitchenModified, DateTime.Now)) > 0;
+    }
+
+    #endregion
 
 
     #region MENU FUNCTIONS
@@ -934,6 +1012,150 @@ public class Repository<T> : IRepository<T> where T : BaseClass
 
     #endregion
 
+    public async Task<List<CategoryTotal>> GetSessionCategoryTotals(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var totals = await _db.OrderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID)
+                .GroupBy(oi => new
+                {
+                    // Grouping by the Parent Category of the CategoryItem
+                    IID = oi.CategoryItem.Category.IID,
+                    Name = oi.CategoryItem.Category.CategoryName
+                })
+                .Select(g => new CategoryTotal
+                {
+                    CategoryIID = g.Key.IID,
+                    CategoryName = g.Key.Name,
+                    // Total number of all different items sold under this category
+                    TotalQuantity = (double)g.Sum(oi => oi.Quantity),
+                    // Total revenue for the entire category
+                    TotalValue = (double)g.Sum(oi => (double)oi.Quantity * (double)oi.Price)
+                })
+                .ToListAsync();
+
+            return totals;
+        } catch (Exception)
+        {
+            return new List<CategoryTotal>();
+        }
+    }
+
+    /// <summary>
+    /// Gets the total quantity and value of each category item sold in a given session. 
+    /// This is useful for inventory management, sales analysis, and understanding which items are most popular during specific time frames.
+    /// </summary>
+    /// <param name="sessionIID"></param>
+    /// <returns></returns>
+    public async Task<List<CategoryItemTotal>> GetSessionCategoryItemTotals(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var categoryTotals = await _db.OrderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID)
+                .GroupBy(oi => new
+                {
+                    oi.CategoryItem.IID,
+                    oi.CategoryItem.ItemName // Assuming CategoryItem has a Name property
+                })
+                .Select(g => new CategoryItemTotal
+                {
+                    CategoryItemIID = g.Key.IID,
+                    CategoryItemName = g.Key.ItemName,
+                    // Total quantity of this item sold in the session
+                    TotalQuantity = (double)g.Sum(oi => oi.Quantity),
+                    // Total revenue for this category item in the session
+                    TotalValue = (double)g.Sum(oi => (double)oi.Quantity * (double)oi.Price)
+                })
+                .ToListAsync();
+
+            return categoryTotals;
+        } catch (Exception ex)
+        {
+            // Log exception here if needed
+            return new List<CategoryItemTotal>();
+        }
+    }
+
+    public async Task<List<CategoryItemTotal>> GetSessionCategoryItemTotals(string sessionIID, string categoryIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            var categoryTotals = await _db.OrderItems
+                .Where(oi => oi.Order.SessionIID == sessionIID &&
+                         oi.CategoryItem.CategoryIID == categoryIID)
+                .GroupBy(oi => new
+                {
+                    oi.CategoryItem.IID,
+                    oi.CategoryItem.ItemName // Assuming CategoryItem has a Name property
+                })
+                .Select(g => new CategoryItemTotal
+                {
+                    CategoryItemIID = g.Key.IID,
+                    CategoryItemName = g.Key.ItemName,
+                    // Total quantity of this item sold in the session
+                    TotalQuantity = (double)g.Sum(oi => oi.Quantity),
+                    // Total revenue for this category item in the session
+                    TotalValue = (double)g.Sum(oi => (double)oi.Quantity * (double)oi.Price)
+                })
+                .ToListAsync();
+
+            return categoryTotals;
+        } catch (Exception ex)
+        {
+            // Log exception here if needed
+            return new List<CategoryItemTotal>();
+        }
+    }
+
+
+    public async Task<List<PaymentMethodTotal>> GetSessionPaymentTotals(string sessionIID)
+    {
+        using var _db = GetDBContext();
+        try
+        {
+            // 1. Fetch orders and their items into memory
+            var orders = await _db.Orders
+                .Include(o => o.Items)
+                .Where(o => o.SessionIID == sessionIID)
+                .ToListAsync();
+
+            // 2. Project every possible enum value into the list
+            // This ensures the list contains all methods, even those with 0.00
+            var result = Enum.GetValues(typeof(PaymentMethods))
+                .Cast<PaymentMethods>()
+                .Select(m => new PaymentMethodTotal
+                {
+                    method = m,
+                    // Sum the 'Total' property for orders matching this method
+                    TotalValue = orders
+                        .Where(o => o.Payment == m)
+                        .Sum(o => o.Total)
+                })
+                .ToList();
+
+            return result;
+        } catch (Exception)
+        {
+            return new List<PaymentMethodTotal>();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public async Task<bool> ApplyRecipeUsageToStock(string sessionIID)
     {
@@ -998,37 +1220,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
                 })
                 .ToList();
 
-
             return mergedList;
-
-            //List<RecipeUsage> recipeSummary = await _db.OrderItems
-            //    .Where(oi => oi.Order.SessionIID == sessionIID)
-            //    // 1. Use the (collection, result) overload of SelectMany
-            //    .SelectMany(
-            //        oi => oi.CategoryItem.recipes.Where(ri => ri.StockItemIID != null),
-            //        (oi, ri) => new
-            //        {
-            //            RecipeIID = ri.IID,
-            //            StockItemIID = ri.StockItemIID,
-            //            StockItemName = ri.StockItem.StockName,
-            //            QuantityType = ri.QuantityType,
-            //            // Both 'oi' and 'ri' are accessible here for translation
-            //            CalculatedUsage = (decimal)oi.Quantity * (decimal)ri.Quantity
-            //        }
-            //    )
-            //    // 2. Group the flat results
-            //    .GroupBy(r => new { r.RecipeIID, r.StockItemIID, r.StockItemName, r.QuantityType })
-            //    .Select(g => new RecipeUsage
-            //    {
-            //        IID = g.Key.RecipeIID,
-            //        StockItemIID = g.Key.StockItemIID,
-            //        StockItemName = g.Key.StockItemName,
-            //        Quantity = (double)g.Sum(x => x.CalculatedUsage),
-            //        QuantityType = g.Key.QuantityType
-            //    })
-            //    .ToListAsync();
-
-            //return recipeSummary;
 
         } catch (Exception ex)
         {

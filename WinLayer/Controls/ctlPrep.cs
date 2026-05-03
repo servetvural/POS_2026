@@ -1,12 +1,16 @@
 ﻿using POSLayer.Library;
 using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 namespace WinLayer {
     public partial class ctlPrep : UserControl {
+        IRepository<OrderItem> repoOrderItem;
         KitchenOrder korder;
 
         public ctlPrep() {
             InitializeComponent();
+
+            repoOrderItem = ServiceHelper.GetRepository<OrderItem>();
         }
         public void Initilise( KitchenOrder korder) {
             this.korder = korder;
@@ -48,7 +52,7 @@ namespace WinLayer {
 
                         oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                         oi.OrderItemText = koi.ItemText;
-                         BSLayer.Instance.SaveOrderItem(oi);
+                        await repoOrderItem.Save(oi);
                     }
                     break;
                 case 6:
@@ -76,7 +80,7 @@ namespace WinLayer {
 
                                 oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                                 oi.OrderItemText = koi.ItemText;
-                                 BSLayer.Instance.SaveOrderItem(oi);
+                                 await repoOrderItem.Save(oi);
                             }
                         }
                     }
@@ -109,7 +113,7 @@ namespace WinLayer {
 
                     oi =  BSLayer.Instance.AttachedOrder.Items.Find(x => x.CategoryItemIID == koi.CategoryItemIID);
                     oi.OrderItemText = koi.ItemText;
-                    await  BSLayer.Instance.SaveOrderItem(oi);
+                    await repoOrderItem.Save(oi);
                     break;
                 default:
 

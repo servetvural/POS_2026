@@ -1,8 +1,14 @@
-﻿namespace WinLayer {
+﻿using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
+
+namespace WinLayer {
     public partial class frmDump : Form {
+        IRepository<Order> repoOrder;
 
         public frmDump() {
             InitializeComponent();
+            repoOrder = ServiceHelper.GetRepository<Order>();
         }
 
         private void frmDump_Load(object sender, EventArgs e) {
@@ -20,10 +26,10 @@
             btnDeleteErrorOrders.Visible = dgvErrorOrders.Rows.Count > 0;
         }
 
-        private void btnDeleteOrders_Click(object sender, EventArgs e) {
+        private async void btnDeleteOrders_Click(object sender, EventArgs e) {
             for (int i=0; i < dgvIrrelevantOrders.SelectedRows.Count; i++) {
-                 BSLayer.Instance.DeleteOrder(dgvIrrelevantOrders.SelectedRows[i].Cells["colIID"].Value.ToString());
-
+                Order order= dgvIrrelevantOrders.SelectedRows[i].DataBoundItem as Order;
+                await repoOrder.Delete(order.IID);
             }
             LoadOrders();
         }
@@ -34,11 +40,10 @@
 
         }
 
-        private void btnDeleteErrorOrders_Click(object sender, EventArgs e) {
+        private async void btnDeleteErrorOrders_Click(object sender, EventArgs e) {
             for (int i = 0; i < dgvErrorOrders.SelectedRows.Count; i++) {
-
-                 BSLayer.Instance.DeleteOrder(dgvErrorOrders.SelectedRows[i].Cells["colErrorIID"].Value.ToString());
-
+                Order order = dgvErrorOrders.SelectedRows[i].DataBoundItem as Order;
+                await repoOrder.Delete(order.IID);
             }
             LoadOrders();
         }

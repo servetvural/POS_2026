@@ -99,7 +99,7 @@ namespace WinOffice
                 Invoke(new DelegateNoParameter(LoadArchivedSessionsLocal), null);
             else
             {
-                dgvArchive.DataSource = BSLayer.Instance.GetArchivedSessionDataTable(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
+                dgvArchive.DataSource = BSLayer.Instance.GetArchivedSessions(DRFile.GetApplicationPath() + POSLayer.Library.UF.SessionDirName);
             }
         }
 
@@ -505,13 +505,13 @@ namespace WinOffice
             lblArchivedSelectedTotal.Text = total.ToString("N2");
         }
 
-        private void btnDelZeros_Click(object sender, EventArgs e)
+        private async void btnDelZeros_Click(object sender, EventArgs e)
         {
             DataTable dt = BSLayer.Instance.GetDataTable("select IID from OrdersView Where CalculatedValue is null");
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 string IID = dt.Rows[i]["IID"].ToString();
-                BSLayer.Instance.DeleteOrder(IID);
+                await repoOrder.Delete(IID);
             }
         }
 
@@ -684,7 +684,7 @@ namespace WinOffice
 
         private async void btnRefreshDatabase_Click(object sender, EventArgs e)
         {
-           await BSLayer.Instance.RefreshDatabase();
+            await repoSession.RefreshDatabase();
         }
 
         private async void btnBackup_Click(object sender, EventArgs e)

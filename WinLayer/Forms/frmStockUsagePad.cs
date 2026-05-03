@@ -1,4 +1,6 @@
 ﻿using POSLayer.Library;
+using POSLayer.Models;
+using POSLayer.Repository.IRepository;
 
 
 namespace WinLayer
@@ -6,6 +8,7 @@ namespace WinLayer
     public partial class frmStockUsagePad : Form
     {
         PosConfig config;
+        IRepository<Supplier> repoSupplier;
 
         private string SupplierIID;
         private bool blnOpennedBySupplier;
@@ -13,7 +16,8 @@ namespace WinLayer
         public frmStockUsagePad(PosConfig configAsService)
         {
             InitializeComponent();
-            config = configAsService;
+            config = configAsService;    
+            repoSupplier = ServiceHelper.GetRepository<Supplier>();
         }
         public frmStockUsagePad(PosConfig configAsService, string SupplierIID)
         {
@@ -64,9 +68,9 @@ namespace WinLayer
 
         }
 
-        private void LoadSuppliers()
+        private async void LoadSuppliers()
         {
-            cmbSuppliers.DataSource = BSLayer.Instance.GetAllSuppliersAsList();
+            cmbSuppliers.DataSource = await repoSupplier.GetAllAsync();
         }
 
 
